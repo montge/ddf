@@ -1,0 +1,233 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - master
+      - '*.x'  # Version branches like 2.29.x
+  pull_request:
+    branches:
+      - master
+      - '*.x'
+  workflow_dispatch:  # Manual trigger
+  schedule:
+    # Nightly builds at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  # DDF has 455 modules - requires substantial heap
+  MAVEN_OPTS: '-Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+  MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+
+jobs:
+  #
+  # PR VALIDATION: POM and code formatting checks
+  #
+  validate:
+    name: Validate POM and Code Formatting
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Validate POM files
+        run: mvn $MAVEN_CLI_OPTS validate
+
+      - name: Check code formatting
+        run: mvn $MAVEN_CLI_OPTS fmt:check
+        continue-on-error: false
+
+  #
+  # PR INCREMENTAL BUILD: Only build changed modules for faster feedback
+  #
+  incremental-build:
+    name: Incremental Build (Changed Modules Only)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: validate
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for gitflow-incremental-builder
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build changed modules
+        run: |
+          mvn $MAVEN_CLI_OPTS \
+            -Dgib.enabled=true \
+            -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }} \
+            clean install
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-incremental-java-${{ matrix.java }}
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+      - name: Upload JaCoCo reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports-incremental-java-${{ matrix.java }}
+          path: '**/target/site/jacoco/*.xml'
+          retention-days: 7
+
+  #
+  # FULL BUILD: Complete build with all tests (main branches and nightly)
+  #
+  full-build:
+    name: Full Build and Test
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # DDF has 455 modules vs Alliance's ~50
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build and test
+        run: mvn $MAVEN_CLI_OPTS clean install
+
+      - name: Upload distribution artifacts
+        if: matrix.java == '17'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ddf-distribution
+          path: distribution/ddf/target/ddf-*.zip
+          retention-days: 14
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-full-java-${{ matrix.java }}
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+      - name: Upload JaCoCo reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports-full-java-${{ matrix.java }}
+          path: '**/target/site/jacoco/*.xml'
+          retention-days: 30
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs-java-${{ matrix.java }}
+          path: |
+            **/target/maven-status/**
+            **/hs_err_pid*.log
+          retention-days: 7
+
+  #
+  # DEPLOY: Deploy artifacts to Maven repository (main branches only)
+  #
+  deploy:
+    name: Deploy Artifacts
+    if: |
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/master' || endsWith(github.ref, '.x'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: full-build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: ossrh  # Value of the distributionManagement/repository/id in pom.xml
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Deploy to Maven Central
+        run: mvn $MAVEN_CLI_OPTS -DskipTests deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+  #
+  # NIGHTLY BUILD STATUS: Create issue on nightly build failure
+  #
+  nightly-failure-notification:
+    name: Nightly Build Failure Notification
+    if: |
+      failure() &&
+      github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    needs: [full-build]
+
+    permissions:
+      issues: write
+
+    steps:
+      - name: Create issue on nightly build failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Nightly Build Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `## Nightly Build Failure\n\n` +
+                    `The nightly build has failed.\n\n` +
+                    `**Build URL:** ${buildUrl}\n` +
+                    `**Branch:** ${process.env.GITHUB_REF}\n` +
+                    `**Commit:** ${process.env.GITHUB_SHA}\n\n` +
+                    `Please investigate and fix the issue.`,
+              labels: ['build-failure', 'nightly', 'automated']
+            });

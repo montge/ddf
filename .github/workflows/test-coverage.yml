@@ -1,0 +1,274 @@
+name: Test Coverage Analysis
+
+on:
+  pull_request:
+    branches:
+      - master
+      - '*.x'
+  push:
+    branches:
+      - master
+      - '*.x'
+  workflow_dispatch:
+
+env:
+  MAVEN_OPTS: '-Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+  MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+
+jobs:
+  #
+  # COVERAGE ANALYSIS: Run JaCoCo and enforce coverage thresholds
+  #
+  coverage-analysis:
+    name: Coverage Analysis and Enforcement
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run tests with JaCoCo coverage
+        run: mvn $MAVEN_CLI_OPTS clean test jacoco:report
+
+      - name: Generate aggregate coverage report
+        run: mvn $MAVEN_CLI_OPTS jacoco:report-aggregate
+        continue-on-error: true
+
+      - name: Extract coverage metrics
+        id: coverage
+        run: |
+          # Create a script to extract coverage from all JaCoCo XML reports
+          cat > extract_coverage.py << 'EOF'
+          import xml.etree.ElementTree as ET
+          import glob
+          import sys
+
+          def extract_coverage(xml_file):
+              try:
+                  tree = ET.parse(xml_file)
+                  root = tree.getroot()
+
+                  instruction = 0
+                  instruction_covered = 0
+                  branch = 0
+                  branch_covered = 0
+                  complexity = 0
+
+                  for counter in root.findall('.//counter'):
+                      counter_type = counter.get('type')
+                      if counter_type == 'INSTRUCTION':
+                          instruction_covered += int(counter.get('covered', 0))
+                          instruction += int(counter.get('covered', 0)) + int(counter.get('missed', 0))
+                      elif counter_type == 'BRANCH':
+                          branch_covered += int(counter.get('covered', 0))
+                          branch += int(counter.get('covered', 0)) + int(counter.get('missed', 0))
+                      elif counter_type == 'COMPLEXITY':
+                          complexity += int(counter.get('covered', 0)) + int(counter.get('missed', 0))
+
+                  return instruction, instruction_covered, branch, branch_covered, complexity
+              except Exception as e:
+                  print(f"Error processing {xml_file}: {e}", file=sys.stderr)
+                  return 0, 0, 0, 0, 0
+
+          # Find all JaCoCo XML reports
+          reports = glob.glob('**/target/site/jacoco/jacoco.xml', recursive=True)
+
+          total_instruction = 0
+          total_instruction_covered = 0
+          total_branch = 0
+          total_branch_covered = 0
+          total_complexity = 0
+          modules_analyzed = 0
+          modules_below_threshold = []
+
+          print("## Module Coverage Report\n")
+          print("| Module | Instruction Coverage | Branch Coverage | Status |")
+          print("|--------|---------------------|-----------------|--------|")
+
+          for report in reports:
+              module_name = report.split('/')[0]
+              i, ic, b, bc, c = extract_coverage(report)
+
+              if i > 0:
+                  modules_analyzed += 1
+                  total_instruction += i
+                  total_instruction_covered += ic
+                  total_branch += b
+                  total_branch_covered += bc
+                  total_complexity += c
+
+                  inst_pct = (ic / i * 100) if i > 0 else 0
+                  branch_pct = (bc / b * 100) if b > 0 else 0
+
+                  # DDF target: 80% per module
+                  status = "✅" if inst_pct >= 80 else "⚠️"
+                  if inst_pct < 80:
+                      modules_below_threshold.append((module_name, inst_pct))
+
+                  # Only show first 50 modules to avoid overwhelming output
+                  if modules_analyzed <= 50:
+                      print(f"| {module_name} | {inst_pct:.2f}% | {branch_pct:.2f}% | {status} |")
+
+          if modules_analyzed > 50:
+              print(f"| ... ({modules_analyzed - 50} more modules) | ... | ... | ... |")
+
+          # Calculate overall coverage
+          overall_inst_pct = (total_instruction_covered / total_instruction * 100) if total_instruction > 0 else 0
+          overall_branch_pct = (total_branch_covered / total_branch * 100) if total_branch > 0 else 0
+
+          print(f"\n## Overall Coverage\n")
+          print(f"- **Instruction Coverage:** {overall_inst_pct:.2f}%")
+          print(f"- **Branch Coverage:** {overall_branch_pct:.2f}%")
+          print(f"- **Total Complexity:** {total_complexity}")
+          print(f"- **Modules Analyzed:** {modules_analyzed}")
+          print(f"- **Modules Below 80% Threshold:** {len(modules_below_threshold)}")
+
+          if modules_below_threshold:
+              print(f"\n## Modules Below 80% Coverage Threshold\n")
+              print(f"| Module | Coverage |")
+              print(f"|--------|----------|")
+              for module, coverage in sorted(modules_below_threshold, key=lambda x: x[1])[:20]:
+                  print(f"| {module} | {coverage:.2f}% |")
+              if len(modules_below_threshold) > 20:
+                  print(f"| ... ({len(modules_below_threshold) - 20} more modules) | ... |")
+
+          # Export metrics for GitHub Actions
+          with open('coverage_summary.txt', 'w') as f:
+              f.write(f"INSTRUCTION_COVERAGE={overall_inst_pct:.2f}\n")
+              f.write(f"BRANCH_COVERAGE={overall_branch_pct:.2f}\n")
+              f.write(f"MODULES_BELOW_THRESHOLD={len(modules_below_threshold)}\n")
+              f.write(f"MODULES_ANALYZED={modules_analyzed}\n")
+
+          # Exit with error if below baseline (65% current, aiming for 90-95%)
+          if overall_inst_pct < 65:
+              print(f"\n❌ Coverage ({overall_inst_pct:.2f}%) is below baseline threshold (65%)")
+              sys.exit(1)
+          else:
+              print(f"\n✅ Coverage ({overall_inst_pct:.2f}%) meets baseline threshold (65%)")
+              # Note: Target is 90-95%, this is just the minimum baseline
+              if overall_inst_pct < 90:
+                  print(f"   Target: 90-95% (Current: {overall_inst_pct:.2f}%)")
+          EOF
+
+          python3 extract_coverage.py > coverage_report.md
+          cat coverage_summary.txt >> $GITHUB_ENV
+
+      - name: Check coverage thresholds
+        run: |
+          echo "Instruction Coverage: ${INSTRUCTION_COVERAGE}%"
+          echo "Branch Coverage: ${BRANCH_COVERAGE}%"
+          echo "Modules Below Threshold: ${MODULES_BELOW_THRESHOLD}"
+          echo "Modules Analyzed: ${MODULES_ANALYZED}"
+
+          # Fail if coverage drops below baseline
+          if (( $(echo "${INSTRUCTION_COVERAGE} < 65" | bc -l) )); then
+            echo "❌ FAIL: Coverage ${INSTRUCTION_COVERAGE}% is below 65% baseline"
+            exit 1
+          fi
+
+          # Warning if not meeting target
+          if (( $(echo "${INSTRUCTION_COVERAGE} < 90" | bc -l) )); then
+            echo "⚠️  WARNING: Coverage ${INSTRUCTION_COVERAGE}% is below 90% target"
+          else
+            echo "✅ SUCCESS: Coverage meets 90% target"
+          fi
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            **/target/site/jacoco/
+            coverage_report.md
+          retention-days: 30
+
+      - name: Comment PR with coverage report
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let coverageReport = 'Coverage report not generated';
+            try {
+              coverageReport = fs.readFileSync('coverage_report.md', 'utf8');
+            } catch (error) {
+              coverageReport = 'Error reading coverage report';
+            }
+
+            const comment = `## Test Coverage Report\n\n${coverageReport}\n\n` +
+                           `### Coverage Targets\n` +
+                           `- **Baseline:** 65% (minimum to pass)\n` +
+                           `- **Per-Module Target:** 80%\n` +
+                           `- **Overall Target:** 90-95%\n\n` +
+                           `Full coverage reports available in workflow artifacts.`;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Test Coverage Report')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+  #
+  # COVERAGE TREND: Track coverage over time (main branches only)
+  #
+  coverage-trend:
+    name: Coverage Trend Tracking
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: coverage-analysis
+
+    steps:
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-reports
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: '**/jacoco.xml'
+          flags: unittests
+          name: ddf-coverage
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

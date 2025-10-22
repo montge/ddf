@@ -1,0 +1,408 @@
+name: Security Scanning
+
+on:
+  push:
+    branches:
+      - master
+      - '*.x'
+  pull_request:
+    branches:
+      - master
+      - '*.x'
+  workflow_dispatch:
+  schedule:
+    # Weekly security scans on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+
+env:
+  MAVEN_OPTS: '-Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+  MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+
+jobs:
+  #
+  # DEPENDENCY CHECK: OWASP Dependency Check for known CVEs
+  #
+  dependency-check:
+    name: OWASP Dependency Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    permissions:
+      contents: read
+      security-events: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Cache OWASP NVD database
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: owasp-nvd-${{ github.run_id }}
+          restore-keys: |
+            owasp-nvd-
+
+      - name: Run OWASP Dependency Check
+        run: |
+          mvn $MAVEN_CLI_OPTS \
+            org.owasp:dependency-check-maven:check \
+            -DfailBuildOnCVSS=7 \
+            -DsuppressionFile=dependency-check-maven-config.xml \
+            -DretireJsAnalyzerEnabled=false \
+            -DnodeAnalyzerEnabled=false \
+            -Dformats=HTML,JSON,SARIF
+        continue-on-error: true
+
+      - name: Extract vulnerability summary
+        if: always()
+        run: |
+          cat > extract_vulnerabilities.py << 'EOF'
+          import json
+          import glob
+          import sys
+
+          all_vulnerabilities = []
+          reports = glob.glob('**/dependency-check-report.json', recursive=True)
+
+          for report in reports:
+              try:
+                  with open(report, 'r') as f:
+                      data = json.load(f)
+                      dependencies = data.get('dependencies', [])
+                      for dep in dependencies:
+                          vulns = dep.get('vulnerabilities', [])
+                          if vulns:
+                              dep_name = dep.get('fileName', 'Unknown')
+                              for vuln in vulns:
+                                  cvss = vuln.get('cvssv3', {}).get('baseScore', 0)
+                                  if cvss >= 7:
+                                      all_vulnerabilities.append({
+                                          'dependency': dep_name,
+                                          'cve': vuln.get('name', 'Unknown'),
+                                          'cvss': cvss,
+                                          'description': vuln.get('description', 'No description')[:200]
+                                      })
+              except Exception as e:
+                  print(f"Error processing {report}: {e}", file=sys.stderr)
+
+          # Sort by CVSS score (highest first)
+          all_vulnerabilities.sort(key=lambda x: x['cvss'], reverse=True)
+
+          print("## OWASP Dependency Check Results\n")
+          print(f"**Total High/Critical Vulnerabilities (CVSS >= 7):** {len(all_vulnerabilities)}\n")
+
+          if all_vulnerabilities:
+              print("### High/Critical Vulnerabilities\n")
+              print("| Dependency | CVE | CVSS | Description |")
+              print("|------------|-----|------|-------------|")
+              for vuln in all_vulnerabilities[:20]:
+                  dep = vuln['dependency'][:40]
+                  cve = vuln['cve']
+                  cvss = vuln['cvss']
+                  desc = vuln['description'][:80].replace('|', '\\|')
+                  print(f"| {dep} | {cve} | {cvss} | {desc}... |")
+
+              if len(all_vulnerabilities) > 20:
+                  print(f"\n*...and {len(all_vulnerabilities) - 20} more vulnerabilities*")
+
+              print("\n**Action Required:**")
+              print("1. Review the full OWASP report in the workflow artifacts")
+              print("2. For each vulnerability, determine if it applies to DDF")
+              print("3. If applicable, create a test following COMPREHENSIVE-TESTING-STRATEGY.md")
+              print("4. Update dependencies or add suppression with justification")
+          else:
+              print("✅ No high or critical vulnerabilities detected (CVSS >= 7)")
+
+          with open('dependency_check_summary.md', 'w') as f:
+              f.write(f"VULN_COUNT={len(all_vulnerabilities)}\n")
+
+          # Exit with error if vulnerabilities found
+          if len(all_vulnerabilities) > 0:
+              print(f"\n❌ {len(all_vulnerabilities)} high/critical vulnerabilities detected")
+              sys.exit(1)
+          EOF
+
+          python3 extract_vulnerabilities.py > dependency_check_report.md || true
+          cat dependency_check_summary.md 2>/dev/null >> $GITHUB_ENV || true
+
+      - name: Upload OWASP reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check
+          path: |
+            **/dependency-check-report.html
+            **/dependency-check-report.json
+            dependency_check_report.md
+          retention-days: 30
+
+      - name: Upload SARIF to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: target/dependency-check-report.sarif
+        continue-on-error: true
+
+      - name: Comment PR with vulnerability summary
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            let summary = 'Vulnerability report not generated';
+            try {
+              summary = fs.readFileSync('dependency_check_report.md', 'utf8');
+            } catch (error) {
+              summary = 'Error reading vulnerability report';
+            }
+
+            const comment = `## Security Scan: OWASP Dependency Check\n\n${summary}\n\n` +
+                           `Full reports available in workflow artifacts.`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Security Scan: OWASP Dependency Check')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+  #
+  # CODEQL ANALYSIS: Semantic code analysis for security issues
+  #
+  codeql-analysis:
+    name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['java']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+
+      - name: Build for CodeQL analysis
+        run: mvn $MAVEN_CLI_OPTS -DskipTests clean compile
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  #
+  # DEPENDENCY REVIEW: Prevent introducing vulnerable dependencies in PRs
+  #
+  dependency-review:
+    name: Dependency Review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+
+  #
+  # SECRET SCAN: Detect accidentally committed credentials
+  #
+  secret-scan:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified --json
+
+      - name: Create issue on secret detection
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `🔐 Secret Detected in Commit ${context.sha.substring(0, 7)}`;
+            const body = `## Secret Detection Alert\n\n` +
+                         `TruffleHog has detected potential secrets in the codebase.\n\n` +
+                         `**Commit:** ${context.sha}\n` +
+                         `**Branch:** ${context.ref}\n` +
+                         `**Author:** ${context.actor}\n\n` +
+                         `**Action Required:**\n` +
+                         `1. Review the workflow logs for details\n` +
+                         `2. Rotate any exposed credentials immediately\n` +
+                         `3. Remove secrets from git history\n` +
+                         `4. Use environment variables or secret management\n\n` +
+                         `**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/` +
+                         `${context.repo.repo}/actions/runs/${context.runId}`;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['security', 'secret-detection', 'critical']
+            });
+
+  #
+  # LICENSE CHECK: Ensure dependency license compliance
+  #
+  license-check:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Check licenses
+        run: |
+          mvn $MAVEN_CLI_OPTS \
+            license:aggregate-third-party-report \
+            -Dlicense.failOnMissing=false \
+            -Dlicense.failOnBlacklist=true
+        continue-on-error: true
+
+      - name: Upload license report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: target/site/aggregate-third-party-report.html
+          retention-days: 30
+
+  #
+  # SECURITY SUMMARY: Aggregate all security scan results
+  #
+  security-summary:
+    name: Security Scan Summary
+    if: always()
+    needs: [dependency-check, codeql-analysis, secret-scan, license-check]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Generate security summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'OWASP Dependency Check', status: '${{ needs.dependency-check.result }}' },
+              { name: 'CodeQL Analysis', status: '${{ needs.codeql-analysis.result }}' },
+              { name: 'Secret Scan', status: '${{ needs.secret-scan.result }}' },
+              { name: 'License Check', status: '${{ needs.license-check.result }}' }
+            ];
+
+            const summary = jobs.map(job => {
+              const icon = job.status === 'success' ? '✅' :
+                          job.status === 'failure' ? '❌' : '⚠️';
+              return `${icon} ${job.name}: ${job.status}`;
+            }).join('\n');
+
+            console.log('Security Scan Summary:\n' + summary);
+
+            // Create issue if any security job failed
+            const hasFailed = jobs.some(job => job.status === 'failure');
+            if (hasFailed && context.eventName === 'schedule') {
+              const buildUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Security Scan Failed - ${new Date().toISOString().split('T')[0]}`,
+                body: `## Security Scan Failure\n\n${summary}\n\n` +
+                      `**Build URL:** ${buildUrl}\n\n` +
+                      `**Next Steps:**\n` +
+                      `1. Review the security scan results\n` +
+                      `2. Create tests following COMPREHENSIVE-TESTING-STRATEGY.md\n` +
+                      `3. Fix vulnerabilities or document suppressions\n` +
+                      `4. Re-run security scans to verify fixes`,
+                labels: ['security', 'automated', 'needs-triage']
+              });
+            }
