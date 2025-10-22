@@ -196,14 +196,14 @@
         <google-http-client.version>1.22.0</google-http-client.version>
         <gml-v_3_1_1-schema.version>1.1.0</gml-v_3_1_1-schema.version>
         <gson.version>2.9.0</gson.version>
-        <guava.version>29.0-jre</guava.version>
+        <guava.version>32.0.1-jre</guava.version>
         <hawtbuff.version>1.11</hawtbuff.version>
         <httpclient.version>4.5.12</httpclient.version>
         <httpcore.version>4.4.13</httpcore.version>
         <httpmime.version>${httpclient.version}</httpmime.version>
         <jai-imageio-core.version>1.4.0</jai-imageio-core.version>
         <JavaAPIforKml.version>2.2.1_CODICE_1</JavaAPIforKml.version>
-        <jackson.version>2.13.3</jackson.version>
+        <jackson.version>2.15.4</jackson.version>
         <jakarta.xml.bind.version>2.3.2</jakarta.xml.bind.version>
         <jakarta.activation.version>1.2.2</jakarta.activation.version>
         <jakarta.mail.version>1.6.6</jakarta.mail.version>
@@ -302,7 +302,7 @@
         <spatial4j.version>0.8</spatial4j.version>
         <spring.version>5.3.14</spring.version>
         <spring-osgi-mock.version>1.2.1</spring-osgi-mock.version>
-        <tika.version>1.28.4</tika.version>
+        <tika.version>1.28.5</tika.version>
         <usng4j.version>0.4</usng4j.version>
         <validation.version>1.1.0.Final</validation.version>
         <woodstox.core.version>6.2.8</woodstox.core.version>
