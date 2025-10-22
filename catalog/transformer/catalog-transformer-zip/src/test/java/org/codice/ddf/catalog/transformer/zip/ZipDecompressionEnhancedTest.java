@@ -197,8 +197,7 @@ public class ZipDecompressionEnhancedTest {
   }
 
   @Test
-  public void testTransformZipWithZeroByteFiles()
-      throws CatalogTransformerException, IOException {
+  public void testTransformZipWithZeroByteFiles() throws CatalogTransformerException, IOException {
     InputStream stream = createZipWithZeroByteFiles();
     List<Metacard> result = zipDecompression.transform(stream, arguments);
     assertThat(result, notNullValue());

@@ -16,12 +16,12 @@ package ddf.test.itests.catalog;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.awaitility.Awaitility.await;
+import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.TRANSFORMER_XML;
 import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.delete;
 import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.ingest;
 import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.query;
 import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.queryWithBasicAuth;
 import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.update;
-import static org.codice.ddf.itests.common.catalog.CatalogTestCommons.TRANSFORMER_XML;
 import static org.codice.ddf.itests.common.config.ConfigureTestCommons.configureAuthZRealm;
 import static org.codice.ddf.itests.common.config.ConfigureTestCommons.configureMetacardAttributeSecurityFiltering;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
 
 import ddf.catalog.data.Metacard;
 import java.util.Collections;
@@ -49,8 +48,8 @@ import org.ops4j.pax.exam.spi.reactors.PerSuite;
 /**
  * Integration tests for Catalog Framework + Security interactions.
  *
- * Tests the integration between catalog operations (create, read, update, delete, query)
- * and security enforcement including authentication, authorization, and access control.
+ * <p>Tests the integration between catalog operations (create, read, update, delete, query) and
+ * security enforcement including authentication, authorization, and access control.
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
@@ -75,9 +74,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Query Filtering Tests (5 tests) ====================
 
-  /**
-   * Test that users can only query metacards they have access to based on security attributes.
-   */
+  /** Test that users can only query metacards they have access to based on security attributes. */
   @Test
   public void testQueryFilteringBySecurityAttributes() throws Exception {
     Dictionary authZProps = null;
@@ -137,9 +134,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test that role-based access control filters query results appropriately.
-   */
+  /** Test that role-based access control filters query results appropriately. */
   @Test
   public void testQueryFilteringByRoles() throws Exception {
     Dictionary authZProps = null;
@@ -169,7 +164,11 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
       assertThat(response, containsString("myTitle"));
 
       // Non-admin user (system-admin-user) cannot query if not in admin role
-      queryWithBasicAuth(id, TRANSFORMER_XML, SYSTEM_ADMIN_USER, SYSTEM_ADMIN_USER_PASSWORD,
+      queryWithBasicAuth(
+          id,
+          TRANSFORMER_XML,
+          SYSTEM_ADMIN_USER,
+          SYSTEM_ADMIN_USER_PASSWORD,
           HttpStatus.SC_NOT_FOUND);
 
     } finally {
@@ -181,9 +180,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test that guest users can only access public metacards.
-   */
+  /** Test that guest users can only access public metacards. */
   @Test
   public void testGuestAccessToPublicMetacardsOnly() throws Exception {
     Dictionary authZProps = null;
@@ -209,12 +206,14 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
               getAdminConfig());
 
       // Ingest public metacard (guest group)
-      String publicData = getFileContent(XML_RECORD_RESOURCE_PATH + "/accessGroupTokenMetacard.xml");
+      String publicData =
+          getFileContent(XML_RECORD_RESOURCE_PATH + "/accessGroupTokenMetacard.xml");
       publicData = publicData.replace(ACCESS_GROUP_TOKEN, "guest");
       String publicId = ingest(publicData, MediaType.TEXT_XML);
 
       // Ingest private metacard (non-guest group)
-      String privateData = getFileContent(XML_RECORD_RESOURCE_PATH + "/accessGroupTokenMetacard.xml");
+      String privateData =
+          getFileContent(XML_RECORD_RESOURCE_PATH + "/accessGroupTokenMetacard.xml");
       privateData = privateData.replace(ACCESS_GROUP_TOKEN, ACCESS_GROUP_A);
       String privateId = ingest(privateData, MediaType.TEXT_XML);
 
@@ -237,9 +236,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test query result filtering with multiple security attributes.
-   */
+  /** Test query result filtering with multiple security attributes. */
   @Test
   public void testQueryFilteringWithMultipleSecurityAttributes() throws Exception {
     Dictionary authZProps = null;
@@ -259,8 +256,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
       securityFilterProps =
           configureMetacardAttributeSecurityFiltering(
               java.util.Arrays.asList(
-                  "security.access-groups=accessGroups",
-                  "metacard.owner=owner"),
+                  "security.access-groups=accessGroups", "metacard.owner=owner"),
               Collections.emptyList(),
               getAdminConfig());
 
@@ -293,9 +289,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test that security filtering works correctly with wildcard queries.
-   */
+  /** Test that security filtering works correctly with wildcard queries. */
   @Test
   public void testWildcardQuerySecurityFiltering() throws Exception {
     Dictionary authZProps = null;
@@ -319,8 +313,10 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
 
       // Ingest multiple metacards with different groups
       for (int i = 0; i < 5; i++) {
-        String testData = getFileContent(XML_RECORD_RESOURCE_PATH + "/accessGroupTokenMetacard.xml");
-        testData = testData.replace(ACCESS_GROUP_TOKEN, i % 2 == 0 ? ACCESS_GROUP_A : ACCESS_GROUP_B);
+        String testData =
+            getFileContent(XML_RECORD_RESOURCE_PATH + "/accessGroupTokenMetacard.xml");
+        testData =
+            testData.replace(ACCESS_GROUP_TOKEN, i % 2 == 0 ? ACCESS_GROUP_A : ACCESS_GROUP_B);
         ingest(testData, MediaType.TEXT_XML);
       }
 
@@ -358,9 +354,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Create/Update/Delete Authorization Tests (5 tests) ====================
 
-  /**
-   * Test that only authorized users can create metacards.
-   */
+  /** Test that only authorized users can create metacards. */
   @Test
   public void testAuthorizedCreate() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog";
@@ -390,9 +384,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForGuestAuthReady(url);
   }
 
-  /**
-   * Test that unauthorized users cannot create metacards.
-   */
+  /** Test that unauthorized users cannot create metacards. */
   @Test
   public void testUnauthorizedCreateDenied() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog";
@@ -417,9 +409,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForGuestAuthReady(url);
   }
 
-  /**
-   * Test that only authorized users can update metacards.
-   */
+  /** Test that only authorized users can update metacards. */
   @Test
   public void testAuthorizedUpdate() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog";
@@ -453,9 +443,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test that unauthorized users cannot update metacards.
-   */
+  /** Test that unauthorized users cannot update metacards. */
   @Test
   public void testUnauthorizedUpdateDenied() throws Exception {
     Dictionary authZProps = null;
@@ -512,9 +500,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test that only authorized users can delete metacards.
-   */
+  /** Test that only authorized users can delete metacards. */
   @Test
   public void testAuthorizedDelete() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog";
@@ -531,13 +517,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForBasicAuthReady(url);
 
     // Admin user can delete
-    given()
-        .auth()
-        .basic("admin", "admin")
-        .when()
-        .delete(url + "/" + id)
-        .then()
-        .statusCode(200);
+    given().auth().basic("admin", "admin").when().delete(url + "/" + id).then().statusCode(200);
 
     configureRestForGuest(SERVICE_ROOT.getUrl());
     getSecurityPolicy().waitForGuestAuthReady(url);
@@ -545,9 +525,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Guest vs Authenticated Access Tests (5 tests) ====================
 
-  /**
-   * Test guest access to public endpoints.
-   */
+  /** Test guest access to public endpoints. */
   @Test
   public void testGuestAccessToPublicEndpoints() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog/query?q=*&src=local";
@@ -565,14 +543,13 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
         .get(url)
         .then()
         .statusCode(200)
-        .body(hasXPath("//metacard/string[@name='" + Metacard.TITLE + "']/value[text()='myTitle']"));
+        .body(
+            hasXPath("//metacard/string[@name='" + Metacard.TITLE + "']/value[text()='myTitle']"));
 
     delete(id);
   }
 
-  /**
-   * Test that guest access is denied to restricted endpoints.
-   */
+  /** Test that guest access is denied to restricted endpoints. */
   @Test
   public void testGuestAccessDeniedToRestrictedEndpoints() throws Exception {
     String adminUrl = ADMIN_PATH.getUrl();
@@ -582,15 +559,10 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForGuestAuthReady(adminUrl);
 
     // Guest cannot access admin console
-    when()
-        .get(adminUrl)
-        .then()
-        .statusCode(403);
+    when().get(adminUrl).then().statusCode(403);
   }
 
-  /**
-   * Test authenticated access with valid credentials.
-   */
+  /** Test authenticated access with valid credentials. */
   @Test
   public void testAuthenticatedAccessWithValidCredentials() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog/query?q=*&src=local";
@@ -617,21 +589,14 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
             .cookie("JSESSIONID");
 
     // Session cookie works for subsequent requests
-    given()
-        .cookie("JSESSIONID", cookie)
-        .when()
-        .get(url)
-        .then()
-        .statusCode(200);
+    given().cookie("JSESSIONID", cookie).when().get(url).then().statusCode(200);
 
     configureRestForGuest(SERVICE_ROOT.getUrl());
     getSecurityPolicy().waitForGuestAuthReady(url);
     delete(id);
   }
 
-  /**
-   * Test authenticated access denied with invalid credentials.
-   */
+  /** Test authenticated access denied with invalid credentials. */
   @Test
   public void testAuthenticatedAccessDeniedWithInvalidCredentials() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog/query?q=*&src=local";
@@ -641,21 +606,13 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForBasicAuthReady(url);
 
     // Invalid credentials should be denied
-    given()
-        .auth()
-        .basic("admin", "wrongpassword")
-        .when()
-        .get(url)
-        .then()
-        .statusCode(401);
+    given().auth().basic("admin", "wrongpassword").when().get(url).then().statusCode(401);
 
     configureRestForGuest(SERVICE_ROOT.getUrl());
     getSecurityPolicy().waitForGuestAuthReady(url);
   }
 
-  /**
-   * Test switching between guest and authenticated modes.
-   */
+  /** Test switching between guest and authenticated modes. */
   @Test
   public void testSwitchingBetweenGuestAndAuthenticatedModes() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog/query?q=*&src=local";
@@ -695,9 +652,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Multi-User Concurrent Access Tests (5 tests) ====================
 
-  /**
-   * Test concurrent queries from multiple users with different permissions.
-   */
+  /** Test concurrent queries from multiple users with different permissions. */
   @Test
   public void testConcurrentQueriesFromMultipleUsers() throws Exception {
     Dictionary authZProps = null;
@@ -733,23 +688,27 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
       getSecurityPolicy().waitForBasicAuthReady(url);
 
       // Simulate concurrent queries from different users
-      Thread userAThread = new Thread(() -> {
-        try {
-          String response = queryWithBasicAuth(idA, TRANSFORMER_XML, USER_A, USER_PASSWORD);
-          assertThat(response, containsString("Lady Liberty"));
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-      });
+      Thread userAThread =
+          new Thread(
+              () -> {
+                try {
+                  String response = queryWithBasicAuth(idA, TRANSFORMER_XML, USER_A, USER_PASSWORD);
+                  assertThat(response, containsString("Lady Liberty"));
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              });
 
-      Thread userBThread = new Thread(() -> {
-        try {
-          String response = queryWithBasicAuth(idB, TRANSFORMER_XML, USER_B, USER_PASSWORD);
-          assertThat(response, containsString("Lady Liberty"));
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        }
-      });
+      Thread userBThread =
+          new Thread(
+              () -> {
+                try {
+                  String response = queryWithBasicAuth(idB, TRANSFORMER_XML, USER_B, USER_PASSWORD);
+                  assertThat(response, containsString("Lady Liberty"));
+                } catch (Exception e) {
+                  throw new RuntimeException(e);
+                }
+              });
 
       userAThread.start();
       userBThread.start();
@@ -769,9 +728,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test concurrent create operations from multiple users.
-   */
+  /** Test concurrent create operations from multiple users. */
   @Test
   public void testConcurrentCreatesFromMultipleUsers() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog";
@@ -783,29 +740,33 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     // Simulate concurrent creates
     String testData = getFileContent(JSON_RECORD_RESOURCE_PATH + "/SimpleGeoJsonRecord");
 
-    Thread thread1 = new Thread(() -> {
-      given()
-          .auth()
-          .basic("admin", "admin")
-          .body(testData)
-          .contentType("application/json")
-          .when()
-          .post(url)
-          .then()
-          .statusCode(201);
-    });
+    Thread thread1 =
+        new Thread(
+            () -> {
+              given()
+                  .auth()
+                  .basic("admin", "admin")
+                  .body(testData)
+                  .contentType("application/json")
+                  .when()
+                  .post(url)
+                  .then()
+                  .statusCode(201);
+            });
 
-    Thread thread2 = new Thread(() -> {
-      given()
-          .auth()
-          .basic("admin", "admin")
-          .body(testData)
-          .contentType("application/json")
-          .when()
-          .post(url)
-          .then()
-          .statusCode(201);
-    });
+    Thread thread2 =
+        new Thread(
+            () -> {
+              given()
+                  .auth()
+                  .basic("admin", "admin")
+                  .body(testData)
+                  .contentType("application/json")
+                  .when()
+                  .post(url)
+                  .then()
+                  .statusCode(201);
+            });
 
     thread1.start();
     thread2.start();
@@ -817,9 +778,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForGuestAuthReady(url);
   }
 
-  /**
-   * Test concurrent update operations from multiple users on same metacard.
-   */
+  /** Test concurrent update operations from multiple users on same metacard. */
   @Test
   public void testConcurrentUpdatesOnSameMetacard() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog";
@@ -838,25 +797,29 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     String updatedData1 = testData.replace("myTitle", "updateFromUser1");
     String updatedData2 = testData.replace("myTitle", "updateFromUser2");
 
-    Thread thread1 = new Thread(() -> {
-      given()
-          .auth()
-          .basic("admin", "admin")
-          .body(updatedData1)
-          .contentType("application/json")
-          .when()
-          .put(url + "/" + id);
-    });
+    Thread thread1 =
+        new Thread(
+            () -> {
+              given()
+                  .auth()
+                  .basic("admin", "admin")
+                  .body(updatedData1)
+                  .contentType("application/json")
+                  .when()
+                  .put(url + "/" + id);
+            });
 
-    Thread thread2 = new Thread(() -> {
-      given()
-          .auth()
-          .basic("admin", "admin")
-          .body(updatedData2)
-          .contentType("application/json")
-          .when()
-          .put(url + "/" + id);
-    });
+    Thread thread2 =
+        new Thread(
+            () -> {
+              given()
+                  .auth()
+                  .basic("admin", "admin")
+                  .body(updatedData2)
+                  .contentType("application/json")
+                  .when()
+                  .put(url + "/" + id);
+            });
 
     thread1.start();
     thread2.start();
@@ -869,9 +832,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test session isolation between concurrent users.
-   */
+  /** Test session isolation between concurrent users. */
   @Test
   public void testSessionIsolationBetweenConcurrentUsers() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog/query?q=*&src=local";
@@ -915,9 +876,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForGuestAuthReady(url);
   }
 
-  /**
-   * Test security attribute updates don't affect concurrent queries.
-   */
+  /** Test security attribute updates don't affect concurrent queries. */
   @Test
   public void testSecurityAttributeUpdatesIsolation() throws Exception {
     Dictionary authZProps = null;
@@ -960,14 +919,16 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
       // User A should no longer see it after update
       await()
           .atMost(10, TimeUnit.SECONDS)
-          .until(() -> {
-            try {
-              queryWithBasicAuth(id, TRANSFORMER_XML, USER_A, USER_PASSWORD, HttpStatus.SC_NOT_FOUND);
-              return true;
-            } catch (AssertionError e) {
-              return false;
-            }
-          });
+          .until(
+              () -> {
+                try {
+                  queryWithBasicAuth(
+                      id, TRANSFORMER_XML, USER_A, USER_PASSWORD, HttpStatus.SC_NOT_FOUND);
+                  return true;
+                } catch (AssertionError e) {
+                  return false;
+                }
+              });
 
       // User B should now see it
       String responseB = queryWithBasicAuth(id, TRANSFORMER_XML, USER_B, USER_PASSWORD);
@@ -987,9 +948,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Role-Based Result Filtering Tests (5 tests) ====================
 
-  /**
-   * Test that admin role can access all metacards.
-   */
+  /** Test that admin role can access all metacards. */
   @Test
   public void testAdminRoleAccessToAllMetacards() throws Exception {
     Dictionary authZProps = null;
@@ -1032,9 +991,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test role hierarchy in access control.
-   */
+  /** Test role hierarchy in access control. */
   @Test
   public void testRoleHierarchyAccessControl() throws Exception {
     // This test would verify that higher roles have access to lower role resources
@@ -1057,9 +1014,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test filtering based on multiple required roles.
-   */
+  /** Test filtering based on multiple required roles. */
   @Test
   public void testMultipleRequiredRolesFiltering() throws Exception {
     Dictionary authZProps = null;
@@ -1099,9 +1054,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test dynamic role assignment and filtering.
-   */
+  /** Test dynamic role assignment and filtering. */
   @Test
   public void testDynamicRoleAssignmentFiltering() throws Exception {
     // This test would verify that role changes are reflected in access control
@@ -1126,9 +1079,7 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test role-based filtering with inherited permissions.
-   */
+  /** Test role-based filtering with inherited permissions. */
   @Test
   public void testRoleBasedFilteringWithInheritedPermissions() throws Exception {
     Dictionary authZProps = null;
@@ -1185,13 +1136,14 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
     await("Waiting for security handlers to become available")
         .atMost(5, TimeUnit.MINUTES)
         .pollDelay(1, TimeUnit.SECONDS)
-        .until(() -> {
-          try {
-            given().get(url).then().statusCode(not(equalTo(503)));
-            return true;
-          } catch (AssertionError e) {
-            return false;
-          }
-        });
+        .until(
+            () -> {
+              try {
+                given().get(url).then().statusCode(not(equalTo(503)));
+                return true;
+              } catch (AssertionError e) {
+                return false;
+              }
+            });
   }
 }

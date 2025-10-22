@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.impl.MetacardImpl;
-import ddf.catalog.data.types.Core;
 import ddf.catalog.transform.CatalogTransformerException;
 import ddf.catalog.transform.InputTransformer;
 import ddf.catalog.transformer.input.tika.TikaInputTransformer;
@@ -113,8 +112,7 @@ public class PptxInputTransformerEnhancedTest {
   }
 
   @Test
-  public void testTransformSlideShowWithOneSlide()
-      throws IOException, CatalogTransformerException {
+  public void testTransformSlideShowWithOneSlide() throws IOException, CatalogTransformerException {
     XMLSlideShow slideShow = new XMLSlideShow();
     slideShow.createSlide();
 
@@ -357,8 +355,7 @@ public class PptxInputTransformerEnhancedTest {
   @Test
   public void testTransformWithRealTikaTransformer()
       throws IOException, CatalogTransformerException {
-    TikaInputTransformer realTransformer =
-        new TikaInputTransformer(null, mock(MetacardType.class));
+    TikaInputTransformer realTransformer = new TikaInputTransformer(null, mock(MetacardType.class));
     realTransformer.setUseResourceTitleAsTitle(true);
 
     PptxInputTransformer transformer = new PptxInputTransformer(realTransformer);
@@ -408,8 +405,7 @@ public class PptxInputTransformerEnhancedTest {
   }
 
   @Test
-  public void testTransformWithUnicodeCharacters()
-      throws IOException, CatalogTransformerException {
+  public void testTransformWithUnicodeCharacters() throws IOException, CatalogTransformerException {
     XMLSlideShow slideShow = new XMLSlideShow();
     XSLFSlide slide = slideShow.createSlide();
 

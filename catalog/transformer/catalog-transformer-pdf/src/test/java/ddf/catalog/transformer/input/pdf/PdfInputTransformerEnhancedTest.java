@@ -14,12 +14,10 @@
 package ddf.catalog.transformer.input.pdf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -311,7 +309,8 @@ public class PdfInputTransformerEnhancedTest {
     when(extractor.getMetacardAttributes())
         .thenReturn(
             Arrays.asList(
-                new AttributeDescriptorImpl("custom-attr", false, false, false, false, BasicTypes.STRING_TYPE)));
+                new AttributeDescriptorImpl(
+                    "custom-attr", false, false, false, false, BasicTypes.STRING_TYPE)));
 
     ServiceReference serviceRef = mock(ServiceReference.class);
 

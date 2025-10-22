@@ -15,7 +15,6 @@ package ddf.security.realm.sts;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.security.assertion.saml.impl.SecurityAssertionSaml;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.shiro.authc.AuthenticationException;

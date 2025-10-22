@@ -15,10 +15,8 @@ package ddf.catalog.transformer.input.tika;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Metacard;
@@ -269,8 +267,7 @@ public class TikaInputTransformerEnhancedTest {
   }
 
   @Test
-  public void testTransformEmptyPdfLikeStructure()
-      throws IOException, CatalogTransformerException {
+  public void testTransformEmptyPdfLikeStructure() throws IOException, CatalogTransformerException {
     String fakePdf = "%PDF-1.4\n%%EOF";
     InputStream stream = new ByteArrayInputStream(fakePdf.getBytes());
 

@@ -25,14 +25,10 @@ import static org.codice.ddf.itests.common.opensearch.OpenSearchTestCommons.getO
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasXPath;
 import static org.hamcrest.Matchers.not;
 
-import ddf.catalog.data.Metacard;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import javax.ws.rs.core.MediaType;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.junit.After;
@@ -47,8 +43,8 @@ import org.ops4j.pax.exam.spi.reactors.PerSuite;
 /**
  * Integration tests for Federation + Security interactions.
  *
- * Tests federated query aggregation, result merging, authentication propagation,
- * and source availability handling with security constraints.
+ * <p>Tests federated query aggregation, result merging, authentication propagation, and source
+ * availability handling with security constraints.
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
@@ -84,9 +80,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Multi-Source Query Aggregation Tests (3 tests) ====================
 
-  /**
-   * Test federated query aggregates results from multiple sources.
-   */
+  /** Test federated query aggregates results from multiple sources. */
   @Test
   public void testFederatedQueryAggregatesMultipleSources() throws Exception {
     // Ingest test data into local catalog
@@ -100,9 +94,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     openSearchProps.put("username", "admin");
     openSearchProps.put("password", "admin");
     openSearchPid =
-        getServiceManager()
-            .createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps)
-            .getPid();
+        getServiceManager().createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps).getPid();
 
     getCatalogBundle().waitForFederatedSource(FEDERATED_OPENSEARCH_SOURCE_ID);
     getServiceManager()
@@ -110,14 +102,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
     // Query all sources
     String queryUrl = REST_PATH.getUrl() + "?q=*";
-    String response =
-        given()
-            .when()
-            .get(queryUrl)
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+    String response = given().when().get(queryUrl).then().statusCode(200).extract().asString();
 
     // Verify results from multiple sources
     assertThat(response, containsString("myTitle"));
@@ -129,9 +114,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     delete(localId);
   }
 
-  /**
-   * Test federated query with security filtering across sources.
-   */
+  /** Test federated query with security filtering across sources. */
   @Test
   public void testFederatedQueryWithSecurityFiltering() throws Exception {
     configureRestForBasic(SERVICE_ROOT.getUrl());
@@ -150,9 +133,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     securedProps.put("username", "admin");
     securedProps.put("password", "admin");
     securedOpenSearchPid =
-        getServiceManager()
-            .createManagedService(OPENSEARCH_FACTORY_PID, securedProps)
-            .getPid();
+        getServiceManager().createManagedService(OPENSEARCH_FACTORY_PID, securedProps).getPid();
 
     getCatalogBundle().waitForFederatedSource(SECURED_OPENSEARCH_SOURCE_ID);
 
@@ -180,9 +161,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test that federated queries respect per-source security policies.
-   */
+  /** Test that federated queries respect per-source security policies. */
   @Test
   public void testPerSourceSecurityPolicies() throws Exception {
     configureRestForBasic(SERVICE_ROOT.getUrl());
@@ -232,9 +211,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Result Merging and Deduplication Tests (3 tests) ====================
 
-  /**
-   * Test that duplicate results from multiple sources are properly deduplicated.
-   */
+  /** Test that duplicate results from multiple sources are properly deduplicated. */
   @Test
   public void testResultDeduplicationAcrossSources() throws Exception {
     // Ingest same metacard into local catalog
@@ -246,9 +223,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
         getOpenSearchSourceProperties(
             FEDERATED_OPENSEARCH_SOURCE_ID, OPENSEARCH_PATH.getUrl(), getServiceManager());
     openSearchPid =
-        getServiceManager()
-            .createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps)
-            .getPid();
+        getServiceManager().createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps).getPid();
 
     getCatalogBundle().waitForFederatedSource(FEDERATED_OPENSEARCH_SOURCE_ID);
     getServiceManager()
@@ -256,14 +231,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
     // Query should deduplicate same metacard from different sources
     String queryUrl = REST_PATH.getUrl() + "?q=myTitle";
-    String response =
-        given()
-            .when()
-            .get(queryUrl)
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+    String response = given().when().get(queryUrl).then().statusCode(200).extract().asString();
 
     // Verify results contain the metacard
     assertThat(response, containsString("myTitle"));
@@ -275,9 +243,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test result sorting and ranking across federated sources.
-   */
+  /** Test result sorting and ranking across federated sources. */
   @Test
   public void testResultSortingAcrossFederatedSources() throws Exception {
     // Ingest multiple metacards with different relevance scores
@@ -289,22 +255,13 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
     // Query with sorting
     String queryUrl = REST_PATH.getUrl() + "?q=testRecord&sortBy=title:asc";
-    String response =
-        given()
-            .when()
-            .get(queryUrl)
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+    String response = given().when().get(queryUrl).then().statusCode(200).extract().asString();
 
     // Verify results are returned (sorting verified by order)
     assertThat(response, containsString("testRecord"));
   }
 
-  /**
-   * Test result merging with conflicting metadata from different sources.
-   */
+  /** Test result merging with conflicting metadata from different sources. */
   @Test
   public void testResultMergingWithConflictingMetadata() throws Exception {
     // Ingest test metacard
@@ -316,9 +273,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
         getOpenSearchSourceProperties(
             FEDERATED_OPENSEARCH_SOURCE_ID, OPENSEARCH_PATH.getUrl(), getServiceManager());
     openSearchPid =
-        getServiceManager()
-            .createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps)
-            .getPid();
+        getServiceManager().createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps).getPid();
 
     getCatalogBundle().waitForFederatedSource(FEDERATED_OPENSEARCH_SOURCE_ID);
     getServiceManager()
@@ -326,14 +281,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
     // Query all sources
     String queryUrl = REST_PATH.getUrl() + "?q=*";
-    String response =
-        given()
-            .when()
-            .get(queryUrl)
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+    String response = given().when().get(queryUrl).then().statusCode(200).extract().asString();
 
     // Result merging should handle conflicts appropriately
     assertThat(response, containsString("myTitle"));
@@ -347,9 +295,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Federated Authentication Tests (2 tests) ====================
 
-  /**
-   * Test that authentication credentials are properly propagated to federated sources.
-   */
+  /** Test that authentication credentials are properly propagated to federated sources. */
   @Test
   public void testAuthenticationPropagationToFederatedSources() throws Exception {
     configureRestForBasic(SERVICE_ROOT.getUrl());
@@ -398,9 +344,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test federated query fails gracefully when authentication fails.
-   */
+  /** Test federated query fails gracefully when authentication fails. */
   @Test
   public void testFederatedQueryFailsGracefullyOnAuthFailure() throws Exception {
     configureRestForBasic(SERVICE_ROOT.getUrl());
@@ -443,9 +387,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
   // ==================== Source Availability Handling Tests (2 tests) ====================
 
-  /**
-   * Test that unavailable secured sources don't block federated queries.
-   */
+  /** Test that unavailable secured sources don't block federated queries. */
   @Test
   public void testUnavailableSecuredSourceDoesNotBlockQuery() throws Exception {
     configureRestForBasic(SERVICE_ROOT.getUrl());
@@ -458,7 +400,8 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
 
     // Configure source pointing to non-existent endpoint
     Map<String, Object> cswProps =
-        getCswSourceProperties(FEDERATED_CSW_SOURCE_ID, "https://localhost:19999/csw", getServiceManager());
+        getCswSourceProperties(
+            FEDERATED_CSW_SOURCE_ID, "https://localhost:19999/csw", getServiceManager());
     cswProps.put("authenticationType", "basic");
     cswProps.put("username", "admin");
     cswProps.put("password", "admin");
@@ -494,9 +437,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test source availability monitoring with security constraints.
-   */
+  /** Test source availability monitoring with security constraints. */
   @Test
   public void testSourceAvailabilityMonitoringWithSecurity() throws Exception {
     configureRestForBasic(SERVICE_ROOT.getUrl());
@@ -511,9 +452,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     openSearchProps.put("username", "admin");
     openSearchProps.put("password", "admin");
     securedOpenSearchPid =
-        getServiceManager()
-            .createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps)
-            .getPid();
+        getServiceManager().createManagedService(OPENSEARCH_FACTORY_PID, openSearchProps).getPid();
 
     getCatalogBundle().waitForFederatedSource(SECURED_OPENSEARCH_SOURCE_ID);
 
@@ -551,13 +490,14 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     await("Waiting for security handlers")
         .atMost(5, TimeUnit.MINUTES)
         .pollDelay(1, SECONDS)
-        .until(() -> {
-          try {
-            given().get(url).then().statusCode(not(equalTo(503)));
-            return true;
-          } catch (AssertionError e) {
-            return false;
-          }
-        });
+        .until(
+            () -> {
+              try {
+                given().get(url).then().statusCode(not(equalTo(503)));
+                return true;
+              } catch (AssertionError e) {
+                return false;
+              }
+            });
   }
 }

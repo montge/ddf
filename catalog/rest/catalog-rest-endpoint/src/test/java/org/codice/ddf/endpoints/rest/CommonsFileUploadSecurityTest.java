@@ -119,8 +119,7 @@ import org.slf4j.LoggerFactory;
 @RunWith(MockitoJUnitRunner.class)
 public class CommonsFileUploadSecurityTest {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(CommonsFileUploadSecurityTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CommonsFileUploadSecurityTest.class);
 
   private static final String MALICIOUS_BOUNDARY_RECURSIVE =
       "--boundary\r\nContent-Disposition: form-data; name=\"file\"\r\nContent-Type: multipart/mixed; boundary=boundary\r\n\r\n";
@@ -128,8 +127,7 @@ public class CommonsFileUploadSecurityTest {
   private static final String MALICIOUS_BOUNDARY_UNTERMINATED =
       "--boundary\r\nContent-Disposition: form-data; name=\"file\"\r\n\r\ndata";
 
-  private static final String MALICIOUS_BOUNDARY_SPECIAL_CHARS =
-      "--()<>@,;:\\\"/[]?={} \t\r\n";
+  private static final String MALICIOUS_BOUNDARY_SPECIAL_CHARS = "--()<>@,;:\\\"/[]?={} \t\r\n";
 
   private static final String MALICIOUS_BOUNDARY_EXTREMELY_LONG;
 
@@ -266,12 +264,12 @@ public class CommonsFileUploadSecurityTest {
   public void testMaliciousBoundaryHeaderAttack() throws Exception {
     LOGGER.info("TEST 2: Testing malicious boundary header attack protection");
 
-    String maliciousContentType = "multipart/form-data; boundary=" + MALICIOUS_BOUNDARY_SPECIAL_CHARS;
+    String maliciousContentType =
+        "multipart/form-data; boundary=" + MALICIOUS_BOUNDARY_SPECIAL_CHARS;
     when(mockHttpHeaders.getRequestHeader(HttpHeaders.CONTENT_TYPE))
         .thenReturn(Arrays.asList(maliciousContentType));
 
-    InputStream maliciousStream =
-        createInputStream(MALICIOUS_BOUNDARY_RECURSIVE);
+    InputStream maliciousStream = createInputStream(MALICIOUS_BOUNDARY_RECURSIVE);
 
     MultipartBody multipartBody = createMockMultipartBody(maliciousStream, "malicious.txt");
 
@@ -437,9 +435,7 @@ public class CommonsFileUploadSecurityTest {
 
       // Memory usage should be reasonable (not gigabytes)
       assertThat(
-          "Memory usage should be controlled (< 100MB)",
-          memoryUsed < 100 * 1024 * 1024,
-          is(true));
+          "Memory usage should be controlled (< 100MB)", memoryUsed < 100 * 1024 * 1024, is(true));
 
       LOGGER.info("✓ DOS attack via long boundary mitigated");
     } catch (OutOfMemoryError e) {
@@ -576,16 +572,14 @@ public class CommonsFileUploadSecurityTest {
 
       // Should return error response
       assertThat("Response should not be null", response, is(notNullValue()));
-      assertThat(
-          "Error response should be 4xx or 5xx",
-          response.getStatus() >= 400,
-          is(true));
+      assertThat("Error response should be 4xx or 5xx", response.getStatus() >= 400, is(true));
 
       LOGGER.info("✓ Malformed multipart handled with error status {}", response.getStatus());
     } catch (Exception e) {
       // Verify it's a controlled exception
       assertThat("Should throw CatalogServiceException", e, is(notNullValue()));
-      LOGGER.info("✓ Malformed multipart threw expected exception: {}", e.getClass().getSimpleName());
+      LOGGER.info(
+          "✓ Malformed multipart threw expected exception: {}", e.getClass().getSimpleName());
     }
   }
 
@@ -606,8 +600,7 @@ public class CommonsFileUploadSecurityTest {
         .thenReturn(Arrays.asList("multipart/form-data; boundary=boundary"));
 
     InputStream unterminatedStream = createInputStream(MALICIOUS_BOUNDARY_UNTERMINATED);
-    MultipartBody multipartBody =
-        createMockMultipartBody(unterminatedStream, "unterminated.txt");
+    MultipartBody multipartBody = createMockMultipartBody(unterminatedStream, "unterminated.txt");
 
     try {
       Response response =

@@ -25,7 +25,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -35,7 +34,6 @@ import java.nio.charset.Charset;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
-import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.annotations.BeforeExam;
@@ -50,14 +48,15 @@ import org.osgi.service.cm.Configuration;
 /**
  * Integration tests for Plugin Chain execution in the Catalog Framework.
  *
- * Tests plugin ordering, exception handling, chain interruption,
- * security plugin integration, and validation plugin integration.
+ * <p>Tests plugin ordering, exception handling, chain interruption, security plugin integration,
+ * and validation plugin integration.
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
-  private static final String SECURITY_LOG_PATH = System.getProperty("karaf.data") + "/log/security.log";
+  private static final String SECURITY_LOG_PATH =
+      System.getProperty("karaf.data") + "/log/security.log";
 
   @BeforeExam
   public void beforeExam() throws Exception {
@@ -71,9 +70,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
   // ==================== Pre/Post Plugin Execution Order Tests (3 tests) ====================
 
-  /**
-   * Test that PreIngest plugins execute before ingest and in correct order.
-   */
+  /** Test that PreIngest plugins execute before ingest and in correct order. */
   @Test
   public void testPreIngestPluginExecutionOrder() throws Exception {
     // Ingest a metacard and verify pre-ingest plugins were called
@@ -91,9 +88,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test that PostIngest plugins execute after ingest and in correct order.
-   */
+  /** Test that PostIngest plugins execute after ingest and in correct order. */
   @Test
   public void testPostIngestPluginExecutionOrder() throws Exception {
     // Configure security audit plugin to track post-ingest activity
@@ -101,7 +96,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
         configAdmin.getConfiguration(
             "org.codice.ddf.catalog.plugin.security.audit.SecurityAuditPlugin", null);
     Dictionary<String, Object> properties = new Hashtable<>();
-    properties.put("auditAttributes", new String[]{"title"});
+    properties.put("auditAttributes", new String[] {"title"});
     config.update(properties);
 
     // Wait for configuration to take effect
@@ -116,16 +111,16 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
       await("Security log updated by post-ingest plugin")
           .atMost(2, TimeUnit.MINUTES)
           .pollDelay(2, SECONDS)
-          .until(() -> getFileContent(securityLog).contains("myTitle") ||
-                       getFileContent(securityLog).contains("Security Audit"));
+          .until(
+              () ->
+                  getFileContent(securityLog).contains("myTitle")
+                      || getFileContent(securityLog).contains("Security Audit"));
     }
 
     delete(id);
   }
 
-  /**
-   * Test that PreQuery and PostQuery plugins execute in correct order.
-   */
+  /** Test that PreQuery and PostQuery plugins execute in correct order. */
   @Test
   public void testPrePostQueryPluginExecutionOrder() throws Exception {
     String testData = getFileContent(JSON_RECORD_RESOURCE_PATH + "/SimpleGeoJsonRecord");
@@ -133,14 +128,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
     // Execute query which should trigger pre and post query plugins
     String queryUrl = REST_PATH.getUrl() + "?q=*&src=local";
-    String response =
-        given()
-            .when()
-            .get(queryUrl)
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+    String response = given().when().get(queryUrl).then().statusCode(200).extract().asString();
 
     // Verify query executed successfully (indicating plugins ran)
     assertThat(response, containsString("myTitle"));
@@ -150,9 +138,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
   // ==================== Plugin Exception Handling Tests (3 tests) ====================
 
-  /**
-   * Test that exceptions in PreIngest plugins are properly handled.
-   */
+  /** Test that exceptions in PreIngest plugins are properly handled. */
   @Test
   public void testPreIngestPluginExceptionHandling() throws Exception {
     // Test that system handles plugin exceptions gracefully
@@ -173,9 +159,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     }
   }
 
-  /**
-   * Test that exceptions in PostIngest plugins don't prevent ingest.
-   */
+  /** Test that exceptions in PostIngest plugins don't prevent ingest. */
   @Test
   public void testPostIngestPluginExceptionDoesNotBlockIngest() throws Exception {
     // Even if a post-ingest plugin fails, the metacard should still be stored
@@ -192,9 +176,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test that query plugin exceptions are logged but don't fail the query.
-   */
+  /** Test that query plugin exceptions are logged but don't fail the query. */
   @Test
   public void testQueryPluginExceptionHandling() throws Exception {
     String testData = getFileContent(JSON_RECORD_RESOURCE_PATH + "/SimpleGeoJsonRecord");
@@ -202,14 +184,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
     // Query should succeed even if a plugin encounters an error
     String queryUrl = REST_PATH.getUrl() + "?q=*&src=local";
-    String response =
-        given()
-            .when()
-            .get(queryUrl)
-            .then()
-            .statusCode(200)
-            .extract()
-            .asString();
+    String response = given().when().get(queryUrl).then().statusCode(200).extract().asString();
 
     // Query results should be returned
     assertThat(response, containsString("myTitle"));
@@ -219,9 +194,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
   // ==================== Plugin Chain Interruption Tests (3 tests) ====================
 
-  /**
-   * Test that StopProcessingException in PreIngest plugin halts ingest.
-   */
+  /** Test that StopProcessingException in PreIngest plugin halts ingest. */
   @Test
   public void testStopProcessingExceptionHaltsIngest() throws Exception {
     // This test would require a custom plugin that throws StopProcessingException
@@ -236,9 +209,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test that StopProcessingException in PreQuery plugin prevents query execution.
-   */
+  /** Test that StopProcessingException in PreQuery plugin prevents query execution. */
   @Test
   public void testStopProcessingExceptionPreventsQuery() throws Exception {
     // Ingest test data
@@ -255,9 +226,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test that plugin chain continues after non-fatal exceptions.
-   */
+  /** Test that plugin chain continues after non-fatal exceptions. */
   @Test
   public void testPluginChainContinuesAfterNonFatalException() throws Exception {
     // The plugin chain should continue processing even if one plugin fails
@@ -276,9 +245,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
   // ==================== Security Plugin Integration Tests (3 tests) ====================
 
-  /**
-   * Test security policy plugin integration with create operations.
-   */
+  /** Test security policy plugin integration with create operations. */
   @Test
   public void testSecurityPolicyPluginOnCreate() throws Exception {
     configureRestForBasic(SERVICE_ROOT.getUrl());
@@ -306,9 +273,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().waitForGuestAuthReady(SERVICE_ROOT.getUrl());
   }
 
-  /**
-   * Test security access plugin filtering on query results.
-   */
+  /** Test security access plugin filtering on query results. */
   @Test
   public void testSecurityAccessPluginFilteringOnQuery() throws Exception {
     String testData = getFileContent(JSON_RECORD_RESOURCE_PATH + "/SimpleGeoJsonRecord");
@@ -321,16 +286,14 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test security audit plugin logging on updates.
-   */
+  /** Test security audit plugin logging on updates. */
   @Test
   public void testSecurityAuditPluginOnUpdate() throws Exception {
     Configuration config =
         configAdmin.getConfiguration(
             "org.codice.ddf.catalog.plugin.security.audit.SecurityAuditPlugin", null);
     Dictionary<String, Object> properties = new Hashtable<>();
-    properties.put("auditAttributes", new String[]{"description"});
+    properties.put("auditAttributes", new String[] {"description"});
     config.update(properties);
 
     await().atMost(10, SECONDS).until(() -> config.getProperties() != null);
@@ -343,8 +306,10 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
       await("Security audit log updated")
           .atMost(2, TimeUnit.MINUTES)
           .pollDelay(2, SECONDS)
-          .until(() -> getFileContent(securityLog).contains("description") ||
-                       getFileContent(securityLog).contains("was updated"));
+          .until(
+              () ->
+                  getFileContent(securityLog).contains("description")
+                      || getFileContent(securityLog).contains("was updated"));
     }
 
     delete(id);
@@ -352,9 +317,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
   // ==================== Validation Plugin Integration Tests (3 tests) ====================
 
-  /**
-   * Test metacard validation plugin integration on create.
-   */
+  /** Test metacard validation plugin integration on create. */
   @Test
   public void testValidationPluginOnCreate() throws Exception {
     // Enable validation
@@ -374,9 +337,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test validation plugin enforcement modes.
-   */
+  /** Test validation plugin enforcement modes. */
   @Test
   public void testValidationPluginEnforcementModes() throws Exception {
     // Enable validation plugin
@@ -389,7 +350,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
 
     // Test warning mode (should allow ingest)
     Dictionary<String, Object> warnProps = new Hashtable<>();
-    warnProps.put("attributeMap", new String[]{});
+    warnProps.put("attributeMap", new String[] {});
     config.update(warnProps);
 
     await().atMost(10, SECONDS).until(() -> config.getProperties() != null);
@@ -402,9 +363,7 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     delete(id);
   }
 
-  /**
-   * Test validation plugin with invalid metadata.
-   */
+  /** Test validation plugin with invalid metadata. */
   @Test
   public void testValidationPluginWithInvalidMetadata() throws Exception {
     // Enable validation
@@ -431,25 +390,22 @@ public class TestPluginChainIntegration extends AbstractIntegrationTest {
     await("Waiting for security handlers")
         .atMost(5, TimeUnit.MINUTES)
         .pollDelay(1, SECONDS)
-        .until(() -> {
-          try {
-            given().get(url).then().statusCode(not(equalTo(503)));
-            return true;
-          } catch (AssertionError e) {
-            return false;
-          }
-        });
+        .until(
+            () -> {
+              try {
+                given().get(url).then().statusCode(not(equalTo(503)));
+                return true;
+              } catch (AssertionError e) {
+                return false;
+              }
+            });
   }
 
   private String getResourceAsString(String resourcePath) throws IOException {
-    return IOUtils.toString(
-        getFileContentAsStream(resourcePath),
-        Charset.forName("UTF-8"));
+    return IOUtils.toString(getFileContentAsStream(resourcePath), Charset.forName("UTF-8"));
   }
 
   private String getFileContent(File file) throws IOException {
-    return IOUtils.toString(
-        new FileInputStream(file),
-        Charset.forName("UTF-8"));
+    return IOUtils.toString(new FileInputStream(file), Charset.forName("UTF-8"));
   }
 }

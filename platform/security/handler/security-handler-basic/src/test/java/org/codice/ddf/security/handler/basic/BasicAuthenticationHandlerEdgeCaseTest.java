@@ -17,8 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -92,7 +90,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testValidBasicAuthHeader() {
-    String credentials = Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -103,7 +102,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testBasicAuthHeaderWithExtraSpaces() {
-    String credentials = Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("  Basic   " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -114,7 +114,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testBasicAuthHeaderCaseInsensitive() {
-    String credentials = Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -125,7 +126,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testBasicAuthHeaderMixedCase() {
-    String credentials = Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("user:pass".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("BaSiC " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -176,7 +178,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testValidBase64ButNoColon() {
-    String credentials = Base64.getEncoder().encodeToString("userpassword".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("userpassword".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -187,7 +190,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testEmptyUsername() {
-    String credentials = Base64.getEncoder().encodeToString(":password".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString(":password".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -198,7 +202,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testEmptyPassword() {
-    String credentials = Base64.getEncoder().encodeToString("username:".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("username:".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -209,7 +214,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testUsernameWithColon() {
-    String credentials = Base64.getEncoder().encodeToString("user:name:password".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("user:name:password".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -257,7 +263,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testSpecialCharactersInPassword() {
-    String credentials = Base64.getEncoder().encodeToString("user:p@$$w0rd!#%".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("user:p@$$w0rd!#%".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -268,7 +275,9 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testUnicodeCharactersInCredentials() {
-    String credentials = Base64.getEncoder().encodeToString("user\u00E9:p\u00E4ssw\u00F6rd".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder()
+            .encodeToString("user\u00E9:p\u00E4ssw\u00F6rd".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -281,7 +290,9 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
   public void testVeryLongCredentials() {
     String longUsername = "user".repeat(100);
     String longPassword = "pass".repeat(100);
-    String credentials = Base64.getEncoder().encodeToString((longUsername + ":" + longPassword).getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder()
+            .encodeToString((longUsername + ":" + longPassword).getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -299,7 +310,8 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testMultipleColonsInCredentials() {
-    String credentials = Base64.getEncoder().encodeToString("user:pass:word:extra".getBytes(StandardCharsets.UTF_8));
+    String credentials =
+        Base64.getEncoder().encodeToString("user:pass:word:extra".getBytes(StandardCharsets.UTF_8));
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic " + credentials);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);

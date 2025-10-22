@@ -35,7 +35,6 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
 import org.codice.ddf.security.handler.AuthenticationTokenFactory;
-import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.junit.Before;
 import org.junit.Test;

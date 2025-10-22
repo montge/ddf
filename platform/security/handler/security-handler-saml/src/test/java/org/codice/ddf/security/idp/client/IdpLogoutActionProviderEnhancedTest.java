@@ -29,7 +29,6 @@ import ddf.action.Action;
 import ddf.security.SecurityConstants;
 import ddf.security.SubjectOperations;
 import ddf.security.encryption.EncryptionService;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.shiro.subject.Subject;
@@ -58,10 +57,12 @@ public class IdpLogoutActionProviderEnhancedTest {
     idpLogoutActionProvider.setEncryptionService(encryptionService);
     idpLogoutActionProvider.setSubjectOperations(subjectOperations);
 
-    when(encryptionService.encrypt(anyString())).thenAnswer(invocation -> {
-      String arg = invocation.getArgument(0);
-      return "encrypted_" + arg;
-    });
+    when(encryptionService.encrypt(anyString()))
+        .thenAnswer(
+            invocation -> {
+              String arg = invocation.getArgument(0);
+              return "encrypted_" + arg;
+            });
 
     when(subjectOperations.getName(any(Subject.class), anyString(), anyBoolean()))
         .thenReturn("testUser");
@@ -150,8 +151,7 @@ public class IdpLogoutActionProviderEnhancedTest {
 
   @Test
   public void testGetActionWithNonSamlAuthType() {
-    when(subjectOperations.getType(any(Subject.class)))
-        .thenReturn("http://some.other.type");
+    when(subjectOperations.getType(any(Subject.class))).thenReturn("http://some.other.type");
 
     Map<String, Object> subjectMap = new HashMap<>();
     subjectMap.put(SecurityConstants.SECURITY_SUBJECT, subject);
@@ -235,8 +235,7 @@ public class IdpLogoutActionProviderEnhancedTest {
   @Test
   public void testSetSubjectOperations() {
     SubjectOperations newOps = mock(SubjectOperations.class);
-    when(newOps.getName(any(Subject.class), anyString(), anyBoolean()))
-        .thenReturn("newUser");
+    when(newOps.getName(any(Subject.class), anyString(), anyBoolean())).thenReturn("newUser");
     when(newOps.getType(any(Subject.class)))
         .thenReturn("http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0");
 
@@ -257,9 +256,7 @@ public class IdpLogoutActionProviderEnhancedTest {
     Action action = idpLogoutActionProvider.getAction(subjectMap);
 
     assertThat(action, is(notNullValue()));
-    assertThat(
-        action.getDescription(),
-        containsString("Logging out of the Identity Provider"));
+    assertThat(action.getDescription(), containsString("Logging out of the Identity Provider"));
   }
 
   @Test
@@ -312,8 +309,7 @@ public class IdpLogoutActionProviderEnhancedTest {
 
   @Test
   public void testGetActionWithEmptyUsername() {
-    when(subjectOperations.getName(any(Subject.class), anyString(), anyBoolean()))
-        .thenReturn("");
+    when(subjectOperations.getName(any(Subject.class), anyString(), anyBoolean())).thenReturn("");
 
     Map<String, Object> subjectMap = new HashMap<>();
     subjectMap.put(SecurityConstants.SECURITY_SUBJECT, subject);

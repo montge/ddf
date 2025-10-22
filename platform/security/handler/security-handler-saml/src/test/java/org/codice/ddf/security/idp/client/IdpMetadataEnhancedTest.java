@@ -49,16 +49,13 @@ public class IdpMetadataEnhancedTest {
 
     // Create metadata with cache duration
     metadataWithCacheDuration =
-        metadata.replaceFirst(
-            "<EntityDescriptor",
-            "<EntityDescriptor cacheDuration=\"PT30M\"");
+        metadata.replaceFirst("<EntityDescriptor", "<EntityDescriptor cacheDuration=\"PT30M\"");
 
     // Create metadata with validUntil
     DateTime futureTime = DateTime.now().plusHours(2);
     metadataWithValidUntil =
         metadata.replaceFirst(
-            "<EntityDescriptor",
-            "<EntityDescriptor validUntil=\"" + futureTime + "\"");
+            "<EntityDescriptor", "<EntityDescriptor validUntil=\"" + futureTime + "\"");
 
     // Create metadata with both
     metadataWithBothTimestamps =
@@ -149,8 +146,7 @@ public class IdpMetadataEnhancedTest {
     String binding = idpMetadata.getSingleSignOnBinding();
 
     assertThat(binding, is(notNullValue()));
-    assertThat(
-        binding, containsString("urn:oasis:names:tc:SAML:2.0:bindings:HTTP"));
+    assertThat(binding, containsString("urn:oasis:names:tc:SAML:2.0:bindings:HTTP"));
   }
 
   @Test
@@ -244,8 +240,7 @@ public class IdpMetadataEnhancedTest {
     DateTime pastTime = DateTime.now().minusHours(2);
     String expiredMetadata =
         metadata.replaceFirst(
-            "<EntityDescriptor",
-            "<EntityDescriptor validUntil=\"" + pastTime + "\"");
+            "<EntityDescriptor", "<EntityDescriptor validUntil=\"" + pastTime + "\"");
 
     idpMetadata.setMetadata(expiredMetadata);
     idpMetadata.getEntityDescriptor(); // Populate cache
