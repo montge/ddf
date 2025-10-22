@@ -26,7 +26,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
@@ -123,7 +123,7 @@ public class ContentProducerDataAccessObjectTest {
     contentProducerDataAccessObject.createContentItem(
         mockFileSystemPersistenceProvider, mockEndpoint, null, ENTRY_CREATE, "", headers);
 
-    verifyZeroInteractions(headers, mockCatalogFramework, mockComponent);
+    verifyNoInteractions(headers, mockCatalogFramework, mockComponent);
   }
 
   @Test
@@ -142,7 +142,7 @@ public class ContentProducerDataAccessObjectTest {
     contentProducerDataAccessObject.createContentItem(
         mockFileSystemPersistenceProvider, mockEndpoint, null, ENTRY_MODIFY, "", headers);
 
-    verifyZeroInteractions(headers, mockCatalogFramework, mockComponent);
+    verifyNoInteractions(headers, mockCatalogFramework, mockComponent);
   }
 
   @Test

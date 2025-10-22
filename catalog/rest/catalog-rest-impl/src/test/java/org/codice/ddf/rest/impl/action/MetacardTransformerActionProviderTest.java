@@ -18,7 +18,7 @@ import static org.codice.ddf.rest.api.CatalogService.SOURCES_PATH;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import ddf.action.Action;

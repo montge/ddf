@@ -19,7 +19,7 @@ import static org.hamcrest.core.IsNot.not;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
@@ -107,7 +107,7 @@ public class MetacardIngestNetworkPluginTest {
   public void testClientInfoMapNull() throws Exception {
     ThreadContext.put(CLIENT_INFO_KEY, null);
     CreateRequest createRequest = plugin.processPreCreate(mockCreateRequest);
-    verifyZeroInteractions(mockMetacardServices, mockMetacardCondition);
+    verifyNoInteractions(mockMetacardServices, mockMetacardCondition);
     assertThat(createRequest, is(mockCreateRequest));
   }
 
@@ -115,7 +115,7 @@ public class MetacardIngestNetworkPluginTest {
   public void testClientInfoMapNotMap() throws Exception {
     ThreadContext.put(CLIENT_INFO_KEY, new Object());
     CreateRequest createRequest = plugin.processPreCreate(mockCreateRequest);
-    verifyZeroInteractions(mockMetacardServices, mockMetacardCondition);
+    verifyNoInteractions(mockMetacardServices, mockMetacardCondition);
     assertThat(createRequest, is(mockCreateRequest));
   }
 
@@ -138,7 +138,7 @@ public class MetacardIngestNetworkPluginTest {
     ThreadContext.put(CLIENT_INFO_KEY, INFO_MAP);
     when(mockMetacardCondition.applies(INFO_MAP)).thenReturn(false);
     CreateRequest createRequest = plugin.processPreCreate(mockCreateRequest);
-    verifyZeroInteractions(mockMetacardServices);
+    verifyNoInteractions(mockMetacardServices);
     assertThat(createRequest, is(mockCreateRequest));
   }
 
@@ -203,7 +203,7 @@ public class MetacardIngestNetworkPluginTest {
     assertThat(
         plugin.processPostResource(resourceResponse, mock(Metacard.class)), is(resourceResponse));
 
-    verifyZeroInteractions(
+    verifyNoInteractions(
         mockMetacardCondition,
         mockMetacardServices,
         updateRequest,

@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -67,7 +67,7 @@ public class MetacardServicesTest {
         metacardServices.setAttributesIfAbsent(metacards, attributeMap, mockAttributeFactory);
 
     assertThat(newMetacards, hasSize(0));
-    verifyZeroInteractions(mockMetacardTypes, mockAttributeFactory);
+    verifyNoInteractions(mockMetacardTypes, mockAttributeFactory);
   }
 
   @Test
@@ -84,7 +84,7 @@ public class MetacardServicesTest {
         metacardServices.setAttributesIfAbsent(metacards, attributeMap, mockAttributeFactory);
 
     assertThat(newMetacards, hasSize(1));
-    verifyZeroInteractions(mockMetacardTypes, mockAttributeFactory);
+    verifyNoInteractions(mockMetacardTypes, mockAttributeFactory);
 
     assertThatMetacardHasExpectedTitleAndDescription(newMetacards.get(0));
   }

@@ -19,8 +19,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.osgi.framework.Constants.SERVICE_PID;
 
@@ -126,7 +126,7 @@ public class DelegatingPersistenceManagerTest {
   public void testStoreNullServices() throws IOException {
     when(mockTracker.getServices()).thenReturn(null);
     delegatingPersistenceManager.store(TEST_PID, new Hashtable());
-    verifyZeroInteractions(plugin1, plugin2);
+    verifyNoInteractions(plugin1, plugin2);
   }
 
   @Test
@@ -167,12 +167,12 @@ public class DelegatingPersistenceManagerTest {
   @Test
   public void testModifiedServiceNoOp() {
     pluginTrackerCustomizer.modifiedService(null, null);
-    verifyZeroInteractions(mockManager);
+    verifyNoInteractions(mockManager);
   }
 
   @Test
   public void testRemovedServiceNoOp() {
     pluginTrackerCustomizer.removedService(null, null);
-    verifyZeroInteractions(mockManager);
+    verifyNoInteractions(mockManager);
   }
 }

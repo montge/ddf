@@ -23,7 +23,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
@@ -141,7 +141,7 @@ public class HistorianTest {
     historian.setHistoryEnabled(false);
     historian.version(mock(UpdateResponse.class));
 
-    verifyZeroInteractions(catalogProvider);
+    verifyNoInteractions(catalogProvider);
   }
 
   @Test
@@ -162,7 +162,7 @@ public class HistorianTest {
     UpdateResponse updateResponse = createUpdateResponse(properties);
 
     historian.version(updateResponse);
-    verifyZeroInteractions(catalogProvider);
+    verifyNoInteractions(catalogProvider);
   }
 
   @Test
@@ -190,7 +190,7 @@ public class HistorianTest {
         mock(UpdateStorageResponse.class),
         mock(UpdateResponse.class));
 
-    verifyZeroInteractions(catalogProvider);
+    verifyNoInteractions(catalogProvider);
   }
 
   @Test
@@ -239,7 +239,7 @@ public class HistorianTest {
 
     historian.version(
         mock(UpdateStorageRequest.class), updateStorageResponse, mock(UpdateResponse.class));
-    verifyZeroInteractions(catalogProvider);
+    verifyNoInteractions(catalogProvider);
   }
 
   @Test
@@ -289,7 +289,7 @@ public class HistorianTest {
 
     historian.version(
         mock(UpdateStorageRequest.class), storageResponse, mock(UpdateResponse.class));
-    verifyZeroInteractions(catalogProvider);
+    verifyNoInteractions(catalogProvider);
   }
 
   @Test
@@ -319,7 +319,7 @@ public class HistorianTest {
     historian.setHistoryEnabled(false);
     historian.version(mock(DeleteResponse.class));
 
-    verifyZeroInteractions(catalogProvider);
+    verifyNoInteractions(catalogProvider);
   }
 
   @Test
@@ -351,7 +351,7 @@ public class HistorianTest {
     when(deleteResponse.getProperties()).thenReturn(properties);
 
     historian.version(deleteResponse);
-    verifyZeroInteractions(catalogProvider);
+    verifyNoInteractions(catalogProvider);
   }
 
   @Test

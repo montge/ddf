@@ -32,7 +32,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -840,11 +840,11 @@ public class AdminConsoleServiceTest {
     when(mockGuestClaimsHandlerExt.getProfileConfigs()).thenReturn(configs);
 
     assertFalse(configAdmin.updateGuestClaimsProfile(UI_CONFIG_PID, configTable));
-    verifyZeroInteractions(mockGuestClaimsHandlerExt);
+    verifyNoInteractions(mockGuestClaimsHandlerExt);
 
     configTable.put(PROFILE_KEY, 32);
     assertFalse(configAdmin.updateGuestClaimsProfile(UI_CONFIG_PID, configTable));
-    verifyZeroInteractions(mockGuestClaimsHandlerExt);
+    verifyNoInteractions(mockGuestClaimsHandlerExt);
 
     //        when(configAdmin.getProperties(GUEST_CLAIMS_CONFIG_PID)).thenReturn(guestClaims);
     doReturn(guestClaims).when(configAdmin).getProperties(GUEST_CLAIMS_CONFIG_PID);

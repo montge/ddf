@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -157,7 +157,7 @@ public class PointOfContactUpdatePluginTest {
         pointOfContactUpdatePlugin.processPostResource(resourceResponse, mock(Metacard.class)),
         is(resourceResponse));
 
-    verifyZeroInteractions(
+    verifyNoInteractions(
         createRequest,
         deleteRequest,
         queryRequest,

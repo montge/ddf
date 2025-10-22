@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ddf.security.Subject;
@@ -136,7 +136,7 @@ public class LoginFilterTest {
 
     loginFilter.doFilter(requestMock, responseMock, FAIL_FILTER_CHAIN);
 
-    verifyZeroInteractions(securityManagerMock);
+    verifyNoInteractions(securityManagerMock);
   }
 
   @Test

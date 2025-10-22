@@ -16,8 +16,8 @@ package org.codice.felix.cm.file;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -53,7 +53,7 @@ public class WrappedPersistenceManagerTest {
     PersistenceManager mockSomeOtherPm = mock(PersistenceManager.class);
     persistenceManager = new WrappedPersistenceManager(mockSomeOtherPm);
     persistenceManager.close();
-    verifyZeroInteractions(mockSomeOtherPm);
+    verifyNoInteractions(mockSomeOtherPm);
   }
 
   @Test

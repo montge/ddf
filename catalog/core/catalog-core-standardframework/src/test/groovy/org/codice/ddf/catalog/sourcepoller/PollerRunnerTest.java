@@ -23,7 +23,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
@@ -312,7 +312,7 @@ public class PollerRunnerTest {
             any(Runnable.class), eq(0L), eq(pollIntervalMinutes), eq(TimeUnit.MINUTES));
 
     // then:
-    verifyZeroInteractions(mockScheduledFuture);
+    verifyNoInteractions(mockScheduledFuture);
 
     // and: 'the exceptions thrown by pollItems are caught'
     // noExceptionThrown()

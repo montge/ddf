@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ddf.security.audit.SecurityLogger;
@@ -133,7 +133,7 @@ public class ConfigurationUpdaterTest {
     // Not tracking and won't track, so filesystem should not have changed
     assertThat(fileB.exists(), is(true));
     // No updating files on disk, so we shouldn't have called methods on the strategy
-    verifyZeroInteractions(mockStrategy);
+    verifyNoInteractions(mockStrategy);
   }
 
   @Test
@@ -148,7 +148,7 @@ public class ConfigurationUpdaterTest {
     assertThat(pidFileMap.get(PID_001).getFelixFile(), is(fileB));
     assertThat(pidFileMap.get(PID_002).getFelixFile(), is(fileA));
 
-    verifyZeroInteractions(mockStrategy);
+    verifyNoInteractions(mockStrategy);
   }
 
   @Test
@@ -254,7 +254,7 @@ public class ConfigurationUpdaterTest {
     installer.initialize(configs);
     installer.handleStore(mockContext);
 
-    verifyZeroInteractions(mockStrategy);
+    verifyNoInteractions(mockStrategy);
   }
 
   @Test

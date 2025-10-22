@@ -23,7 +23,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -168,7 +168,7 @@ public class SecurityTest {
 
     assertThat(result, is("Success!"));
     verify(security).auditSystemSubjectElevation();
-    verifyZeroInteractions(shiroSubject);
+    verifyNoInteractions(shiroSubject);
   }
 
   @Test(expected = SecurityServiceException.class)
@@ -204,7 +204,7 @@ public class SecurityTest {
 
     assertThat(securityExceptionThrown, is(true));
     verify(security).auditInsufficientPermissions();
-    verifyZeroInteractions(shiroSubject);
+    verifyNoInteractions(shiroSubject);
   }
 
   @Test
