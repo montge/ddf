@@ -161,7 +161,7 @@
         <commons-compress.version>1.21</commons-compress.version>
         <commons.fileupload.version>1.5</commons.fileupload.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
-        <commons-codec.version>1.15</commons-codec.version>
+        <commons-codec.version>1.19.0</commons-codec.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <commons-configuration.version>1.10</commons-configuration.version>
@@ -169,14 +169,14 @@
         <commons-csv.version>1.4</commons-csv.version>
         <commons-digester.version>1.8.1</commons-digester.version>
         <commons-exec.version>1.3</commons-exec.version>
-        <commons-io.version>2.11.0</commons-io.version>
+        <commons-io.version>2.18.0</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-logging.version>1.2</commons-logging.version>
         <commons-math3.version>3.6.1</commons-math3.version>
         <commons-net.version>3.5</commons-net.version>
         <commons-pool.version>1.6</commons-pool.version>
-        <commons-text.version>1.10.0</commons-text.version>
+        <commons-text.version>1.14.0</commons-text.version>
         <commons-validator.version>1.6</commons-validator.version>
         <components-font-awesome.version>4.7.0</components-font-awesome.version>
         <countryconverter.version>0.1.8</countryconverter.version>
@@ -203,7 +203,7 @@
         <httpmime.version>${httpclient.version}</httpmime.version>
         <jai-imageio-core.version>1.4.0</jai-imageio-core.version>
         <JavaAPIforKml.version>2.2.1_CODICE_1</JavaAPIforKml.version>
-        <jackson.version>2.15.4</jackson.version>
+        <jackson.version>2.17.3</jackson.version>
         <jakarta.xml.bind.version>2.3.2</jakarta.xml.bind.version>
         <jakarta.activation.version>1.2.2</jakarta.activation.version>
         <jakarta.mail.version>1.6.6</jakarta.mail.version>
@@ -222,7 +222,7 @@
         <jcodec.version>0.2.0_1</jcodec.version>
         <jdom.bundle.version>1.1_4</jdom.bundle.version>
         <jdom2.bundle.version>2.0.6.1_1</jdom2.bundle.version>
-        <jetty.version>9.4.46.v20220331</jetty.version>
+        <jetty.version>9.4.58.v20250814</jetty.version>
         <jgroups.version>3.6.13.Final</jgroups.version>
         <joda-convert.version>1.7</joda-convert.version>
         <dev.failsafe.version>3.2.4</dev.failsafe.version>
