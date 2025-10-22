@@ -15,7 +15,6 @@ package org.codice.ddf.endpoints.rest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -56,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Comprehensive security test harness for Apache Commons FileUpload CVE-2014-0050.
+ * Comprehensive security test harness for Apache Commons FileUpload vulnerabilities.
  *
  * <p><b>CVE-2014-0050: Denial of Service via Malicious Content-Type Header</b>
  *
@@ -66,6 +65,18 @@ import org.slf4j.LoggerFactory;
  * remote attackers to cause a denial of service (infinite loop and CPU consumption) via a crafted
  * Content-Type header that bypasses a loop's intended exit conditions.
  *
+ * <p><b>Fixed Versions:</b> Apache Commons FileUpload &gt;= 1.3.1
+ *
+ * <p><b>CVE-2023-24998: Denial of Service via Unlimited Request Parts</b>
+ *
+ * <p><b>CVSS Score:</b> 7.5 (HIGH) - Network exploitable, no authentication required
+ *
+ * <p><b>Description:</b> Apache Commons FileUpload before 1.5 does not limit the number of request
+ * parts to be processed, resulting in the possibility of an attacker triggering a DoS with a
+ * malicious upload or series of uploads.
+ *
+ * <p><b>Fixed Versions:</b> Apache Commons FileUpload &gt;= 1.5
+ *
  * <p><b>Attack Vector:</b> An attacker can craft a malicious multipart/form-data request with:
  *
  * <ul>
@@ -73,6 +84,7 @@ import org.slf4j.LoggerFactory;
  *   <li>Boundary values without proper termination sequences
  *   <li>Malformed Content-Type headers with special characters
  *   <li>Extremely long boundary strings that exhaust memory
+ *   <li>Unlimited number of request parts causing resource exhaustion (CVE-2023-24998)
  * </ul>
  *
  * <p><b>Impact:</b>
@@ -84,9 +96,9 @@ import org.slf4j.LoggerFactory;
  *   <li>Application server crash requiring manual restart
  * </ul>
  *
- * <p><b>Affected Versions:</b> Apache Commons FileUpload &lt; 1.3.1
+ * <p><b>Affected Versions:</b> Apache Commons FileUpload &lt; 1.5
  *
- * <p><b>Fixed Versions:</b> Apache Commons FileUpload &gt;= 1.3.1
+ * <p><b>Required Version:</b> Apache Commons FileUpload &gt;= 1.5
  *
  * <p><b>DDF Impact:</b> DDF's REST endpoints accept multipart file uploads for metadata and content
  * ingestion. Without proper protection, malicious uploads can take down the entire catalog service.
@@ -95,6 +107,7 @@ import org.slf4j.LoggerFactory;
  *
  * <ul>
  *   <li>https://nvd.nist.gov/vuln/detail/CVE-2014-0050
+ *   <li>https://nvd.nist.gov/vuln/detail/CVE-2023-24998
  *   <li>https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0050
  *   <li>https://issues.apache.org/jira/browse/FILEUPLOAD-197
  * </ul>
@@ -102,7 +115,7 @@ import org.slf4j.LoggerFactory;
  * <p><b>Test Coverage Strategy:</b>
  *
  * <ul>
- *   <li>Version verification - ensure FileUpload &gt;= 1.3.1
+ *   <li>Version verification - ensure FileUpload &gt;= 1.5
  *   <li>Boundary attack scenarios - test malicious boundary values
  *   <li>Nested boundary attacks - test deeply nested multipart structures
  *   <li>Content-Type injection - test header manipulation attempts
@@ -114,6 +127,7 @@ import org.slf4j.LoggerFactory;
  * <p><b>Target Coverage:</b> 80%+ of multipart upload code paths
  *
  * @see <a href="https://nvd.nist.gov/vuln/detail/CVE-2014-0050">CVE-2014-0050</a>
+ * @see <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-24998">CVE-2023-24998</a>
  * @since 2.29.0
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -199,14 +213,14 @@ public class CommonsFileUploadSecurityTest {
   /**
    * Test 1: Version Verification
    *
-   * <p>Verifies that Apache Commons FileUpload is version 1.3.1 or higher, which includes the fix
-   * for CVE-2014-0050.
+   * <p>Verifies that Apache Commons FileUpload is version 1.5 or higher, which includes the fix for
+   * CVE-2014-0050 and CVE-2023-24998.
    *
-   * <p><b>Expected Result:</b> Version >= 1.3.1
+   * <p><b>Expected Result:</b> Version >= 1.5
    */
   @Test
   public void testCommonsFileUploadVersion() {
-    LOGGER.info("TEST 1: Verifying Commons FileUpload version >= 1.3.1");
+    LOGGER.info("TEST 1: Verifying Commons FileUpload version >= 1.5");
 
     // Get the version from the FileUpload class package
     Package fileUploadPackage = FileUpload.class.getPackage();
@@ -216,35 +230,26 @@ public class CommonsFileUploadSecurityTest {
 
     assertThat("FileUpload package should have version information", version, is(notNullValue()));
 
-    // Parse version (format: X.Y.Z)
+    // Parse version (format: X.Y or X.Y.Z)
     String[] versionParts = version.split("\\.");
     int majorVersion = Integer.parseInt(versionParts[0]);
     int minorVersion = Integer.parseInt(versionParts[1]);
-    int patchVersion = Integer.parseInt(versionParts[2]);
+    int patchVersion = versionParts.length > 2 ? Integer.parseInt(versionParts[2]) : 0;
 
-    // Must be >= 1.3.1
+    // Must be >= 1.5 to mitigate CVE-2023-24998
     boolean isSecureVersion = false;
     if (majorVersion > 1) {
       isSecureVersion = true;
-    } else if (majorVersion == 1 && minorVersion > 3) {
-      isSecureVersion = true;
-    } else if (majorVersion == 1 && minorVersion == 3 && patchVersion >= 1) {
+    } else if (majorVersion == 1 && minorVersion >= 5) {
       isSecureVersion = true;
     }
 
     assertThat(
         String.format(
-            "Commons FileUpload version %s must be >= 1.3.1 to mitigate CVE-2014-0050", version),
+            "Commons FileUpload version %s must be >= 1.5 to mitigate CVE-2014-0050 and CVE-2023-24998",
+            version),
         isSecureVersion,
         is(true));
-
-    // Additional verification: version should be at least 1.3.3 per DDF's pom.xml
-    if (majorVersion == 1 && minorVersion == 3) {
-      assertThat(
-          "Patch version should be >= 3 per DDF dependency management",
-          patchVersion,
-          greaterThanOrEqualTo(3));
-    }
 
     LOGGER.info("✓ Version verification PASSED: {}", version);
   }
