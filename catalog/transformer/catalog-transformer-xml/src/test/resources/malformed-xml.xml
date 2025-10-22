@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metacard xmlns="urn:catalog:metacard">
+  <string name="title">
+    <value>Malformed XML Test</value>
+  </string>
+  <string name="description">
+    <value>This element is not closed
+  </string>
+</metacard>

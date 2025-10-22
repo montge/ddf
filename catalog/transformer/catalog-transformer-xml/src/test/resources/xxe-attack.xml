@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE metacard [
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<metacard xmlns="urn:catalog:metacard">
+  <string name="title">
+    <value>&xxe;</value>
+  </string>
+  <string name="description">
+    <value>This is an XXE attack attempt</value>
+  </string>
+</metacard>
