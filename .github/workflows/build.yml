@@ -16,7 +16,19 @@ on:
 
 env:
   # DDF has 455 modules - requires substantial heap
-  MAVEN_OPTS: '-Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+  # Include Java module exports for Groovy/Spock compilation (from .mvn/jvm.config)
+  MAVEN_OPTS: >-
+    -Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
+    --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+    --add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+    --add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
@@ -78,6 +90,7 @@ jobs:
       - name: Build changed modules
         run: |
           mvn $MAVEN_CLI_OPTS \
+            -T 1C \
             -Dgib.enabled=true \
             -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }} \
             clean install
@@ -108,7 +121,7 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule'
     runs-on: ubuntu-latest
-    timeout-minutes: 120  # DDF has 455 modules vs Alliance's ~50
+    timeout-minutes: 150  # Increased for 647+ new tests (was 120)
 
     strategy:
       matrix:
@@ -127,7 +140,7 @@ jobs:
           cache: 'maven'
 
       - name: Build and test
-        run: mvn $MAVEN_CLI_OPTS clean install
+        run: mvn $MAVEN_CLI_OPTS -T 1C clean install
 
       - name: Upload distribution artifacts
         if: matrix.java == '17'

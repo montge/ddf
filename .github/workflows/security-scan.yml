@@ -15,7 +15,19 @@ on:
     - cron: '0 3 * * 0'
 
 env:
-  MAVEN_OPTS: '-Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+  # Include Java module exports for Groovy/Spock compilation (from .mvn/jvm.config)
+  MAVEN_OPTS: >-
+    -Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
+    --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+    --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+    --add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+    --add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
@@ -25,7 +37,7 @@ jobs:
   dependency-check:
     name: OWASP Dependency Check
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120  # Increased for dependency analysis (was 90)
 
     permissions:
       contents: read
@@ -48,8 +60,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: owasp-nvd-${{ github.run_id }}
+          # Cache by date to balance freshness and reuse
+          key: owasp-nvd-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
+            owasp-nvd-${{ runner.os }}-
             owasp-nvd-
 
       - name: Run OWASP Dependency Check
