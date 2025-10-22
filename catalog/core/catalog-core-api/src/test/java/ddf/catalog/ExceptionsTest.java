@@ -16,21 +16,29 @@ package ddf.catalog;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import ddf.catalog.content.StorageException;
 import ddf.catalog.data.MetacardCreationException;
+import ddf.catalog.data.MetacardTypeUnregistrationException;
 import ddf.catalog.event.DeliveryException;
 import ddf.catalog.event.EventException;
 import ddf.catalog.event.InvalidSubscriptionException;
 import ddf.catalog.event.SubscriptionExistsException;
 import ddf.catalog.event.SubscriptionNotFoundException;
 import ddf.catalog.federation.FederationException;
+import ddf.catalog.plugin.OAuthPluginException;
 import ddf.catalog.plugin.PluginExecutionException;
 import ddf.catalog.plugin.StopProcessingException;
+import ddf.catalog.resource.DataUsageLimitExceededException;
 import ddf.catalog.resource.ResourceNotFoundException;
 import ddf.catalog.resource.ResourceNotSupportedException;
 import ddf.catalog.source.IngestException;
+import ddf.catalog.source.InternalIngestException;
 import ddf.catalog.source.SourceUnavailableException;
 import ddf.catalog.source.UnsupportedQueryException;
 import ddf.catalog.transform.CatalogTransformerException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -222,5 +230,93 @@ public class ExceptionsTest {
     uqe = new UnsupportedQueryException(msg, testCause);
     assertEquals(uqe.getMessage(), msg);
     assertEquals(uqe.getCause(), testCause);
+  }
+
+  @Test
+  public void testDataUsageLimitExceededException() {
+    DataUsageLimitExceededException due = new DataUsageLimitExceededException(msg);
+    assertEquals(due.getMessage(), msg);
+    due = new DataUsageLimitExceededException(msg, testCause);
+    assertEquals(due.getMessage(), msg);
+    assertEquals(due.getCause(), testCause);
+  }
+
+  @Test
+  public void testInternalIngestException() {
+    InternalIngestException iie = new InternalIngestException();
+    assertNotNull(iie);
+    iie = new InternalIngestException(msg);
+    assertEquals(iie.getMessage(), msg);
+    iie = new InternalIngestException(testCause);
+    assertEquals(iie.getCause(), testCause);
+    iie = new InternalIngestException(msg, testCause);
+    assertEquals(iie.getMessage(), msg);
+    assertEquals(iie.getCause(), testCause);
+  }
+
+  @Test
+  public void testMetacardTypeUnregistrationException() {
+    MetacardTypeUnregistrationException mtue = new MetacardTypeUnregistrationException();
+    assertNotNull(mtue);
+    mtue = new MetacardTypeUnregistrationException(msg);
+    assertEquals(mtue.getMessage(), msg);
+    mtue = new MetacardTypeUnregistrationException(msg, testCause);
+    assertEquals(mtue.getMessage(), msg);
+    assertEquals(mtue.getCause(), testCause);
+  }
+
+  @Test
+  public void testStorageException() {
+    StorageException se = new StorageException(msg);
+    assertEquals(se.getMessage(), msg);
+    se = new StorageException(testCause);
+    assertEquals(se.getCause(), testCause);
+    se = new StorageException(msg, testCause);
+    assertEquals(se.getMessage(), msg);
+    assertEquals(se.getCause(), testCause);
+  }
+
+  @Test
+  public void testOAuthPluginException() {
+    String sourceId = "testSource";
+    String url = "http://example.com/oauth";
+    String baseUrl = "http://example.com";
+    Map<String, String> parameters = new HashMap<>();
+    parameters.put("key", "value");
+
+    OAuthPluginException ope =
+        new OAuthPluginException(
+            sourceId, url, baseUrl, parameters, OAuthPluginException.ErrorType.NO_AUTH);
+    assertNotNull(ope);
+    assertEquals(sourceId, ope.getSourceId());
+    assertEquals(url, ope.getUrl());
+    assertEquals(baseUrl, ope.getBaseUrl());
+    assertEquals(parameters, ope.getParameters());
+    assertEquals(OAuthPluginException.ErrorType.NO_AUTH, ope.getErrorType());
+    assertEquals(401, ope.getErrorType().getStatusCode());
+
+    ope =
+        new OAuthPluginException(
+            sourceId, url, baseUrl, parameters, OAuthPluginException.ErrorType.AUTH_SOURCE);
+    assertEquals(OAuthPluginException.ErrorType.AUTH_SOURCE, ope.getErrorType());
+    assertEquals(412, ope.getErrorType().getStatusCode());
+  }
+
+  @Test
+  public void testOAuthPluginExceptionWithEmptyParameters() {
+    String sourceId = "testSource";
+    String url = "http://example.com/oauth";
+    String baseUrl = "http://example.com";
+    Map<String, String> emptyParameters = Collections.emptyMap();
+
+    OAuthPluginException ope =
+        new OAuthPluginException(
+            sourceId, url, baseUrl, emptyParameters, OAuthPluginException.ErrorType.NO_AUTH);
+    assertNotNull(ope);
+    assertEquals(sourceId, ope.getSourceId());
+    assertEquals(url, ope.getUrl());
+    assertEquals(baseUrl, ope.getBaseUrl());
+    assertEquals(emptyParameters, ope.getParameters());
+    assertEquals(OAuthPluginException.ErrorType.NO_AUTH, ope.getErrorType());
   }
 }
