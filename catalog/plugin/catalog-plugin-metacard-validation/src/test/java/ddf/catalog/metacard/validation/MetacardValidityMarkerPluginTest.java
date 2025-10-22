@@ -594,4 +594,139 @@ public class MetacardValidityMarkerPluginTest {
 
     return createdMetacards;
   }
+
+  @Test
+  public void testValidationExceptionWithNoErrorsOrWarnings() throws Exception {
+    ValidationException validationException = mock(ValidationException.class);
+    when(validationException.getErrors()).thenReturn(null);
+    when(validationException.getWarnings()).thenReturn(null);
+    MetacardValidator metacardValidator =
+        mock(MetacardValidator.class, withSettings().extraInterfaces(Describable.class));
+    doThrow(validationException).when(metacardValidator).validate(any(Metacard.class));
+    when(((Describable) metacardValidator).getId()).thenReturn(ID);
+
+    metacardValidators.add(metacardValidator);
+    CreateRequest request = getMockCreateRequest();
+    CreateRequest filteredRequest = plugin.process(request);
+
+    // Should still process both metacards since no actual errors/warnings
+    assertThat(filteredRequest.getMetacards(), hasSize(2));
+    // All should be marked valid since no actual validation issues
+    filteredRequest
+        .getMetacards()
+        .forEach(metacard -> assertThat(metacard.getTags(), hasItem(VALID_TAG)));
+  }
+
+  @Test
+  public void testMultipleValidatorsWithMixedResults() throws Exception {
+    MetacardValidator passingValidator = getMockPassingValidator();
+    MetacardValidator failingValidator = getMockFailingValidatorWithErrors();
+
+    metacardValidators.add(passingValidator);
+    metacardValidators.add(failingValidator);
+
+    CreateRequest request = getMockCreateRequest();
+    CreateRequest filteredRequest = plugin.process(request);
+
+    // Both metacards should be processed
+    assertThat(filteredRequest.getMetacards(), hasSize(2));
+    // All should be marked invalid due to failing validator
+    filteredRequest
+        .getMetacards()
+        .forEach(
+            metacard -> {
+              assertThat(metacard.getTags(), hasItem(INVALID_TAG));
+              assertThat(metacard.getAttribute(Validation.VALIDATION_ERRORS), is(not(nullValue())));
+            });
+  }
+
+  @Test
+  public void testEnforcedValidatorWithWarningsOnly() throws Exception {
+    MetacardValidator validator = getMockFailingValidatorWithWarnings();
+    String validatorName = plugin.getValidatorName(validator);
+
+    metacardValidators.add(validator);
+    enforcedMetacardValidators.add(validatorName);
+    plugin.setEnforceErrors(false);
+    plugin.setEnforceWarnings(true);
+
+    CreateRequest request = getMockCreateRequest();
+    CreateRequest filteredRequest = plugin.process(request);
+
+    // All metacards should be filtered out due to enforced warnings
+    assertThat(filteredRequest.getMetacards(), hasSize(0));
+  }
+
+  @Test
+  public void testNullEnforcedValidatorsList() throws Exception {
+    MetacardValidator validator = getMockFailingValidatorWithErrors();
+
+    metacardValidators.add(validator);
+    plugin.setEnforcedMetacardValidators(null);
+
+    CreateRequest request = getMockCreateRequest();
+    CreateRequest filteredRequest = plugin.process(request);
+
+    // Should not filter since no validators are enforced
+    assertThat(filteredRequest.getMetacards(), hasSize(2));
+    filteredRequest
+        .getMetacards()
+        .forEach(metacard -> assertThat(metacard.getTags(), hasItem(INVALID_TAG)));
+  }
+
+  @Test
+  public void testUpdateRequestWithAttributes() throws Exception {
+    metacardValidators.add(getMockPassingValidator());
+
+    List<Map.Entry<Serializable, Metacard>> updates = new ArrayList<>();
+    updates.add(new AbstractMap.SimpleEntry<>(FIRST, metacardWithTitle(FIRST)));
+    updates.add(new AbstractMap.SimpleEntry<>(SECOND, metacardWithTitle(SECOND)));
+    UpdateRequest updateRequest =
+        new UpdateRequestImpl(updates, Metacard.ID, PROPERTIES, DESTINATIONS);
+
+    UpdateRequest filteredRequest = plugin.process(updateRequest);
+
+    assertThat(filteredRequest.getUpdates(), hasSize(2));
+    assertThat(filteredRequest.getAttributeName(), is(Metacard.ID));
+    verifyRequestPropertiesUnchanged(updateRequest, filteredRequest);
+  }
+
+  @Test
+  public void testEmptyMetacardList() throws Exception {
+    metacardValidators.add(getMockPassingValidator());
+
+    CreateRequest request = new CreateRequestImpl(new ArrayList<>(), PROPERTIES, DESTINATIONS);
+    CreateRequest filteredRequest = plugin.process(request);
+
+    assertThat(filteredRequest.getMetacards(), hasSize(0));
+  }
+
+  @Test
+  public void testValidatorWithEmptyErrorsList() throws Exception {
+    ValidationException validationException = mock(ValidationException.class);
+    when(validationException.getErrors()).thenReturn(Collections.emptyList());
+    when(validationException.getWarnings()).thenReturn(Collections.emptyList());
+    MetacardValidator metacardValidator =
+        mock(MetacardValidator.class, withSettings().extraInterfaces(Describable.class));
+    doThrow(validationException).when(metacardValidator).validate(any(Metacard.class));
+    when(((Describable) metacardValidator).getId()).thenReturn(ID);
+
+    metacardValidators.add(metacardValidator);
+    CreateRequest request = getMockCreateRequest();
+    CreateRequest filteredRequest = plugin.process(request);
+
+    assertThat(filteredRequest.getMetacards(), hasSize(2));
+    filteredRequest
+        .getMetacards()
+        .forEach(metacard -> assertThat(metacard.getTags(), hasItem(VALID_TAG)));
+  }
+
+  @Test
+  public void testGettersReturnSetValues() {
+    plugin.setEnforceErrors(false);
+    plugin.setEnforceWarnings(true);
+
+    assertThat(plugin.getEnforceErrors(), is(false));
+    assertThat(plugin.getEnforceWarnings(), is(true));
+  }
 }

@@ -48,7 +48,6 @@ import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.HandlerResultImpl;
 import org.codice.ddf.security.handler.api.HandlerResult;
-import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -112,7 +111,8 @@ public class LoginFilterSecurityExceptionTest {
 
     loginFilter.doFilter(requestMock, responseMock, filterChainMock);
 
-    verify(requestMock, never()).setAttribute(eq(ddf.security.SecurityConstants.SECURITY_SUBJECT), any());
+    verify(requestMock, never())
+        .setAttribute(eq(ddf.security.SecurityConstants.SECURITY_SUBJECT), any());
   }
 
   @Test
@@ -124,7 +124,8 @@ public class LoginFilterSecurityExceptionTest {
 
     loginFilter.doFilter(requestMock, responseMock, filterChainMock);
 
-    verify(requestMock, never()).setAttribute(eq(ddf.security.SecurityConstants.SECURITY_SUBJECT), any());
+    verify(requestMock, never())
+        .setAttribute(eq(ddf.security.SecurityConstants.SECURITY_SUBJECT), any());
   }
 
   @Test
@@ -171,7 +172,8 @@ public class LoginFilterSecurityExceptionTest {
     Subject subject =
         new SubjectImpl(
             principalCollectionMock, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
-    when(principalCollectionMock.byType(SecurityAssertion.class)).thenReturn(Collections.emptyList());
+    when(principalCollectionMock.byType(SecurityAssertion.class))
+        .thenReturn(Collections.emptyList());
     when(securityManagerMock.getSubject(authenticationTokenMock)).thenReturn(subject);
 
     loginFilter.doFilter(requestMock, responseMock, filterChainMock);
@@ -189,7 +191,8 @@ public class LoginFilterSecurityExceptionTest {
     Subject subject =
         new SubjectImpl(
             principalCollectionMock, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
-    when(principalCollectionMock.byType(SecurityAssertion.class)).thenReturn(Collections.emptyList());
+    when(principalCollectionMock.byType(SecurityAssertion.class))
+        .thenReturn(Collections.emptyList());
     when(principalCollectionMock.getPrimaryPrincipal()).thenReturn("testUser");
 
     HandlerResult result =
@@ -199,7 +202,8 @@ public class LoginFilterSecurityExceptionTest {
 
     loginFilter.doFilter(requestMock, responseMock, filterChainMock);
 
-    verify(requestMock, times(1)).setAttribute(eq(ddf.security.SecurityConstants.SECURITY_SUBJECT), eq(subject));
+    verify(requestMock, times(1))
+        .setAttribute(eq(ddf.security.SecurityConstants.SECURITY_SUBJECT), eq(subject));
   }
 
   @Test

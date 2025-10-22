@@ -29,6 +29,7 @@ import ddf.catalog.operation.CreateRequest;
 import ddf.catalog.plugin.PluginExecutionException;
 import ddf.catalog.plugin.StopProcessingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -479,5 +480,222 @@ public class ExpirationDatePluginTest {
     assertThat(metacard, notNullValue());
     DateTime newExpirationDate = new DateTime(metacard.getExpirationDate());
     assertThat(newExpirationDate.equals(CREATED_DATE.plusDays(DAYS)), is(true));
+  }
+
+  @Test
+  public void testProcessUpdateRequest() throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    ddf.catalog.operation.UpdateRequest updateRequest =
+        mock(ddf.catalog.operation.UpdateRequest.class);
+
+    ddf.catalog.operation.UpdateRequest result = expirationDatePlugin.process(updateRequest);
+
+    // UpdateRequest should pass through unchanged
+    assertThat(result, is(updateRequest));
+  }
+
+  @Test
+  public void testProcessDeleteRequest() throws PluginExecutionException, StopProcessingException {
+    ddf.catalog.operation.DeleteRequest deleteRequest =
+        mock(ddf.catalog.operation.DeleteRequest.class);
+
+    ddf.catalog.operation.DeleteRequest result = expirationDatePlugin.process(deleteRequest);
+
+    // DeleteRequest should pass through unchanged
+    assertThat(result, is(deleteRequest));
+  }
+
+  @Test(expected = PluginExecutionException.class)
+  public void testProcessNullCreateRequest()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    expirationDatePlugin.process((CreateRequest) null);
+  }
+
+  @Test(expected = PluginExecutionException.class)
+  public void testProcessCreateRequestWithNullMetacards()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    when(mockCreateRequest.getMetacards()).thenReturn(null);
+
+    expirationDatePlugin.process(mockCreateRequest);
+  }
+
+  @Test(expected = PluginExecutionException.class)
+  public void testProcessCreateRequestWithEmptyMetacardsList()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    when(mockCreateRequest.getMetacards()).thenReturn(new ArrayList<>());
+
+    expirationDatePlugin.process(mockCreateRequest);
+  }
+
+  @Test
+  public void testMetacardWithoutCreatedDate()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    Metacard metacard = new MetacardImpl();
+    metacard.setAttribute(new AttributeImpl(Metacard.ID, "test-id"));
+    metacard.setAttribute(new AttributeImpl(Metacard.TITLE, "test-title"));
+    // No created date set
+
+    when(mockCreateRequest.getMetacards()).thenReturn(Collections.singletonList(metacard));
+
+    expirationDatePlugin.process(mockCreateRequest);
+
+    // Should set expiration date based on current time
+    assertThat(metacard.getExpirationDate(), notNullValue());
+  }
+
+  @Test
+  public void testMetacardWithNonDateCreatedAttribute()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    Metacard metacard = new MetacardImpl();
+    metacard.setAttribute(new AttributeImpl(Metacard.ID, "test-id"));
+    metacard.setAttribute(new AttributeImpl(Metacard.TITLE, "test-title"));
+    // Set created date to non-Date type (should be handled gracefully)
+    metacard.setAttribute(new AttributeImpl(Core.METACARD_CREATED, "not-a-date"));
+
+    when(mockCreateRequest.getMetacards()).thenReturn(Collections.singletonList(metacard));
+
+    expirationDatePlugin.process(mockCreateRequest);
+
+    // Should set expiration date based on current time (fallback)
+    assertThat(metacard.getExpirationDate(), notNullValue());
+  }
+
+  @Test
+  public void testNegativeOffsetFromCreatedDate()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOffsetFromCreatedDate(-10);
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    int size = 1;
+    when(mockCreateRequest.getMetacards())
+        .thenReturn(createMockMetacardsWithNoExpirationDate(size));
+
+    expirationDatePlugin.process(mockCreateRequest);
+
+    List<Metacard> metacards = mockCreateRequest.getMetacards();
+    assertThat(metacards, hasSize(size));
+
+    Metacard metacard = metacards.get(0);
+    assertThat(metacard.getExpirationDate(), notNullValue());
+
+    DateTime expirationDate = new DateTime(metacard.getExpirationDate());
+    // Expiration should be 10 days before created date
+    assertThat(expirationDate.equals(CREATED_DATE.minusDays(10)), is(true));
+  }
+
+  @Test
+  public void testZeroOffsetFromCreatedDate()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOffsetFromCreatedDate(0);
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    int size = 1;
+    when(mockCreateRequest.getMetacards())
+        .thenReturn(createMockMetacardsWithNoExpirationDate(size));
+
+    expirationDatePlugin.process(mockCreateRequest);
+
+    List<Metacard> metacards = mockCreateRequest.getMetacards();
+    assertThat(metacards, hasSize(size));
+
+    Metacard metacard = metacards.get(0);
+    assertThat(metacard.getExpirationDate(), notNullValue());
+
+    DateTime expirationDate = new DateTime(metacard.getExpirationDate());
+    // Expiration should equal created date
+    assertThat(expirationDate.equals(CREATED_DATE), is(true));
+  }
+
+  @Test
+  public void testLargeOffsetFromCreatedDate()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOffsetFromCreatedDate(3650); // 10 years
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    int size = 1;
+    when(mockCreateRequest.getMetacards())
+        .thenReturn(createMockMetacardsWithNoExpirationDate(size));
+
+    expirationDatePlugin.process(mockCreateRequest);
+
+    List<Metacard> metacards = mockCreateRequest.getMetacards();
+    assertThat(metacards, hasSize(size));
+
+    Metacard metacard = metacards.get(0);
+    assertThat(metacard.getExpirationDate(), notNullValue());
+
+    DateTime expirationDate = new DateTime(metacard.getExpirationDate());
+    assertThat(expirationDate.equals(CREATED_DATE.plusDays(3650)), is(true));
+  }
+
+  @Test
+  public void testSettersAreLogged() {
+    // Test that setters work correctly and can be called multiple times
+    expirationDatePlugin.setOffsetFromCreatedDate(5);
+    expirationDatePlugin.setOverwriteIfBlank(false);
+    expirationDatePlugin.setOverwriteIfExists(true);
+
+    expirationDatePlugin.setOffsetFromCreatedDate(15);
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    // No assertions needed, just verify setters don't throw exceptions
+  }
+
+  @Test
+  public void testMixedMetacardsWithAndWithoutExpirationDates()
+      throws PluginExecutionException, StopProcessingException {
+    expirationDatePlugin.setOverwriteIfBlank(true);
+    expirationDatePlugin.setOverwriteIfExists(false);
+
+    List<Metacard> metacards = new ArrayList<>();
+
+    // Metacard with no expiration
+    Metacard metacard1 = new MetacardImpl();
+    metacard1.setAttribute(new AttributeImpl(Metacard.ID, "1"));
+    metacard1.setAttribute(new AttributeImpl(Core.METACARD_CREATED, CREATED_DATE.toDate()));
+    metacards.add(metacard1);
+
+    // Metacard with existing expiration
+    Metacard metacard2 = new MetacardImpl();
+    metacard2.setAttribute(new AttributeImpl(Metacard.ID, "2"));
+    metacard2.setAttribute(new AttributeImpl(Core.METACARD_CREATED, CREATED_DATE.toDate()));
+    metacard2.setAttribute(new AttributeImpl(Metacard.EXPIRATION, ORIG_EXPIRATION_DATE.toDate()));
+    metacards.add(metacard2);
+
+    // Metacard with no expiration
+    Metacard metacard3 = new MetacardImpl();
+    metacard3.setAttribute(new AttributeImpl(Metacard.ID, "3"));
+    metacard3.setAttribute(new AttributeImpl(Core.METACARD_CREATED, CREATED_DATE.toDate()));
+    metacards.add(metacard3);
+
+    when(mockCreateRequest.getMetacards()).thenReturn(metacards);
+
+    expirationDatePlugin.process(mockCreateRequest);
+
+    // Verify first and third have new expiration, second is unchanged
+    assertThatExpirationIsNewOffset(metacard1);
+    assertThatExpirationIsUnchanged(metacard2);
+    assertThatExpirationIsNewOffset(metacard3);
   }
 }

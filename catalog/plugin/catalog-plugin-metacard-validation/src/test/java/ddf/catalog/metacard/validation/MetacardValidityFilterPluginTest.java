@@ -39,6 +39,7 @@ import ddf.security.Subject;
 import ddf.security.permission.KeyValueCollectionPermission;
 import ddf.security.permission.impl.PermissionsImpl;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -354,5 +355,159 @@ public class MetacardValidityFilterPluginTest {
     }
 
     return metacardValidityFilterPlugin.processPostQuery(result, new HashMap<>());
+  }
+
+  @Test
+  public void testProcessPreCreate() throws Exception {
+    Metacard metacard = mock(Metacard.class);
+    PolicyResponse response =
+        metacardValidityFilterPlugin.processPreCreate(metacard, new HashMap<>());
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+    assertThat(response.operationPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testProcessPreUpdate() throws Exception {
+    Metacard metacard = mock(Metacard.class);
+    PolicyResponse response =
+        metacardValidityFilterPlugin.processPreUpdate(metacard, new HashMap<>());
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+    assertThat(response.operationPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testProcessPreDelete() throws Exception {
+    Metacard metacard = mock(Metacard.class);
+    PolicyResponse response =
+        metacardValidityFilterPlugin.processPreDelete(
+            Collections.singletonList(metacard), new HashMap<>());
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+    assertThat(response.operationPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testProcessPostDelete() throws Exception {
+    Metacard metacard = mock(Metacard.class);
+    PolicyResponse response =
+        metacardValidityFilterPlugin.processPostDelete(metacard, new HashMap<>());
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+    assertThat(response.operationPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testProcessPreQuery() throws Exception {
+    Query query = mock(Query.class);
+    PolicyResponse response = metacardValidityFilterPlugin.processPreQuery(query, new HashMap<>());
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+    assertThat(response.operationPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testProcessPreResource() throws Exception {
+    ddf.catalog.operation.ResourceRequest resourceRequest =
+        mock(ddf.catalog.operation.ResourceRequest.class);
+    PolicyResponse response = metacardValidityFilterPlugin.processPreResource(resourceRequest);
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+    assertThat(response.operationPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testProcessPostResource() throws Exception {
+    ddf.catalog.operation.ResourceResponse resourceResponse =
+        mock(ddf.catalog.operation.ResourceResponse.class);
+    Metacard metacard = mock(Metacard.class);
+    PolicyResponse response =
+        metacardValidityFilterPlugin.processPostResource(resourceResponse, metacard);
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+    assertThat(response.operationPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testNullQuery() throws Exception {
+    QueryRequest queryRequest = mock(QueryRequest.class);
+    when(queryRequest.getQuery()).thenReturn(null);
+    when(queryRequest.getProperties()).thenReturn(createSubjectRequestProperties(false));
+
+    QueryRequest returnRequest = metacardValidityFilterPlugin.process(LOCAL_PROVIDER, queryRequest);
+    assertThat(returnRequest.equals(queryRequest), is(true));
+  }
+
+  @Test
+  public void testGettersReturnSetValues() {
+    metacardValidityFilterPlugin.setFilterErrors(false);
+    metacardValidityFilterPlugin.setFilterWarnings(true);
+
+    assertThat(metacardValidityFilterPlugin.getFilterErrors(), is(false));
+    assertThat(metacardValidityFilterPlugin.getFilterWarnings(), is(true));
+  }
+
+  @Test
+  public void testMultipleAttributeMappings() {
+    List<String> mappings = Arrays.asList("attribute1=role1,role2", "attribute2=role3,role4,role5");
+    metacardValidityFilterPlugin.setAttributeMap(mappings);
+
+    Map<String, List<String>> resultMap = metacardValidityFilterPlugin.getAttributeMap();
+    assertThat(resultMap.size(), is(2));
+    assertThat(resultMap.get("attribute1").size(), is(2));
+    assertThat(resultMap.get("attribute2").size(), is(3));
+    assertThat(resultMap.get("attribute1").contains("role1"), is(true));
+    assertThat(resultMap.get("attribute1").contains("role2"), is(true));
+    assertThat(resultMap.get("attribute2").contains("role3"), is(true));
+    assertThat(resultMap.get("attribute2").contains("role4"), is(true));
+    assertThat(resultMap.get("attribute2").contains("role5"), is(true));
+  }
+
+  @Test
+  public void testSetAttributeMapWithMapType() {
+    Map<String, List<String>> testMap = new HashMap<>();
+    testMap.put("testKey", Arrays.asList("value1", "value2"));
+    metacardValidityFilterPlugin.setAttributeMap(testMap);
+
+    assertThat(metacardValidityFilterPlugin.getAttributeMap(), is(testMap));
+  }
+
+  @Test
+  public void testMetacardWithNullValidationErrors() throws Exception {
+    Result result = mock(Result.class);
+    Metacard metacard = mock(Metacard.class);
+    when(metacard.getAttribute(Validation.VALIDATION_ERRORS)).thenReturn(null);
+
+    PolicyResponse response = filterPluginResponseHelper(result, metacard, true, false);
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testMetacardWithNullValidationValues() throws Exception {
+    Result result = mock(Result.class);
+    Metacard metacard = mock(Metacard.class);
+    Attribute errorAttr = mock(Attribute.class);
+    when(errorAttr.getValues()).thenReturn(null);
+    when(metacard.getAttribute(Validation.VALIDATION_ERRORS)).thenReturn(errorAttr);
+
+    PolicyResponse response = filterPluginResponseHelper(result, metacard, true, false);
+    assertThat(response.itemPolicy().isEmpty(), is(true));
+  }
+
+  @Test
+  public void testMetacardWithBothErrorsAndWarnings() throws Exception {
+    Result result = mock(Result.class);
+
+    Attribute errorAttr = mock(Attribute.class);
+    when(errorAttr.getName()).thenReturn(Validation.VALIDATION_ERRORS);
+    when(errorAttr.getValues()).thenReturn(Collections.singletonList("error"));
+
+    Attribute warningAttr = mock(Attribute.class);
+    when(warningAttr.getName()).thenReturn(Validation.VALIDATION_WARNINGS);
+    when(warningAttr.getValues()).thenReturn(Collections.singletonList("warning"));
+
+    Metacard metacard = mock(Metacard.class);
+    when(metacard.getAttribute(Validation.VALIDATION_ERRORS)).thenReturn(errorAttr);
+    when(metacard.getAttribute(Validation.VALIDATION_WARNINGS)).thenReturn(warningAttr);
+
+    metacardValidityFilterPlugin.setFilterErrors(true);
+    metacardValidityFilterPlugin.setFilterWarnings(true);
+
+    PolicyResponse response = filterPluginResponseHelper(result, metacard, true, true);
+    assertThat(response.itemPolicy().isEmpty(), is(false));
   }
 }

@@ -82,7 +82,9 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.doFilter(request, response, filterChain);
 
-    verify(request, times(1)).setAttribute(eq(org.codice.ddf.security.policy.context.ContextPolicy.NO_AUTH_POLICY), eq(true));
+    verify(request, times(1))
+        .setAttribute(
+            eq(org.codice.ddf.security.policy.context.ContextPolicy.NO_AUTH_POLICY), eq(true));
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
@@ -104,7 +106,8 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.doFilter(request, response, filterChain);
 
-    verify(request, times(1)).setAttribute(eq(ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY), any());
+    verify(request, times(1))
+        .setAttribute(eq(ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY), any());
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
@@ -144,7 +147,8 @@ public class WebSSOFilterSessionHandlingTest {
   }
 
   @Test(expected = SessionException.class)
-  public void testSessionFactoryNullWhenSessionNeeded() throws IOException, AuthenticationException {
+  public void testSessionFactoryNullWhenSessionNeeded()
+      throws IOException, AuthenticationException {
     filter.setSessionFactory(null);
 
     when(contextPolicyManager.getSessionAccess()).thenReturn(true);
@@ -191,7 +195,8 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.doFilter(request, response, filterChain);
 
-    verify(request, times(1)).setAttribute(eq(ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY), any());
+    verify(request, times(1))
+        .setAttribute(eq(ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY), any());
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
@@ -229,14 +234,16 @@ public class WebSSOFilterSessionHandlingTest {
 
     HandlerResult handlerResult = mock(HandlerResult.class);
     when(handlerResult.getStatus()).thenReturn(HandlerResult.Status.COMPLETED);
-    when(handlerResult.getToken()).thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
+    when(handlerResult.getToken())
+        .thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
     when(handler.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(handlerResult);
 
     filter.setHandlerList(Collections.singletonList(handler));
 
     filter.doFilter(request, response, filterChain);
 
-    verify(request, times(1)).setAttribute(eq(ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY), any());
+    verify(request, times(1))
+        .setAttribute(eq(ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY), any());
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
@@ -260,7 +267,8 @@ public class WebSSOFilterSessionHandlingTest {
 
     HandlerResult handlerResult = mock(HandlerResult.class);
     when(handlerResult.getStatus()).thenReturn(HandlerResult.Status.COMPLETED);
-    when(handlerResult.getToken()).thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
+    when(handlerResult.getToken())
+        .thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
     when(handler.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(handlerResult);
 
     HandlerResult errorResult = mock(HandlerResult.class);
@@ -286,7 +294,8 @@ public class WebSSOFilterSessionHandlingTest {
 
     HandlerResult completedResult = mock(HandlerResult.class);
     when(completedResult.getStatus()).thenReturn(HandlerResult.Status.COMPLETED);
-    when(completedResult.getToken()).thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
+    when(completedResult.getToken())
+        .thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
 
     when(handler1.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(noActionResult);
     when(handler2.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(completedResult);
@@ -307,7 +316,9 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.doFilter(request, response, filterChain);
 
-    verify(request, times(1)).setAttribute(eq(org.codice.ddf.security.policy.context.ContextPolicy.NO_AUTH_POLICY), eq(null));
+    verify(request, times(1))
+        .setAttribute(
+            eq(org.codice.ddf.security.policy.context.ContextPolicy.NO_AUTH_POLICY), eq(null));
   }
 
   @Test

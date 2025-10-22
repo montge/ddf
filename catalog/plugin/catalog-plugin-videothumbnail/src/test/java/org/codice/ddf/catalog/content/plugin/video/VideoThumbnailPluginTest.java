@@ -253,4 +253,191 @@ public class VideoThumbnailPluginTest {
       return VIDEO_MP4.match(mimeType);
     }
   }
+
+  @Test
+  public void testProcessCreateStorageResponse() throws Exception {
+    Pair<File, Path> videoContent = mockContent(307707);
+    final ContentItem videoMockContentItem =
+        createMockVideoContentItemFromResource(videoContent.getRight());
+
+    when(videoThumbnail.isVideo(withVideoMime())).thenReturn(true);
+    when(videoThumbnail.videoThumbnail(eq(videoContent.getLeft()), withVideoMime()))
+        .thenReturn(Optional.of(GIF));
+
+    final ddf.catalog.content.operation.CreateStorageResponse createStorageResponse =
+        mock(ddf.catalog.content.operation.CreateStorageResponse.class);
+    doReturn(Arrays.asList(videoMockContentItem))
+        .when(createStorageResponse)
+        .getCreatedContentItems();
+
+    final Map<String, Serializable> properties = new HashMap<>();
+    properties.put(Constants.CONTENT_PATHS, tmpContentPaths);
+    doReturn(properties).when(createStorageResponse).getProperties();
+
+    final ddf.catalog.content.operation.CreateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(createStorageResponse);
+
+    final List<ContentItem> processedContentItems = processedResponse.getCreatedContentItems();
+    assertThat(processedContentItems, hasSize(1));
+    verifyThumbnailIsGif(videoMockContentItem, processedContentItems.get(0));
+  }
+
+  @Test
+  public void testProcessNullContentPaths() throws Exception {
+    final ContentItem videoMockContentItem = createMockVideoContentItem();
+
+    when(videoThumbnail.isVideo(withVideoMime())).thenReturn(true);
+
+    final UpdateStorageResponse updateStorageResponse = mock(UpdateStorageResponse.class);
+    doReturn(Arrays.asList(videoMockContentItem))
+        .when(updateStorageResponse)
+        .getUpdatedContentItems();
+
+    final Map<String, Serializable> properties = new HashMap<>();
+    properties.put(Constants.CONTENT_PATHS, new HashMap<String, Map>());
+    doReturn(properties).when(updateStorageResponse).getProperties();
+
+    final UpdateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(updateStorageResponse);
+
+    verifyThumbnailIsNotSet(
+        videoMockContentItem, processedResponse.getUpdatedContentItems().get(0));
+  }
+
+  @Test
+  public void testProcessEmptyContentPaths() throws Exception {
+    final ContentItem videoMockContentItem = createMockVideoContentItem();
+
+    when(videoThumbnail.isVideo(withVideoMime())).thenReturn(true);
+
+    HashMap<String, Map<String, Path>> emptyPaths = new HashMap<>();
+    emptyPaths.put(videoMockContentItem.getId(), new HashMap<>());
+
+    final UpdateStorageResponse updateStorageResponse = mock(UpdateStorageResponse.class);
+    doReturn(Arrays.asList(videoMockContentItem))
+        .when(updateStorageResponse)
+        .getUpdatedContentItems();
+
+    final Map<String, Serializable> properties = new HashMap<>();
+    properties.put(Constants.CONTENT_PATHS, emptyPaths);
+    doReturn(properties).when(updateStorageResponse).getProperties();
+
+    final UpdateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(updateStorageResponse);
+
+    verifyThumbnailIsNotSet(
+        videoMockContentItem, processedResponse.getUpdatedContentItems().get(0));
+  }
+
+  @Test
+  public void testProcessNonVideoContentItem() throws Exception {
+    final ContentItem imageMockContentItem = createMockContentItemOfMimeType(IMAGE_JPEG.toString());
+
+    when(videoThumbnail.isVideo(any(MimeType.class))).thenReturn(false);
+
+    HashMap<String, Map<String, Path>> paths = new HashMap<>();
+    HashMap<String, Path> contentItemPaths = new HashMap<>();
+    contentItemPaths.put(null, mock(Path.class));
+    paths.put(imageMockContentItem.getId(), contentItemPaths);
+
+    final UpdateStorageResponse updateStorageResponse = mock(UpdateStorageResponse.class);
+    doReturn(Arrays.asList(imageMockContentItem))
+        .when(updateStorageResponse)
+        .getUpdatedContentItems();
+
+    final Map<String, Serializable> properties = new HashMap<>();
+    properties.put(Constants.CONTENT_PATHS, paths);
+    doReturn(properties).when(updateStorageResponse).getProperties();
+
+    final UpdateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(updateStorageResponse);
+
+    verifyThumbnailIsNotSet(
+        imageMockContentItem, processedResponse.getUpdatedContentItems().get(0));
+  }
+
+  @Test
+  public void testProcessVideoThumbnailReturnsEmpty() throws Exception {
+    Pair<File, Path> videoContent = mockContent(307707);
+    final ContentItem videoMockContentItem =
+        createMockVideoContentItemFromResource(videoContent.getRight());
+
+    when(videoThumbnail.isVideo(withVideoMime())).thenReturn(true);
+    when(videoThumbnail.videoThumbnail(eq(videoContent.getLeft()), withVideoMime()))
+        .thenReturn(Optional.empty());
+
+    final UpdateStorageResponse updateStorageResponse =
+        createMockUpdateStorageResponse(videoMockContentItem);
+
+    final UpdateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(updateStorageResponse);
+
+    verifyThumbnailIsNotSet(
+        videoMockContentItem, processedResponse.getUpdatedContentItems().get(0));
+  }
+
+  @Test
+  public void testProcessInterruptedException() throws Exception {
+    Pair<File, Path> videoContent = mockContent(307707);
+    final ContentItem videoMockContentItem =
+        createMockVideoContentItemFromResource(videoContent.getRight());
+
+    when(videoThumbnail.isVideo(withVideoMime())).thenReturn(true);
+    when(videoThumbnail.videoThumbnail(eq(videoContent.getLeft()), withVideoMime()))
+        .thenThrow(InterruptedException.class);
+
+    final UpdateStorageResponse updateStorageResponse =
+        createMockUpdateStorageResponse(videoMockContentItem);
+
+    final UpdateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(updateStorageResponse);
+
+    verifyThumbnailIsNotSet(
+        videoMockContentItem, processedResponse.getUpdatedContentItems().get(0));
+  }
+
+  @Test
+  public void testProcessMultipleContentItemsWithMixedTypes() throws Exception {
+    Pair<File, Path> videoContent = mockContent(307707);
+    final ContentItem videoMockContentItem =
+        createMockVideoContentItemFromResource(videoContent.getRight());
+    final ContentItem imageMockContentItem = createMockContentItemOfMimeType(IMAGE_JPEG.toString());
+
+    when(videoThumbnail.isVideo(withVideoMime())).thenReturn(true);
+    when(videoThumbnail.isVideo(argThat(mime -> IMAGE_JPEG.match(mime)))).thenReturn(false);
+    when(videoThumbnail.videoThumbnail(eq(videoContent.getLeft()), withVideoMime()))
+        .thenReturn(Optional.of(PNG));
+
+    final UpdateStorageResponse updateStorageResponse = mock(UpdateStorageResponse.class);
+    doReturn(Arrays.asList(videoMockContentItem, imageMockContentItem))
+        .when(updateStorageResponse)
+        .getUpdatedContentItems();
+
+    final Map<String, Serializable> properties = new HashMap<>();
+    properties.put(Constants.CONTENT_PATHS, tmpContentPaths);
+    doReturn(properties).when(updateStorageResponse).getProperties();
+
+    final UpdateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(updateStorageResponse);
+
+    final List<ContentItem> processedContentItems = processedResponse.getUpdatedContentItems();
+    assertThat(processedContentItems, hasSize(2));
+    verifyThumbnailIsPng(videoMockContentItem, processedContentItems.get(0));
+    verifyThumbnailIsNotSet(imageMockContentItem, processedContentItems.get(1));
+  }
+
+  @Test
+  public void testProcessEmptyContentItemList() throws Exception {
+    final UpdateStorageResponse updateStorageResponse = mock(UpdateStorageResponse.class);
+    doReturn(Collections.emptyList()).when(updateStorageResponse).getUpdatedContentItems();
+
+    final Map<String, Serializable> properties = new HashMap<>();
+    properties.put(Constants.CONTENT_PATHS, tmpContentPaths);
+    doReturn(properties).when(updateStorageResponse).getProperties();
+
+    final UpdateStorageResponse processedResponse =
+        videoThumbnailPlugin.process(updateStorageResponse);
+
+    assertThat(processedResponse.getUpdatedContentItems(), hasSize(0));
+  }
 }

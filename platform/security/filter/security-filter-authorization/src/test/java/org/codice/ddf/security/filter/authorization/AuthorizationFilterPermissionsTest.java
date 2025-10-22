@@ -26,7 +26,6 @@ import ddf.security.permission.CollectionPermission;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.platform.filter.AuthenticationException;
@@ -131,7 +130,8 @@ public class AuthorizationFilterPermissionsTest {
     filter.doFilter(request, response, filterChain);
 
     verify(subject, times(1)).isPermitted(permissions);
-    verify(securityLogger, times(1)).audit(eq("Subject is authorized to view resource {}"), eq("/test/path"));
+    verify(securityLogger, times(1))
+        .audit(eq("Subject is authorized to view resource {}"), eq("/test/path"));
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
@@ -146,7 +146,8 @@ public class AuthorizationFilterPermissionsTest {
     filter.doFilter(request, response, filterChain);
 
     verify(subject, times(1)).isPermitted(permissions);
-    verify(securityLogger, times(1)).audit(eq("Subject not authorized to view resource {}"), eq("/test/path"));
+    verify(securityLogger, times(1))
+        .audit(eq("Subject not authorized to view resource {}"), eq("/test/path"));
     verify(response, times(1)).setStatus(HttpServletResponse.SC_FORBIDDEN);
     verify(response, times(1)).sendError(HttpServletResponse.SC_FORBIDDEN);
     verify(filterChain, never()).doFilter(any(), any());
