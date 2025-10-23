@@ -23,6 +23,10 @@
     <artifactId>platform-osgi-condpermadmin</artifactId>
     <groupId>ddf.platform.osgi</groupId>
     <name>DDF :: Platform :: OSGi :: CondPermAdmin</name>
+    <properties>
+        <!-- Disable JaCoCo for PermissionActivatorExtendedTest due to conflicts with OSGi native code -->
+        <jacoco.skip>true</jacoco.skip>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

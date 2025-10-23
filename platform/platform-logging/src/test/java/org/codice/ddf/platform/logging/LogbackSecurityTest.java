@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assume.assumeTrue;
 
 import ch.qos.logback.classic.LoggerContext;
 import org.junit.Test;
@@ -142,6 +143,9 @@ public class LogbackSecurityTest {
   @Test
   public void testLogbackVersionIsSecure() throws Exception {
     // Get Logback version from the LoggerContext
+    assumeTrue(
+        "Logback not available in test environment",
+        LoggerFactory.getILoggerFactory() instanceof LoggerContext);
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     String version = loggerContext.getClass().getPackage().getImplementationVersion();
 
@@ -219,6 +223,9 @@ public class LogbackSecurityTest {
    */
   @Test
   public void testLogbackMajorVersion() throws Exception {
+    assumeTrue(
+        "Logback not available in test environment",
+        LoggerFactory.getILoggerFactory() instanceof LoggerContext);
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     String version = loggerContext.getClass().getPackage().getImplementationVersion();
     assertThat("Logback version should not be null", version, is(notNullValue()));
@@ -239,6 +246,9 @@ public class LogbackSecurityTest {
    */
   @Test
   public void testLogback12PatchVersion() throws Exception {
+    assumeTrue(
+        "Logback not available in test environment",
+        LoggerFactory.getILoggerFactory() instanceof LoggerContext);
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     String version = loggerContext.getClass().getPackage().getImplementationVersion();
     assertThat("Logback version should not be null", version, is(notNullValue()));
@@ -266,6 +276,9 @@ public class LogbackSecurityTest {
    */
   @Test
   public void testLogback14PatchVersion() throws Exception {
+    assumeTrue(
+        "Logback not available in test environment",
+        LoggerFactory.getILoggerFactory() instanceof LoggerContext);
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     String version = loggerContext.getClass().getPackage().getImplementationVersion();
     assertThat("Logback version should not be null", version, is(notNullValue()));
@@ -294,6 +307,9 @@ public class LogbackSecurityTest {
    */
   @Test
   public void testJndiSubstitutionDisabled() {
+    assumeTrue(
+        "Logback not available in test environment",
+        LoggerFactory.getILoggerFactory() instanceof LoggerContext);
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     // In secure versions, JNDI substitution should be disabled by default

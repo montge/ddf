@@ -330,7 +330,7 @@
 
         <!-- Command line argument properties for the maven-surefire-plugin -->
         <surefire.argline.append />
-        <surefire.argline>${jacoco.argline} ${surefire.argline.append} -Xmx1024m -Djava.awt.headless=true -noverify</surefire.argline>
+        <surefire.argline>${jacoco.argline} ${surefire.argline.append} -Xmx1024m -Djava.awt.headless=true</surefire.argline>
         <failsafe.argline>${jacoco.argline}</failsafe.argline>
 
         <fabric8.docker.plugin.version>0.36.1</fabric8.docker.plugin.version>

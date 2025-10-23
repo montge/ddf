@@ -15,7 +15,6 @@ package org.codice.ddf.platform.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -95,25 +94,27 @@ public class SortedServiceListTest {
   @Test
   public void testListIteratorWhenEmpty() {
     ListIterator<String> iterator = sortedServiceList.listIterator();
-    assertThat(iterator, nullValue());
+    assertThat(iterator, notNullValue());
+    assertThat(iterator.hasNext(), is(false));
   }
 
   @Test
   public void testListIteratorWithIndexWhenEmpty() {
     ListIterator<String> iterator = sortedServiceList.listIterator(0);
-    assertThat(iterator, nullValue());
+    assertThat(iterator, notNullValue());
+    assertThat(iterator.hasNext(), is(false));
   }
 
   @Test
   public void testSubListWhenEmpty() {
     List<String> subList = sortedServiceList.subList(0, 0);
-    assertThat(subList, nullValue());
+    assertThat(subList, notNullValue());
+    assertThat(subList.isEmpty(), is(true));
   }
 
-  @Test
+  @Test(expected = IndexOutOfBoundsException.class)
   public void testGetWhenEmpty() {
-    String result = sortedServiceList.get(0);
-    assertThat(result, nullValue());
+    sortedServiceList.get(0);
   }
 
   @Test

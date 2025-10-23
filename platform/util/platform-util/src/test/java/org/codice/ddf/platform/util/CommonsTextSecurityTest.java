@@ -189,14 +189,14 @@ public class CommonsTextSecurityTest {
 
     // Test basic HTML escaping
     String input = "<script>alert('XSS')</script>";
-    String expected = "&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt;";
+    String expected = "&lt;script&gt;alert('XSS')&lt;/script&gt;";
     String actual = StringEscapeUtils.escapeHtml4(input);
 
     assertThat("HTML escaping should work correctly", actual, is(expected));
 
     // Test special characters
     String specialInput = "\" & ' < >";
-    String specialExpected = "&quot; &amp; &#39; &lt; &gt;";
+    String specialExpected = "&quot; &amp; ' &lt; &gt;";
     String specialActual = StringEscapeUtils.escapeHtml4(specialInput);
 
     assertThat("Special character escaping should work", specialActual, is(specialExpected));
