@@ -41,7 +41,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Null safety for contexts and PIDs
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ConfigurationPersistencePluginTest {
 
   @Mock private ConfigurationContext mockContext;

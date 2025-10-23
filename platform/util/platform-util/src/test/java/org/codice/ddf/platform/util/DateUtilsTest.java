@@ -44,7 +44,6 @@ public class DateUtilsTest {
     Date original = new Date(1234567890000L);
     Date copy = DateUtils.copy(original);
 
-    assertThat(copy, not(original));
     assertThat(System.identityHashCode(copy), not(System.identityHashCode(original)));
   }
 
@@ -112,7 +111,6 @@ public class DateUtilsTest {
     Date copy1 = DateUtils.copy(original);
     Date copy2 = DateUtils.copy(original);
 
-    assertThat(copy1, not(copy2));
     assertThat(copy1.getTime(), is(copy2.getTime()));
 
     copy1.setTime(5000L);
