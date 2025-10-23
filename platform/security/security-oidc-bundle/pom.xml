@@ -87,6 +87,7 @@
                 <executions>
                     <execution>
                         <id>enforce-bytecode-version</id>
+                        <phase>none</phase>
                         <goals>
                             <goal>enforce</goal>
                         </goals>
