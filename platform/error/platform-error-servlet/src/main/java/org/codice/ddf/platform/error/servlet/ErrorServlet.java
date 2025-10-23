@@ -66,6 +66,15 @@ public class ErrorServlet extends HttpServlet {
     }
   }
 
+  /**
+   * Get the error handler. This method can be overridden for testing purposes.
+   *
+   * @return the error handler, or null if not available
+   */
+  protected ErrorHandler getErrorHandler() {
+    return errorHandler;
+  }
+
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) {
     handleError(request, response);
@@ -97,7 +106,8 @@ public class ErrorServlet extends HttpServlet {
 
     setErrorHandler();
 
-    if (errorHandler != null) {
+    ErrorHandler handler = getErrorHandler();
+    if (handler != null) {
       int codeInt;
 
       try {
@@ -106,7 +116,7 @@ public class ErrorServlet extends HttpServlet {
         codeInt = 500;
       }
 
-      errorHandler.handleError(codeInt, message, type, throwable, uri, request, response);
+      handler.handleError(codeInt, message, type, throwable, uri, request, response);
     } else {
       org.eclipse.jetty.server.handler.ErrorHandler jettyErrorHandler =
           new org.eclipse.jetty.server.handler.ErrorHandler();

@@ -30,9 +30,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ErrorServletTest {
@@ -43,12 +40,6 @@ public class ErrorServletTest {
 
   @Mock private ErrorHandler mockErrorHandler;
 
-  @Mock private Bundle mockBundle;
-
-  @Mock private BundleContext mockBundleContext;
-
-  @Mock private ServiceReference<ErrorHandler> mockServiceReference;
-
   private ErrorServlet errorServlet;
 
   @Before
@@ -58,26 +49,44 @@ public class ErrorServletTest {
 
   @Test
   public void testDoGetDelegatesToHandleError() throws Exception {
+    ErrorServlet servlet = new ErrorServletWithHandler(mockErrorHandler);
+
     when(mockRequest.getAttribute(ErrorServlet.ERROR_STATUS_CODE)).thenReturn(404);
     when(mockRequest.getAttribute(ErrorServlet.ERROR_MESSAGE)).thenReturn("Not Found");
     when(mockRequest.getAttribute(ErrorServlet.ERROR_REQUEST_URI)).thenReturn("/test/path");
 
-    errorServlet.doGet(mockRequest, mockResponse);
+    servlet.doGet(mockRequest, mockResponse);
 
-    // Should attempt to handle the error (will use Jetty handler if no OSGi handler available)
-    assertThat(mockRequest, is(notNullValue()));
+    verify(mockErrorHandler)
+        .handleError(
+            eq(404),
+            eq("Not Found"),
+            eq(""),
+            isNull(),
+            eq("/test/path"),
+            eq(mockRequest),
+            eq(mockResponse));
   }
 
   @Test
   public void testDoPostDelegatesToHandleError() throws Exception {
+    ErrorServlet servlet = new ErrorServletWithHandler(mockErrorHandler);
+
     when(mockRequest.getAttribute(ErrorServlet.ERROR_STATUS_CODE)).thenReturn(500);
     when(mockRequest.getAttribute(ErrorServlet.ERROR_MESSAGE)).thenReturn("Internal Server Error");
     when(mockRequest.getAttribute(ErrorServlet.ERROR_REQUEST_URI)).thenReturn("/test/path");
 
-    errorServlet.doPost(mockRequest, mockResponse);
+    servlet.doPost(mockRequest, mockResponse);
 
-    // Should attempt to handle the error
-    assertThat(mockRequest, is(notNullValue()));
+    verify(mockErrorHandler)
+        .handleError(
+            eq(500),
+            eq("Internal Server Error"),
+            eq(""),
+            isNull(),
+            eq("/test/path"),
+            eq(mockRequest),
+            eq(mockResponse));
   }
 
   @Test
@@ -411,15 +420,20 @@ public class ErrorServletTest {
 
   /** Helper class to inject error handler for testing */
   private static class ErrorServletWithHandler extends ErrorServlet {
-    private final ErrorHandler errorHandler;
+    private final ErrorHandler testErrorHandler;
 
     ErrorServletWithHandler(ErrorHandler errorHandler) {
-      this.errorHandler = errorHandler;
+      this.testErrorHandler = errorHandler;
     }
 
     @Override
     public void init() {
       // Skip OSGi service lookup in tests
+    }
+
+    @Override
+    protected ErrorHandler getErrorHandler() {
+      return testErrorHandler;
     }
   }
 }
