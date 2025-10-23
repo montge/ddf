@@ -16,19 +16,9 @@ on:
 
 env:
   # DDF has 455 modules - requires substantial heap
-  # Include Java module exports for Groovy/Spock compilation (from .mvn/jvm.config)
+  # Java module exports moved to maven-compiler-plugin in pom.xml
   MAVEN_OPTS: >-
     -Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
-    --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-    --add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
-    --add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
@@ -178,12 +168,11 @@ jobs:
 
   #
   # DEPLOY: Deploy artifacts to Maven repository (main branches only)
+  # DISABLED FOR FORK: This fork does not publish to Maven Central
   #
   deploy:
     name: Deploy Artifacts
-    if: |
-      github.event_name == 'push' &&
-      (github.ref == 'refs/heads/master' || endsWith(github.ref, '.x'))
+    if: false  # Disabled for fork - not publishing to Maven Central
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: full-build

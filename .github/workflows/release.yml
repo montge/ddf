@@ -20,28 +20,19 @@ on:
   #   - cron: '0 4 * * *'  # 4 AM UTC daily
 
 env:
-  # Include Java module exports for Groovy/Spock compilation (from .mvn/jvm.config)
+  # Java module exports moved to maven-compiler-plugin in pom.xml
   MAVEN_OPTS: >-
     -Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
-    --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
-    --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-    --add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
-    --add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
   #
   # VERSIONED RELEASE: Official numbered release with Maven release plugin
+  # DISABLED FOR FORK: This fork does not publish releases
   #
   versioned-release:
     name: Versioned Release
-    if: github.event.inputs.release_type == 'versioned' || github.event_name == 'workflow_dispatch' && github.event.inputs.version != ''
+    if: false  # Disabled for fork - not publishing releases
     runs-on: ubuntu-latest
     timeout-minutes: 150  # Increased for 647+ new tests (was 120)
 
@@ -156,13 +147,11 @@ jobs:
 
   #
   # NIGHTLY RELEASE: Automated snapshot builds with timestamp
+  # DISABLED FOR FORK: This fork does not publish releases
   #
   nightly-release:
     name: Nightly Release
-    if: |
-      github.event.inputs.release_type == 'nightly' ||
-      github.event_name == 'schedule' ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.version == '')
+    if: false  # Disabled for fork - not publishing releases
     runs-on: ubuntu-latest
     timeout-minutes: 150  # Increased for 647+ new tests (was 120)
 
