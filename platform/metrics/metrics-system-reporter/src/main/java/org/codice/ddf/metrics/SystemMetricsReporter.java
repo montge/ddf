@@ -33,6 +33,11 @@ public class SystemMetricsReporter {
 
   @SuppressWarnings("squid:S1118" /* Intentionally left public so OSGI can find it*/)
   public SystemMetricsReporter() {
+    LOGGER.debug("Adding hostname to default tags.");
+    Metrics.globalRegistry
+        .config()
+        .commonTags("host", System.getProperty("org.codice.ddf.system.hostname", "localhost"));
+
     LOGGER.debug("Adding JVM and system metrics to global registry.");
     new ClassLoaderMetrics().bindTo(Metrics.globalRegistry);
     new DiskSpaceMetrics(Paths.get(System.getProperty("ddf.home")).toFile())
@@ -49,10 +54,5 @@ public class SystemMetricsReporter {
     new FileDescriptorMetrics().bindTo(Metrics.globalRegistry);
     new ProcessorMetrics().bindTo(Metrics.globalRegistry);
     new UptimeMetrics().bindTo(Metrics.globalRegistry);
-
-    LOGGER.debug("Adding hostname to default tags.");
-    Metrics.globalRegistry
-        .config()
-        .commonTags("host", System.getProperty("org.codice.ddf.system.hostname", "localhost"));
   }
 }

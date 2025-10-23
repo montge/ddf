@@ -18,8 +18,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 import static org.pac4j.core.context.HttpConstants.APPLICATION_JSON;
 
 import com.auth0.jwt.algorithms.Algorithm;
@@ -43,6 +45,12 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -53,6 +61,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +80,9 @@ public class OidcCredentialsResolverTest {
   private static final String NONCE_SESSION_ATTRIBUTE = "session-attribute";
   private static final String CLIENT_ID = "ddf-client";
   private static final String CLIENT_SECRET = "secret";
-  private static final String ISSUER_URI = "http://localhost:8080/auth/realms/master";
+  private static final int MOCK_SERVER_PORT = 18080;
+  private static final String ISSUER_URI =
+      "http://localhost:" + MOCK_SERVER_PORT + "/auth/realms/master";
   private static final String CALLBACK_URL = "http://localhost:8993/callback";
 
   @Mock private ResourceRetriever resourceRetriever;
@@ -83,6 +94,8 @@ public class OidcCredentialsResolverTest {
 
   private Algorithm validAlgorithm;
   private OidcCredentialsResolver resolver;
+  private HttpServer mockHttpServer;
+  private String mockAccessTokenString;
 
   @Before
   public void setup() throws Exception {
@@ -101,18 +114,42 @@ public class OidcCredentialsResolverTest {
 
     String jwk = "{\"keys\": [" + sigJwk.toPublicJWK().toJSONString() + "] }";
 
+    validAlgorithm = Algorithm.RSA256(publicKey, privateKey);
+    mockAccessTokenString = createAccessToken();
+
+    // Start mock HTTP server
+    mockHttpServer = HttpServer.create(new InetSocketAddress("localhost", MOCK_SERVER_PORT), 0);
+    mockHttpServer.createContext(
+        "/auth/realms/master/protocol/openid-connect/token", new TokenEndpointHandler(this));
+    mockHttpServer.createContext(
+        "/auth/realms/master/protocol/openid-connect/userinfo", new UserInfoEndpointHandler());
+    mockHttpServer.createContext(
+        "/auth/realms/master/protocol/openid-connect/certs", new CertsEndpointHandler(jwk));
+    mockHttpServer.setExecutor(null); // creates a default executor
+    mockHttpServer.start();
+
     when(oidcProviderMetadata.getIDTokenJWSAlgs())
         .thenReturn(java.util.Collections.singletonList(JWSAlgorithm.RS256));
     when(oidcProviderMetadata.getIssuer()).thenReturn(new Issuer(ISSUER_URI));
     when(oidcProviderMetadata.getJWKSetURI())
         .thenReturn(
-            new URI("http://localhost:8080/auth/realms/master/protocol/openid-connect/certs"));
+            new URI(
+                "http://localhost:"
+                    + MOCK_SERVER_PORT
+                    + "/auth/realms/master/protocol/openid-connect/certs"));
     when(oidcProviderMetadata.getTokenEndpointURI())
         .thenReturn(
-            new URI("http://localhost:8080/auth/realms/master/protocol/openid-connect/token"));
-    when(oidcProviderMetadata.getUserInfoEndpointURI())
+            new URI(
+                "http://localhost:"
+                    + MOCK_SERVER_PORT
+                    + "/auth/realms/master/protocol/openid-connect/token"));
+    lenient()
+        .when(oidcProviderMetadata.getUserInfoEndpointURI())
         .thenReturn(
-            new URI("http://localhost:8080/auth/realms/master/protocol/openid-connect/userinfo"));
+            new URI(
+                "http://localhost:"
+                    + MOCK_SERVER_PORT
+                    + "/auth/realms/master/protocol/openid-connect/userinfo"));
 
     Resource resource = new Resource(jwk, APPLICATION_JSON);
     when(resourceRetriever.retrieveResource(any())).thenReturn(resource);
@@ -120,10 +157,10 @@ public class OidcCredentialsResolverTest {
     when(configuration.getClientId()).thenReturn(CLIENT_ID);
     when(configuration.getSecret()).thenReturn(CLIENT_SECRET);
     when(configuration.isUseNonce()).thenReturn(true);
+    when(configuration.getResponseType())
+        .thenReturn("code"); // Use authorization code flow, not implicit
     when(configuration.findProviderMetadata()).thenReturn(oidcProviderMetadata);
     when(configuration.findResourceRetriever()).thenReturn(resourceRetriever);
-
-    validAlgorithm = Algorithm.RSA256(publicKey, privateKey);
 
     when(oidcClient.getNonceSessionAttributeName()).thenReturn(NONCE_SESSION_ATTRIBUTE);
     when(oidcClient.computeFinalCallbackUrl(any())).thenReturn(CALLBACK_URL);
@@ -133,6 +170,13 @@ public class OidcCredentialsResolverTest {
 
     resolver =
         new OidcCredentialsResolver(configuration, oidcClient, oidcProviderMetadata, 5000, 5000);
+  }
+
+  @After
+  public void tearDown() {
+    if (mockHttpServer != null) {
+      mockHttpServer.stop(0);
+    }
   }
 
   @Test
@@ -202,45 +246,60 @@ public class OidcCredentialsResolverTest {
 
   @Test
   public void testGetOidcTokensWithValidGrant() throws Exception {
-    AuthorizationGrant grant = mock(AuthorizationGrant.class);
-    when(grant.getType()).thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
+    AuthorizationGrant grant = mock(AuthorizationGrant.class, withSettings().lenient());
+    lenient()
+        .when(grant.getType())
+        .thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
 
     ClientAuthentication clientAuth =
         new ClientSecretBasic(new ClientID(CLIENT_ID), new Secret(CLIENT_SECRET));
 
+    // This will make an HTTP call to mock server which returns a minimal valid response
     OIDCTokens tokens =
         OidcCredentialsResolver.getOidcTokens(grant, oidcProviderMetadata, clientAuth, 5000, 5000);
 
-    assertThat(tokens, is(nullValue()));
+    // Mock server returns access token but no ID token
+    assertThat(tokens, is(notNullValue()));
+    assertThat(tokens.getAccessToken(), is(notNullValue()));
   }
 
   @Test
   public void testGetOidcTokensWithCustomTimeouts() throws Exception {
-    AuthorizationGrant grant = mock(AuthorizationGrant.class);
-    when(grant.getType()).thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
+    AuthorizationGrant grant = mock(AuthorizationGrant.class, withSettings().lenient());
+    lenient()
+        .when(grant.getType())
+        .thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
 
     ClientAuthentication clientAuth =
         new ClientSecretBasic(new ClientID(CLIENT_ID), new Secret(CLIENT_SECRET));
 
+    // This will make an HTTP call to mock server with custom timeouts
     OIDCTokens tokens =
         OidcCredentialsResolver.getOidcTokens(
             grant, oidcProviderMetadata, clientAuth, 10000, 10000);
 
-    assertThat(tokens, is(nullValue()));
+    // Mock server returns access token but no ID token
+    assertThat(tokens, is(notNullValue()));
+    assertThat(tokens.getAccessToken(), is(notNullValue()));
   }
 
   @Test
   public void testGetOidcTokensDeprecatedMethod() throws Exception {
-    AuthorizationGrant grant = mock(AuthorizationGrant.class);
-    when(grant.getType()).thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
+    AuthorizationGrant grant = mock(AuthorizationGrant.class, withSettings().lenient());
+    lenient()
+        .when(grant.getType())
+        .thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
 
     ClientAuthentication clientAuth =
         new ClientSecretBasic(new ClientID(CLIENT_ID), new Secret(CLIENT_SECRET));
 
+    // This will make an HTTP call to mock server using deprecated method
     OIDCTokens tokens =
         OidcCredentialsResolver.getOidcTokens(grant, oidcProviderMetadata, clientAuth);
 
-    assertThat(tokens, is(nullValue()));
+    // Mock server returns access token but no ID token
+    assertThat(tokens, is(notNullValue()));
+    assertThat(tokens.getAccessToken(), is(notNullValue()));
   }
 
   @Test
@@ -295,5 +354,61 @@ public class OidcCredentialsResolverTest {
         .withClaim("typ", "Bearer")
         .withClaim("preferred_username", "testuser")
         .sign(validAlgorithm);
+  }
+
+  /** Mock HTTP handler for the token endpoint that returns a minimal valid response */
+  private class TokenEndpointHandler implements HttpHandler {
+    private final OidcCredentialsResolverTest testInstance;
+
+    TokenEndpointHandler(OidcCredentialsResolverTest testInstance) {
+      this.testInstance = testInstance;
+    }
+
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+      // Return a valid JWT access token response with refresh token
+      // This allows tests to proceed without throwing TechnicalException
+      String response =
+          "{\"access_token\":\""
+              + testInstance.mockAccessTokenString
+              + "\",\"token_type\":\"Bearer\",\"refresh_token\":\"mock_refresh_token\"}";
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+      exchange.sendResponseHeaders(200, response.getBytes().length);
+      OutputStream os = exchange.getResponseBody();
+      os.write(response.getBytes());
+      os.close();
+    }
+  }
+
+  /** Mock HTTP handler for the userinfo endpoint */
+  private static class UserInfoEndpointHandler implements HttpHandler {
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+      // Return a simple userinfo response
+      String response = "{\"sub\":\"test-subject\",\"preferred_username\":\"testuser\"}";
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+      exchange.sendResponseHeaders(200, response.getBytes().length);
+      OutputStream os = exchange.getResponseBody();
+      os.write(response.getBytes());
+      os.close();
+    }
+  }
+
+  /** Mock HTTP handler for the certs (JWK Set) endpoint */
+  private static class CertsEndpointHandler implements HttpHandler {
+    private final String jwkSet;
+
+    CertsEndpointHandler(String jwkSet) {
+      this.jwkSet = jwkSet;
+    }
+
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+      exchange.sendResponseHeaders(200, jwkSet.getBytes().length);
+      OutputStream os = exchange.getResponseBody();
+      os.write(jwkSet.getBytes());
+      os.close();
+    }
   }
 }

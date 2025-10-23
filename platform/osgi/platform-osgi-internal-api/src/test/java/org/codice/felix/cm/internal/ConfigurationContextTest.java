@@ -170,10 +170,17 @@ public class ConfigurationContextTest {
   public void testSetPropertyWithNullValue() {
     String key = "null.property";
 
+    // First set a value to ensure key exists
+    context.setProperty(key, "initialValue");
+    Dictionary<String, Object> properties = context.getSanitizedProperties();
+    assertThat(properties.get(key), is("initialValue"));
+
+    // Setting null value should remove the key from the dictionary
+    // (Hashtable doesn't support null values)
     context.setProperty(key, null);
 
-    Dictionary<String, Object> properties = context.getSanitizedProperties();
-    // Null value should be stored
+    properties = context.getSanitizedProperties();
+    // Key should be removed, so get() returns null
     assertThat(properties.get(key), is(nullValue()));
   }
 
@@ -288,7 +295,11 @@ public class ConfigurationContextTest {
 
     @Override
     public void setProperty(String key, Object value) {
-      properties.put(key, value);
+      if (value == null) {
+        properties.remove(key);
+      } else {
+        properties.put(key, value);
+      }
     }
   }
 }

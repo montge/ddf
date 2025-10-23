@@ -132,14 +132,14 @@ public class OidcTokenValidator {
       return;
     }
 
-    if (resourceRetriever == null) {
-      resourceRetriever = new DefaultResourceRetriever();
-    }
-
     try {
       if (!(idToken instanceof SignedJWT)) {
         LOGGER.info("ID token received from the userinfo endpoint was not signed.");
         return;
+      }
+
+      if (resourceRetriever == null) {
+        resourceRetriever = new DefaultResourceRetriever();
       }
 
       JWKSource jwkSource = new RemoteJWKSet(metadata.getJWKSetURI().toURL(), resourceRetriever);
@@ -226,10 +226,6 @@ public class OidcTokenValidator {
       return;
     }
 
-    if (resourceRetriever == null) {
-      resourceRetriever = new DefaultResourceRetriever();
-    }
-
     validateAccessTokenSignature(accessToken, idToken, resourceRetriever, metadata);
 
     if (idToken != null && configuration != null) {
@@ -254,6 +250,10 @@ public class OidcTokenValidator {
       OIDCProviderMetadata metadata)
       throws OidcValidationException {
     try {
+      if (resourceRetriever == null) {
+        resourceRetriever = new DefaultResourceRetriever();
+      }
+
       ConfigurableJWTProcessor jwtProcessor = new DefaultJWTProcessor();
 
       JWKSource keySource = new RemoteJWKSet(metadata.getJWKSetURI().toURL(), resourceRetriever);
@@ -303,22 +303,30 @@ public class OidcTokenValidator {
     try {
 
       Object atHash = idToken.getJWTClaimsSet().getClaim("at_hash");
-      if (atHash == null
-          && !IMPLICIT_FLOWS.contains(new ResponseType(configuration.getResponseType()))) {
-        return;
+
+      // For implicit flows with "id_token token" response type, at_hash is REQUIRED
+      boolean isImplicitFlow =
+          IMPLICIT_FLOWS.contains(new ResponseType(configuration.getResponseType()));
+
+      if (atHash == null && isImplicitFlow) {
+        String errorMessage =
+            "at_hash value not found in response. If the ID Token is issued from the Authorization Endpoint with "
+                + "an access_token value, which is the case for the response_type value id_token token, this is REQUIRED";
+        LOGGER.error(errorMessage);
+        throw new OidcValidationException(errorMessage);
       }
 
       if (atHash == null) {
-        String errorMessage =
-            "at_hash value not found in response. If the ID Token is issued from the Authorization Endpoint with "
-                + "an access_token value, which is the case for the response_type value id_token token, this is REQUIRED";
-        LOGGER.error(errorMessage);
-        throw new OidcValidationException(errorMessage);
+        // Not an implicit flow and no at_hash - this is acceptable
+        return;
       }
 
       JWSAlgorithm jwsAlgorithm = new JWSAlgorithm(idToken.getHeader().getAlgorithm().getName());
       AccessTokenHash accessTokenHash = new AccessTokenHash((String) atHash);
       AccessTokenValidator.validate(accessToken, jwsAlgorithm, accessTokenHash);
+    } catch (OidcValidationException e) {
+      // Re-throw OidcValidationException as-is
+      throw e;
     } catch (Exception e) {
       LOGGER.error(ACCESS_VALIDATION_ERR_MSG, e);
       throw new OidcValidationException(ACCESS_VALIDATION_ERR_MSG, e);
