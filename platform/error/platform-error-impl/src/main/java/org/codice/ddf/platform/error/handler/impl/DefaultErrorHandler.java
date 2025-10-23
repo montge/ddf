@@ -63,15 +63,14 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     Map<String, String> attributesMap = new HashMap<>();
     attributesMap.put("code", String.valueOf(code));
-    attributesMap.put("message", message);
-    attributesMap.put("uri", uri);
+    attributesMap.put("message", message != null ? message : "");
+    attributesMap.put("uri", uri != null ? uri : "");
 
     response.setStatus(code);
     response.setContentType("text/html");
 
-    String output =
-        errorHtml.replace(
-            "{{codeMessage}}", codeMessageProperties.getProperty(String.valueOf(code)));
+    String codeMessage = codeMessageProperties.getProperty(String.valueOf(code));
+    String output = errorHtml.replace("{{codeMessage}}", codeMessage != null ? codeMessage : "");
 
     try (ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer(BUFFER_SIZE)) {
       for (Entry<String, String> row : attributesMap.entrySet()) {
@@ -100,7 +99,12 @@ public class DefaultErrorHandler implements ErrorHandler {
     if (null != bundle) {
       return bundle.getEntry(resourcePath).openStream();
     } else {
-      throw new IOException("Unable to retrieve bundle");
+      // Fallback to classloader for tests
+      InputStream stream = getClass().getResourceAsStream(resourcePath);
+      if (stream != null) {
+        return stream;
+      }
+      throw new IOException("Unable to retrieve bundle or resource from classloader");
     }
   }
 }

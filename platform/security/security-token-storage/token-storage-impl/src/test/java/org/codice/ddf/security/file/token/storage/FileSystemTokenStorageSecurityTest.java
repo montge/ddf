@@ -24,8 +24,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ddf.security.encryption.crypter.Crypter;
+import ddf.security.encryption.crypter.Crypter.CrypterException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -385,7 +385,7 @@ public class FileSystemTokenStorageSecurityTest {
     // Test handling of encryption failure
     Crypter failingCrypter = mock(Crypter.class);
     when(failingCrypter.encrypt(any(InputStream.class)))
-        .thenThrow(new IOException("Encryption failed"));
+        .thenThrow(new CrypterException("Encryption failed"));
 
     FileSystemTokenStorage failingStorage = new FileSystemTokenStorage(failingCrypter);
     failingStorage.setBaseDirectory(testDirectory.toString());
@@ -409,7 +409,7 @@ public class FileSystemTokenStorageSecurityTest {
 
     Crypter failingCrypter = mock(Crypter.class);
     when(failingCrypter.decrypt(any(InputStream.class)))
-        .thenThrow(new IOException("Decryption failed"));
+        .thenThrow(new CrypterException("Decryption failed"));
 
     FileSystemTokenStorage failingStorage = new FileSystemTokenStorage(failingCrypter);
     failingStorage.setBaseDirectory(testDirectory.toString());

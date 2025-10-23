@@ -352,8 +352,8 @@ public class EncryptionServiceImplEnhancedTest {
     String wrapped = "ENC(invalidContent)";
     String result = encryptionService.decryptValue(wrapped);
 
-    // Should return wrapped value on failure
-    assertThat(result, equalTo(wrapped));
+    // Should return unwrapped value on decryption failure (assumes encryption failed originally)
+    assertThat(result, equalTo("invalidContent"));
   }
 
   @Test

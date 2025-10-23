@@ -15,6 +15,7 @@ package org.codice.ddf.security.oidc.resolver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.nimbusds.jose.JOSEException;
@@ -50,6 +51,7 @@ import org.pac4j.oidc.credentials.OidcCredentials;
 public class OidcCredentialsResolverSecurityTest {
 
   private static final String TEST_CLIENT_ID = "test-client-id";
+  private static final String TEST_CLIENT_SECRET = "test-client-secret";
   private static final String TEST_ISSUER = "https://idp.example.com";
   private static final String TEST_SUBJECT = "user@example.com";
   private static final String MALICIOUS_ISSUER = "https://evil.com";
@@ -76,11 +78,17 @@ public class OidcCredentialsResolverSecurityTest {
     validAccessToken = new BearerAccessToken("valid-access-token");
 
     // Configure mocks
-    when(oidcConfiguration.findResourceRetriever()).thenReturn(resourceRetriever);
+    lenient().when(oidcConfiguration.findResourceRetriever()).thenReturn(resourceRetriever);
+    when(oidcConfiguration.findProviderMetadata()).thenReturn(metadata);
     when(oidcConfiguration.getClientId()).thenReturn(TEST_CLIENT_ID);
-    when(metadata.getIssuer()).thenReturn(new Issuer(TEST_ISSUER));
-    when(metadata.getUserInfoEndpointURI()).thenReturn(new URI(TEST_ISSUER + "/userinfo"));
-    when(oidcClient.computeFinalCallbackUrl(webContext)).thenReturn(CALLBACK_URL);
+    when(oidcConfiguration.getSecret()).thenReturn(TEST_CLIENT_SECRET);
+    lenient().when(metadata.getIssuer()).thenReturn(new Issuer(TEST_ISSUER));
+    lenient()
+        .when(metadata.getUserInfoEndpointURI())
+        .thenReturn(new URI(TEST_ISSUER + "/userinfo"));
+    lenient().when(metadata.getTokenEndpointURI()).thenReturn(new URI(TEST_ISSUER + "/token"));
+    when(metadata.getTokenEndpointAuthMethods()).thenReturn(null);
+    lenient().when(oidcClient.computeFinalCallbackUrl(webContext)).thenReturn(CALLBACK_URL);
 
     resolver = new OidcCredentialsResolver(oidcConfiguration, oidcClient, metadata, 5000, 5000);
   }
@@ -381,7 +389,8 @@ public class OidcCredentialsResolverSecurityTest {
   @Test
   public void testUserInfoEndpointUnavailable() throws Exception {
     // Test handling when UserInfo endpoint is unavailable
-    when(metadata.getUserInfoEndpointURI())
+    lenient()
+        .when(metadata.getUserInfoEndpointURI())
         .thenReturn(new URI("https://unavailable.example.com/userinfo"));
 
     OidcCredentials credentials = new OidcCredentials();

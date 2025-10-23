@@ -241,7 +241,7 @@ public class FileSystemTokenStorage implements TokenStorage {
         LOGGER.warn("Unable to write full token content to file.");
         return SC_INTERNAL_SERVER_ERROR;
       }
-    } catch (IOException e) {
+    } catch (IOException | Crypter.CrypterException e) {
       LOGGER.debug("Error updating token file.", e);
       return SC_INTERNAL_SERVER_ERROR;
     }
@@ -254,7 +254,7 @@ public class FileSystemTokenStorage implements TokenStorage {
         InputStream decryptedInputStream = crypter.decrypt(contentInputStream)) {
 
       json = IOUtils.toString(decryptedInputStream, StandardCharsets.UTF_8);
-    } catch (IOException e) {
+    } catch (IOException | Crypter.CrypterException e) {
       LOGGER.debug("Error reading token file.", e);
     }
     return json;

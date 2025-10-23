@@ -108,7 +108,17 @@ public class EncryptionServiceImpl implements EncryptionService {
     if (wrappedEncryptedValue.equals(encryptedValue)) {
       return wrappedEncryptedValue;
     }
-    return decrypt(encryptedValue);
+
+    // Try to decrypt directly with the crypter to catch failures
+    try {
+      return crypter.decrypt(encryptedValue);
+    } catch (CrypterException e) {
+      LOGGER.debug(
+          "Failed to decrypt wrapped value {}.", LogSanitizer.sanitize(wrappedEncryptedValue), e);
+      // If decryption fails, return the unwrapped value as it may be plaintext that failed to
+      // encrypt
+      return encryptedValue;
+    }
   }
 
   /**

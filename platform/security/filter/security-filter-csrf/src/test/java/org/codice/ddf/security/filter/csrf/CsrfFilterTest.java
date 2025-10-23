@@ -16,6 +16,7 @@ package org.codice.ddf.security.filter.csrf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,6 +65,8 @@ public class CsrfFilterTest {
     System.setProperty("org.codice.ddf.system.hostname", "localhost");
     System.setProperty("org.codice.ddf.system.httpsPort", "8993");
     System.setProperty("org.codice.ddf.system.httpPort", "8181");
+    // Add default HTTP and HTTPS ports as trusted authorities for testing
+    System.setProperty("csrf.trustedAuthorities", "localhost:80,localhost:443");
 
     csrfFilter = new CsrfFilter(securityLogger);
     csrfFilter.init();
@@ -301,9 +304,10 @@ public class CsrfFilterTest {
     CsrfFilter disabledFilter = new CsrfFilter(securityLogger);
     disabledFilter.init();
 
-    when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
-    when(request.getMethod()).thenReturn("POST");
-    // No headers set
+    // When CSRF is disabled, these stubbings are not used but kept for test consistency
+    lenient().when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
+    lenient().when(request.getMethod()).thenReturn("POST");
+    // No headers set - filter should not check them when disabled
 
     disabledFilter.doFilter(request, response, filterChain);
 

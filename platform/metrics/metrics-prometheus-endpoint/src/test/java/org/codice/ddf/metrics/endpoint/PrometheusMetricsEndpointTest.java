@@ -64,6 +64,8 @@ public class PrometheusMetricsEndpointTest {
     if (printWriter != null) {
       printWriter.close();
     }
+    // Clear the global registry to prevent test pollution
+    Metrics.globalRegistry.clear();
   }
 
   @Test
