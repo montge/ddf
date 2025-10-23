@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -39,14 +40,16 @@ public class SystemMetricsReporterTest {
   private SimpleMeterRegistry meterRegistry;
   private SystemMetricsReporter underTest;
 
+  @BeforeClass
+  public static void setUpClass() {
+    // Set system properties before any tests run to ensure they're available
+    // when the meter registry is initialized
+    System.setProperty("ddf.home", System.getProperty("java.io.tmpdir"));
+    System.setProperty("org.codice.ddf.system.hostname", "test-host");
+  }
+
   @Before
   public void setUp() {
-    // Set required system property for DDF home
-    System.setProperty("ddf.home", System.getProperty("java.io.tmpdir"));
-
-    // Set default hostname for most tests
-    System.setProperty("org.codice.ddf.system.hostname", "test-host");
-
     // Clear any existing registries
     Metrics.globalRegistry.getRegistries().forEach(Metrics.globalRegistry::remove);
 

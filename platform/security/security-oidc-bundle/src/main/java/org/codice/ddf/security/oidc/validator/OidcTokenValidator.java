@@ -138,6 +138,12 @@ public class OidcTokenValidator {
         return;
       }
 
+      // If JWK Set URI is not available, we cannot validate the signature
+      if (metadata.getJWKSetURI() == null) {
+        LOGGER.debug("JWK Set URI is null. Unable to validate userinfo id token signature.");
+        return;
+      }
+
       if (resourceRetriever == null) {
         resourceRetriever = new DefaultResourceRetriever();
       }
@@ -250,6 +256,12 @@ public class OidcTokenValidator {
       OIDCProviderMetadata metadata)
       throws OidcValidationException {
     try {
+      // If JWK Set URI is not available, we cannot validate the signature
+      if (metadata.getJWKSetURI() == null) {
+        LOGGER.debug("JWK Set URI is null. Unable to validate access token signature.");
+        return;
+      }
+
       if (resourceRetriever == null) {
         resourceRetriever = new DefaultResourceRetriever();
       }
@@ -304,9 +316,16 @@ public class OidcTokenValidator {
 
       Object atHash = idToken.getJWTClaimsSet().getClaim("at_hash");
 
-      // For implicit flows with "id_token token" response type, at_hash is REQUIRED
-      boolean isImplicitFlow =
-          IMPLICIT_FLOWS.contains(new ResponseType(configuration.getResponseType()));
+      // Check if response type is configured and if it's an implicit flow
+      boolean isImplicitFlow = false;
+      String responseType = configuration.getResponseType();
+      if (responseType != null && !responseType.trim().isEmpty()) {
+        try {
+          isImplicitFlow = IMPLICIT_FLOWS.contains(new ResponseType(responseType));
+        } catch (Exception e) {
+          LOGGER.debug("Failed to parse response type: {}", responseType, e);
+        }
+      }
 
       if (atHash == null && isImplicitFlow) {
         String errorMessage =
@@ -322,7 +341,7 @@ public class OidcTokenValidator {
       }
 
       JWSAlgorithm jwsAlgorithm = new JWSAlgorithm(idToken.getHeader().getAlgorithm().getName());
-      AccessTokenHash accessTokenHash = new AccessTokenHash((String) atHash);
+      AccessTokenHash accessTokenHash = new AccessTokenHash(String.valueOf(atHash));
       AccessTokenValidator.validate(accessToken, jwsAlgorithm, accessTokenHash);
     } catch (OidcValidationException e) {
       // Re-throw OidcValidationException as-is

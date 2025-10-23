@@ -157,6 +157,9 @@ public class OidcTokenValidatorEdgeCasesTest {
     String stringJwt = createIdToken("myNonce");
     JWT jwt = SignedJWT.parse(stringJwt);
 
+    // Mock JWKSetURI to return null to prevent network connection attempts
+    when(oidcProviderMetadata.getJWKSetURI()).thenReturn(null);
+
     OidcTokenValidator.validateUserInfoIdToken(jwt, null, oidcProviderMetadata);
   }
 
@@ -215,6 +218,9 @@ public class OidcTokenValidatorEdgeCasesTest {
     String accessTokenString = createAccessToken();
     AccessToken accessToken = new BearerAccessToken(accessTokenString);
 
+    // Mock JWKSetURI to return null to prevent network connection attempts
+    when(oidcProviderMetadata.getJWKSetURI()).thenReturn(null);
+
     OidcTokenValidator.validateAccessToken(
         accessToken, null, null, oidcProviderMetadata, configuration);
   }
@@ -256,11 +262,14 @@ public class OidcTokenValidatorEdgeCasesTest {
 
   @Test(expected = OidcValidationException.class)
   public void testValidateAccessTokenWithImplicitFlowNoAtHash() throws Exception {
+    // Mock response type before creating tokens
     when(configuration.getResponseType()).thenReturn("id_token token");
 
     String accessTokenString = createAccessToken();
     AccessToken accessToken = new BearerAccessToken(accessTokenString);
 
+    // Create ID token WITHOUT at_hash claim - this should trigger validation error
+    // for implicit flow
     String idTokenString = createIdToken("myNonce");
     JWT idToken = SignedJWT.parse(idTokenString);
 
