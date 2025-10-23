@@ -155,7 +155,7 @@ public class PermissionActivatorExtendedTest {
               + "};\n");
     }
 
-    activator.conditionalPermissionAdmin = mockPermAdmin;
+    activator.setConditionalPermissionAdmin(mockPermAdmin);
 
     when(mockPermUpdate.commit()).thenReturn(true);
 
@@ -184,7 +184,7 @@ public class PermissionActivatorExtendedTest {
               + "};\n");
     }
 
-    activator.conditionalPermissionAdmin = mockPermAdmin;
+    activator.setConditionalPermissionAdmin(mockPermAdmin);
 
     when(mockPermUpdate.commit()).thenReturn(true);
 
@@ -205,7 +205,7 @@ public class PermissionActivatorExtendedTest {
               + "};\n");
     }
 
-    activator.conditionalPermissionAdmin = mockPermAdmin;
+    activator.setConditionalPermissionAdmin(mockPermAdmin);
 
     when(mockPermUpdate.commit()).thenReturn(true);
 
@@ -225,7 +225,7 @@ public class PermissionActivatorExtendedTest {
               + "};\n");
     }
 
-    activator.conditionalPermissionAdmin = mockPermAdmin;
+    activator.setConditionalPermissionAdmin(mockPermAdmin);
 
     when(mockPermUpdate.commit()).thenReturn(true);
 
@@ -245,7 +245,7 @@ public class PermissionActivatorExtendedTest {
               + "};\n");
     }
 
-    activator.conditionalPermissionAdmin = mockPermAdmin;
+    activator.setConditionalPermissionAdmin(mockPermAdmin);
 
     when(mockPermUpdate.commit()).thenReturn(true);
 
@@ -258,7 +258,7 @@ public class PermissionActivatorExtendedTest {
   @Test
   public void testStartWithEmptySecurityDirectory() throws Exception {
     // Empty directory - no policy files
-    activator.conditionalPermissionAdmin = mockPermAdmin;
+    activator.setConditionalPermissionAdmin(mockPermAdmin);
 
     when(mockPermUpdate.commit()).thenReturn(true);
 
@@ -289,7 +289,7 @@ public class PermissionActivatorExtendedTest {
               + "};\n");
     }
 
-    activator.conditionalPermissionAdmin = mockPermAdmin;
+    activator.setConditionalPermissionAdmin(mockPermAdmin);
 
     when(mockPermUpdate.commit()).thenReturn(true);
 

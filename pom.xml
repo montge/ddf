@@ -249,8 +249,9 @@
         <logback.classic.version>1.2.13</logback.classic.version>
         <logback.version>1.2.13</logback.version>
         <mariadb.version>2.4.1</mariadb.version>
-        <maven.failsafe.version>2.22.2</maven.failsafe.version>
-        <maven.surefire.version>2.22.2</maven.surefire.version>
+        <maven.failsafe.version>3.2.5</maven.failsafe.version>
+        <maven.surefire.version>3.2.5</maven.surefire.version>
+        <maven-jacoco-plugin.version>0.8.12</maven-jacoco-plugin.version>
         <mime4j.version>0.8.7</mime4j.version>
         <mpegts-streamer.version>0.1.0_2</mpegts-streamer.version>
         <net.minidev.asm.version>1.0.2</net.minidev.asm.version>
@@ -896,7 +897,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.13.0</version>
                     <configuration>
                         <source>11</source>
                         <target>11</target>
@@ -1018,7 +1019,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>
+                    <version>3.5.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>ddf.support</groupId>

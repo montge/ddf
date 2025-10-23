@@ -288,36 +288,37 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
+          base: ${{ github.event.before }}
+          head: ${{ github.sha }}
           extra_args: --only-verified --json
 
-      - name: Create issue on secret detection
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const title = `🔐 Secret Detected in Commit ${context.sha.substring(0, 7)}`;
-            const body = `## Secret Detection Alert\n\n` +
-                         `TruffleHog has detected potential secrets in the codebase.\n\n` +
-                         `**Commit:** ${context.sha}\n` +
-                         `**Branch:** ${context.ref}\n` +
-                         `**Author:** ${context.actor}\n\n` +
-                         `**Action Required:**\n` +
-                         `1. Review the workflow logs for details\n` +
-                         `2. Rotate any exposed credentials immediately\n` +
-                         `3. Remove secrets from git history\n` +
-                         `4. Use environment variables or secret management\n\n` +
-                         `**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/` +
-                         `${context.repo.repo}/actions/runs/${context.runId}`;
-
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: title,
-              body: body,
-              labels: ['security', 'secret-detection', 'critical']
-            });
+      # Issue creation commented out - Issues are disabled in this fork
+      # - name: Create issue on secret detection
+      #   if: failure()
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const title = `🔐 Secret Detected in Commit ${context.sha.substring(0, 7)}`;
+      #       const body = `## Secret Detection Alert\n\n` +
+      #                    `TruffleHog has detected potential secrets in the codebase.\n\n` +
+      #                    `**Commit:** ${context.sha}\n` +
+      #                    `**Branch:** ${context.ref}\n` +
+      #                    `**Author:** ${context.actor}\n\n` +
+      #                    `**Action Required:**\n` +
+      #                    `1. Review the workflow logs for details\n` +
+      #                    `2. Rotate any exposed credentials immediately\n` +
+      #                    `3. Remove secrets from git history\n` +
+      #                    `4. Use environment variables or secret management\n\n` +
+      #                    `**Workflow Run:** ${context.serverUrl}/${context.repo.owner}/` +
+      #                    `${context.repo.repo}/actions/runs/${context.runId}`;
+      #
+      #       await github.rest.issues.create({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         title: title,
+      #         body: body,
+      #         labels: ['security', 'secret-detection', 'critical']
+      #       });
 
   #
   # LICENSE CHECK: Ensure dependency license compliance

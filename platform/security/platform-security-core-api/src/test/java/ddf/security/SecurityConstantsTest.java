@@ -33,39 +33,45 @@ public class SecurityConstantsTest {
   @Test
   public void testSecurityTokenKeyConstant() {
     assertThat(SecurityConstants.SECURITY_TOKEN_KEY, is(notNullValue()));
-    assertThat(SecurityConstants.SECURITY_TOKEN_KEY, is("ddf.security.securityToken"));
+    assertThat(SecurityConstants.SECURITY_TOKEN_KEY, is("security.assertion"));
   }
 
   @Test
-  public void testSamlAssertionConstant() {
-    assertThat(SecurityConstants.SAML_ASSERTION, is(notNullValue()));
-    assertThat(SecurityConstants.SAML_ASSERTION, is("ddf.security.assertion"));
+  public void testAuthenticationTokenKeyConstant() {
+    assertThat(SecurityConstants.AUTHENTICATION_TOKEN_KEY, is(notNullValue()));
+    assertThat(SecurityConstants.AUTHENTICATION_TOKEN_KEY, is("ddf.security.token"));
   }
 
-  @Test
-  public void testGuestRealmNameConstant() {
-    assertThat(SecurityConstants.GUEST_REALM_NAME, is(notNullValue()));
-    assertThat(SecurityConstants.GUEST_REALM_NAME, is("guestRealmName"));
-  }
+  // SAML_ASSERTION constant was removed in commit 146b6c35d0 (2019) and replaced with
+  // AUTHENTICATION_TOKEN_KEY and SECURITY_TOKEN_KEY
+  // @Test
+  // public void testSamlAssertionConstant() {
+  //   assertThat(SecurityConstants.SAML_ASSERTION, is(notNullValue()));
+  //   assertThat(SecurityConstants.SAML_ASSERTION, is("ddf.security.assertion"));
+  // }
+
+  // GUEST_REALM_NAME constant does not exist in SecurityConstants
+  // @Test
+  // public void testGuestRealmNameConstant() {
+  //   assertThat(SecurityConstants.GUEST_REALM_NAME, is(notNullValue()));
+  //   assertThat(SecurityConstants.GUEST_REALM_NAME, is("guestRealmName"));
+  // }
 
   @Test
   public void testAllConstantsAreNonNull() {
     assertThat(SecurityConstants.SECURITY_SUBJECT, is(notNullValue()));
     assertThat(SecurityConstants.SECURITY_TOKEN_KEY, is(notNullValue()));
-    assertThat(SecurityConstants.SAML_ASSERTION, is(notNullValue()));
-    assertThat(SecurityConstants.GUEST_REALM_NAME, is(notNullValue()));
+    assertThat(SecurityConstants.AUTHENTICATION_TOKEN_KEY, is(notNullValue()));
   }
 
   @Test
   public void testSecurityConstantsCanBeUsedAsKeys() {
     String key1 = SecurityConstants.SECURITY_SUBJECT;
     String key2 = SecurityConstants.SECURITY_TOKEN_KEY;
-    String key3 = SecurityConstants.SAML_ASSERTION;
-    String key4 = SecurityConstants.GUEST_REALM_NAME;
+    String key3 = SecurityConstants.AUTHENTICATION_TOKEN_KEY;
 
     assertThat(key1, is("ddf.security.subject"));
-    assertThat(key2, is("ddf.security.securityToken"));
-    assertThat(key3, is("ddf.security.assertion"));
-    assertThat(key4, is("guestRealmName"));
+    assertThat(key2, is("security.assertion"));
+    assertThat(key3, is("ddf.security.token"));
   }
 }

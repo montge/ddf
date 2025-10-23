@@ -44,14 +44,10 @@ import org.osgi.service.event.Event;
  * <p>Tests the persistence of activity events (downloads, operations, progress tracking) to the
  * PersistentStore.
  *
- * <p>Coverage includes:
- * - Activity event persistence
- * - RUNNING status filtering (should not persist)
- * - All activity properties (id, session, status, title, message, timestamp, operations, progress,
- *   user, category, bytes, downloadId)
- * - Error handling during persistence
- * - Null and missing property handling
- * - Edge cases and boundary conditions
+ * <p>Coverage includes: - Activity event persistence - RUNNING status filtering (should not
+ * persist) - All activity properties (id, session, status, title, message, timestamp, operations,
+ * progress, user, category, bytes, downloadId) - Error handling during persistence - Null and
+ * missing property handling - Edge cases and boundary conditions
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ActivityListenerTest {
@@ -297,7 +293,10 @@ public class ActivityListenerTest {
         .add(eq(PersistenceType.ACTIVITY_TYPE.toString()), captor.capture());
 
     PersistentItem storedItem = captor.getValue();
-    assertThat("Zero bytes should be stored", storedItem.getLongProperty(ActivityEvent.BYTES_READ_KEY + "_lng"), is(0L));
+    assertThat(
+        "Zero bytes should be stored",
+        storedItem.getLongProperty(ActivityEvent.BYTES_READ_KEY + "_lng"),
+        is(0L));
   }
 
   /**

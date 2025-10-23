@@ -197,6 +197,11 @@ public class PermissionActivator implements BundleActivator {
     System.exit(1);
   }
 
+  @VisibleForTesting
+  void setConditionalPermissionAdmin(ConditionalPermissionAdmin admin) {
+    this.conditionalPermissionAdmin = admin;
+  }
+
   ConditionalPermissionAdmin getConditionalPermissionAdmin(BundleContext bundleContext) {
     permAdminTracker = new ServiceTracker<>(bundleContext, PERM_ADMIN_SERVICE_NAME, null);
     permAdminTracker.open();

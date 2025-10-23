@@ -44,14 +44,10 @@ import org.osgi.service.event.Event;
  *
  * <p>Tests the persistence of notification events to the PersistentStore.
  *
- * <p>Coverage includes:
- * - Notification event persistence
- * - User ID validation (required field)
- * - All notification properties (id, userId, timestamp, application, title, message)
- * - Error handling during persistence
- * - Null and empty property handling
- * - IllegalArgumentException for missing userId
- * - Edge cases and boundary conditions
+ * <p>Coverage includes: - Notification event persistence - User ID validation (required field) -
+ * All notification properties (id, userId, timestamp, application, title, message) - Error handling
+ * during persistence - Null and empty property handling - IllegalArgumentException for missing
+ * userId - Edge cases and boundary conditions
  */
 @RunWith(MockitoJUnitRunner.class)
 public class NotificationListenerTest {
@@ -127,7 +123,10 @@ public class NotificationListenerTest {
         "Exception message should mention userId",
         exception.getMessage().contains(Notification.NOTIFICATION_KEY_USER_ID),
         is(true));
-    assertThat("Exception message should mention blank", exception.getMessage().contains("blank"), is(true));
+    assertThat(
+        "Exception message should mention blank",
+        exception.getMessage().contains("blank"),
+        is(true));
 
     verify(mockPersistentStore, never())
         .add(eq(PersistenceType.NOTIFICATION_TYPE.toString()), any(PersistentItem.class));
@@ -506,8 +505,7 @@ public class NotificationListenerTest {
   @Test
   public void testHandleEventWithMultiLineMessage() throws PersistenceException {
     Map<String, Object> properties = createCompleteNotificationEvent();
-    properties.put(
-        Notification.NOTIFICATION_KEY_MESSAGE, "Line 1\nLine 2\nLine 3\nLine 4");
+    properties.put(Notification.NOTIFICATION_KEY_MESSAGE, "Line 1\nLine 2\nLine 3\nLine 4");
     Event event = new Event("ddf/notification", properties);
 
     notificationListener.handleEvent(event);

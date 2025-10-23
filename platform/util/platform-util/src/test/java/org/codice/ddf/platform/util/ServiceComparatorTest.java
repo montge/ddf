@@ -110,9 +110,10 @@ public class ServiceComparatorTest {
 
   @Test
   public void testCompareWithSameReference() {
-    when(ref1.compareTo(ref1)).thenReturn(0);
+    when(ref1.compareTo(ref2)).thenReturn(0);
+    when(ref2.compareTo(ref1)).thenReturn(0);
 
-    int result = comparator.compare(ref1, ref1);
+    int result = comparator.compare(ref1, ref2);
     assertThat(result, is(0));
   }
 
