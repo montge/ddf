@@ -35,7 +35,7 @@ public class LogoutSecurityExceptionTest {
 
   @Test
   public void testConstructorWithNullMessage() {
-    LogoutSecurityException exception = new LogoutSecurityException(null);
+    LogoutSecurityException exception = new LogoutSecurityException((String) null);
 
     assertThat(exception.getMessage(), is(nullValue()));
   }

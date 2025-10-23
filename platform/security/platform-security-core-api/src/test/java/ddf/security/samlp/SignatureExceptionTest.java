@@ -35,7 +35,7 @@ public class SignatureExceptionTest {
 
   @Test
   public void testConstructorWithNullMessage() {
-    SignatureException exception = new SignatureException(null);
+    SignatureException exception = new SignatureException((String) null);
 
     assertThat(exception.getMessage(), is(nullValue()));
   }

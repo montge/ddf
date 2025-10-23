@@ -35,7 +35,7 @@ public class SecurityServiceExceptionTest {
 
   @Test
   public void testConstructorWithNullMessage() {
-    SecurityServiceException exception = new SecurityServiceException(null);
+    SecurityServiceException exception = new SecurityServiceException((String) null);
 
     assertThat(exception.getMessage(), is(nullValue()));
   }

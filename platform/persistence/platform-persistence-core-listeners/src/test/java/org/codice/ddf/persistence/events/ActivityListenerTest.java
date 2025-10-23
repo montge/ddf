@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -330,8 +331,9 @@ public class ActivityListenerTest {
    */
   @Test
   public void testHandleEventWithPersistenceException() throws PersistenceException {
-    when(mockPersistentStore.add(any(String.class), any(PersistentItem.class)))
-        .thenThrow(new PersistenceException("Test persistence failure"));
+    doThrow(new PersistenceException("Test persistence failure"))
+        .when(mockPersistentStore)
+        .add(any(String.class), any(PersistentItem.class));
 
     Map<String, Object> properties = createCompleteActivityEvent("COMPLETED");
     Event event = new Event("ddf/download/activity", properties);

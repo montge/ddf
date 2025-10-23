@@ -238,7 +238,7 @@ public class LogbackSecurityTest {
    * <p>Ensures the patch version is at least 13 when version is 1.2.x.
    */
   @Test
-  public void testLogback1_2PatchVersion() throws Exception {
+  public void testLogback12PatchVersion() throws Exception {
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     String version = loggerContext.getClass().getPackage().getImplementationVersion();
     assertThat("Logback version should not be null", version, is(notNullValue()));
@@ -265,7 +265,7 @@ public class LogbackSecurityTest {
    * <p>Ensures the patch version is at least 14 when version is 1.4.x.
    */
   @Test
-  public void testLogback1_4PatchVersion() throws Exception {
+  public void testLogback14PatchVersion() throws Exception {
     LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
     String version = loggerContext.getClass().getPackage().getImplementationVersion();
     assertThat("Logback version should not be null", version, is(notNullValue()));
