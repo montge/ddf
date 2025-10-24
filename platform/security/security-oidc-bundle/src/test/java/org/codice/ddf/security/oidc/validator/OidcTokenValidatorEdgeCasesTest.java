@@ -57,7 +57,7 @@ import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class OidcTokenValidatorEdgeCasesTest {
 
   private static final String NONCE_SESSION_ATTRIBUTE = "session-attribute";

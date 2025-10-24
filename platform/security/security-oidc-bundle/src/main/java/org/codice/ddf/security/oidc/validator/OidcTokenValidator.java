@@ -321,7 +321,7 @@ public class OidcTokenValidator {
       String responseType = configuration.getResponseType();
       if (responseType != null && !responseType.trim().isEmpty()) {
         try {
-          isImplicitFlow = IMPLICIT_FLOWS.contains(new ResponseType(responseType));
+          isImplicitFlow = IMPLICIT_FLOWS.contains(ResponseType.parse(responseType));
         } catch (Exception e) {
           LOGGER.debug("Failed to parse response type: {}", responseType, e);
         }

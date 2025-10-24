@@ -15,15 +15,19 @@ package org.codice.ddf.security.oidc.resolver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
+import static org.pac4j.core.context.HttpConstants.APPLICATION_JSON;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jose.util.Resource;
 import com.nimbusds.jose.util.ResourceRetriever;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -34,14 +38,27 @@ import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.URI;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
+import java.util.UUID;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -50,47 +67,95 @@ import org.pac4j.oidc.credentials.OidcCredentials;
 @RunWith(MockitoJUnitRunner.class)
 public class OidcCredentialsResolverSecurityTest {
 
+  private static final int MOCK_SERVER_PORT = 18080;
   private static final String TEST_CLIENT_ID = "test-client-id";
   private static final String TEST_CLIENT_SECRET = "test-client-secret";
-  private static final String TEST_ISSUER = "https://idp.example.com";
+  private static final String TEST_ISSUER = "http://localhost:" + MOCK_SERVER_PORT;
   private static final String TEST_SUBJECT = "user@example.com";
-  private static final String MALICIOUS_ISSUER = "https://evil.com";
-  private static final String CALLBACK_URL = "https://localhost:8993/services/oidc/callback";
+  private static final String MALICIOUS_ISSUER = "http://localhost:" + MOCK_SERVER_PORT + "/evil";
+  private static final String CALLBACK_URL = "http://localhost:8993/services/oidc/callback";
 
   @Mock private OidcConfiguration oidcConfiguration;
   @Mock private OidcClient oidcClient;
   @Mock private OIDCProviderMetadata metadata;
   @Mock private ResourceRetriever resourceRetriever;
   @Mock private WebContext webContext;
+  @Mock private SessionStore sessionStore;
 
   private OidcCredentialsResolver resolver;
   private RSAKey rsaKey;
   private JWT validIdToken;
   private BearerAccessToken validAccessToken;
+  private HttpServer mockHttpServer;
+  private RSAPublicKey publicKey;
+  private RSAPrivateKey privateKey;
 
   @Before
   public void setUp() throws Exception {
     // Generate RSA key for signing tokens
-    rsaKey = new RSAKeyGenerator(2048).keyID("test-key").generate();
+    KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
+    gen.initialize(2048);
+    KeyPair keyPair = gen.generateKeyPair();
+    privateKey = (RSAPrivateKey) keyPair.getPrivate();
+    publicKey = (RSAPublicKey) keyPair.getPublic();
+
+    rsaKey = new RSAKey.Builder(publicKey).privateKey(privateKey).keyID("test-key").build();
+
+    JWK sigJwk =
+        new RSAKey.Builder(publicKey)
+            .privateKey(privateKey)
+            .keyUse(KeyUse.SIGNATURE)
+            .keyID(UUID.randomUUID().toString())
+            .build();
+
+    String jwk = "{\"keys\": [" + sigJwk.toPublicJWK().toJSONString() + "] }";
+
+    // Start mock HTTP server
+    mockHttpServer = HttpServer.create(new InetSocketAddress("localhost", MOCK_SERVER_PORT), 0);
+    mockHttpServer.createContext("/token", new TokenEndpointHandler());
+    mockHttpServer.createContext("/userinfo", new UserInfoEndpointHandler());
+    mockHttpServer.createContext("/certs", new CertsEndpointHandler(jwk));
+    mockHttpServer.createContext("/evil/token", new TokenEndpointHandler());
+    mockHttpServer.createContext("/evil/userinfo", new UserInfoEndpointHandler());
+    mockHttpServer.createContext("/evil/certs", new CertsEndpointHandler(jwk));
+    mockHttpServer.setExecutor(null);
+    mockHttpServer.start();
 
     // Create valid ID token
     validIdToken = createValidIdToken();
     validAccessToken = new BearerAccessToken("valid-access-token");
 
     // Configure mocks
+    Resource resource = new Resource(jwk, APPLICATION_JSON);
+    lenient().when(resourceRetriever.retrieveResource(any())).thenReturn(resource);
     lenient().when(oidcConfiguration.findResourceRetriever()).thenReturn(resourceRetriever);
     when(oidcConfiguration.findProviderMetadata()).thenReturn(metadata);
     when(oidcConfiguration.getClientId()).thenReturn(TEST_CLIENT_ID);
     when(oidcConfiguration.getSecret()).thenReturn(TEST_CLIENT_SECRET);
+    lenient().when(oidcConfiguration.isUseNonce()).thenReturn(false);
     lenient().when(metadata.getIssuer()).thenReturn(new Issuer(TEST_ISSUER));
+    lenient()
+        .when(metadata.getIDTokenJWSAlgs())
+        .thenReturn(java.util.Collections.singletonList(JWSAlgorithm.RS256));
+    lenient()
+        .when(metadata.getJWKSetURI())
+        .thenReturn(new URI("http://localhost:" + MOCK_SERVER_PORT + "/certs"));
     lenient()
         .when(metadata.getUserInfoEndpointURI())
         .thenReturn(new URI(TEST_ISSUER + "/userinfo"));
     lenient().when(metadata.getTokenEndpointURI()).thenReturn(new URI(TEST_ISSUER + "/token"));
     when(metadata.getTokenEndpointAuthMethods()).thenReturn(null);
     lenient().when(oidcClient.computeFinalCallbackUrl(webContext)).thenReturn(CALLBACK_URL);
+    lenient().when(webContext.getSessionStore()).thenReturn(sessionStore);
 
     resolver = new OidcCredentialsResolver(oidcConfiguration, oidcClient, metadata, 5000, 5000);
+  }
+
+  @After
+  public void tearDown() {
+    if (mockHttpServer != null) {
+      mockHttpServer.stop(0);
+    }
   }
 
   // ==================== Valid Token Resolution Tests ====================
@@ -590,5 +655,50 @@ public class OidcCredentialsResolverSecurityTest {
     SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
     signedJWT.sign(new RSASSASigner(rsaKey));
     return signedJWT;
+  }
+
+  /** Mock HTTP handler for the token endpoint */
+  private static class TokenEndpointHandler implements HttpHandler {
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+      String response =
+          "{\"access_token\":\"mock-access-token\",\"token_type\":\"Bearer\",\"refresh_token\":\"mock-refresh-token\"}";
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+      exchange.sendResponseHeaders(200, response.getBytes().length);
+      OutputStream os = exchange.getResponseBody();
+      os.write(response.getBytes());
+      os.close();
+    }
+  }
+
+  /** Mock HTTP handler for the userinfo endpoint */
+  private static class UserInfoEndpointHandler implements HttpHandler {
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+      String response = "{\"sub\":\"test-subject\",\"preferred_username\":\"testuser\"}";
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+      exchange.sendResponseHeaders(200, response.getBytes().length);
+      OutputStream os = exchange.getResponseBody();
+      os.write(response.getBytes());
+      os.close();
+    }
+  }
+
+  /** Mock HTTP handler for the certs (JWK Set) endpoint */
+  private static class CertsEndpointHandler implements HttpHandler {
+    private final String jwkSet;
+
+    CertsEndpointHandler(String jwkSet) {
+      this.jwkSet = jwkSet;
+    }
+
+    @Override
+    public void handle(HttpExchange exchange) throws IOException {
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+      exchange.sendResponseHeaders(200, jwkSet.getBytes().length);
+      OutputStream os = exchange.getResponseBody();
+      os.write(jwkSet.getBytes());
+      os.close();
+    }
   }
 }
