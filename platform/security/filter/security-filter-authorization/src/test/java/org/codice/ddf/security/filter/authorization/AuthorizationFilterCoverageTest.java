@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -210,8 +211,9 @@ public class AuthorizationFilterCoverageTest {
     when(permissions.isEmpty()).thenReturn(false);
     when(contextPolicy.getAllowedAttributePermissions()).thenReturn(permissions);
     when(subject.isPermitted(permissions)).thenReturn(false);
-    when(response.sendError(HttpServletResponse.SC_FORBIDDEN))
-        .thenThrow(new IOException("Network error"));
+    doThrow(new IOException("Network error"))
+        .when(response)
+        .sendError(HttpServletResponse.SC_FORBIDDEN);
 
     filter.doFilter(request, response, filterChain);
 
@@ -229,7 +231,7 @@ public class AuthorizationFilterCoverageTest {
     when(permissions.isEmpty()).thenReturn(false);
     when(contextPolicy.getAllowedAttributePermissions()).thenReturn(permissions);
     when(subject.isPermitted(permissions)).thenReturn(false);
-    when(response.flushBuffer()).thenThrow(new IOException("Buffer error"));
+    doThrow(new IOException("Buffer error")).when(response).flushBuffer();
 
     filter.doFilter(request, response, filterChain);
 

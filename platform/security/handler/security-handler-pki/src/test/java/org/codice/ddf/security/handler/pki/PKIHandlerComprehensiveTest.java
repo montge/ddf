@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -246,7 +247,7 @@ public class PKIHandlerComprehensiveTest {
   }
 
   @Test
-  public void testRevokedCertWithNullResponse() {
+  public void testRevokedCertWithNullResponse() throws Exception {
     // Test revoked certificate with null HTTP response
     when(servletRequest.getAttribute(CERT_ATTRIBUTE)).thenReturn(revokedCertChain);
     when(tokenFactory.fromCertificates(revokedCertChain, null)).thenReturn(authToken);
@@ -277,8 +278,9 @@ public class PKIHandlerComprehensiveTest {
     when(request.getAttribute(CERT_ATTRIBUTE)).thenReturn(revokedCertChain);
     when(tokenFactory.fromCertificates(revokedCertChain, TEST_IP)).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(revokedCertChain)).thenReturn(false);
-    when(response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your certificate is revoked."))
-        .thenThrow(new java.io.IOException("Network error"));
+    doThrow(new java.io.IOException("Network error"))
+        .when(response)
+        .sendError(HttpServletResponse.SC_FORBIDDEN, "Your certificate is revoked.");
 
     HandlerResult result = pkiHandler.getNormalizedToken(request, response, filterChain, true);
 

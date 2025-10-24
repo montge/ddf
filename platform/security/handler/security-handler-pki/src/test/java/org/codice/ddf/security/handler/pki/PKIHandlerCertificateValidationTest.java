@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -101,7 +102,7 @@ public class PKIHandlerCertificateValidationTest {
   }
 
   @Test
-  public void testCertificateFailsCrlCheck() {
+  public void testCertificateFailsCrlCheck() throws Exception {
     when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(false);
@@ -114,7 +115,7 @@ public class PKIHandlerCertificateValidationTest {
   }
 
   @Test
-  public void testCertificateFailsOcspCheck() {
+  public void testCertificateFailsOcspCheck() throws Exception {
     when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(true);
@@ -181,8 +182,9 @@ public class PKIHandlerCertificateValidationTest {
     when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(false);
-    when(response.sendError(eq(HttpServletResponse.SC_FORBIDDEN), anyString()))
-        .thenThrow(new IOException("Test exception"));
+    doThrow(new IOException("Test exception"))
+        .when(response)
+        .sendError(eq(HttpServletResponse.SC_FORBIDDEN), anyString());
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
 

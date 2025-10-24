@@ -41,6 +41,7 @@ import java.util.HashSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.wss4j.common.saml.OpenSAMLUtil;
@@ -137,7 +138,7 @@ public class LoginFilterCoverageTest {
   @Test
   public void testHandlerResultWithNonBaseAuthTokenReturnsEarly() throws Exception {
     HandlerResult result = mock(HandlerResult.class);
-    when(result.getToken()).thenReturn(mock(Object.class));
+    when(result.getToken()).thenReturn(mock(AuthenticationToken.class));
     when(requestMock.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
 
     loginFilter.doFilter(requestMock, responseMock, filterChainMock);

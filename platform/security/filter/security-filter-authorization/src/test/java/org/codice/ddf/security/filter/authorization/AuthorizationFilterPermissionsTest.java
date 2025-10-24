@@ -15,6 +15,7 @@ package org.codice.ddf.security.filter.authorization;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -156,7 +157,7 @@ public class AuthorizationFilterPermissionsTest {
   @Test
   public void testExceptionRetrievingSubject() throws IOException, AuthenticationException {
     ThreadContext.unbindSubject();
-    ThreadContext.bind(null);
+    ThreadContext.bind((Subject) null);
 
     when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
     CollectionPermission permissions = mock(CollectionPermission.class);
@@ -175,8 +176,9 @@ public class AuthorizationFilterPermissionsTest {
     when(permissions.isEmpty()).thenReturn(false);
     when(contextPolicy.getAllowedAttributePermissions()).thenReturn(permissions);
     when(subject.isPermitted(permissions)).thenReturn(false);
-    when(response.sendError(HttpServletResponse.SC_FORBIDDEN))
-        .thenThrow(new IOException("Test exception"));
+    doThrow(new IOException("Test exception"))
+        .when(response)
+        .sendError(HttpServletResponse.SC_FORBIDDEN);
 
     filter.doFilter(request, response, filterChain);
 

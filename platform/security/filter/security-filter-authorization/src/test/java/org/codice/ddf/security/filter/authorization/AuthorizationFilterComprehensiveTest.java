@@ -16,6 +16,7 @@ package org.codice.ddf.security.filter.authorization;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -199,8 +200,9 @@ public class AuthorizationFilterComprehensiveTest {
     when(request.getRequestURI()).thenReturn(ADMIN_PATH);
     when(request.getAttribute(ContextPolicy.NO_AUTH_POLICY)).thenReturn(null);
     when(contextPolicyManager.getContextPolicy(ADMIN_PATH)).thenReturn(null);
-    when(response.sendError(HttpServletResponse.SC_FORBIDDEN))
-        .thenThrow(new java.io.IOException("Network error"));
+    doThrow(new java.io.IOException("Network error"))
+        .when(response)
+        .sendError(HttpServletResponse.SC_FORBIDDEN);
 
     authzFilter.doFilter(request, response, filterChain);
 

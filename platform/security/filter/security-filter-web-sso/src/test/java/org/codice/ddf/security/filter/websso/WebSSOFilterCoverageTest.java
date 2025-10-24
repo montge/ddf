@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -376,7 +377,7 @@ public class WebSSOFilterCoverageTest {
 
     filter.setHandlerList(Collections.singletonList(handler1));
 
-    when(filterChain.doFilter(any(), any())).thenThrow(new RuntimeException("Test exception"));
+    doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
 
     filter.doFilter(request, response, filterChain);
   }
@@ -399,7 +400,7 @@ public class WebSSOFilterCoverageTest {
 
     filter.setHandlerList(Collections.singletonList(handler1));
 
-    when(filterChain.doFilter(any(), any())).thenThrow(new RuntimeException("Test exception"));
+    doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
 
     filter.doFilter(request, response, filterChain);
   }
@@ -479,7 +480,7 @@ public class WebSSOFilterCoverageTest {
     AuthenticationFailureException exception =
         new AuthenticationFailureException("Auth failed", rootCause);
 
-    when(filterChain.doFilter(any(), any())).thenThrow(exception);
+    doThrow(exception).when(filterChain).doFilter(any(), any());
 
     HandlerResult errorResult = mock(HandlerResult.class);
     when(errorResult.getStatus()).thenReturn(Status.NO_ACTION);
@@ -494,11 +495,12 @@ public class WebSSOFilterCoverageTest {
   }
 
   @Test
-  public void testReturnSimpleResponseHandlesIOException() throws IOException {
+  public void testReturnSimpleResponseHandlesIOException() throws Exception {
     // This tests the private returnSimpleResponse method indirectly
     when(contextPolicyManager.getGuestAccess()).thenReturn(false);
-    when(response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE))
-        .thenThrow(new IOException("Test exception"));
+    doThrow(new IOException("Test exception"))
+        .when(response)
+        .sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 
     filter.doFilter(request, response, filterChain);
 

@@ -16,6 +16,7 @@ package org.codice.ddf.security.filter.websso;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -277,7 +278,7 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.setHandlerList(Collections.singletonList(handler));
 
-    when(filterChain.doFilter(any(), any())).thenThrow(new RuntimeException("Test exception"));
+    doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
 
     filter.doFilter(request, response, filterChain);
   }
