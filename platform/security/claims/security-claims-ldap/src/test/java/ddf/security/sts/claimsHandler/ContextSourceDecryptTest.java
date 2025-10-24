@@ -36,12 +36,9 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>Tests the secure password handling for LDAP context sources, including encryption service
  * integration and null-safety.
  *
- * <p>Coverage includes:
- * - Password decryption with EncryptionService
- * - Null EncryptionService handling
- * - Empty and null password handling
- * - Multiple password set operations
- * - EncryptionService lifecycle
+ * <p>Coverage includes: - Password decryption with EncryptionService - Null EncryptionService
+ * handling - Empty and null password handling - Multiple password set operations -
+ * EncryptionService lifecycle
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ContextSourceDecryptTest {
@@ -146,8 +143,7 @@ public class ContextSourceDecryptTest {
   public void testSetEmptyPasswordWithoutEncryptionService() {
     contextSourceDecrypt.setPassword("");
 
-    assertThat(
-        "Empty password should be stored as-is", contextSourceDecrypt.getPassword(), is(""));
+    assertThat("Empty password should be stored as-is", contextSourceDecrypt.getPassword(), is(""));
   }
 
   /**

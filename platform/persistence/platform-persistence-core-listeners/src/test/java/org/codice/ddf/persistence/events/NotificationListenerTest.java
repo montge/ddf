@@ -81,27 +81,27 @@ public class NotificationListenerTest {
     assertThat("Stored item should not be null", storedItem, notNullValue());
     assertThat(
         "ID should match",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_ID + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_ID),
         is("notification123"));
     assertThat(
         "User ID should match",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_USER_ID + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_USER_ID),
         is("admin"));
     assertThat(
         "Timestamp should match",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TIMESTAMP + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TIMESTAMP),
         is("2025-01-01T12:00:00Z"));
     assertThat(
         "Application should match",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_APPLICATION + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_APPLICATION),
         is("catalog-app"));
     assertThat(
         "Title should match",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE),
         is("Download Complete"));
     assertThat(
         "Message should match",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE),
         is("Your download has completed successfully"));
   }
 
@@ -286,15 +286,15 @@ public class NotificationListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Empty application should be stored",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_APPLICATION + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_APPLICATION),
         is(""));
     assertThat(
         "Empty title should be stored",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE),
         is(""));
     assertThat(
         "Empty message should be stored",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE),
         is(""));
   }
 
@@ -341,11 +341,11 @@ public class NotificationListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Special characters in title should be preserved",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE),
         is("Alert: <Important> & \"Critical\""));
     assertThat(
         "Special characters in message should be preserved",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE),
         is("Status: 100% complete | Error #123 @ 12:00"));
   }
 
@@ -370,7 +370,7 @@ public class NotificationListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Long string should be stored",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE),
         is(longString));
   }
 
@@ -395,7 +395,7 @@ public class NotificationListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Unicode characters should be preserved",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_TITLE),
         is("通知 - Уведомление - إشعار"));
   }
 
@@ -473,7 +473,7 @@ public class NotificationListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Minimal notification should be stored",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_USER_ID + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_USER_ID),
         is("admin"));
   }
 
@@ -518,7 +518,7 @@ public class NotificationListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Multi-line message should be preserved",
-        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE + "_txt"),
+        storedItem.getTextProperty(Notification.NOTIFICATION_KEY_MESSAGE),
         is("Line 1\nLine 2\nLine 3\nLine 4"));
   }
 

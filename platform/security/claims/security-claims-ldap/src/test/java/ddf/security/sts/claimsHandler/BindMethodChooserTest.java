@@ -30,12 +30,8 @@ import org.junit.Test;
  *
  * <p>Tests all LDAP bind methods: Simple, SASL, GSSAPI SASL, Digest MD5 SASL.
  *
- * <p>Coverage includes:
- * - All supported bind method types
- * - Null and empty parameter handling
- * - Realm and KDC address configuration
- * - Default fallback behavior
- * - Credential security
+ * <p>Coverage includes: - All supported bind method types - Null and empty parameter handling -
+ * Realm and KDC address configuration - Default fallback behavior - Credential security
  */
 public class BindMethodChooserTest {
 
@@ -77,7 +73,8 @@ public class BindMethodChooserTest {
         request,
         instanceOf(PlainSASLBindRequest.class));
     PlainSASLBindRequest saslRequest = (PlainSASLBindRequest) request;
-    assertThat("Authentication ID should match", saslRequest.getAuthenticationID(), is(BIND_USER_DN));
+    assertThat(
+        "Authentication ID should match", saslRequest.getAuthenticationID(), is(BIND_USER_DN));
   }
 
   /**
@@ -97,7 +94,8 @@ public class BindMethodChooserTest {
         request,
         instanceOf(GSSAPISASLBindRequest.class));
     GSSAPISASLBindRequest gssapiRequest = (GSSAPISASLBindRequest) request;
-    assertThat("Authentication ID should match", gssapiRequest.getAuthenticationID(), is(BIND_USER_DN));
+    assertThat(
+        "Authentication ID should match", gssapiRequest.getAuthenticationID(), is(BIND_USER_DN));
     assertThat("Realm should be configured", gssapiRequest.getRealm(), is(REALM));
     assertThat("KDC address should be configured", gssapiRequest.getKDCAddress(), is(KDC_ADDRESS));
   }
@@ -118,7 +116,8 @@ public class BindMethodChooserTest {
         request,
         instanceOf(GSSAPISASLBindRequest.class));
     GSSAPISASLBindRequest gssapiRequest = (GSSAPISASLBindRequest) request;
-    assertThat("Authentication ID should match", gssapiRequest.getAuthenticationID(), is(BIND_USER_DN));
+    assertThat(
+        "Authentication ID should match", gssapiRequest.getAuthenticationID(), is(BIND_USER_DN));
   }
 
   /**
@@ -138,10 +137,13 @@ public class BindMethodChooserTest {
         request,
         instanceOf(DigestMD5SASLBindRequest.class));
     DigestMD5SASLBindRequest digestRequest = (DigestMD5SASLBindRequest) request;
-    assertThat("Authentication ID should match", digestRequest.getAuthenticationID(), is(BIND_USER_DN));
+    assertThat(
+        "Authentication ID should match", digestRequest.getAuthenticationID(), is(BIND_USER_DN));
     assertThat("Realm should be configured", digestRequest.getRealm(), is(REALM));
     assertThat(
-        "Cipher should be HIGH", digestRequest.getCipher(), is(DigestMD5SASLBindRequest.CIPHER_HIGH));
+        "Cipher should be HIGH",
+        digestRequest.getCipher(),
+        is(DigestMD5SASLBindRequest.CIPHER_HIGH));
     assertThat("Should have QOP configured", digestRequest.getQOPs().size(), is(3));
     assertThat(
         "Should contain AUTH_CONF QOP",
@@ -174,7 +176,8 @@ public class BindMethodChooserTest {
         request,
         instanceOf(DigestMD5SASLBindRequest.class));
     DigestMD5SASLBindRequest digestRequest = (DigestMD5SASLBindRequest) request;
-    assertThat("Authentication ID should match", digestRequest.getAuthenticationID(), is(BIND_USER_DN));
+    assertThat(
+        "Authentication ID should match", digestRequest.getAuthenticationID(), is(BIND_USER_DN));
   }
 
   /**
@@ -185,7 +188,8 @@ public class BindMethodChooserTest {
   @Test
   public void testDigestMd5SaslBindMethodWithEmptyRealm() {
     BindRequest request =
-        BindMethodChooser.selectBindMethod("Digest MD5 SASL", BIND_USER_DN, BIND_PASSWORD, "", null);
+        BindMethodChooser.selectBindMethod(
+            "Digest MD5 SASL", BIND_USER_DN, BIND_PASSWORD, "", null);
 
     assertThat("BindRequest should not be null", request, notNullValue());
     assertThat(
@@ -266,8 +270,7 @@ public class BindMethodChooserTest {
   /**
    * Tests case sensitivity of bind method selection.
    *
-   * <p>Verifies that bind method string is case-sensitive (should default to Simple if wrong
-   * case).
+   * <p>Verifies that bind method string is case-sensitive (should default to Simple if wrong case).
    */
   @Test
   public void testBindMethodCaseSensitivity() {
@@ -298,8 +301,7 @@ public class BindMethodChooserTest {
 
     assertThat("First request should be Simple", request1, instanceOf(SimpleBindRequest.class));
     assertThat("Second request should be SASL", request2, instanceOf(PlainSASLBindRequest.class));
-    assertThat(
-        "Third request should be GSSAPI", request3, instanceOf(GSSAPISASLBindRequest.class));
+    assertThat("Third request should be GSSAPI", request3, instanceOf(GSSAPISASLBindRequest.class));
   }
 
   /**

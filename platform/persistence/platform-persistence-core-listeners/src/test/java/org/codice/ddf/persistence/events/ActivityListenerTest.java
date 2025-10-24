@@ -80,44 +80,38 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat("Stored item should not be null", storedItem, notNullValue());
     assertThat(
-        "ID should match",
-        storedItem.getTextProperty(ActivityEvent.ID_KEY + "_txt"),
-        is("activity123"));
+        "ID should match", storedItem.getTextProperty(ActivityEvent.ID_KEY), is("activity123"));
     assertThat(
         "Session ID should match",
-        storedItem.getTextProperty(ActivityEvent.SESSION_ID_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.SESSION_ID_KEY),
         is("session456"));
     assertThat(
         "Status should match",
-        storedItem.getTextProperty(ActivityEvent.STATUS_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.STATUS_KEY),
         is("COMPLETED"));
     assertThat(
         "Title should match",
-        storedItem.getTextProperty(ActivityEvent.TITLE_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.TITLE_KEY),
         is("Test Download"));
     assertThat(
         "Message should match",
-        storedItem.getTextProperty(ActivityEvent.MESSAGE_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.MESSAGE_KEY),
         is("Download completed successfully"));
     assertThat(
         "Timestamp should match",
-        storedItem.getTextProperty(ActivityEvent.TIMESTAMP_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.TIMESTAMP_KEY),
         is("2025-01-01T12:00:00Z"));
     assertThat(
-        "Progress should match",
-        storedItem.getTextProperty(ActivityEvent.PROGRESS_KEY + "_txt"),
-        is("100"));
+        "Progress should match", storedItem.getTextProperty(ActivityEvent.PROGRESS_KEY), is("100"));
     assertThat(
-        "User should match",
-        storedItem.getTextProperty(ActivityEvent.USER_ID_KEY + "_txt"),
-        is("admin"));
+        "User should match", storedItem.getTextProperty(ActivityEvent.USER_ID_KEY), is("admin"));
     assertThat(
         "Category should match",
-        storedItem.getTextProperty(ActivityEvent.CATEGORY_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.CATEGORY_KEY),
         is("Product Retrieval"));
     assertThat(
         "Download ID should match",
-        storedItem.getTextProperty(ActivityEvent.DOWNLOAD_ID_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.DOWNLOAD_ID_KEY),
         is("download789"));
   }
 
@@ -156,7 +150,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Failed status should be stored",
-        storedItem.getTextProperty(ActivityEvent.STATUS_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.STATUS_KEY),
         is("FAILED"));
   }
 
@@ -179,7 +173,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Cancelled status should be stored",
-        storedItem.getTextProperty(ActivityEvent.STATUS_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.STATUS_KEY),
         is("CANCELLED"));
   }
 
@@ -203,11 +197,11 @@ public class ActivityListenerTest {
     // Operations should be stored as "operations_key" format
     assertThat(
         "Operation cancel should be stored",
-        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_cancel" + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_cancel"),
         is("/cancel/download"));
     assertThat(
         "Operation retry should be stored",
-        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_retry" + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_retry"),
         is("/retry/download"));
   }
 
@@ -247,7 +241,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Zero progress should be stored",
-        storedItem.getTextProperty(ActivityEvent.PROGRESS_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.PROGRESS_KEY),
         is("0"));
   }
 
@@ -271,7 +265,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Maximum progress should be stored",
-        storedItem.getTextProperty(ActivityEvent.PROGRESS_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.PROGRESS_KEY),
         is("100"));
   }
 
@@ -295,7 +289,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Zero bytes should be stored",
-        storedItem.getLongProperty(ActivityEvent.BYTES_READ_KEY + "_lng"),
+        storedItem.getLongProperty(ActivityEvent.BYTES_READ_KEY),
         is(0L));
   }
 
@@ -319,7 +313,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Large byte count should be stored",
-        storedItem.getLongProperty(ActivityEvent.BYTES_READ_KEY + "_lng"),
+        storedItem.getLongProperty(ActivityEvent.BYTES_READ_KEY),
         is(10_000_000_000L));
   }
 
@@ -384,7 +378,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Empty title should be stored",
-        storedItem.getTextProperty(ActivityEvent.TITLE_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.TITLE_KEY),
         is(""));
   }
 
@@ -409,7 +403,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Special characters should be preserved in title",
-        storedItem.getTextProperty(ActivityEvent.TITLE_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.TITLE_KEY),
         is("Download: file<name>.xml & data"));
   }
 
@@ -438,19 +432,19 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "All operations should be stored",
-        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_cancel" + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_cancel"),
         is("/cancel"));
     assertThat(
         "All operations should be stored",
-        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_retry" + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_retry"),
         is("/retry"));
     assertThat(
         "All operations should be stored",
-        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_details" + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_details"),
         is("/details"));
     assertThat(
         "All operations should be stored",
-        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_download" + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.OPERATIONS_KEY + "_download"),
         is("/download"));
   }
 
@@ -502,7 +496,7 @@ public class ActivityListenerTest {
     PersistentItem storedItem = captor.getValue();
     assertThat(
         "Long string should be stored",
-        storedItem.getTextProperty(ActivityEvent.MESSAGE_KEY + "_txt"),
+        storedItem.getTextProperty(ActivityEvent.MESSAGE_KEY),
         is(longString));
   }
 

@@ -147,7 +147,7 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
   }
 
   @Test
-  public void testMalformedAuthHeader_NoSpace() {
+  public void testMalformedAuthHeaderNoSpace() {
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("BasicNoSpace");
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -157,7 +157,7 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
   }
 
   @Test
-  public void testMalformedAuthHeader_MultipleSpaces() {
+  public void testMalformedAuthHeaderMultipleSpaces() {
     when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Basic part1 part2 part3");
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -246,7 +246,7 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
   }
 
   @Test
-  public void testResolveFlag_True() {
+  public void testResolveFlagTrue() {
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, true);
 
     assertThat(result.getStatus(), is(HandlerResult.Status.REDIRECTED));
@@ -254,7 +254,7 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
   }
 
   @Test
-  public void testResolveFlag_False() {
+  public void testResolveFlagFalse() {
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
 
     assertThat(result.getStatus(), is(HandlerResult.Status.REDIRECTED));

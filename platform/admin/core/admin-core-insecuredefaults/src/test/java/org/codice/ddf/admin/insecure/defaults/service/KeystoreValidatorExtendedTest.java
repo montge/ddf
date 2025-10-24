@@ -35,15 +35,15 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import sun.security.x509.AlgorithmId;
-import sun.security.x509.CertificateAlgorithmId;
-import sun.security.x509.CertificateSerialNumber;
-import sun.security.x509.CertificateValidity;
-import sun.security.x509.CertificateVersion;
-import sun.security.x509.CertificateX509Key;
-import sun.security.x509.X500Name;
-import sun.security.x509.X509CertImpl;
-import sun.security.x509.X509CertInfo;
+import sun.security.x509.AlgorithmId; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.CertificateAlgorithmId; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.CertificateSerialNumber; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.CertificateValidity; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.CertificateVersion; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.CertificateX509Key; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.X500Name; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.X509CertImpl; // suppress checkstyle:IllegalImport required for testing
+import sun.security.x509.X509CertInfo; // suppress checkstyle:IllegalImport required for testing
 
 /** Extended unit tests for {@link KeystoreValidator} to increase coverage */
 @RunWith(MockitoJUnitRunner.class)
