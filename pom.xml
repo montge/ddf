@@ -53,6 +53,10 @@
         <maven.compiler.target>17</maven.compiler.target>
         <!-- Commented out to allow module exports for Groovy/Spock compilation -->
         <!-- <maven.compiler.release>17</maven.compiler.release> -->
+
+        <!-- Override dependency-check version from parent (6.1.1 -> 12.1.8) -->
+        <dependency-check-maven.version>12.1.8</dependency-check-maven.version>
+
         <!--  default URL properties -->
         <ddf.scm.connection.url />
         <snapshots.repository.url />

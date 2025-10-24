@@ -129,6 +129,10 @@ public class KeyValuePermissionImpl implements KeyValuePermission {
   public boolean implies(Permission p) {
     if (p instanceof KeyValuePermission) {
       if (getKey().equals(((KeyValuePermission) p).getKey())) {
+        // Empty permissions don't imply anything (no values means no permissions granted)
+        if (this.getValues().isEmpty() || ((KeyValuePermission) p).getValues().isEmpty()) {
+          return false;
+        }
         WildcardPermission thisWildCard = buildWildcardFromKeyValue(this);
         WildcardPermission implied = buildWildcardFromKeyValue((KeyValuePermission) p);
         return thisWildCard.implies(implied);

@@ -24,7 +24,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.Attribute;
@@ -318,7 +317,8 @@ public class AttributeImplEnhancedTest {
     AttributeImpl attribute = new AttributeImpl("multi", values);
 
     int hashCode = attribute.hashCode();
-    assertNotNull(hashCode);
+    // Verify hashCode is consistent
+    assertThat(attribute.hashCode(), is(hashCode));
   }
 
   @Test
