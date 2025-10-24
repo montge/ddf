@@ -25,9 +25,9 @@ import org.yaml.snakeyaml.Yaml;
  * Comprehensive security test harness for SnakeYAML vulnerabilities.
  *
  * <p>This test suite validates that the SnakeYAML version in use addresses critical security
- * vulnerabilities. SnakeYAML is a YAML parser used for configuration files and data
- * serialization. It may be used directly by DDF or as a transitive dependency through other
- * libraries (Jackson YAML, Spring Boot, etc.).
+ * vulnerabilities. SnakeYAML is a YAML parser used for configuration files and data serialization.
+ * It may be used directly by DDF or as a transitive dependency through other libraries (Jackson
+ * YAML, Spring Boot, etc.).
  *
  * <p><b>CVE-2022-1471: Deserialization of Untrusted Data Leading to RCE</b>
  *
@@ -36,6 +36,7 @@ import org.yaml.snakeyaml.Yaml;
  * <p><b>Description:</b> SnakeYAML's Constructor class allows arbitrary Java object instantiation
  * when parsing YAML documents with type tags. This enables remote code execution via
  * deserialization gadget chains. Attackers can:
+ *
  * <ul>
  *   <li>Execute arbitrary code by crafting malicious YAML with Java object tags
  *   <li>Achieve complete system compromise via RCE
@@ -44,6 +45,7 @@ import org.yaml.snakeyaml.Yaml;
  * </ul>
  *
  * <p><b>Attack Example:</b>
+ *
  * <pre>
  * !!javax.script.ScriptEngineManager [
  *   !!java.net.URLClassLoader [[
@@ -51,6 +53,7 @@ import org.yaml.snakeyaml.Yaml;
  *   ]]
  * ]
  * </pre>
+ *
  * This YAML causes SnakeYAML to instantiate classes and load remote code.
  *
  * <p><b>Affected Versions:</b> SnakeYAML &lt; 2.0
@@ -62,8 +65,9 @@ import org.yaml.snakeyaml.Yaml;
  * <p><b>CVSS Score:</b> 6.5 (MEDIUM) - Network exploitable, denial of service
  *
  * <p><b>Description:</b> SnakeYAML fails to limit the depth of recursive key-value structures,
- * allowing attackers to cause stack overflow errors via deeply nested YAML documents. This
- * results in:
+ * allowing attackers to cause stack overflow errors via deeply nested YAML documents. This results
+ * in:
+ *
  * <ul>
  *   <li>Application crashes and service unavailability
  *   <li>Stack overflow errors that cannot be caught
@@ -72,9 +76,11 @@ import org.yaml.snakeyaml.Yaml;
  * </ul>
  *
  * <p><b>Attack Example:</b>
+ *
  * <pre>
  * &a [*a, *a, *a, *a, *a, *a, *a, *a]
  * </pre>
+ *
  * This "billion laughs" style attack creates exponentially nested structures.
  *
  * <p><b>Affected Versions:</b> SnakeYAML &lt; 2.0
@@ -87,6 +93,7 @@ import org.yaml.snakeyaml.Yaml;
  *
  * <p><b>Description:</b> Multiple denial of service vulnerabilities in SnakeYAML's parsing logic
  * related to:
+ *
  * <ul>
  *   <li>CVE-2022-38749: Uncaught exceptions in key-value parsing
  *   <li>CVE-2022-38750: Stack overflow via recursive anchor definitions
@@ -100,6 +107,7 @@ import org.yaml.snakeyaml.Yaml;
  * <p><b>DDF Impact:</b>
  *
  * <p>SnakeYAML may be used in DDF for:
+ *
  * <ul>
  *   <li>Configuration file parsing (if YAML configs are supported)
  *   <li>Transitive dependency via Jackson Dataformat YAML
@@ -108,6 +116,7 @@ import org.yaml.snakeyaml.Yaml;
  * </ul>
  *
  * <p>Without proper SnakeYAML version, DDF is vulnerable to:
+ *
  * <ul>
  *   <li>Remote code execution via malicious YAML in configuration files
  *   <li>RCE via YAML payloads in REST API requests
@@ -119,6 +128,7 @@ import org.yaml.snakeyaml.Yaml;
  * <p><b>Required Version:</b> SnakeYAML &gt;= 2.0
  *
  * <p><b>References:</b>
+ *
  * <ul>
  *   <li>https://nvd.nist.gov/vuln/detail/CVE-2022-1471
  *   <li>https://nvd.nist.gov/vuln/detail/CVE-2022-38752
@@ -139,6 +149,7 @@ public class SnakeYamlSecurityTest {
    * Test: Verify SnakeYAML version is at least 2.0
    *
    * <p>Validates that the SnakeYAML version addresses:
+   *
    * <ul>
    *   <li>CVE-2022-1471 (Deserialization RCE)
    *   <li>CVE-2022-38752 (Stack overflow DoS)
@@ -160,10 +171,7 @@ public class SnakeYamlSecurityTest {
 
     // Parse version string (format: "2.0" or "2.0-SNAPSHOT")
     String[] parts = version.split("\\.");
-    assertThat(
-        "SnakeYAML version format should be X.Y",
-        parts.length >= 2,
-        is(true));
+    assertThat("SnakeYAML version format should be X.Y", parts.length >= 2, is(true));
 
     int majorVersion = Integer.parseInt(parts[0]);
 
@@ -177,43 +185,43 @@ public class SnakeYamlSecurityTest {
     if (majorVersion > MINIMUM_MAJOR_VERSION) {
       // Version 3.x or higher is secure
       isVersionSecure = true;
-    } else if (majorVersion == MINIMUM_MAJOR_VERSION
-        && minorVersion >= MINIMUM_MINOR_VERSION) {
+    } else if (majorVersion == MINIMUM_MAJOR_VERSION && minorVersion >= MINIMUM_MINOR_VERSION) {
       // Version 2.0 or higher is secure
       isVersionSecure = true;
     }
 
-    String errorMessage = String.format(
-        "SnakeYAML version %s is vulnerable to CVE-2022-1471 (Deserialization RCE), "
-            + "CVE-2022-38752 (DoS), and multiple other CVEs. "
-            + "Minimum required version: 2.0\n\n"
-            + "CVE-2022-1471 (CVSS 9.8 CRITICAL):\n"
-            + "  Deserialization of untrusted YAML data allows remote code execution.\n"
-            + "  Attack: YAML with !!javax.script.ScriptEngineManager tags\n"
-            + "  Impact: Complete system compromise via RCE\n"
-            + "  Fixed in SnakeYAML >= 2.0 (uses SafeConstructor by default)\n\n"
-            + "CVE-2022-38752 (CVSS 6.5 MEDIUM):\n"
-            + "  Stack overflow via deeply nested recursive keys causes DoS.\n"
-            + "  Attack: &a [*a, *a, *a, ...] (exponential expansion)\n"
-            + "  Impact: Application crash, service unavailability\n"
-            + "  Fixed in SnakeYAML >= 2.0 (recursion limits)\n\n"
-            + "CVE-2022-38749/38750/38751 (CVSS 6.5 MEDIUM each):\n"
-            + "  Multiple DoS vulnerabilities in parsing logic.\n"
-            + "  Fixed in SnakeYAML >= 1.32 (comprehensive fixes in 2.0)\n\n"
-            + "DDF Impact:\n"
-            + "  - RCE via malicious YAML in configuration files\n"
-            + "  - RCE via YAML payloads in REST APIs\n"
-            + "  - DoS via recursive YAML structures\n"
-            + "  - Complete system compromise with no authentication\n\n"
-            + "Migration Notes:\n"
-            + "  - SnakeYAML 2.0 uses SafeConstructor by default\n"
-            + "  - Legacy code using Constructor directly must migrate to SafeConstructor\n"
-            + "  - Explicit type tags (!!java.util.HashMap) are blocked by default\n\n"
-            + "References:\n"
-            + "  https://nvd.nist.gov/vuln/detail/CVE-2022-1471\n"
-            + "  https://nvd.nist.gov/vuln/detail/CVE-2022-38752\n"
-            + "  https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE-2022-1471",
-        version);
+    String errorMessage =
+        String.format(
+            "SnakeYAML version %s is vulnerable to CVE-2022-1471 (Deserialization RCE), "
+                + "CVE-2022-38752 (DoS), and multiple other CVEs. "
+                + "Minimum required version: 2.0\n\n"
+                + "CVE-2022-1471 (CVSS 9.8 CRITICAL):\n"
+                + "  Deserialization of untrusted YAML data allows remote code execution.\n"
+                + "  Attack: YAML with !!javax.script.ScriptEngineManager tags\n"
+                + "  Impact: Complete system compromise via RCE\n"
+                + "  Fixed in SnakeYAML >= 2.0 (uses SafeConstructor by default)\n\n"
+                + "CVE-2022-38752 (CVSS 6.5 MEDIUM):\n"
+                + "  Stack overflow via deeply nested recursive keys causes DoS.\n"
+                + "  Attack: &a [*a, *a, *a, ...] (exponential expansion)\n"
+                + "  Impact: Application crash, service unavailability\n"
+                + "  Fixed in SnakeYAML >= 2.0 (recursion limits)\n\n"
+                + "CVE-2022-38749/38750/38751 (CVSS 6.5 MEDIUM each):\n"
+                + "  Multiple DoS vulnerabilities in parsing logic.\n"
+                + "  Fixed in SnakeYAML >= 1.32 (comprehensive fixes in 2.0)\n\n"
+                + "DDF Impact:\n"
+                + "  - RCE via malicious YAML in configuration files\n"
+                + "  - RCE via YAML payloads in REST APIs\n"
+                + "  - DoS via recursive YAML structures\n"
+                + "  - Complete system compromise with no authentication\n\n"
+                + "Migration Notes:\n"
+                + "  - SnakeYAML 2.0 uses SafeConstructor by default\n"
+                + "  - Legacy code using Constructor directly must migrate to SafeConstructor\n"
+                + "  - Explicit type tags (!!java.util.HashMap) are blocked by default\n\n"
+                + "References:\n"
+                + "  https://nvd.nist.gov/vuln/detail/CVE-2022-1471\n"
+                + "  https://nvd.nist.gov/vuln/detail/CVE-2022-38752\n"
+                + "  https://bitbucket.org/snakeyaml/snakeyaml/wiki/CVE-2022-1471",
+            version);
 
     assertThat(errorMessage, isVersionSecure, is(true));
   }
@@ -243,9 +251,8 @@ public class SnakeYamlSecurityTest {
   /**
    * Test: Verify SnakeYAML uses SafeConstructor by default
    *
-   * <p>SnakeYAML 2.0 switched to SafeConstructor by default, which prevents arbitrary Java
-   * object instantiation. This test verifies we're using a version where SafeConstructor is
-   * the default.
+   * <p>SnakeYAML 2.0 switched to SafeConstructor by default, which prevents arbitrary Java object
+   * instantiation. This test verifies we're using a version where SafeConstructor is the default.
    */
   @Test
   public void testSnakeYamlUsesSafeConstructor() {
@@ -271,8 +278,8 @@ public class SnakeYamlSecurityTest {
   /**
    * Test: Verify SnakeYAML has recursion limits
    *
-   * <p>SnakeYAML 2.0 introduced recursion limits to prevent stack overflow DoS attacks. This
-   * test verifies we're using a version with these protections.
+   * <p>SnakeYAML 2.0 introduced recursion limits to prevent stack overflow DoS attacks. This test
+   * verifies we're using a version with these protections.
    */
   @Test
   public void testSnakeYamlHasRecursionLimits() {
@@ -298,15 +305,20 @@ public class SnakeYamlSecurityTest {
   /**
    * Test: Verify basic YAML parsing still works
    *
-   * <p>Ensures that legitimate YAML parsing functionality works correctly after security
-   * hardening in version 2.0.
+   * <p>Ensures that legitimate YAML parsing functionality works correctly after security hardening
+   * in version 2.0.
    */
   @Test
   public void testLegitimateYamlParsingWorks() {
     Yaml yaml = new Yaml();
 
-    String validYaml = "name: DDF\n" + "version: 2.29.0\n" + "modules:\n" + "  - catalog\n"
-        + "  - platform\n" + "  - security";
+    String validYaml =
+        "name: DDF\n"
+            + "version: 2.29.0\n"
+            + "modules:\n"
+            + "  - catalog\n"
+            + "  - platform\n"
+            + "  - security";
 
     Object result = yaml.load(validYaml);
 

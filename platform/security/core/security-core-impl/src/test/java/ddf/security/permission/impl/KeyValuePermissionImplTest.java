@@ -147,6 +147,7 @@ public class KeyValuePermissionImplTest {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testImpliesWithKeyValueCollectionPermission() {
     KeyValuePermissionImpl permission1 = new KeyValuePermissionImpl("testKey");
     permission1.addValue("value1");
@@ -157,12 +158,13 @@ public class KeyValuePermissionImplTest {
 
     KeyValueCollectionPermission collectionPermission = mock(KeyValueCollectionPermission.class);
     List<KeyValuePermission> permissionList = Collections.singletonList(nestedPermission);
-    when(collectionPermission.getKeyValuePermissionList()).thenReturn(permissionList);
+    when(collectionPermission.getKeyValuePermissionList()).thenReturn((List) permissionList);
 
     assertThat(permission1.implies(collectionPermission), is(true));
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testImpliesWithKeyValueCollectionPermissionNoMatch() {
     KeyValuePermissionImpl permission1 = new KeyValuePermissionImpl("key1");
     permission1.addValue("value1");
@@ -172,7 +174,7 @@ public class KeyValuePermissionImplTest {
 
     KeyValueCollectionPermission collectionPermission = mock(KeyValueCollectionPermission.class);
     List<KeyValuePermission> permissionList = Collections.singletonList(nestedPermission);
-    when(collectionPermission.getKeyValuePermissionList()).thenReturn(permissionList);
+    when(collectionPermission.getKeyValuePermissionList()).thenReturn((List) permissionList);
 
     assertThat(permission1.implies(collectionPermission), is(false));
   }
