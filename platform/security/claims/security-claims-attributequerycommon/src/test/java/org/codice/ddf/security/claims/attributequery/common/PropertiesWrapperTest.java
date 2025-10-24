@@ -18,35 +18,25 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mockStatic;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
-import org.codice.ddf.platform.util.properties.PropertiesLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.MockedStatic;
 
 /**
  * Comprehensive test harness for PropertiesWrapper utility class.
  *
  * <p>Tests properties file loading with variable substitution support via PropertiesLoader.
  *
- * <p>Coverage includes:
- * - Valid properties file loading
- * - Properties with variable substitution
- * - Empty properties files
- * - Missing/invalid properties files
- * - Properties inheritance (extends Properties)
- * - File path validation
- * - Edge cases and error handling
+ * <p>Coverage includes: - Valid properties file loading - Properties with variable substitution -
+ * Empty properties files - Missing/invalid properties files - Properties inheritance (extends
+ * Properties) - File path validation - Edge cases and error handling
  */
 public class PropertiesWrapperTest {
 
@@ -221,12 +211,12 @@ public class PropertiesWrapperTest {
    */
   @Test
   public void testPropertiesWithMultiLineValues() throws IOException {
-    writePropertiesFile(testPropertiesFile, "multiline=value1 \\\n" + "  value2 \\\n" + "  value3\n");
+    writePropertiesFile(
+        testPropertiesFile, "multiline=value1 \\\n" + "  value2 \\\n" + "  value3\n");
 
     PropertiesWrapper wrapper = new PropertiesWrapper(testPropertiesPath);
 
-    assertThat(
-        "Multi-line property should be loaded", wrapper.containsKey("multiline"), is(true));
+    assertThat("Multi-line property should be loaded", wrapper.containsKey("multiline"), is(true));
     String value = wrapper.getProperty("multiline");
     assertThat("Multi-line value should contain parts", value, notNullValue());
   }
@@ -243,9 +233,12 @@ public class PropertiesWrapperTest {
 
     PropertiesWrapper wrapper = new PropertiesWrapper(testPropertiesPath);
 
-    assertThat("Colon-separated property1 should work", wrapper.getProperty("property1"), is("value1"));
-    assertThat("Colon-separated property2 should work", wrapper.getProperty("property2"), is("value2"));
-    assertThat("Equals-separated property3 should work", wrapper.getProperty("property3"), is("value3"));
+    assertThat(
+        "Colon-separated property1 should work", wrapper.getProperty("property1"), is("value1"));
+    assertThat(
+        "Colon-separated property2 should work", wrapper.getProperty("property2"), is("value2"));
+    assertThat(
+        "Equals-separated property3 should work", wrapper.getProperty("property3"), is("value3"));
   }
 
   /**
@@ -263,12 +256,9 @@ public class PropertiesWrapperTest {
 
     PropertiesWrapper wrapper = new PropertiesWrapper(testPropertiesPath);
 
-    assertThat(
-        "Escaped tabs should be loaded", wrapper.containsKey("escaped1"), is(true));
-    assertThat(
-        "Escaped newlines should be loaded", wrapper.containsKey("escaped2"), is(true));
-    assertThat(
-        "Escaped backslashes should be loaded", wrapper.containsKey("escaped3"), is(true));
+    assertThat("Escaped tabs should be loaded", wrapper.containsKey("escaped1"), is(true));
+    assertThat("Escaped newlines should be loaded", wrapper.containsKey("escaped2"), is(true));
+    assertThat("Escaped backslashes should be loaded", wrapper.containsKey("escaped3"), is(true));
   }
 
   /**
@@ -299,9 +289,7 @@ public class PropertiesWrapperTest {
     PropertiesWrapper wrapper = new PropertiesWrapper(testPropertiesPath);
 
     assertThat(
-        "Duplicate key should have last value",
-        wrapper.getProperty("duplicate"),
-        is("value3"));
+        "Duplicate key should have last value", wrapper.getProperty("duplicate"), is("value3"));
     assertThat("Should have only 1 property", wrapper.size(), is(1));
   }
 
@@ -312,9 +300,7 @@ public class PropertiesWrapperTest {
    */
   @Test
   public void testPropertiesWithEmptyValues() throws IOException {
-    writePropertiesFile(
-        testPropertiesFile,
-        "empty1=\n" + "empty2=\n" + "notEmpty=value\n");
+    writePropertiesFile(testPropertiesFile, "empty1=\n" + "empty2=\n" + "notEmpty=value\n");
 
     PropertiesWrapper wrapper = new PropertiesWrapper(testPropertiesPath);
 
@@ -322,7 +308,8 @@ public class PropertiesWrapperTest {
     assertThat("Empty property1 value should be empty", wrapper.getProperty("empty1"), is(""));
     assertThat("Empty property2 should exist", wrapper.containsKey("empty2"), is(true));
     assertThat("Empty property2 value should be empty", wrapper.getProperty("empty2"), is(""));
-    assertThat("Non-empty property should have value", wrapper.getProperty("notEmpty"), is("value"));
+    assertThat(
+        "Non-empty property should have value", wrapper.getProperty("notEmpty"), is("value"));
   }
 
   /**
@@ -338,16 +325,13 @@ public class PropertiesWrapperTest {
 
     // Test inherited Properties methods
     wrapper.setProperty("newProperty", "newValue");
-    assertThat(
-        "setProperty should work", wrapper.getProperty("newProperty"), is("newValue"));
+    assertThat("setProperty should work", wrapper.getProperty("newProperty"), is("newValue"));
 
     assertThat("containsKey should work", wrapper.containsKey("initial"), is(true));
-    assertThat(
-        "containsKey should work for missing", wrapper.containsKey("missing"), is(false));
+    assertThat("containsKey should work for missing", wrapper.containsKey("missing"), is(false));
 
     wrapper.remove("initial");
-    assertThat(
-        "remove should work", wrapper.containsKey("initial"), is(false));
+    assertThat("remove should work", wrapper.containsKey("initial"), is(false));
   }
 
   /**
@@ -361,8 +345,7 @@ public class PropertiesWrapperTest {
 
     PropertiesWrapper wrapper = new PropertiesWrapper(testPropertiesFile.getAbsolutePath());
 
-    assertThat(
-        "Absolute path should work", wrapper.getProperty("absolutePath"), is("value"));
+    assertThat("Absolute path should work", wrapper.getProperty("absolutePath"), is("value"));
   }
 
   /**
@@ -457,8 +440,6 @@ public class PropertiesWrapperTest {
 
     assertThat("Two wrappers with same content should be equal", wrapper1, equalTo(wrapper2));
     assertThat(
-        "hashCode should be equal for equal objects",
-        wrapper1.hashCode(),
-        is(wrapper2.hashCode()));
+        "hashCode should be equal for equal objects", wrapper1.hashCode(), is(wrapper2.hashCode()));
   }
 }

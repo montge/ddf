@@ -256,7 +256,8 @@ public class ProxyHttpFilterChainTest {
   public void testChainWithNullTarget() throws Exception {
     List<HttpFilter> filters = Collections.singletonList(mockFilter1);
 
-    ProxyHttpFilterChain chain = new ProxyHttpFilterChain(filters, mockHandler, null, mockBaseRequest);
+    ProxyHttpFilterChain chain =
+        new ProxyHttpFilterChain(filters, mockHandler, null, mockBaseRequest);
 
     mockFilterBehavior(mockFilter1);
 
@@ -307,9 +308,7 @@ public class ProxyHttpFilterChainTest {
     verify(mockHandler, times(2)).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
   }
 
-  /**
-   * Helper method to mock filter behavior so it calls chain.doFilter
-   */
+  /** Helper method to mock filter behavior so it calls chain.doFilter */
   private void mockFilterBehavior(HttpFilter filter) throws IOException, ServletException {
     org.mockito.Mockito.doAnswer(
             invocation -> {
