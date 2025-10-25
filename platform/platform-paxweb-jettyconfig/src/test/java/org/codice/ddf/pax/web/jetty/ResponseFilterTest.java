@@ -192,11 +192,11 @@ public class ResponseFilterTest {
       when(mockRequest.getRequestURI()).thenReturn(path);
 
       filter.doFilter(mockRequest, mockResponse, mockFilterChain);
-
-      verify(mockResponse)
-          .setHeader(ResponseFilter.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
     }
 
+    // Verify cache control header was set for each HTML path
+    verify(mockResponse, times(htmlPaths.length))
+        .setHeader(ResponseFilter.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
     verify(mockFilterChain, times(htmlPaths.length)).doFilter(mockRequest, mockResponse);
   }
 

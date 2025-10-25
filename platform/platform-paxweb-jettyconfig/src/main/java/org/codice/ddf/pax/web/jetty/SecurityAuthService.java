@@ -22,6 +22,9 @@ public class SecurityAuthService implements AuthenticatorService {
   @Override
   @Nullable
   public <T> T getAuthenticatorService(String method, Class<T> iface) {
+    if (iface == null) {
+      return null;
+    }
     if (JettyAuthenticator.DDF_AUTH_METHOD.equals(method) && iface.equals(Authenticator.class)) {
       return iface.cast(new JettyAuthenticator());
     }

@@ -34,7 +34,6 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.session.HouseKeeper;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.xml.XmlConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,14 +52,20 @@ public class JettySessionManagementTest {
   public static void setupClass() throws Exception {
     // To get the AccessRequestLog to log in the target folder
     System.setProperty("ddf.data", "target");
+
     server = new Server();
     HandlerList handlers = new HandlerList();
     server.setHandler(handlers);
-    // Configure server according to the jetty.xml file
-    XmlConfiguration configuration =
-        new XmlConfiguration(
-            JettySessionManagementTest.class.getResourceAsStream("/jetty-session.xml"));
-    configuration.configure(server);
+
+    // Configure server directly in Java instead of using XML to avoid DTD validation issues
+    MockBundleContext bundleContext = new MockBundleContext();
+    AttributeSharingHashSessionIdManager sessionIdManager =
+        new AttributeSharingHashSessionIdManager(server, bundleContext);
+    server.setSessionIdManager(sessionIdManager);
+
+    AttributeSharingSessionDataStoreFactory sessionDataStoreFactory =
+        new AttributeSharingSessionDataStoreFactory();
+    server.addBean(sessionDataStoreFactory);
     // Have server bind to first available port
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(0);

@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.MetacardType;
@@ -185,8 +184,8 @@ public class JacksonDeserializationSecurityTest {
     try {
       testMapper.readValue(arbitraryClassJson, BaseType.class);
       fail("Should not allow arbitrary class instantiation");
-    } catch (InvalidDefinitionException | JsonMappingException e) {
-      // Expected - class validation should fail
+    } catch (JsonMappingException e) {
+      // Expected - class validation should fail (includes InvalidDefinitionException)
       assertThat("Should reject arbitrary class", e, is(notNullValue()));
     }
   }

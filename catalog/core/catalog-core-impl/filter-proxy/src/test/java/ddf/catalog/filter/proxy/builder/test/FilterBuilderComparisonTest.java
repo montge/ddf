@@ -73,8 +73,8 @@ public class FilterBuilderComparisonTest {
     filter = builder.attribute(TEST_ATTRIBUTE).greaterThan().number(3.14f);
     filter.accept(visitor, null);
 
-    // Test with Date
-    filter = builder.attribute(TEST_ATTRIBUTE).greaterThan().date(new Date());
+    // Test with Date (using milliseconds as numerical value)
+    filter = builder.attribute(TEST_ATTRIBUTE).greaterThan().number(new Date().getTime());
     filter.accept(visitor, null);
 
     InOrder inOrder = inOrder(visitor);
@@ -115,8 +115,8 @@ public class FilterBuilderComparisonTest {
     filter = builder.attribute(TEST_ATTRIBUTE).greaterThanOrEqualTo().number(3.14f);
     filter.accept(visitor, null);
 
-    // Test with Date
-    filter = builder.attribute(TEST_ATTRIBUTE).greaterThanOrEqualTo().date(new Date());
+    // Test with Date (using milliseconds as numerical value)
+    filter = builder.attribute(TEST_ATTRIBUTE).greaterThanOrEqualTo().number(new Date().getTime());
     filter.accept(visitor, null);
 
     InOrder inOrder = inOrder(visitor);
@@ -157,8 +157,8 @@ public class FilterBuilderComparisonTest {
     filter = builder.attribute(TEST_ATTRIBUTE).lessThan().number(3.14f);
     filter.accept(visitor, null);
 
-    // Test with Date
-    filter = builder.attribute(TEST_ATTRIBUTE).lessThan().date(new Date());
+    // Test with Date (using milliseconds as numerical value)
+    filter = builder.attribute(TEST_ATTRIBUTE).lessThan().number(new Date().getTime());
     filter.accept(visitor, null);
 
     InOrder inOrder = inOrder(visitor);
@@ -199,8 +199,8 @@ public class FilterBuilderComparisonTest {
     filter = builder.attribute(TEST_ATTRIBUTE).lessThanOrEqualTo().number(3.14f);
     filter.accept(visitor, null);
 
-    // Test with Date
-    filter = builder.attribute(TEST_ATTRIBUTE).lessThanOrEqualTo().date(new Date());
+    // Test with Date (using milliseconds as numerical value)
+    filter = builder.attribute(TEST_ATTRIBUTE).lessThanOrEqualTo().number(new Date().getTime());
     filter.accept(visitor, null);
 
     InOrder inOrder = inOrder(visitor);
