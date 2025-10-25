@@ -83,7 +83,12 @@ public class AuthorizationFilter implements SecurityFilter {
       CollectionPermission permissions = null;
       if (policy != null && subject != null) {
         permissions = policy.getAllowedAttributePermissions();
-        if (!permissions.isEmpty()) {
+        if (permissions == null) {
+          LOGGER.warn(
+              "Policy permissions are null for path {}. User is not permitted to continue. Check policy configuration!",
+              LogSanitizer.sanitize(path));
+          permitted = false;
+        } else if (!permissions.isEmpty()) {
           permitted = subject.isPermitted(permissions);
         }
       } else {
@@ -98,7 +103,7 @@ public class AuthorizationFilter implements SecurityFilter {
         LOGGER.debug("Subject not authorized.");
         returnNotAuthorized(httpResponse);
       } else {
-        if (!permissions.isEmpty()) {
+        if (permissions != null && !permissions.isEmpty()) {
           securityLogger.audit("Subject is authorized to view resource {}", path);
         }
         LOGGER.debug("Subject is authorized!");

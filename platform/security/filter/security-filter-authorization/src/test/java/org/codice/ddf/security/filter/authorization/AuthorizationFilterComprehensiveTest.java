@@ -166,8 +166,6 @@ public class AuthorizationFilterComprehensiveTest {
     when(request.getRequestURI()).thenReturn(ADMIN_PATH);
     when(request.getAttribute(ContextPolicy.NO_AUTH_POLICY)).thenReturn(null);
     when(contextPolicyManager.getContextPolicy(ADMIN_PATH)).thenReturn(contextPolicy);
-    when(contextPolicy.getAllowedAttributePermissions()).thenReturn(permissions);
-    when(permissions.isEmpty()).thenReturn(false);
 
     authzFilter.doFilter(request, response, filterChain);
 
@@ -186,8 +184,6 @@ public class AuthorizationFilterComprehensiveTest {
     when(request.getRequestURI()).thenReturn(ADMIN_PATH);
     when(request.getAttribute(ContextPolicy.NO_AUTH_POLICY)).thenReturn(null);
     when(contextPolicyManager.getContextPolicy(ADMIN_PATH)).thenReturn(contextPolicy);
-    when(contextPolicy.getAllowedAttributePermissions()).thenReturn(permissions);
-    when(permissions.isEmpty()).thenReturn(false);
 
     authzFilter.doFilter(request, response, filterChain);
 

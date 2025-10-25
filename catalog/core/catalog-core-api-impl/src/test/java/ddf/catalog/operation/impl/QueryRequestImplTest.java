@@ -533,7 +533,6 @@ public class QueryRequestImplTest {
   @Test
   public void testFederatedQueryRequest() {
     when(mockQuery.getPageSize()).thenReturn(20);
-    when(mockQuery.getStartIndex()).thenReturn(1);
 
     List<String> sourceIds = Arrays.asList(SOURCE_ID_1, SOURCE_ID_2);
     Map<String, Serializable> props = new HashMap<>();

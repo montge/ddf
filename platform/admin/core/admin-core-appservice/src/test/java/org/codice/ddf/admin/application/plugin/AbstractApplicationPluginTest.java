@@ -40,14 +40,9 @@ import org.junit.Test;
  * <p>Tests the core functionality of application plugin infrastructure including associations,
  * display properties, JSON serialization, and plugin management.
  *
- * <p>Coverage includes:
- * - Constructor initialization
- * - Display name and iframe location management
- * - Application associations (add, set, match)
- * - JSON serialization (toJSON)
- * - Plugin ID generation
- * - Edge cases and boundary conditions
- * - ALL_ASSOCIATION_KEY default behavior
+ * <p>Coverage includes: - Constructor initialization - Display name and iframe location management
+ * - Application associations (add, set, match) - JSON serialization (toJSON) - Plugin ID generation
+ * - Edge cases and boundary conditions - ALL_ASSOCIATION_KEY default behavior
  */
 public class AbstractApplicationPluginTest {
 
@@ -172,8 +167,7 @@ public class AbstractApplicationPluginTest {
 
     URI testUri = new URI("http://example.com/plugin");
     plugin.setTestIframeLocation(testUri);
-    assertThat(
-        "Iframe location should be set", plugin.getIframeLocation(), is(testUri.toString()));
+    assertThat("Iframe location should be set", plugin.getIframeLocation(), is(testUri.toString()));
   }
 
   /**
@@ -199,12 +193,16 @@ public class AbstractApplicationPluginTest {
     URI httpUri = new URI("http://localhost:8080/admin/plugin");
     plugin.setTestIframeLocation(httpUri);
     assertThat(
-        "HTTP URI should work", plugin.getIframeLocation(), is("http://localhost:8080/admin/plugin"));
+        "HTTP URI should work",
+        plugin.getIframeLocation(),
+        is("http://localhost:8080/admin/plugin"));
 
     URI httpsUri = new URI("https://secure.example.com/plugin");
     plugin.setTestIframeLocation(httpsUri);
     assertThat(
-        "HTTPS URI should work", plugin.getIframeLocation(), is("https://secure.example.com/plugin"));
+        "HTTPS URI should work",
+        plugin.getIframeLocation(),
+        is("https://secure.example.com/plugin"));
 
     URI relativeUri = new URI("/admin/plugin");
     plugin.setTestIframeLocation(relativeUri);
@@ -239,7 +237,10 @@ public class AbstractApplicationPluginTest {
 
     List<String> associations = plugin.getAssocations();
     assertThat("Associations should be updated", associations, hasSize(3));
-    assertThat("Should contain new associations", associations, containsInAnyOrder("app1", "app2", "app3"));
+    assertThat(
+        "Should contain new associations",
+        associations,
+        containsInAnyOrder("app1", "app2", "app3"));
     assertThat(
         "Should not contain ALL_ASSOCIATION_KEY",
         !associations.contains(ApplicationPlugin.ALL_ASSOCATION_KEY));
@@ -379,14 +380,10 @@ public class AbstractApplicationPluginTest {
   public void testMatchesAssocationNameWithSpecificAssociation() {
     plugin.setAssociations(Arrays.asList("catalog-app", "search-app"));
 
-    assertThat(
-        "Should match catalog-app", plugin.matchesAssocationName("catalog-app"), is(true));
-    assertThat(
-        "Should match search-app", plugin.matchesAssocationName("search-app"), is(true));
-    assertThat(
-        "Should not match admin-app", plugin.matchesAssocationName("admin-app"), is(false));
-    assertThat(
-        "Should not match other-app", plugin.matchesAssocationName("other-app"), is(false));
+    assertThat("Should match catalog-app", plugin.matchesAssocationName("catalog-app"), is(true));
+    assertThat("Should match search-app", plugin.matchesAssocationName("search-app"), is(true));
+    assertThat("Should not match admin-app", plugin.matchesAssocationName("admin-app"), is(false));
+    assertThat("Should not match other-app", plugin.matchesAssocationName("other-app"), is(false));
   }
 
   /**
@@ -398,8 +395,7 @@ public class AbstractApplicationPluginTest {
   public void testMatchesAssocationNameWithEmptyAssociations() {
     plugin.setAssociations(new ArrayList<>());
 
-    assertThat(
-        "Should not match any app", plugin.matchesAssocationName("catalog-app"), is(false));
+    assertThat("Should not match any app", plugin.matchesAssocationName("catalog-app"), is(false));
   }
 
   /**
@@ -436,9 +432,18 @@ public class AbstractApplicationPluginTest {
     Map<String, Object> json = plugin.toJSON();
 
     assertThat("JSON should not be null", json, notNullValue());
-    assertThat("JSON should have associations", json, hasEntry(ApplicationPlugin.APPLICATION_ASSOCIATION_KEY, Arrays.asList("app1", "app2")));
-    assertThat("JSON should have display name", json, hasEntry(ApplicationPlugin.DISPLAY_NAME_KEY, "Test Plugin"));
-    assertThat("JSON should have iframe location", json, hasEntry(ApplicationPlugin.IFRAME_LOCATION_KEY, "http://example.com/plugin"));
+    assertThat(
+        "JSON should have associations",
+        json,
+        hasEntry(ApplicationPlugin.APPLICATION_ASSOCIATION_KEY, Arrays.asList("app1", "app2")));
+    assertThat(
+        "JSON should have display name",
+        json,
+        hasEntry(ApplicationPlugin.DISPLAY_NAME_KEY, "Test Plugin"));
+    assertThat(
+        "JSON should have iframe location",
+        json,
+        hasEntry(ApplicationPlugin.IFRAME_LOCATION_KEY, "http://example.com/plugin"));
     assertThat("JSON should have ID key", json.containsKey(ApplicationPlugin.ID_KEY), is(true));
   }
 
@@ -455,8 +460,14 @@ public class AbstractApplicationPluginTest {
     Map<String, Object> json = plugin.toJSON();
 
     assertThat("JSON should not be null", json, notNullValue());
-    assertThat("Display name should be null in JSON", json, hasEntry(ApplicationPlugin.DISPLAY_NAME_KEY, null));
-    assertThat("Iframe location should be null in JSON", json, hasEntry(ApplicationPlugin.IFRAME_LOCATION_KEY, null));
+    assertThat(
+        "Display name should be null in JSON",
+        json,
+        hasEntry(ApplicationPlugin.DISPLAY_NAME_KEY, null));
+    assertThat(
+        "Iframe location should be null in JSON",
+        json,
+        hasEntry(ApplicationPlugin.IFRAME_LOCATION_KEY, null));
   }
 
   /**
@@ -486,10 +497,17 @@ public class AbstractApplicationPluginTest {
   public void testToJsonWithDefaultAssociation() {
     Map<String, Object> json = plugin.toJSON();
 
-    assertThat("JSON should have associations", json.containsKey(ApplicationPlugin.APPLICATION_ASSOCIATION_KEY), is(true));
+    assertThat(
+        "JSON should have associations",
+        json.containsKey(ApplicationPlugin.APPLICATION_ASSOCIATION_KEY),
+        is(true));
     @SuppressWarnings("unchecked")
-    List<String> associations = (List<String>) json.get(ApplicationPlugin.APPLICATION_ASSOCIATION_KEY);
-    assertThat("Associations should contain ALL_ASSOCIATION_KEY", associations, contains(ApplicationPlugin.ALL_ASSOCATION_KEY));
+    List<String> associations =
+        (List<String>) json.get(ApplicationPlugin.APPLICATION_ASSOCIATION_KEY);
+    assertThat(
+        "Associations should contain ALL_ASSOCIATION_KEY",
+        associations,
+        contains(ApplicationPlugin.ALL_ASSOCATION_KEY));
   }
 
   /**
@@ -503,7 +521,10 @@ public class AbstractApplicationPluginTest {
 
     Map<String, Object> json = plugin.toJSON();
 
-    assertThat("Empty display name should be in JSON", json, hasEntry(ApplicationPlugin.DISPLAY_NAME_KEY, ""));
+    assertThat(
+        "Empty display name should be in JSON",
+        json,
+        hasEntry(ApplicationPlugin.DISPLAY_NAME_KEY, ""));
   }
 
   /**
@@ -537,8 +558,7 @@ public class AbstractApplicationPluginTest {
 
     // Plugin associations should not be affected
     List<String> pluginAssociations = plugin.getAssocations();
-    assertThat(
-        "Plugin associations should be independent", pluginAssociations, hasSize(2));
+    assertThat("Plugin associations should be independent", pluginAssociations, hasSize(2));
   }
 
   /**
@@ -564,16 +584,11 @@ public class AbstractApplicationPluginTest {
   public void testAssociationCaseSensitivity() {
     plugin.setAssociations(Arrays.asList("Catalog-App"));
 
+    assertThat("Exact case should match", plugin.matchesAssocationName("Catalog-App"), is(true));
     assertThat(
-        "Exact case should match", plugin.matchesAssocationName("Catalog-App"), is(true));
+        "Different case should not match", plugin.matchesAssocationName("catalog-app"), is(false));
     assertThat(
-        "Different case should not match",
-        plugin.matchesAssocationName("catalog-app"),
-        is(false));
-    assertThat(
-        "Different case should not match",
-        plugin.matchesAssocationName("CATALOG-APP"),
-        is(false));
+        "Different case should not match", plugin.matchesAssocationName("CATALOG-APP"), is(false));
   }
 
   /**

@@ -45,7 +45,7 @@ public class NotificationListener implements EventHandler {
     String title = (String) event.getProperty(Notification.NOTIFICATION_KEY_TITLE);
     String userId = (String) event.getProperty(Notification.NOTIFICATION_KEY_USER_ID);
 
-    if (StringUtils.isEmpty(userId)) {
+    if (StringUtils.isBlank(userId)) {
       throw new IllegalArgumentException(
           "Event \"" + Notification.NOTIFICATION_KEY_USER_ID + "\" property is blank");
     }

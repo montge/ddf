@@ -25,16 +25,17 @@ import org.junit.Test;
  * Comprehensive security test harness for Apache CXF vulnerabilities.
  *
  * <p>This test suite validates that the Apache CXF version in use addresses critical security
- * vulnerabilities. Apache CXF is used extensively in DDF for REST and SOAP web services,
- * security token services (STS), SAML SSO, and federation protocols.
+ * vulnerabilities. Apache CXF is used extensively in DDF for REST and SOAP web services, security
+ * token services (STS), SAML SSO, and federation protocols.
  *
  * <p><b>CVE-2022-46364: SSRF via JNDI/LDAP URL Processing</b>
  *
  * <p><b>CVSS Score:</b> 9.8 (CRITICAL) - Network exploitable, no authentication required
  *
  * <p><b>Description:</b> A SSRF vulnerability in parsing the href attribute of an xop:Include
- * element in SOAP messages allows an attacker to trigger server-side requests to arbitrary
- * internal or external destinations via JNDI or LDAP URLs. This can be exploited to:
+ * element in SOAP messages allows an attacker to trigger server-side requests to arbitrary internal
+ * or external destinations via JNDI or LDAP URLs. This can be exploited to:
+ *
  * <ul>
  *   <li>Access internal services and metadata endpoints (AWS, Azure, GCP instance metadata)
  *   <li>Perform port scanning of internal networks
@@ -51,8 +52,9 @@ import org.junit.Test;
  * <p><b>CVSS Score:</b> 7.5 (HIGH) - Network exploitable, no authentication required
  *
  * <p><b>Description:</b> CXF's SAML SSO implementation fails to properly disable DTD processing,
- * allowing XML External Entity (XXE) attacks. An attacker can craft malicious SAML responses
- * that reference external entities to:
+ * allowing XML External Entity (XXE) attacks. An attacker can craft malicious SAML responses that
+ * reference external entities to:
+ *
  * <ul>
  *   <li>Read arbitrary files from the server filesystem
  *   <li>Perform SSRF attacks against internal services
@@ -69,9 +71,10 @@ import org.junit.Test;
  * <p><b>CVSS Score:</b> 7.5 (HIGH) - Network exploitable, no authentication required
  *
  * <p><b>Description:</b> A directory traversal vulnerability in the Aegis data binding and
- * AttachmentDataSource allows attackers to write files to arbitrary locations on the filesystem
- * via specially crafted SOAP attachments with malicious filenames containing path traversal
- * sequences (../, ../../, etc.). This can lead to:
+ * AttachmentDataSource allows attackers to write files to arbitrary locations on the filesystem via
+ * specially crafted SOAP attachments with malicious filenames containing path traversal sequences
+ * (../, ../../, etc.). This can lead to:
+ *
  * <ul>
  *   <li>Overwriting critical system files
  *   <li>Uploading web shells and backdoors
@@ -86,6 +89,7 @@ import org.junit.Test;
  * <p><b>DDF Impact:</b>
  *
  * <p>DDF uses Apache CXF extensively for:
+ *
  * <ul>
  *   <li>REST API endpoints (catalog, admin, search)
  *   <li>SOAP-based federation protocols (CSW, WFS, WMS)
@@ -95,6 +99,7 @@ import org.junit.Test;
  * </ul>
  *
  * <p>Without proper CXF version, DDF deployments are vulnerable to:
+ *
  * <ul>
  *   <li>Complete system compromise via JNDI injection
  *   <li>Credential theft via XXE attacks on SAML SSO
@@ -105,6 +110,7 @@ import org.junit.Test;
  * <p><b>Required Version:</b> Apache CXF &gt;= 3.5.5
  *
  * <p><b>References:</b>
+ *
  * <ul>
  *   <li>https://nvd.nist.gov/vuln/detail/CVE-2022-46364
  *   <li>https://nvd.nist.gov/vuln/detail/CVE-2022-46363
@@ -124,6 +130,7 @@ public class CxfSecurityTest {
    * Test: Verify Apache CXF version is at least 3.5.5
    *
    * <p>Validates that the Apache CXF version addresses:
+   *
    * <ul>
    *   <li>CVE-2022-46364 (SSRF via JNDI/LDAP)
    *   <li>CVE-2022-46363 (XXE in SAML SSO)
@@ -143,10 +150,7 @@ public class CxfSecurityTest {
 
     // Parse version string (format: "3.5.3" or "3.5.3-SNAPSHOT")
     String[] parts = version.split("\\.");
-    assertThat(
-        "CXF version format should be X.Y.Z",
-        parts.length >= 3,
-        is(true));
+    assertThat("CXF version format should be X.Y.Z", parts.length >= 3, is(true));
 
     int majorVersion = Integer.parseInt(parts[0]);
     int minorVersion = Integer.parseInt(parts[1]);
@@ -165,33 +169,30 @@ public class CxfSecurityTest {
       if (minorVersion > MINIMUM_MINOR_VERSION) {
         // Version 3.6.x or higher is secure
         isVersionSecure = true;
-      } else if (minorVersion == MINIMUM_MINOR_VERSION
-          && patchVersion >= MINIMUM_PATCH_VERSION) {
+      } else if (minorVersion == MINIMUM_MINOR_VERSION && patchVersion >= MINIMUM_PATCH_VERSION) {
         // Version 3.5.5 or higher is secure
         isVersionSecure = true;
       }
     }
 
-    String errorMessage = String.format(
-        "Apache CXF version %s is vulnerable to CVE-2022-46364 (SSRF), CVE-2022-46363 (XXE), "
-            + "and CVE-2023-26368 (Directory Traversal). Minimum required version: %d.%d.%d\n\n"
-            + "CVE-2022-46364 (CVSS 9.8 CRITICAL):\n"
-            + "  SSRF via JNDI/LDAP URL processing in SOAP attachments allows remote code execution\n"
-            + "  and access to internal services. Fixed in CXF >= 3.5.5\n\n"
-            + "CVE-2022-46363 (CVSS 7.5 HIGH):\n"
-            + "  XXE vulnerability in SAML SSO allows file disclosure and SSRF attacks.\n"
-            + "  Fixed in CXF >= 3.5.5\n\n"
-            + "CVE-2023-26368 (CVSS 7.5 HIGH):\n"
-            + "  Directory traversal in Aegis/AttachmentDataSource allows arbitrary file writes.\n"
-            + "  Fixed in CXF >= 3.5.6 (3.5.5 addresses primary vulnerabilities)\n\n"
-            + "References:\n"
-            + "  https://nvd.nist.gov/vuln/detail/CVE-2022-46364\n"
-            + "  https://nvd.nist.gov/vuln/detail/CVE-2022-46363\n"
-            + "  https://nvd.nist.gov/vuln/detail/CVE-2023-26368",
-        version,
-        MINIMUM_MAJOR_VERSION,
-        MINIMUM_MINOR_VERSION,
-        MINIMUM_PATCH_VERSION);
+    String errorMessage =
+        String.format(
+            "Apache CXF version %s is vulnerable to CVE-2022-46364 (SSRF), CVE-2022-46363 (XXE), "
+                + "and CVE-2023-26368 (Directory Traversal). Minimum required version: %d.%d.%d\n\n"
+                + "CVE-2022-46364 (CVSS 9.8 CRITICAL):\n"
+                + "  SSRF via JNDI/LDAP URL processing in SOAP attachments allows remote code execution\n"
+                + "  and access to internal services. Fixed in CXF >= 3.5.5\n\n"
+                + "CVE-2022-46363 (CVSS 7.5 HIGH):\n"
+                + "  XXE vulnerability in SAML SSO allows file disclosure and SSRF attacks.\n"
+                + "  Fixed in CXF >= 3.5.5\n\n"
+                + "CVE-2023-26368 (CVSS 7.5 HIGH):\n"
+                + "  Directory traversal in Aegis/AttachmentDataSource allows arbitrary file writes.\n"
+                + "  Fixed in CXF >= 3.5.6 (3.5.5 addresses primary vulnerabilities)\n\n"
+                + "References:\n"
+                + "  https://nvd.nist.gov/vuln/detail/CVE-2022-46364\n"
+                + "  https://nvd.nist.gov/vuln/detail/CVE-2022-46363\n"
+                + "  https://nvd.nist.gov/vuln/detail/CVE-2023-26368",
+            version, MINIMUM_MAJOR_VERSION, MINIMUM_MINOR_VERSION, MINIMUM_PATCH_VERSION);
 
     assertThat(errorMessage, isVersionSecure, is(true));
   }

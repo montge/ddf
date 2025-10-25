@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -237,7 +238,7 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Test
   public void testAuthPromptIOException() throws IOException {
-    when(response.flushBuffer()).thenThrow(new IOException("Test exception"));
+    doThrow(new IOException("Test exception")).when(response).flushBuffer();
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
 
