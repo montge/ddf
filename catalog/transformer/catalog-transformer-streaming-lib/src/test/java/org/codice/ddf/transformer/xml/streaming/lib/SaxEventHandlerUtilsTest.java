@@ -197,7 +197,7 @@ public class SaxEventHandlerUtilsTest {
     return attributes.stream()
         .filter(attribute -> attribute.getName().equals(name))
         .findFirst()
-        .orElseGet(null);
+        .orElse(null);
   }
 
   private void assertLanguageAttribute(List<Attribute> attributes, int size) {

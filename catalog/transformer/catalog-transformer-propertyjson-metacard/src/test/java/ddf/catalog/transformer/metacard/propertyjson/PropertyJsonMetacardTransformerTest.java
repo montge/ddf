@@ -121,7 +121,7 @@ public class PropertyJsonMetacardTransformerTest {
   @Test
   public void testTransformWithAllBasicDataTypes() throws Exception {
     Set<AttributeDescriptor> descriptors = new HashSet<>();
-    descriptors.addAll(BasicTypes.BASIC_METACARD.getAttributeDescriptors());
+    descriptors.addAll(MetacardImpl.BASIC_METACARD.getAttributeDescriptors());
     descriptors.add(
         new AttributeDescriptorImpl(
             "test-string", true, true, true, false, BasicTypes.STRING_TYPE));
@@ -174,7 +174,7 @@ public class PropertyJsonMetacardTransformerTest {
   @Test
   public void testTransformWithMultiValuedAttributes() throws Exception {
     Set<AttributeDescriptor> descriptors = new HashSet<>();
-    descriptors.addAll(BasicTypes.BASIC_METACARD.getAttributeDescriptors());
+    descriptors.addAll(MetacardImpl.BASIC_METACARD.getAttributeDescriptors());
     descriptors.add(
         new AttributeDescriptorImpl("tags", true, true, true, true, BasicTypes.STRING_TYPE));
 
@@ -252,7 +252,7 @@ public class PropertyJsonMetacardTransformerTest {
   @Test
   public void testTransformWithNullAttributeValues() throws Exception {
     Set<AttributeDescriptor> descriptors = new HashSet<>();
-    descriptors.addAll(BasicTypes.BASIC_METACARD.getAttributeDescriptors());
+    descriptors.addAll(MetacardImpl.BASIC_METACARD.getAttributeDescriptors());
     descriptors.add(
         new AttributeDescriptorImpl(
             "nullable-field", true, true, true, false, BasicTypes.STRING_TYPE));

@@ -37,6 +37,7 @@ import ddf.catalog.validation.AttributeValidatorRegistry;
 import ddf.catalog.validation.ValidationException;
 import ddf.catalog.validation.impl.report.AttributeValidationReportImpl;
 import ddf.catalog.validation.impl.validator.SizeValidator;
+import ddf.catalog.validation.impl.violation.ValidationViolationImpl;
 import ddf.catalog.validation.report.MetacardValidationReport;
 import ddf.catalog.validation.violation.ValidationViolation;
 import java.util.Collections;
