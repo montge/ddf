@@ -23,11 +23,9 @@ import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,9 +33,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import java.math.BigInteger;
-import java.security.PrivateKey;
-import javax.security.auth.x500.X500Principal;
 
 /** Extended unit tests for {@link KeystoreValidator} to increase coverage */
 @RunWith(MockitoJUnitRunner.class)
@@ -341,56 +336,11 @@ public class KeystoreValidatorExtendedTest {
   }
 
   private KeyPair generateKeyPair() throws Exception {
-    KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-    keyGen.initialize(2048);
-    return keyGen.generateKeyPair();
+    return TestCertificateGenerator.generateKeyPair();
   }
 
   private X509Certificate generateCertificate(String dn, KeyPair keyPair, int validityDays)
       throws Exception {
-    // Use standard Java API for certificate generation (Java 17+ compatible)
-    // Create a self-signed certificate using the X.509 format
-
-    X500Principal subject = new X500Principal(dn);
-    Date from = new Date();
-    Date to = new Date(from.getTime() + validityDays * 86400000L);
-    BigInteger serialNumber = BigInteger.valueOf(System.currentTimeMillis());
-
-    // Create certificate using Java's SunJSSE provider via KeyStore API
-    // This approach works with Java 11, 17, and 21+
-    KeyStore tempKeyStore = KeyStore.getInstance("JKS");
-    tempKeyStore.load(null, null);
-
-    // Use KeyStore.Builder to create a self-signed certificate entry
-    // Store the key pair temporarily to generate a self-signed cert
-    java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-
-    // Create a minimal self-signed certificate using javax.security APIs
-    // This is a workaround that generates a certificate through KeyStore operations
-    // which internally uses the provider's certificate generation
-    sun.security.tools.keytool.CertAndKeyGen certGen =
-        new sun.security.tools.keytool.CertAndKeyGen("RSA", "SHA256WithRSA", null);
-
-    // Generate using existing key pair
-    PrivateKey privateKey = keyPair.getPrivate();
-
-    // Use reflection to access certificate generation without deprecated APIs
-    Class<?> certGenClass = Class.forName("sun.security.tools.keytool.CertAndKeyGen");
-    Object certGenInstance = certGenClass.getConstructor(String.class, String.class, String.class)
-        .newInstance("RSA", "SHA256WithRSA", null);
-
-    // Set the key pair
-    java.lang.reflect.Method generateMethod = certGenClass.getDeclaredMethod("generate", int.class);
-    generateMethod.invoke(certGenInstance, 2048);
-
-    // Get the self-signed certificate
-    java.lang.reflect.Method getSelfCertMethod = certGenClass.getDeclaredMethod(
-        "getSelfCertificate", X500Principal.class, Date.class, long.class);
-
-    long validity = validityDays * 86400L; // days to seconds
-    X509Certificate cert = (X509Certificate) getSelfCertMethod.invoke(
-        certGenInstance, subject, from, validity);
-
-    return cert;
+    return TestCertificateGenerator.generateCertificate(dn, keyPair, validityDays);
   }
 }

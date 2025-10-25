@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.codice.ddf.admin.insecure.defaults.service.Alert.Level;
 import org.codice.ddf.platform.util.properties.PropertiesLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +53,17 @@ public abstract class PropertiesFileValidator implements Validator {
       return null;
     }
 
-    Properties properties = PropertiesLoader.getInstance().loadProperties(path.toString());
-    if (properties.isEmpty()) {
+    // Check if file exists before loading
+    if (!path.toFile().exists()) {
       String msg = String.format(GENERIC_INSECURE_DEFAULTS_MSG, path.toString());
       LOGGER.debug(msg);
-      alerts.add(new Alert(Level.WARN, msg));
+      alerts.add(new Alert(Alert.Level.WARN, msg));
+      return new Properties(); // Return empty properties
+    }
+
+    Properties properties = PropertiesLoader.getInstance().loadProperties(path.toString());
+    if (properties.isEmpty()) {
+      LOGGER.debug("Empty properties file found at {}", path.toString());
     }
 
     return properties;
