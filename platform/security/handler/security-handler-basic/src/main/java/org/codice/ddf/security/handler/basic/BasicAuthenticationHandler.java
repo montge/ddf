@@ -148,15 +148,23 @@ public class BasicAuthenticationHandler implements AuthenticationHandler {
       String authInfo = parts[1];
 
       if (authType.equalsIgnoreCase(AUTHENTICATION_SCHEME_BASIC)) {
-        byte[] decode = Base64.getDecoder().decode(authInfo);
-        if (decode != null) {
-          String userPass = new String(decode, StandardCharsets.UTF_8);
-          String[] authComponents = userPass.split(":");
-          if (authComponents.length == 2) {
-            token = tokenFactory.fromUsernamePassword(authComponents[0], authComponents[1], ip);
-          } else if ((authComponents.length == 1) && (userPass.endsWith(":"))) {
-            token = tokenFactory.fromUsernamePassword(authComponents[0], "", ip);
+        try {
+          byte[] decode = Base64.getDecoder().decode(authInfo);
+          if (decode != null) {
+            String userPass = new String(decode, StandardCharsets.UTF_8);
+            String[] authComponents = userPass.split(":", -1);
+            if (authComponents.length >= 2) {
+              String username = authComponents[0];
+              // Reconstruct password from remaining parts (handles colons in password)
+              String password = userPass.substring(username.length() + 1);
+              // Reject empty username or empty password for security
+              if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+                token = tokenFactory.fromUsernamePassword(username, password, ip);
+              }
+            }
           }
+        } catch (IllegalArgumentException e) {
+          LOGGER.debug("Invalid Base64 encoding in authorization header", e);
         }
       }
     }

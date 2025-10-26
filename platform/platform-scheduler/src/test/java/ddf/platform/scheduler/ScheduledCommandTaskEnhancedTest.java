@@ -18,6 +18,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -73,7 +75,7 @@ public class ScheduledCommandTaskEnhancedTest {
   @Test
   public void testConstructorSetsJobFactory() throws SchedulerException {
     Scheduler scheduler = mock(Scheduler.class);
-    CommandJobFactory factory = new CommandJobFactory(new Security());
+    CommandJobFactory factory = new CommandJobFactory(mock(Security.class));
 
     new ScheduledCommandTask(scheduler, factory);
 
@@ -284,7 +286,7 @@ public class ScheduledCommandTaskEnhancedTest {
     Map<String, Object> properties = new HashMap<>();
     properties.put(CommandJob.COMMAND_KEY, "updated:command");
 
-    when(mockScheduler.addJob(any(JobDetail.class), eq(true))).thenReturn(null);
+    doNothing().when(mockScheduler).addJob(any(JobDetail.class), eq(true));
     when(mockScheduler.rescheduleJob(any(TriggerKey.class), any(Trigger.class)))
         .thenReturn(new Date());
 
@@ -302,7 +304,7 @@ public class ScheduledCommandTaskEnhancedTest {
     Map<String, Object> properties = new HashMap<>();
     properties.put(ScheduledCommandTask.INTERVAL_STRING, "0 0 12 * * ?");
 
-    when(mockScheduler.addJob(any(JobDetail.class), eq(true))).thenReturn(null);
+    doNothing().when(mockScheduler).addJob(any(JobDetail.class), eq(true));
     when(mockScheduler.rescheduleJob(any(TriggerKey.class), any(Trigger.class)))
         .thenReturn(new Date());
 
@@ -319,7 +321,7 @@ public class ScheduledCommandTaskEnhancedTest {
     properties.put(ScheduledCommandTask.INTERVAL_TYPE, ScheduledCommandTask.SECOND_INTERVAL);
     properties.put(ScheduledCommandTask.INTERVAL_STRING, "120");
 
-    when(mockScheduler.addJob(any(JobDetail.class), eq(true))).thenReturn(null);
+    doNothing().when(mockScheduler).addJob(any(JobDetail.class), eq(true));
     when(mockScheduler.rescheduleJob(any(TriggerKey.class), any(Trigger.class)))
         .thenReturn(new Date());
 
@@ -337,7 +339,7 @@ public class ScheduledCommandTaskEnhancedTest {
     properties.put(ScheduledCommandTask.INTERVAL_STRING, "0 0/15 * * * ?");
     properties.put(ScheduledCommandTask.INTERVAL_TYPE, ScheduledCommandTask.CRON_STRING);
 
-    when(mockScheduler.addJob(any(JobDetail.class), eq(true))).thenReturn(null);
+    doNothing().when(mockScheduler).addJob(any(JobDetail.class), eq(true));
     when(mockScheduler.rescheduleJob(any(TriggerKey.class), any(Trigger.class)))
         .thenReturn(new Date());
 
@@ -355,8 +357,9 @@ public class ScheduledCommandTaskEnhancedTest {
     Map<String, Object> properties = new HashMap<>();
     properties.put(CommandJob.COMMAND_KEY, "test:command");
 
-    when(mockScheduler.addJob(any(JobDetail.class), eq(true)))
-        .thenThrow(new SchedulerException("Test exception"));
+    doThrow(new SchedulerException("Test exception"))
+        .when(mockScheduler)
+        .addJob(any(JobDetail.class), eq(true));
 
     scheduledTask.updateTask(properties);
 

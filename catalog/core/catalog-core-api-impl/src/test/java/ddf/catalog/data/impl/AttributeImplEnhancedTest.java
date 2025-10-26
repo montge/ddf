@@ -365,9 +365,10 @@ public class AttributeImplEnhancedTest {
     List<Serializable> innerList = new ArrayList<>(Arrays.asList("a", "b"));
     AttributeImpl attribute = new AttributeImpl("nested", (Serializable) innerList);
 
-    assertThat(attribute.getValue(), is(innerList));
-    // When passed as List, it should contain the list elements
+    // When passed as List, the constructor unpacks it into individual elements
+    assertThat(attribute.getValue(), is("a"));
     assertThat(attribute.getValues(), hasSize(2));
+    assertThat(attribute.getValues(), contains("a", "b"));
   }
 
   @Test
