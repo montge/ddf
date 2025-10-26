@@ -39,10 +39,12 @@ import org.codice.ddf.security.handler.AuthenticationTokenFactory;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /** Test certificate validation and revocation checking for PKIHandler. */
+@RunWith(MockitoJUnitRunner.class)
 public class PKIHandlerCertificateValidationTest {
 
   private PKIHandler handler;
@@ -59,8 +61,6 @@ public class PKIHandlerCertificateValidationTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
-
     handler = new PKIHandler();
     handler.tokenFactory = tokenFactory;
     handler.crlChecker = crlChecker;

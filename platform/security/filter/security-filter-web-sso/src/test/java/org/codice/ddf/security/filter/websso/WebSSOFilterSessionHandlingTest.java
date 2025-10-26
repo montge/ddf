@@ -45,10 +45,12 @@ import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /** Test session handling and edge cases for WebSSOFilter. */
+@RunWith(MockitoJUnitRunner.class)
 public class WebSSOFilterSessionHandlingTest {
 
   private WebSSOFilter filter;
@@ -64,8 +66,6 @@ public class WebSSOFilterSessionHandlingTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
-
     filter = new WebSSOFilter();
     filter.setContextPolicyManager(contextPolicyManager);
     filter.setSessionFactory(sessionFactory);

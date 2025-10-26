@@ -52,10 +52,12 @@ import org.codice.ddf.security.policy.context.ContextPolicyManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /** Additional test coverage for LoginFilter exception handling and edge cases. */
+@RunWith(MockitoJUnitRunner.class)
 public class LoginFilterSecurityExceptionTest {
 
   private LoginFilter loginFilter;
@@ -77,8 +79,6 @@ public class LoginFilterSecurityExceptionTest {
 
   @Before
   public void setup() throws Exception {
-    MockitoAnnotations.initMocks(this);
-
     loginFilter = new LoginFilter();
     loginFilter.setSecurityManager(securityManagerMock);
     loginFilter.setSessionFactory(sessionFactory);

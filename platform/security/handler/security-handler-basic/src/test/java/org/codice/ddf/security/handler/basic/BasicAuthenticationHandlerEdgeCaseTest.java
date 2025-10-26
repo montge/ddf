@@ -32,10 +32,12 @@ import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /** Test edge cases and error handling for BasicAuthenticationHandler. */
+@RunWith(MockitoJUnitRunner.class)
 public class BasicAuthenticationHandlerEdgeCaseTest {
 
   private BasicAuthenticationHandler handler;
@@ -46,7 +48,6 @@ public class BasicAuthenticationHandlerEdgeCaseTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
     handler = new BasicAuthenticationHandler();
 
     when(request.getServletPath()).thenReturn("/test/path");

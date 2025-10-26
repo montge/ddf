@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -566,7 +567,8 @@ public class CswFilterFactory {
       envelopeType.setUpperCorner(createDirectPositionType(envelope.getMaxX(), envelope.getMaxY()));
     }
 
-    return gmlObjectFactory.createEnvelope(envelopeType);
+    return new JAXBElement<>(
+        new QName("http://www.opengis.net/gml", "Envelope"), EnvelopeType.class, envelopeType);
   }
 
   private Envelope getEnvelopeFromWkt(String wkt) {
