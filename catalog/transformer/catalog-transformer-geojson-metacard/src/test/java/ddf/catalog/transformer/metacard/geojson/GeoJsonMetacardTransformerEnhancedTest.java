@@ -397,7 +397,7 @@ public class GeoJsonMetacardTransformerEnhancedTest {
 
     MetacardType type = new MetacardTypeImpl("test", descriptors);
     MetacardImpl metacard = new MetacardImpl(type);
-    metacard.setAttribute(new AttributeImpl("nullable", null));
+    metacard.setAttribute(new AttributeImpl("nullable", (Serializable) null));
 
     BinaryContent content = transformer.transform(metacard, null);
     String jsonText = new String(content.getByteArray());

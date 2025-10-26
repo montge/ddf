@@ -26,6 +26,7 @@ import ddf.catalog.operation.CreateRequest;
 import ddf.catalog.operation.CreateResponse;
 import ddf.catalog.operation.DeleteRequest;
 import ddf.catalog.operation.DeleteResponse;
+import ddf.catalog.operation.Update;
 import ddf.catalog.operation.UpdateRequest;
 import ddf.catalog.operation.UpdateResponse;
 import ddf.catalog.operation.impl.UpdateImpl;
@@ -231,7 +232,7 @@ public class FrameworkProducerTest {
     MetacardImpl metacard = new MetacardImpl();
     metacard.setId("test-id");
 
-    UpdateImpl update = new UpdateImpl(metacard, null, metacard);
+    UpdateImpl update = new UpdateImpl(metacard, metacard);
 
     when(mockMessage.getHeader(OPERATION_HEADER)).thenReturn("UPDATE");
     when(mockMessage.getBody(Metacard.class)).thenReturn(metacard);
@@ -248,12 +249,12 @@ public class FrameworkProducerTest {
   @Test
   public void testUpdateWithMultipleMetacards() throws Exception {
     List<Metacard> metacards = new ArrayList<>();
-    List<UpdateImpl> updates = new ArrayList<>();
+    List<Update> updates = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       MetacardImpl metacard = new MetacardImpl();
       metacard.setId("test-id-" + i);
       metacards.add(metacard);
-      updates.add(new UpdateImpl(metacard, null, metacard));
+      updates.add(new UpdateImpl(metacard, metacard));
     }
 
     when(mockMessage.getHeader(OPERATION_HEADER)).thenReturn("UPDATE");
@@ -427,7 +428,7 @@ public class FrameworkProducerTest {
   public void testUpdateWithCaseInsensitiveOperation() throws Exception {
     MetacardImpl metacard = new MetacardImpl();
     metacard.setId("test-id");
-    UpdateImpl update = new UpdateImpl(metacard, null, metacard);
+    UpdateImpl update = new UpdateImpl(metacard, metacard);
 
     when(mockMessage.getHeader(OPERATION_HEADER)).thenReturn("update");
     when(mockMessage.getBody(Metacard.class)).thenReturn(metacard);
@@ -547,7 +548,7 @@ public class FrameworkProducerTest {
   @Test
   public void testUpdateWithPartialSuccess() throws Exception {
     List<Metacard> metacards = new ArrayList<>();
-    List<UpdateImpl> updates = new ArrayList<>();
+    List<Update> updates = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
       MetacardImpl metacard = new MetacardImpl();
       metacard.setId("test-id-" + i);
@@ -555,7 +556,7 @@ public class FrameworkProducerTest {
     }
     // Only 2 out of 3 updated
     for (int i = 0; i < 2; i++) {
-      updates.add(new UpdateImpl(metacards.get(i), null, metacards.get(i)));
+      updates.add(new UpdateImpl(metacards.get(i), metacards.get(i)));
     }
 
     when(mockMessage.getHeader(OPERATION_HEADER)).thenReturn("UPDATE");
