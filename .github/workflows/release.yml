@@ -252,7 +252,7 @@ jobs:
 
     steps:
       - name: Delete old nightly releases
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -331,7 +331,7 @@ jobs:
           echo "4. Announce release to users"
 
       - name: Create verification report
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const releaseType = '${{ github.event.inputs.release_type }}' || 'nightly';
