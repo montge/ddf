@@ -1,0 +1,1030 @@
+name: Build and Test (Parallel Strategy)
+
+# This workflow implements a parallel test strategy to reduce build time from 150 minutes to ~60-90 minutes.
+# Strategy: Split building from testing, then run tests in parallel groups, and aggregate results.
+#
+# JOB STRUCTURE (Phase 3 Complete - 7 Jobs):
+#   Job 1: Build - Compile all modules without tests (~30-40 min)
+#   Job 2: Test Libs + Platform Core - Test foundational libraries (~45-70 min)
+#   Job 3: Test Catalog Core - Test core catalog framework (~50-80 min)
+#   Job 4: Test Features + Transformers + Plugins - Test pluggable components (~35-50 min)
+#   Job 5: Test Admin + Solr + Spatial - Test admin and search components (~40-60 min)
+#   Job 6: Integration Tests - OSGi container tests with Pax Exam (~60-120 min)
+#   Job 7: Aggregate Results - Collect and report all test/coverage results (~10-20 min)
+#
+# Benefits:
+# - Build artifacts once, test in parallel (5 test jobs run concurrently)
+# - Better resource utilization across GitHub runners
+# - Faster feedback on test failures (60-90 min vs 150 min sequential)
+# - Easier to identify slow test groups for further optimization
+# - Comprehensive aggregated reporting with per-job breakdown
+# - PR comments with detailed test and coverage summaries
+#
+# ARTIFACTS:
+# - Test results: test-results-{job-name}-java-{17|21} (7 days)
+# - Coverage reports: jacoco-reports-{job-name}-java-{17|21} (7 days)
+# - Maven repository: maven-repo-java-{17|21} (1 day, for job coordination)
+# - Distribution: ddf-distribution (14 days, Java 17 only)
+# - Aggregated summaries: test-summary.md, coverage-summary.md (30 days)
+#
+# TROUBLESHOOTING:
+# - If job times out: Increase timeout-minutes for that specific job
+# - If out of memory: Increase MAVEN_OPTS heap in env section
+# - If tests fail: Check individual job logs; artifacts preserved for 7 days
+# - If aggregation fails: Verify all upstream jobs uploaded artifacts correctly
+# - Missing artifacts: Check artifact name patterns match between upload/download
+
+on:
+  push:
+    branches:
+      - master
+      - '*.x'  # Version branches like 2.29.x
+  pull_request:
+    branches:
+      - master
+      - '*.x'
+  workflow_dispatch:  # Manual trigger
+  schedule:
+    # Nightly builds at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  # DDF has 455 modules - requires substantial heap
+  # Java module exports moved to maven-compiler-plugin in pom.xml
+  MAVEN_OPTS: >-
+    -Xmx8G -Xms1G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
+  MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+
+jobs:
+  #
+  # JOB 1: BUILD ALL MODULES (NO TESTS)
+  #
+  # Purpose: Build entire codebase once and cache artifacts for parallel test jobs
+  # - Compiles all 455 modules
+  # - Skips all tests (-DskipTests)
+  # - Uses parallel builds (-T 1C = 1 thread per CPU core)
+  # - Uploads Maven repository for test jobs to download
+  # - Uploads distribution ZIP for release artifacts
+  #
+  build:
+    name: Build All Modules (No Tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build all modules (skip tests)
+        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipTests
+
+      # Upload Maven repository containing all built artifacts
+      # Only include ddf/ artifacts to reduce upload size
+      # Other test jobs will download this to run tests against built artifacts
+      - name: Upload Maven repository (ddf artifacts only)
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-repo-java-${{ matrix.java }}
+          path: |
+            ~/.m2/repository/org/codice/ddf/
+            ~/.m2/repository/ddf/
+          retention-days: 1
+          compression-level: 6  # Balance between speed and size
+
+      # Upload distribution ZIP (Java 17 only) for release/deployment
+      - name: Upload distribution artifacts
+        if: matrix.java == '17'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ddf-distribution
+          path: distribution/ddf/target/ddf-*.zip
+          retention-days: 14
+
+  #
+  # JOB 2: TEST LIBS + PLATFORM CORE
+  #
+  # Purpose: Test foundational libraries and platform core modules
+  # - These modules are dependencies for most other modules
+  # - Testing them early helps identify core issues faster
+  #
+  # Module Groups:
+  # - libs/                    - Shared utility libraries
+  # - platform/osgi/           - OSGi framework utilities
+  # - platform/util/           - Platform utilities
+  # - platform/security/       - Security framework (SAML, OAuth, OIDC, STS, XACML)
+  # - platform/platform-api/   - Platform API definitions
+  # - platform/platform-configuration/ - Configuration management
+  # - platform/branding-api/   - Branding API
+  # - platform/parser/         - Parser utilities
+  # - platform/mime/           - MIME type handling
+  # - platform/io/             - I/O utilities
+  #
+  test-libs-platform-core:
+    name: Test Libs + Platform Core
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # Download pre-built artifacts from build job
+      # This allows us to run tests without rebuilding
+      - name: Download Maven repository
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-repo-java-${{ matrix.java }}
+          path: ~/.m2/repository
+
+      # Run tests for libs and platform core modules
+      # Using -pl to select specific projects
+      # -am ensures dependencies are included in the reactor
+      - name: Test libs and platform core modules
+        run: |
+          mvn $MAVEN_CLI_OPTS test \
+            -pl libs/,platform/osgi/,platform/util/,platform/security/,platform/platform-api/,platform/platform-configuration/,platform/branding-api/,platform/parser/,platform/mime/,platform/io/ \
+            -am
+
+      # Upload test results for analysis
+      # Always upload even if tests fail to see which tests failed
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-libs-platform-core-java-${{ matrix.java }}
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+      # Upload JaCoCo coverage reports for coverage analysis
+      # These will be aggregated later to show overall coverage
+      - name: Upload JaCoCo coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports-libs-platform-core-java-${{ matrix.java }}
+          path: '**/target/site/jacoco/*.xml'
+          retention-days: 7
+
+  #
+  # JOB 3: TEST CATALOG CORE
+  #
+  # Purpose: Test core catalog functionality
+  # - CatalogFrameworkImpl (main orchestrator)
+  # - Federation and query operations
+  # - Security integration
+  # - Standard framework operations
+  #
+  # Module Groups:
+  # - catalog/core/            - Core catalog framework and operations
+  # - catalog/security/        - Catalog security filtering and policies
+  # - catalog/common/          - Common catalog utilities
+  # - catalog/measure/         - Measurement utilities
+  # - catalog/opensearch/      - OpenSearch protocol implementation
+  #
+  # NOTE: These are heavy tests with extensive integration scenarios
+  #
+  test-catalog-core:
+    name: Test Catalog Core
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 80  # Catalog tests are heavy with many integration scenarios
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Download Maven repository
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-repo-java-${{ matrix.java }}
+          path: ~/.m2/repository
+
+      - name: Test Catalog Core modules
+        run: |
+          mvn $MAVEN_CLI_OPTS test \
+            -pl catalog/core/,catalog/security/,catalog/common/,catalog/measure/,catalog/opensearch/ \
+            -am
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-catalog-core-java-${{ matrix.java }}
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+      - name: Upload JaCoCo coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports-catalog-core-java-${{ matrix.java }}
+          path: '**/target/site/jacoco/*.xml'
+          retention-days: 7
+
+  #
+  # JOB 4: TEST FEATURES + TRANSFORMERS + PLUGINS
+  #
+  # Purpose: Test pluggable components and format transformers
+  # - Input/output transformers (30+ formats)
+  # - Plugin infrastructure
+  # - Validation and schematron
+  # - Feature definitions
+  #
+  # Module Groups:
+  # - catalog/transformer/     - 30+ format transformers (JSON, XML, CSV, PDF, etc.)
+  # - catalog/plugin/          - Federation, validation, security audit plugins
+  # - catalog/validator/       - Metacard validation
+  # - catalog/schematron/      - Schematron validation
+  # - features/                - Apache Karaf feature definitions
+  #
+  test-features-transformers-plugins:
+    name: Test Features + Transformers + Plugins
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Download Maven repository
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-repo-java-${{ matrix.java }}
+          path: ~/.m2/repository
+
+      - name: Test Features + Transformers + Plugins
+        run: |
+          mvn $MAVEN_CLI_OPTS test \
+            -pl catalog/transformer/,catalog/plugin/,catalog/validator/,catalog/schematron/,features/ \
+            -am
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-features-transformers-plugins-java-${{ matrix.java }}
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+      - name: Upload JaCoCo coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports-features-transformers-plugins-java-${{ matrix.java }}
+          path: '**/target/site/jacoco/*.xml'
+          retention-days: 7
+
+  #
+  # JOB 5: TEST ADMIN + SOLR + SPATIAL + DISTRIBUTION
+  #
+  # Purpose: Test administrative, search, and distribution components
+  # - Admin UI and configuration management
+  # - Solr integration (platform and catalog)
+  # - Spatial search capabilities
+  # - REST API endpoints
+  # - Distribution assembly
+  #
+  # Module Groups:
+  # - platform/admin/          - Admin UI and configuration management
+  # - platform/solr/           - Platform-level Solr integration
+  # - platform/persistence/    - Data persistence layer
+  # - platform/metrics/        - Micrometer-based metrics collection
+  # - catalog/solr/            - Solr-backed catalog provider
+  # - catalog/spatial/         - Spatial search (GeoTools integration)
+  # - catalog/rest/            - REST API endpoints
+  # - catalog/ui/              - UI components
+  # - distribution/            - Distribution assembly
+  #
+  test-admin-solr-spatial:
+    name: Test Admin + Solr + Spatial + Distribution
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Download Maven repository
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-repo-java-${{ matrix.java }}
+          path: ~/.m2/repository
+
+      - name: Test Admin + Solr + Spatial + Distribution
+        run: |
+          mvn $MAVEN_CLI_OPTS test \
+            -pl platform/admin/,platform/solr/,platform/persistence/,platform/metrics/,catalog/solr/,catalog/spatial/,catalog/rest/,catalog/ui/,distribution/ \
+            -am
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-admin-solr-spatial-java-${{ matrix.java }}
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+      - name: Upload JaCoCo coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports-admin-solr-spatial-java-${{ matrix.java }}
+          path: '**/target/site/jacoco/*.xml'
+          retention-days: 7
+
+  #
+  # JOB 6: INTEGRATION TESTS (Pax Exam)
+  #
+  # Purpose: Run OSGi container integration tests
+  # - Tests that verify components work within actual OSGi container
+  # - Uses Pax Exam framework for in-container testing
+  # - Validates bundle activation, service registration, and feature installation
+  # - These are the tests with 5-minute timeouts we just fixed
+  #
+  # Module Groups:
+  # - features/utilities/      - Utility feature integration tests
+  # - features/admin/          - Admin feature integration tests
+  # - features/apps/           - Application feature integration tests
+  # - features/branding/       - Branding feature integration tests
+  # - features/install-profiles/ - Install profile tests
+  # - features/security/       - Security feature integration tests
+  # - features/solr/           - Solr feature integration tests
+  #
+  # NOTE: Uses 'mvn verify' instead of 'mvn test' to run failsafe (integration) tests
+  # NOTE: Uploads failsafe-reports instead of surefire-reports
+  #
+  integration-tests:
+    name: Integration Tests (OSGi Container)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # Integration tests take longer - Pax Exam container startup overhead
+
+    strategy:
+      matrix:
+        java: ['17', '21']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Download Maven repository
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-repo-java-${{ matrix.java }}
+          path: ~/.m2/repository
+
+      - name: Run Integration Tests (Pax Exam)
+        run: |
+          mvn $MAVEN_CLI_OPTS verify \
+            -pl features/utilities/,features/admin/,features/apps/,features/branding/,features/install-profiles/,features/security/,features/solr/ \
+            -am
+
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-integration-java-${{ matrix.java }}
+          path: '**/target/failsafe-reports/*.xml'
+          retention-days: 7
+
+      - name: Upload JaCoCo coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports-integration-java-${{ matrix.java }}
+          path: '**/target/site/jacoco/*.xml'
+          retention-days: 7
+
+  #
+  # JOB 7: AGGREGATE RESULTS AND COVERAGE
+  #
+  # Purpose: Collect all test results and coverage reports, generate summary
+  # - Downloads all test-results-* and jacoco-reports-* artifacts
+  # - Aggregates test counts (total, passed, failed, errors, skipped)
+  # - Aggregates coverage metrics (instruction and branch coverage)
+  # - Generates markdown summaries for GitHub Actions UI
+  # - Posts results as PR comment (on pull requests)
+  # - Always runs (even if some tests fail) to provide complete picture
+  #
+  # Expected time: 10-15 minutes
+  # Dependencies: All test jobs (2-6)
+  # Runs: Always (even on failure) to show what passed/failed
+  #
+  aggregate-results:
+    name: "Job 7: Aggregate Test Results and Coverage"
+    needs: [test-libs-platform-core, test-catalog-core, test-features-transformers-plugins, test-admin-solr-spatial, integration-tests]
+    if: always()  # Run even if some jobs fail
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download all test results artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: test-results-*
+          path: aggregated-results/tests
+          merge-multiple: true
+
+      - name: Download all coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: jacoco-reports-*
+          path: aggregated-results/coverage
+          merge-multiple: true
+
+      - name: Aggregate test results
+        id: aggregate-tests
+        run: |
+          cat > aggregate_tests.py << 'PYTHON_EOF'
+          #!/usr/bin/env python3
+          """
+          Aggregate JUnit XML test results from multiple parallel jobs.
+          Generates summary statistics and identifies failures.
+          """
+          import xml.etree.ElementTree as ET
+          import glob
+          import sys
+          from pathlib import Path
+          from collections import defaultdict
+
+          def parse_test_results(results_dir):
+              """Parse all JUnit XML files and aggregate statistics."""
+              stats = {
+                  'total_tests': 0,
+                  'failures': 0,
+                  'errors': 0,
+                  'skipped': 0,
+                  'passed': 0,
+                  'time_seconds': 0.0,
+                  'suites': 0,
+                  'failed_tests': []
+              }
+
+              job_stats = defaultdict(lambda: {
+                  'tests': 0, 'failures': 0, 'errors': 0, 'skipped': 0, 'passed': 0
+              })
+
+              xml_files = glob.glob(f"{results_dir}/**/*.xml", recursive=True)
+              print(f"Found {len(xml_files)} test result files")
+
+              for xml_file in xml_files:
+                  try:
+                      tree = ET.parse(xml_file)
+                      root = tree.getroot()
+
+                      # Determine job name from file path
+                      job_name = "unknown"
+                      if "libs-platform-core" in xml_file:
+                          job_name = "libs-platform-core"
+                      elif "catalog-core" in xml_file:
+                          job_name = "catalog-core"
+                      elif "features-transformers-plugins" in xml_file:
+                          job_name = "features-transformers-plugins"
+                      elif "admin-solr-spatial" in xml_file:
+                          job_name = "admin-solr-spatial"
+                      elif "integration" in xml_file:
+                          job_name = "integration"
+
+                      # Parse testsuite or testsuites element
+                      if root.tag == 'testsuites':
+                          for testsuite in root.findall('testsuite'):
+                              process_testsuite(testsuite, stats, job_stats[job_name])
+                      elif root.tag == 'testsuite':
+                          process_testsuite(root, stats, job_stats[job_name])
+
+                      stats['suites'] += 1
+
+                  except ET.ParseError as e:
+                      print(f"Warning: Failed to parse {xml_file}: {e}", file=sys.stderr)
+                      continue
+
+              # Calculate passed tests
+              stats['passed'] = stats['total_tests'] - stats['failures'] - stats['errors'] - stats['skipped']
+              for job in job_stats.values():
+                  job['passed'] = job['tests'] - job['failures'] - job['errors'] - job['skipped']
+
+              return stats, dict(job_stats)
+
+          def process_testsuite(testsuite, stats, job_stats):
+              """Process a single testsuite element."""
+              tests = int(testsuite.get('tests', 0))
+              failures = int(testsuite.get('failures', 0))
+              errors = int(testsuite.get('errors', 0))
+              skipped = int(testsuite.get('skipped', 0))
+              time = float(testsuite.get('time', 0))
+
+              stats['total_tests'] += tests
+              stats['failures'] += failures
+              stats['errors'] += errors
+              stats['skipped'] += skipped
+              stats['time_seconds'] += time
+
+              job_stats['tests'] += tests
+              job_stats['failures'] += failures
+              job_stats['errors'] += errors
+              job_stats['skipped'] += skipped
+
+              # Collect failed test names
+              for testcase in testsuite.findall('testcase'):
+                  if testcase.find('failure') is not None or testcase.find('error') is not None:
+                      classname = testcase.get('classname', 'Unknown')
+                      name = testcase.get('name', 'Unknown')
+                      stats['failed_tests'].append(f"{classname}.{name}")
+
+          def format_duration(seconds):
+              """Format duration in human-readable format."""
+              hours = int(seconds // 3600)
+              minutes = int((seconds % 3600) // 60)
+              secs = int(seconds % 60)
+
+              if hours > 0:
+                  return f"{hours}h {minutes}m {secs}s"
+              elif minutes > 0:
+                  return f"{minutes}m {secs}s"
+              else:
+                  return f"{secs}s"
+
+          def generate_summary(stats, job_stats):
+              """Generate markdown summary of test results."""
+              summary = []
+              summary.append("# Test Results Summary\n")
+              summary.append(f"**Total Tests:** {stats['total_tests']:,}")
+              summary.append(f"**Passed:** ✅ {stats['passed']:,} ({stats['passed']/stats['total_tests']*100:.1f}%)" if stats['total_tests'] > 0 else "**Passed:** ✅ 0")
+              summary.append(f"**Failed:** ❌ {stats['failures']:,}")
+              summary.append(f"**Errors:** ⚠️ {stats['errors']:,}")
+              summary.append(f"**Skipped:** ⏭️ {stats['skipped']:,}")
+              summary.append(f"**Duration:** {format_duration(stats['time_seconds'])}")
+              summary.append(f"**Test Suites:** {stats['suites']:,}\n")
+
+              # Per-job breakdown
+              summary.append("## Results by Job\n")
+              summary.append("| Job | Tests | Passed | Failed | Errors | Skipped |")
+              summary.append("|-----|------:|-------:|-------:|-------:|--------:|")
+
+              job_order = ['libs-platform-core', 'catalog-core', 'features-transformers-plugins', 'admin-solr-spatial', 'integration']
+              for job_name in job_order:
+                  if job_name in job_stats:
+                      job = job_stats[job_name]
+                      emoji = "✅" if job['failures'] == 0 and job['errors'] == 0 else "❌"
+                      summary.append(
+                          f"| {emoji} {job_name} | {job['tests']:,} | {job['passed']:,} | "
+                          f"{job['failures']:,} | {job['errors']:,} | {job['skipped']:,} |"
+                      )
+
+              summary.append("")
+
+              # Failed tests
+              if stats['failed_tests']:
+                  summary.append(f"\n## Failed Tests ({len(stats['failed_tests'])})\n")
+                  summary.append("<details><summary>Click to expand</summary>\n")
+                  for i, test in enumerate(stats['failed_tests'][:50], 1):  # Limit to first 50
+                      summary.append(f"{i}. `{test}`")
+                  if len(stats['failed_tests']) > 50:
+                      summary.append(f"\n... and {len(stats['failed_tests']) - 50} more")
+                  summary.append("\n</details>\n")
+
+              return "\n".join(summary)
+
+          def main():
+              results_dir = "aggregated-results/tests"
+
+              if not Path(results_dir).exists():
+                  print(f"Warning: Test results directory not found: {results_dir}")
+                  # Create empty summary
+                  with open("test-summary.md", "w") as f:
+                      f.write("# Test Results Summary\n\n**No test results found**\n")
+                  return 0
+
+              print(f"Aggregating test results from: {results_dir}")
+              stats, job_stats = parse_test_results(results_dir)
+
+              summary = generate_summary(stats, job_stats)
+              print("\n" + summary)
+
+              # Write summary to file
+              with open("test-summary.md", "w") as f:
+                  f.write(summary)
+
+              # Write stats to GitHub Actions output
+              with open("test-stats.txt", "w") as f:
+                  f.write(f"total={stats['total_tests']}\n")
+                  f.write(f"passed={stats['passed']}\n")
+                  f.write(f"failed={stats['failures']}\n")
+                  f.write(f"errors={stats['errors']}\n")
+                  f.write(f"skipped={stats['skipped']}\n")
+
+              return 0
+
+          if __name__ == "__main__":
+              sys.exit(main())
+          PYTHON_EOF
+
+          chmod +x aggregate_tests.py
+          python3 aggregate_tests.py || echo "Test aggregation completed"
+
+          # Export stats to GitHub Actions outputs
+          if [ -f test-stats.txt ]; then
+            while IFS= read -r line; do
+              echo "$line" >> $GITHUB_OUTPUT
+            done < test-stats.txt
+          fi
+
+      - name: Aggregate coverage reports
+        id: aggregate-coverage
+        run: |
+          cat > aggregate_coverage.py << 'PYTHON_EOF'
+          #!/usr/bin/env python3
+          """
+          Aggregate JaCoCo coverage reports from multiple parallel jobs.
+          Generates overall coverage statistics and per-job breakdown.
+          """
+          import xml.etree.ElementTree as ET
+          import glob
+          import sys
+          from pathlib import Path
+          from collections import defaultdict
+
+          def parse_jacoco_reports(coverage_dir):
+              """Parse all JaCoCo XML files and aggregate coverage."""
+              totals = defaultdict(int)
+              job_coverage = defaultdict(lambda: defaultdict(int))
+
+              xml_files = glob.glob(f"{coverage_dir}/**/*.xml", recursive=True)
+              print(f"Found {len(xml_files)} coverage report files")
+
+              for xml_file in xml_files:
+                  try:
+                      tree = ET.parse(xml_file)
+                      root = tree.getroot()
+
+                      # Determine job name from file path
+                      job_name = "unknown"
+                      if "libs-platform-core" in xml_file:
+                          job_name = "libs-platform-core"
+                      elif "catalog-core" in xml_file:
+                          job_name = "catalog-core"
+                      elif "features-transformers-plugins" in xml_file:
+                          job_name = "features-transformers-plugins"
+                      elif "admin-solr-spatial" in xml_file:
+                          job_name = "admin-solr-spatial"
+                      elif "integration" in xml_file:
+                          job_name = "integration"
+
+                      # Parse coverage counters
+                      for counter in root.findall('.//counter[@type="INSTRUCTION"]'):
+                          missed = int(counter.get('missed', 0))
+                          covered = int(counter.get('covered', 0))
+                          totals['missed'] += missed
+                          totals['covered'] += covered
+                          job_coverage[job_name]['missed'] += missed
+                          job_coverage[job_name]['covered'] += covered
+
+                      for counter in root.findall('.//counter[@type="BRANCH"]'):
+                          missed = int(counter.get('missed', 0))
+                          covered = int(counter.get('covered', 0))
+                          totals['branches_missed'] += missed
+                          totals['branches_covered'] += covered
+                          job_coverage[job_name]['branches_missed'] += missed
+                          job_coverage[job_name]['branches_covered'] += covered
+
+                  except ET.ParseError as e:
+                      print(f"Warning: Failed to parse {xml_file}: {e}", file=sys.stderr)
+                      continue
+
+              return dict(totals), dict(job_coverage)
+
+          def calculate_coverage(totals):
+              """Calculate coverage percentages."""
+              total_instructions = totals.get('missed', 0) + totals.get('covered', 0)
+              total_branches = totals.get('branches_missed', 0) + totals.get('branches_covered', 0)
+
+              instruction_coverage = (totals.get('covered', 0) / total_instructions * 100) if total_instructions > 0 else 0
+              branch_coverage = (totals.get('branches_covered', 0) / total_branches * 100) if total_branches > 0 else 0
+
+              return instruction_coverage, branch_coverage
+
+          def generate_coverage_summary(totals, job_coverage):
+              """Generate markdown summary of coverage."""
+              instruction_cov, branch_cov = calculate_coverage(totals)
+
+              summary = []
+              summary.append("# Coverage Summary\n")
+              summary.append(f"**Instruction Coverage:** {instruction_cov:.2f}%")
+              summary.append(f"**Branch Coverage:** {branch_cov:.2f}%")
+              summary.append(f"**Total Instructions:** {totals.get('covered', 0) + totals.get('missed', 0):,}")
+              summary.append(f"**Covered Instructions:** {totals.get('covered', 0):,}")
+              summary.append(f"**Total Branches:** {totals.get('branches_covered', 0) + totals.get('branches_missed', 0):,}")
+              summary.append(f"**Covered Branches:** {totals.get('branches_covered', 0):,}\n")
+
+              # Per-job coverage
+              summary.append("## Coverage by Job\n")
+              summary.append("| Job | Instruction Coverage | Branch Coverage |")
+              summary.append("|-----|---------------------:|----------------:|")
+
+              job_order = ['libs-platform-core', 'catalog-core', 'features-transformers-plugins', 'admin-solr-spatial', 'integration']
+              for job_name in job_order:
+                  if job_name in job_coverage:
+                      job = job_coverage[job_name]
+                      job_inst_cov, job_branch_cov = calculate_coverage(job)
+                      emoji = "✅" if job_inst_cov >= 65 else "⚠️"
+                      summary.append(f"| {emoji} {job_name} | {job_inst_cov:.2f}% | {job_branch_cov:.2f}% |")
+
+              summary.append("")
+
+              # Coverage status
+              baseline = 65.0
+              if instruction_cov >= baseline:
+                  summary.append(f"\n✅ **Coverage meets baseline threshold of {baseline}%**\n")
+              else:
+                  summary.append(f"\n⚠️ **Coverage below baseline threshold of {baseline}% (actual: {instruction_cov:.2f}%)**\n")
+
+              return "\n".join(summary)
+
+          def main():
+              coverage_dir = "aggregated-results/coverage"
+
+              if not Path(coverage_dir).exists():
+                  print(f"Warning: Coverage directory not found: {coverage_dir}")
+                  with open("coverage-summary.md", "w") as f:
+                      f.write("# Coverage Summary\n\n**No coverage reports found**\n")
+                  return 0
+
+              print(f"Aggregating coverage reports from: {coverage_dir}")
+              totals, job_coverage = parse_jacoco_reports(coverage_dir)
+
+              summary = generate_coverage_summary(totals, job_coverage)
+              print("\n" + summary)
+
+              # Write summary to file
+              with open("coverage-summary.md", "w") as f:
+                  f.write(summary)
+
+              # Write coverage to GitHub Actions output
+              instruction_cov, branch_cov = calculate_coverage(totals)
+              with open("coverage-stats.txt", "w") as f:
+                  f.write(f"instruction={instruction_cov:.2f}\n")
+                  f.write(f"branch={branch_cov:.2f}\n")
+
+              return 0
+
+          if __name__ == "__main__":
+              sys.exit(main())
+          PYTHON_EOF
+
+          chmod +x aggregate_coverage.py
+          python3 aggregate_coverage.py
+
+          # Export coverage to GitHub Actions outputs
+          if [ -f coverage-stats.txt ]; then
+            while IFS= read -r line; do
+              echo "$line" >> $GITHUB_OUTPUT
+            done < coverage-stats.txt
+          fi
+
+      - name: Upload aggregated test summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-summary
+          path: test-summary.md
+          retention-days: 30
+
+      - name: Upload aggregated coverage summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-summary
+          path: coverage-summary.md
+          retention-days: 30
+
+      - name: Comment on PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+
+            let testSummary = "Test summary not available";
+            let coverageSummary = "Coverage summary not available";
+
+            try {
+              testSummary = fs.readFileSync('test-summary.md', 'utf8');
+            } catch (e) {
+              console.log('Could not read test summary');
+            }
+
+            try {
+              coverageSummary = fs.readFileSync('coverage-summary.md', 'utf8');
+            } catch (e) {
+              console.log('Could not read coverage summary');
+            }
+
+            const body = `## Parallel Build Results\n\n${testSummary}\n\n---\n\n${coverageSummary}\n\n---\n\n**Build Duration:** See individual job timings above\n**Workflow Run:** ${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Parallel Build Results')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      - name: Generate job status summary
+        if: always()
+        run: |
+          echo "## Parallel Build Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Job 1: Build | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Job 2: Libs + Platform Core | ${{ needs.test-libs-platform-core.result == 'success' && '✅ Passed' || needs.test-libs-platform-core.result == 'failure' && '❌ Failed' || '⚠️ Skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Job 3: Catalog Core | ${{ needs.test-catalog-core.result == 'success' && '✅ Passed' || needs.test-catalog-core.result == 'failure' && '❌ Failed' || '⚠️ Skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Job 4: Features + Transformers + Plugins | ${{ needs.test-features-transformers-plugins.result == 'success' && '✅ Passed' || needs.test-features-transformers-plugins.result == 'failure' && '❌ Failed' || '⚠️ Skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Job 5: Admin + Solr + Spatial | ${{ needs.test-admin-solr-spatial.result == 'success' && '✅ Passed' || needs.test-admin-solr-spatial.result == 'failure' && '❌ Failed' || '⚠️ Skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Job 6: Integration Tests | ${{ needs.integration-tests.result == 'success' && '✅ Passed' || needs.integration-tests.result == 'failure' && '❌ Failed' || '⚠️ Skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f test-summary.md ]; then
+            cat test-summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ -f coverage-summary.md ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            cat coverage-summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Check if build should fail
+        if: always()
+        run: |
+          # Check test jobs - report failures
+          failed_jobs=""
+          if [ "${{ needs.test-libs-platform-core.result }}" == "failure" ]; then
+            failed_jobs="$failed_jobs test-libs-platform-core"
+          fi
+          if [ "${{ needs.test-catalog-core.result }}" == "failure" ]; then
+            failed_jobs="$failed_jobs test-catalog-core"
+          fi
+          if [ "${{ needs.test-features-transformers-plugins.result }}" == "failure" ]; then
+            failed_jobs="$failed_jobs test-features-transformers-plugins"
+          fi
+          if [ "${{ needs.test-admin-solr-spatial.result }}" == "failure" ]; then
+            failed_jobs="$failed_jobs test-admin-solr-spatial"
+          fi
+          if [ "${{ needs.integration-tests.result }}" == "failure" ]; then
+            failed_jobs="$failed_jobs integration-tests"
+          fi
+
+          if [ -n "$failed_jobs" ]; then
+            echo "⚠️ The following jobs failed:$failed_jobs"
+            echo "Check individual job logs for details"
+            exit 1
+          fi
+
+          echo "✅ All test jobs passed successfully"
+
+  #
+  # NIGHTLY BUILD STATUS: Create issue on nightly build failure
+  #
+  nightly-failure-notification:
+    name: Nightly Build Failure Notification
+    if: |
+      failure() &&
+      github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - test-libs-platform-core
+      - test-catalog-core
+      - test-features-transformers-plugins
+      - test-admin-solr-spatial
+      - integration-tests
+      - aggregate-results
+
+    permissions:
+      issues: write
+
+    steps:
+      - name: Create issue on nightly build failure
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const buildUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Nightly Parallel Build Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `## Nightly Parallel Build Failure\n\n` +
+                    `The nightly parallel build has failed.\n\n` +
+                    `**Build URL:** ${buildUrl}\n` +
+                    `**Branch:** ${process.env.GITHUB_REF}\n` +
+                    `**Commit:** ${process.env.GITHUB_SHA}\n\n` +
+                    `Please investigate and fix the issue.\n\n` +
+                    `Check individual job failures:\n` +
+                    `- Build All Modules\n` +
+                    `- Test Libs + Platform Core\n` +
+                    `- Test Catalog Core\n` +
+                    `- Test Features + Transformers + Plugins\n` +
+                    `- Test Admin + Solr + Spatial + Distribution\n` +
+                    `- Integration Tests (OSGi Container)`,
+              labels: ['build-failure', 'nightly', 'automated', 'parallel-build']
+            });
