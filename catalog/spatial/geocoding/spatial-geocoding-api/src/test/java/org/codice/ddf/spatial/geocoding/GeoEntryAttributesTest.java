@@ -19,62 +19,28 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
-/** Unit tests for {@link GeoEntryAttributes} constants. */
+/** Unit tests for {@link GeoEntryAttributes}. */
 public class GeoEntryAttributesTest {
 
+  // Previous tests removed - GeoEntryAttributes was refactored from a constants holder
+  // to a MetacardType implementation. The old constants (GAZETTEER_TO_METACARD map,
+  // FEATURE_CODE_KEY, LATITUDE_KEY, etc.) no longer exist.
+
   @Test
-  public void testGeoEntryAttributeConstants() {
-    assertThat(GeoEntryAttributes.GAZETTEER_TO_METACARD, is(notNullValue()));
-    assertThat(GeoEntryAttributes.GAZETTEER_TO_METACARD.isEmpty(), is(false));
+  public void testAttributeNameConstants() {
+    // Test the actual constants that exist in the refactored class
+    assertThat(GeoEntryAttributes.FEATURE_CODE_ATTRIBUTE_NAME, is("ext.feature-code"));
+    assertThat(GeoEntryAttributes.FEATURE_CLASS_ATTRIBUTE_NAME, is("ext.feature-class"));
+    assertThat(GeoEntryAttributes.POPULATION_ATTRIBUTE_NAME, is("ext.population"));
+    assertThat(GeoEntryAttributes.IMPORT_LOCATION, is("ext.import-location"));
+    assertThat(GeoEntryAttributes.GAZETTEER_SORT_VALUE, is("ext.gazetteer-sort-value"));
   }
 
   @Test
-  public void testGazetteerToMetacardMappingContainsExpectedKeys() {
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.containsKey(GeoEntryAttributes.FEATURE_CODE_KEY),
-        is(true));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.containsKey(GeoEntryAttributes.LATITUDE_KEY),
-        is(true));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.containsKey(GeoEntryAttributes.LONGITUDE_KEY),
-        is(true));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.containsKey(GeoEntryAttributes.POPULATION_KEY),
-        is(true));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.containsKey(GeoEntryAttributes.COUNTRY_CODE_KEY),
-        is(true));
-  }
-
-  @Test
-  public void testAttributeKeyConstants() {
-    assertThat(GeoEntryAttributes.FEATURE_CODE_KEY, is("feature_code"));
-    assertThat(GeoEntryAttributes.LATITUDE_KEY, is("latitude"));
-    assertThat(GeoEntryAttributes.LONGITUDE_KEY, is("longitude"));
-    assertThat(GeoEntryAttributes.POPULATION_KEY, is("population"));
-    assertThat(GeoEntryAttributes.ALTERNATE_NAMES_KEY, is("alternate_names"));
-    assertThat(GeoEntryAttributes.COUNTRY_CODE_KEY, is("country_code"));
-    assertThat(GeoEntryAttributes.GAZETTEER_SORT_KEY, is("gazetteer_sort_value"));
-    assertThat(GeoEntryAttributes.IMPORT_LOCATION, is("import_location"));
-  }
-
-  @Test
-  public void testGazetteerToMetacardMappingValues() {
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.get(GeoEntryAttributes.FEATURE_CODE_KEY),
-        is("location.feature-code"));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.get(GeoEntryAttributes.LATITUDE_KEY),
-        is("location.latitude"));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.get(GeoEntryAttributes.LONGITUDE_KEY),
-        is("location.longitude"));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.get(GeoEntryAttributes.POPULATION_KEY),
-        is("location.population"));
-    assertThat(
-        GeoEntryAttributes.GAZETTEER_TO_METACARD.get(GeoEntryAttributes.COUNTRY_CODE_KEY),
-        is("location.country-code"));
+  public void testMetacardTypeImplementation() {
+    GeoEntryAttributes attributes = new GeoEntryAttributes();
+    assertThat(attributes.getName(), is(notNullValue()));
+    assertThat(attributes.getAttributeDescriptors(), is(notNullValue()));
+    assertThat(attributes.getAttributeDescriptors().isEmpty(), is(false));
   }
 }

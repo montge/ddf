@@ -22,21 +22,14 @@ import org.junit.Test;
 /** Unit tests for {@link GeoCodingConstants}. */
 public class GeoCodingConstantsTest {
 
-  @Test
-  public void testSuggestionContextKey() {
-    assertThat(GeoCodingConstants.SUGGESTION_CONTEXT_KEY, is(notNullValue()));
-    assertThat(GeoCodingConstants.SUGGESTION_CONTEXT_KEY, is("suggestion-context"));
-  }
+  // Tests removed - the constants SUGGESTION_CONTEXT_KEY, SUGGESTION_QUERY_KEY,
+  // and SUGGESTION_COUNT_KEY no longer exist in GeoCodingConstants.
+  // The class now only contains feature codes and classification constants.
 
   @Test
-  public void testSuggestionQueryKey() {
-    assertThat(GeoCodingConstants.SUGGESTION_QUERY_KEY, is(notNullValue()));
-    assertThat(GeoCodingConstants.SUGGESTION_QUERY_KEY, is("q"));
-  }
-
-  @Test
-  public void testSuggestionCountKey() {
-    assertThat(GeoCodingConstants.SUGGESTION_COUNT_KEY, is(notNullValue()));
-    assertThat(GeoCodingConstants.SUGGESTION_COUNT_KEY, is("count"));
+  public void testBasicConstants() {
+    // Verify some of the existing constants are present
+    assertThat(GeoCodingConstants.GAZETTEER_METACARD_TAG, is(notNullValue()));
+    assertThat(GeoCodingConstants.GAZETTEER_METACARD_TAG, is("gazetteer"));
   }
 }
