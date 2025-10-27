@@ -28,7 +28,7 @@ import spock.lang.Specification
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-import static org.mockito.Matchers.isNull
+import static org.mockito.ArgumentMatchers.isNull
 
 @RunWith(JUnitPlatform.class)
 class DefinitionParserSpec extends Specification {

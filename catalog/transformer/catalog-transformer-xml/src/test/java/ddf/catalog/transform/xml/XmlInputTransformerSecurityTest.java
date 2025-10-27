@@ -100,9 +100,10 @@ public class XmlInputTransformerSecurityTest {
       Metacard result = transformer.transform(toInputStream(xxePayload));
 
       // If successful, verify no external HTTP request was made
-      if (result != null && result.getDescription() != null) {
+      if (result != null && result.getAttribute(Metacard.DESCRIPTION) != null) {
         // Should not contain fetched external content
-        assertThat(result.getDescription(), not(containsString("<!ENTITY")));
+        String description = (String) result.getAttribute(Metacard.DESCRIPTION).getValue();
+        assertThat(description, not(containsString("<!ENTITY")));
       }
     } catch (CatalogTransformerException | IOException e) {
       // Expected - parser blocks external entity resolution
@@ -350,9 +351,10 @@ public class XmlInputTransformerSecurityTest {
     Metacard result = transformer.transform(toInputStream(cdataXml));
 
     assertThat(result, notNullValue());
-    assertThat(result.getDescription(), notNullValue());
+    assertThat(result.getAttribute(Metacard.DESCRIPTION), notNullValue());
     // CDATA content should be treated as literal text
-    assertThat(result.getDescription(), containsString("<script>"));
+    String description = (String) result.getAttribute(Metacard.DESCRIPTION).getValue();
+    assertThat(description, containsString("<script>"));
   }
 
   /** Test multiple root elements (invalid XML) */

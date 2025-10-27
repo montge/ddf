@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -265,8 +266,9 @@ public class AuthnResponseValidatorTest {
     when(response.getSignature()).thenReturn(signature);
     when(response.getDOM()).thenReturn(element);
     when(element.getOwnerDocument()).thenReturn(document);
-    when(simpleSign.validateSignature(any(), any()))
-        .thenThrow(new SignatureException("Invalid signature"));
+    doThrow(new SignatureException("Invalid signature"))
+        .when(simpleSign)
+        .validateSignature(any(), any());
 
     validator = new AuthnResponseValidator(simpleSign, false);
     validator.validate(response);
@@ -281,8 +283,9 @@ public class AuthnResponseValidatorTest {
     when(response.getSignature()).thenReturn(signature);
     when(response.getDOM()).thenReturn(element);
     when(element.getOwnerDocument()).thenReturn(document);
-    when(simpleSign.validateSignature(any(), any()))
-        .thenThrow(new SignatureException("Invalid signature"));
+    doThrow(new SignatureException("Invalid signature"))
+        .when(simpleSign)
+        .validateSignature(any(), any());
 
     validator = new AuthnResponseValidator(simpleSign, false);
 

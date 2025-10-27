@@ -279,7 +279,7 @@ public class TikaInputTransformerEnhancedTest {
   @Test
   public void testDataTypeDetectionForUnknownFormat()
       throws IOException, CatalogTransformerException {
-    byte[] unknownData = {0x4D, 0x5A, 0x90, 0x00}; // Executable header
+    byte[] unknownData = {(byte) 0x4D, (byte) 0x5A, (byte) 0x90, 0x00}; // Executable header
     InputStream stream = new ByteArrayInputStream(unknownData);
 
     Metacard metacard = tikaInputTransformer.transform(stream);

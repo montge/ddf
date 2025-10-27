@@ -208,7 +208,7 @@ public class GeoJsonInputTransformerEnhancedTest {
 
     assertThat(result, notNullValue());
     assertThat(result.getTitle(), is("Full Properties"));
-    assertThat(result.getDescription(), is("Complete test"));
+    assertThat(result.getAttribute(Metacard.DESCRIPTION).getValue(), is("Complete test"));
   }
 
   @Test(expected = CatalogTransformerException.class)

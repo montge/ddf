@@ -230,14 +230,11 @@ public class AdminConfigPolicyTest {
   public KeyValueCollectionPermission getSubjectPermissions() {
     KeyValueCollectionPermission subjectCollectionPermissions =
         new KeyValueCollectionPermissionImpl();
-    subjectCollectionPermissions.addAll(
-        new HashMap<String, List<String>>() {
-          {
-            for (int i = 0; i < 3; i++) {
-              put(TEST_ATTRIBUTE_NAME + i, Arrays.asList(TEST_ATTRIBUTE_VALUE + i));
-            }
-          }
-        });
+    HashMap<String, List<String>> permissionsMap = new HashMap<>();
+    for (int i = 0; i < 3; i++) {
+      permissionsMap.put(TEST_ATTRIBUTE_NAME + i, Arrays.asList(TEST_ATTRIBUTE_VALUE + i));
+    }
+    subjectCollectionPermissions.addAll(permissionsMap);
 
     return subjectCollectionPermissions;
   }

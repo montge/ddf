@@ -220,21 +220,25 @@ public class FilterBuilderComparisonTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testGreaterThanWithNullNumber() {
     builder.attribute(TEST_ATTRIBUTE).greaterThan().number((Integer) null);
   }
 
   @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testGreaterThanOrEqualToWithNullNumber() {
     builder.attribute(TEST_ATTRIBUTE).greaterThanOrEqualTo().number((Integer) null);
   }
 
   @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testLessThanWithNullNumber() {
     builder.attribute(TEST_ATTRIBUTE).lessThan().number((Integer) null);
   }
 
   @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testLessThanOrEqualToWithNullNumber() {
     builder.attribute(TEST_ATTRIBUTE).lessThanOrEqualTo().number((Integer) null);
   }

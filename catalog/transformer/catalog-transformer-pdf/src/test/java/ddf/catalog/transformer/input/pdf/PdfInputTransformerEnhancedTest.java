@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.Sets;
 import ddf.catalog.content.operation.ContentMetadataExtractor;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
@@ -37,7 +38,6 @@ import ddf.catalog.transform.CatalogTransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Optional;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -308,7 +308,7 @@ public class PdfInputTransformerEnhancedTest {
     ContentMetadataExtractor extractor = mock(ContentMetadataExtractor.class);
     when(extractor.getMetacardAttributes())
         .thenReturn(
-            Arrays.asList(
+            Sets.newHashSet(
                 new AttributeDescriptorImpl(
                     "custom-attr", false, false, false, false, BasicTypes.STRING_TYPE)));
 

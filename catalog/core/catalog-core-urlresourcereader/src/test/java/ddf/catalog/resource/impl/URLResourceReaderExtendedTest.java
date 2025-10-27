@@ -94,7 +94,7 @@ public class URLResourceReaderExtendedTest {
   public void setup() throws Exception {
     resourceReader = new URLResourceReader(mimeTypeMapper, clientBuilderFactory);
 
-    when(clientBuilderFactory.getClientBuilder()).thenReturn(clientBuilder);
+    when(clientBuilderFactory.<WebClient>getClientBuilder()).thenReturn(clientBuilder);
     when(clientBuilder.endpoint(anyString())).thenReturn(clientBuilder);
     when(clientBuilder.interfaceClass(any())).thenReturn(clientBuilder);
     when(clientBuilder.disableCnCheck(any(Boolean.class))).thenReturn(clientBuilder);
@@ -307,7 +307,7 @@ public class URLResourceReaderExtendedTest {
   public void testRetrieveHttpResourceWithSubject() throws Exception {
     URI uri = new URI(TEST_URL);
     Map<String, Serializable> properties = new HashMap<>();
-    properties.put(SecurityConstants.SECURITY_SUBJECT, subject);
+    properties.put(SecurityConstants.SECURITY_SUBJECT, (Serializable) subject);
 
     MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
     when(response.getHeaders()).thenReturn(headers);

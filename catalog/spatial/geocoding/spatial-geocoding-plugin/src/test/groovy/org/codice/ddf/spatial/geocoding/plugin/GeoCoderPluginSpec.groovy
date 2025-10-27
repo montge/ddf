@@ -31,7 +31,7 @@ import spock.lang.Specification
 import java.util.AbstractMap.SimpleEntry
 import java.util.Map.Entry
 
-import static org.mockito.Matchers.anyString
+import static org.mockito.ArgumentMatchers.anyString
 
 @RunWith(JUnitPlatform.class)
 class GeoCoderPluginSpec extends Specification {

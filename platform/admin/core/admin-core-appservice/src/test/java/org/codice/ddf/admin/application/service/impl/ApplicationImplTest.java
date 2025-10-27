@@ -22,7 +22,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.karaf.features.BundleInfo;
@@ -41,6 +43,25 @@ public class ApplicationImplTest {
   @Before
   public void setUp() {
     application = new ApplicationImpl();
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<String> getBundleLocations(ApplicationImpl app) throws Exception {
+    Field field = ApplicationImpl.class.getDeclaredField("bundleLocations");
+    field.setAccessible(true);
+    return (List<String>) field.get(app);
+  }
+
+  private void setName(ApplicationImpl app, String name) throws Exception {
+    Field field = ApplicationImpl.class.getDeclaredField("name");
+    field.setAccessible(true);
+    field.set(app, name);
+  }
+
+  private void setDescription(ApplicationImpl app, String description) throws Exception {
+    Field field = ApplicationImpl.class.getDeclaredField("description");
+    field.setAccessible(true);
+    field.set(app, description);
   }
 
   @Test
@@ -71,7 +92,7 @@ public class ApplicationImplTest {
   }
 
   @Test
-  public void testLoadBundlesWithActiveBundles() {
+  public void testLoadBundlesWithActiveBundles() throws Exception {
     Map<String, Bundle> bundlesByLocation = new HashMap<>();
 
     Bundle activeBundle1 = mock(Bundle.class);
@@ -86,8 +107,9 @@ public class ApplicationImplTest {
     bundlesByLocation.put("file:/test/bundle2.jar", activeBundle2);
 
     // Use reflection to set bundleLocations
-    application.bundleLocations.add("file:/test/bundle1.jar");
-    application.bundleLocations.add("file:/test/bundle2.jar");
+    List<String> bundleLocations = getBundleLocations(application);
+    bundleLocations.add("file:/test/bundle1.jar");
+    bundleLocations.add("file:/test/bundle2.jar");
 
     application.loadBundles(bundlesByLocation);
 
@@ -96,7 +118,7 @@ public class ApplicationImplTest {
   }
 
   @Test
-  public void testLoadBundlesWithInactiveBundles() {
+  public void testLoadBundlesWithInactiveBundles() throws Exception {
     Map<String, Bundle> bundlesByLocation = new HashMap<>();
 
     Bundle inactiveBundle = mock(Bundle.class);
@@ -105,7 +127,8 @@ public class ApplicationImplTest {
 
     bundlesByLocation.put("file:/test/bundle.jar", inactiveBundle);
 
-    application.bundleLocations.add("file:/test/bundle.jar");
+    List<String> bundleLocations = getBundleLocations(application);
+    bundleLocations.add("file:/test/bundle.jar");
 
     application.loadBundles(bundlesByLocation);
 
@@ -114,11 +137,12 @@ public class ApplicationImplTest {
   }
 
   @Test
-  public void testLoadBundlesWithMissingBundles() {
+  public void testLoadBundlesWithMissingBundles() throws Exception {
     Map<String, Bundle> bundlesByLocation = new HashMap<>();
 
     // Don't add the bundle to the map
-    application.bundleLocations.add("file:/test/missing-bundle.jar");
+    List<String> bundleLocations = getBundleLocations(application);
+    bundleLocations.add("file:/test/missing-bundle.jar");
 
     application.loadBundles(bundlesByLocation);
 
@@ -127,7 +151,7 @@ public class ApplicationImplTest {
   }
 
   @Test
-  public void testLoadBundlesWithMixedStates() {
+  public void testLoadBundlesWithMixedStates() throws Exception {
     Map<String, Bundle> bundlesByLocation = new HashMap<>();
 
     Bundle activeBundle = mock(Bundle.class);
@@ -146,9 +170,10 @@ public class ApplicationImplTest {
     bundlesByLocation.put("file:/test/installed.jar", installedBundle);
     bundlesByLocation.put("file:/test/starting.jar", startingBundle);
 
-    application.bundleLocations.add("file:/test/active.jar");
-    application.bundleLocations.add("file:/test/installed.jar");
-    application.bundleLocations.add("file:/test/starting.jar");
+    List<String> bundleLocations = getBundleLocations(application);
+    bundleLocations.add("file:/test/active.jar");
+    bundleLocations.add("file:/test/installed.jar");
+    bundleLocations.add("file:/test/starting.jar");
 
     application.loadBundles(bundlesByLocation);
 
@@ -158,10 +183,11 @@ public class ApplicationImplTest {
   }
 
   @Test
-  public void testLoadBundlesWithEmptyMap() {
+  public void testLoadBundlesWithEmptyMap() throws Exception {
     Map<String, Bundle> bundlesByLocation = new HashMap<>();
 
-    application.bundleLocations.add("file:/test/bundle.jar");
+    List<String> bundleLocations = getBundleLocations(application);
+    bundleLocations.add("file:/test/bundle.jar");
 
     application.loadBundles(bundlesByLocation);
 
@@ -187,17 +213,17 @@ public class ApplicationImplTest {
   }
 
   @Test
-  public void testGetNameAndDescription() {
+  public void testGetNameAndDescription() throws Exception {
     // Access via reflection to set name and description since there are no setters in public API
-    application.name = "Test Application";
-    application.description = "Test Description";
+    setName(application, "Test Application");
+    setDescription(application, "Test Description");
 
     assertThat(application.getName(), is(equalTo("Test Application")));
     assertThat(application.getDescription(), is(equalTo("Test Description")));
   }
 
   @Test
-  public void testMultipleLoadBundlesCalls() {
+  public void testMultipleLoadBundlesCalls() throws Exception {
     Map<String, Bundle> bundlesByLocation1 = new HashMap<>();
     Map<String, Bundle> bundlesByLocation2 = new HashMap<>();
 
@@ -212,13 +238,14 @@ public class ApplicationImplTest {
     bundlesByLocation1.put("file:/test/bundle1.jar", activeBundle1);
     bundlesByLocation2.put("file:/test/bundle2.jar", activeBundle2);
 
-    application.bundleLocations.add("file:/test/bundle1.jar");
+    List<String> bundleLocations = getBundleLocations(application);
+    bundleLocations.add("file:/test/bundle1.jar");
 
     application.loadBundles(bundlesByLocation1);
     assertThat(application.getBundles(), hasSize(1));
 
     // Add more bundle locations and load again
-    application.bundleLocations.add("file:/test/bundle2.jar");
+    bundleLocations.add("file:/test/bundle2.jar");
     application.loadBundles(bundlesByLocation2);
 
     // Bundles should accumulate (not replace)

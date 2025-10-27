@@ -111,10 +111,10 @@ public class CsvQueryResponseTransformerEnhancedTest {
     Metacard metacard1 = createMetacard("First", "source1");
     Metacard metacard2 = createMetacard("Second", "source2");
 
-    Result result1 = new ResultImpl(metacard1);
+    ResultImpl result1 = new ResultImpl(metacard1);
     result1.setRelevanceScore(0.95);
 
-    Result result2 = new ResultImpl(metacard2);
+    ResultImpl result2 = new ResultImpl(metacard2);
     result2.setRelevanceScore(0.75);
 
     SourceResponse sourceResponse = mock(SourceResponse.class);
@@ -132,10 +132,10 @@ public class CsvQueryResponseTransformerEnhancedTest {
     Metacard metacard1 = createMetacard("Near", "source1");
     Metacard metacard2 = createMetacard("Far", "source2");
 
-    Result result1 = new ResultImpl(metacard1);
+    ResultImpl result1 = new ResultImpl(metacard1);
     result1.setDistanceInMeters(100.0);
 
-    Result result2 = new ResultImpl(metacard2);
+    ResultImpl result2 = new ResultImpl(metacard2);
     result2.setDistanceInMeters(5000.0);
 
     SourceResponse sourceResponse = mock(SourceResponse.class);

@@ -358,7 +358,8 @@ public class CsvTransformerSupportTest {
                 buildAttributeDescriptor("title", STRING_TYPE),
                 buildMultiValuedAttributeDescriptor("tags", STRING_TYPE)),
             new AttributeImpl("title", "Test"),
-            new AttributeImpl("tags", Lists.newArrayList("tag1", "tag2", "tag3")));
+            new ddf.catalog.data.impl.AttributeImpl(
+                "tags", (Serializable) Lists.newArrayList("tag1", "tag2", "tag3")));
 
     List<Metacard> metacards = singletonList(metacard);
     BinaryContent result =
