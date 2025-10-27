@@ -204,6 +204,13 @@ jobs:
   #
   # CODEQL ANALYSIS: Semantic code analysis for security issues
   #
+  # IMPORTANT: This workflow uses CodeQL ADVANCED SETUP.
+  # GitHub's "default setup" must be DISABLED to prevent conflicts.
+  # See .github/CODEQL-SETUP.md for details and troubleshooting.
+  #
+  # To disable default setup:
+  #   gh api --method PATCH /repos/montge/ddf/code-scanning/default-setup -f state=not-configured
+  #
   codeql-analysis:
     name: CodeQL Security Analysis
     runs-on: ubuntu-latest

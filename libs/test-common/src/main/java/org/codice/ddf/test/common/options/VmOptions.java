@@ -14,9 +14,11 @@
 package org.codice.ddf.test.common.options;
 
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.systemTimeout;
 import static org.ops4j.pax.exam.CoreOptions.vmOption;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 import org.ops4j.pax.exam.MavenUtils;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.options.DefaultCompositeOption;
@@ -26,6 +28,12 @@ public class VmOptions {
 
   private VmOptions() {}
 
+  /**
+   * Default timeout for Pax Exam container startup in milliseconds. Set to 5 minutes to accommodate
+   * slower CI environments and complex feature installations.
+   */
+  public static final long DEFAULT_TIMEOUT_MILLISECONDS = TimeUnit.MINUTES.toMillis(5);
+
   public static Option defaultVmOptions() {
     return new DefaultCompositeOption(
         vmOption("-Xmx6144M"),
@@ -34,6 +42,16 @@ public class VmOptions {
         // avoid integration tests stealing focus on OS X
         vmOption("-Djava.awt.headless=true"),
         vmOption("-Dfile.encoding=UTF8"));
+  }
+
+  /**
+   * Returns a system timeout option for Pax Exam container startup. This should be used in
+   * integration tests to prevent timeouts in CI environments.
+   *
+   * @return timeout option configured with default timeout
+   */
+  public static Option defaultTimeout() {
+    return systemTimeout(DEFAULT_TIMEOUT_MILLISECONDS);
   }
 
   public static Option javaModuleVmOptions() {
