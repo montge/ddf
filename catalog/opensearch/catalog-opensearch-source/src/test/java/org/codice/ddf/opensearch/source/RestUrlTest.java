@@ -18,210 +18,222 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-import org.codice.ddf.opensearch.OpenSearchConstants;
-import org.junit.Before;
+import java.net.URISyntaxException;
 import org.junit.Test;
 
 /** Comprehensive tests for RestUrl query parameter building */
 public class RestUrlTest {
 
-  private RestUrl restUrl;
-  private static final String BASE_URL = "https://example.com/search";
+  private static final String BASE_URL_TEMPLATE =
+      "https://example.com:8993/services/catalog/sources/test-source/metacard123";
+  private static final String QUERY_URL_TEMPLATE =
+      "https://example.com:8993/services/catalog/query?q={searchTerms}&src={fs:routeTo?}&count={count?}";
 
-  @Before
-  public void setUp() {
-    restUrl = new RestUrl(BASE_URL);
+  @Test
+  public void testBasicUrlConstruction() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    assertThat(restUrl, is(notNullValue()));
   }
 
   @Test
-  public void testBasicUrlConstruction() {
+  public void testBuildUrlWithId() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("metacard123");
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("metacard123"));
+  }
+
+  @Test
+  public void testBuildUrlWithoutId() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    String url = restUrl.buildUrl();
+    assertThat(url, is(notNullValue()));
+  }
+
+  @Test
+  public void testBuildUrlWithRetrieveResource() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("metacard456");
+    restUrl.setRetrieveResource(true);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("transform=resource"));
+  }
+
+  @Test
+  public void testBuildUrlWithoutRetrieveResource() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("metacard789");
+    restUrl.setRetrieveResource(false);
+    String url = restUrl.buildUrl();
+    assertThat(url, is(notNullValue()));
+  }
+
+  @Test
+  public void testGetId() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    String testId = "test-id-123";
+    restUrl.setId(testId);
+    assertThat(restUrl.getId(), is(testId));
+  }
+
+  @Test
+  public void testIsRetrieveResource() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setRetrieveResource(true);
+    assertThat(restUrl.isRetrieveResource(), is(true));
+  }
+
+  @Test
+  public void testToString() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("metacard999");
+    String toString = restUrl.toString();
+    String buildUrl = restUrl.buildUrl();
+    assertThat(toString, is(buildUrl));
+  }
+
+  @Test
+  public void testUrlTemplateWithParameters() throws Exception {
+    String urlWithParams =
+        "http://localhost:8181/services/catalog/query?q={searchTerms}&src={fs:routeTo?}&count={count?}";
+    RestUrl restUrl = RestUrl.newInstance(urlWithParams);
     assertThat(restUrl, is(notNullValue()));
     String url = restUrl.buildUrl();
-    assertThat(url, containsString(BASE_URL));
-  }
-
-  @Test
-  public void testAddSearchTerms() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "test query");
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("q=test+query"));
-  }
-
-  @Test
-  public void testAddMultipleParameters() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "test");
-    restUrl.addParameter(OpenSearchConstants.COUNT, "10");
-    restUrl.addParameter(OpenSearchConstants.START_INDEX, "1");
-
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("q=test"));
-    assertThat(url, containsString("count=10"));
-    assertThat(url, containsString("start=1"));
-  }
-
-  @Test
-  public void testAddGeographicParameter() {
-    String bbox = "10,20,30,40";
-    restUrl.addParameter(OpenSearchConstants.GEO_BOX, bbox);
-
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("bbox="));
-  }
-
-  @Test
-  public void testAddTemporalParameters() {
-    String startDate = "2023-01-01";
-    String endDate = "2023-12-31";
-
-    restUrl.addParameter(OpenSearchConstants.DATE_START, startDate);
-    restUrl.addParameter(OpenSearchConstants.DATE_END, endDate);
-
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("dtstart="));
-    assertThat(url, containsString("dtend="));
-  }
-
-  @Test
-  public void testAddPointRadiusSearch() {
-    String lat = "40.7128";
-    String lon = "-74.0060";
-    String radius = "1000";
-
-    restUrl.addParameter(OpenSearchConstants.GEO_LAT, lat);
-    restUrl.addParameter(OpenSearchConstants.GEO_LON, lon);
-    restUrl.addParameter(OpenSearchConstants.GEO_RADIUS, radius);
-
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("lat=" + lat));
-    assertThat(url, containsString("lon=" + lon));
-    assertThat(url, containsString("radius=" + radius));
-  }
-
-  @Test
-  public void testUrlEncodingOfSpecialCharacters() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "test&value=special");
-    String url = restUrl.buildUrl();
-
-    // Should be URL encoded
-    assertThat(url, containsString("%26")); // & should be encoded
-  }
-
-  @Test
-  public void testUrlWithEmptyParameters() {
-    // Don't add any parameters
-    String url = restUrl.buildUrl();
-    assertThat(url, is(BASE_URL));
-  }
-
-  @Test
-  public void testUrlWithNullParameterValue() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, null);
-    String url = restUrl.buildUrl();
-
-    // Should handle null gracefully
     assertThat(url, is(notNullValue()));
   }
 
   @Test
-  public void testUrlWithEmptyStringParameter() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "");
+  public void testUrlTemplateExtraction() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
     String url = restUrl.buildUrl();
+    assertThat(url, containsString("https://example.com:8993/services/catalog/"));
+  }
 
-    // Should handle empty string
+  @Test
+  public void testComplexUrlTemplate() throws Exception {
+    String complexTemplate =
+        "https://remote.server.com:443/services/rest/catalog/sources/remote/metacard{id}?transform={transform?}";
+    RestUrl restUrl = RestUrl.newInstance(complexTemplate);
+    restUrl.setId("abc123");
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("abc123"));
+  }
+
+  @Test
+  public void testMultipleCallsToSetId() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("first-id");
+    restUrl.setId("second-id");
+    assertThat(restUrl.getId(), is("second-id"));
+  }
+
+  @Test
+  public void testResourceTransformParameter() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("doc123");
+    restUrl.setRetrieveResource(true);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("?transform=resource"));
+  }
+
+  @Test
+  public void testUrlWithIdAndResource() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("document-with-resource");
+    restUrl.setRetrieveResource(true);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("document-with-resource"));
+    assertThat(url, containsString("transform=resource"));
+  }
+
+  @Test
+  public void testUrlWithSpecialCharactersInId() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    String specialId = "id-with-dashes_and_underscores.123";
+    restUrl.setId(specialId);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString(specialId));
+  }
+
+  @Test
+  public void testUrlWithHttpProtocol() throws Exception {
+    String httpUrl =
+        "http://example.com:8080/services/catalog/query?q={searchTerms}&count={count?}";
+    RestUrl restUrl = RestUrl.newInstance(httpUrl);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("http://example.com:8080"));
+  }
+
+  @Test
+  public void testUrlWithHttpsProtocol() throws Exception {
+    String httpsUrl =
+        "https://secure.example.com:8993/services/catalog/query?q={searchTerms}&count={count?}";
+    RestUrl restUrl = RestUrl.newInstance(httpsUrl);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("https://secure.example.com:8993"));
+  }
+
+  @Test
+  public void testUrlWithDifferentPort() throws Exception {
+    String urlWithPort =
+        "https://example.com:9443/services/catalog/query?q={searchTerms}&count={count?}";
+    RestUrl restUrl = RestUrl.newInstance(urlWithPort);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString(":9443"));
+  }
+
+  @Test
+  public void testUrlWithLongPath() throws Exception {
+    String longPathUrl =
+        "https://example.com:8993/services/catalog/sources/remote-source/federated/query?q={searchTerms}";
+    RestUrl restUrl = RestUrl.newInstance(longPathUrl);
+    String url = restUrl.buildUrl();
     assertThat(url, is(notNullValue()));
   }
 
   @Test
-  public void testMultiplePointRadiusSearches() {
-    restUrl.addParameter(OpenSearchConstants.GEO_LAT, "40.7128");
-    restUrl.addParameter(OpenSearchConstants.GEO_LON, "-74.0060");
-    restUrl.addParameter(OpenSearchConstants.GEO_RADIUS, "1000");
-
+  public void testUrlWithNullId() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId(null);
     String url = restUrl.buildUrl();
-    assertThat(url, containsString("lat="));
-    assertThat(url, containsString("lon="));
-    assertThat(url, containsString("radius="));
-  }
-
-  @Test
-  public void testAddGeometryParameter() {
-    String wkt = "POLYGON ((10 10, 10 20, 20 20, 20 10, 10 10))";
-    restUrl.addParameter(OpenSearchConstants.GEO_POLYGON, wkt);
-
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("geometry="));
-  }
-
-  @Test
-  public void testSortParameter() {
-    restUrl.addParameter(OpenSearchConstants.SORT, "date:desc");
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("sort="));
-  }
-
-  @Test
-  public void testFormatParameter() {
-    restUrl.addParameter(OpenSearchConstants.FORMAT, "atom");
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("format=atom"));
-  }
-
-  @Test
-  public void testComplexQueryWithAllParameters() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "satellite imagery");
-    restUrl.addParameter(OpenSearchConstants.COUNT, "50");
-    restUrl.addParameter(OpenSearchConstants.START_INDEX, "1");
-    restUrl.addParameter(OpenSearchConstants.DATE_START, "2023-01-01");
-    restUrl.addParameter(OpenSearchConstants.DATE_END, "2023-12-31");
-    restUrl.addParameter(OpenSearchConstants.GEO_LAT, "40.7128");
-    restUrl.addParameter(OpenSearchConstants.GEO_LON, "-74.0060");
-    restUrl.addParameter(OpenSearchConstants.GEO_RADIUS, "5000");
-    restUrl.addParameter(OpenSearchConstants.FORMAT, "atom");
-
-    String url = restUrl.buildUrl();
-    assertThat(url, containsString("q=satellite+imagery"));
-    assertThat(url, containsString("count=50"));
-    assertThat(url, containsString("start=1"));
-    assertThat(url, containsString("dtstart="));
-    assertThat(url, containsString("dtend="));
-    assertThat(url, containsString("lat="));
-    assertThat(url, containsString("lon="));
-    assertThat(url, containsString("radius="));
-    assertThat(url, containsString("format=atom"));
-  }
-
-  @Test
-  public void testUrlDoesNotContainDuplicateQuestionMarks() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "test");
-    String url = restUrl.buildUrl();
-
-    int questionMarkCount = 0;
-    for (char c : url.toCharArray()) {
-      if (c == '?') {
-        questionMarkCount++;
-      }
-    }
-
-    assertThat("Should have exactly one question mark", questionMarkCount, is(1));
-  }
-
-  @Test
-  public void testParameterOverwrite() {
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "first");
-    restUrl.addParameter(OpenSearchConstants.SEARCH_TERMS, "second");
-
-    String url = restUrl.buildUrl();
-    // Behavior depends on implementation - either overwrites or appends
     assertThat(url, is(notNullValue()));
   }
 
   @Test
-  public void testUrlWithBaseUrlContainingQueryString() {
-    RestUrl urlWithQuery = new RestUrl(BASE_URL + "?existing=param");
-    urlWithQuery.addParameter(OpenSearchConstants.SEARCH_TERMS, "test");
+  public void testUrlWithEmptyId() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("");
+    String url = restUrl.buildUrl();
+    assertThat(url, is(notNullValue()));
+  }
 
-    String url = urlWithQuery.buildUrl();
-    assertThat(url, containsString("existing=param"));
-    assertThat(url, containsString("q=test"));
+  @Test
+  public void testRetrieveResourceFalseByDefault() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    assertThat(restUrl.isRetrieveResource(), is(false));
+  }
+
+  @Test(expected = URISyntaxException.class)
+  public void testInvalidUrlTemplate() throws Exception {
+    String invalidUrl = "not a valid url template";
+    RestUrl.newInstance(invalidUrl);
+  }
+
+  @Test
+  public void testUrlTemplateWithoutParameters() throws Exception {
+    String simpleUrl = "https://example.com:8993/services/catalog/query";
+    RestUrl restUrl = RestUrl.newInstance(simpleUrl);
+    String url = restUrl.buildUrl();
+    assertThat(url, containsString("https://example.com:8993"));
+  }
+
+  @Test
+  public void testMultipleResourceRetrievalToggle() throws Exception {
+    RestUrl restUrl = RestUrl.newInstance(QUERY_URL_TEMPLATE);
+    restUrl.setId("toggle-test");
+    restUrl.setRetrieveResource(true);
+    restUrl.setRetrieveResource(false);
+    String url = restUrl.buildUrl();
+    assertThat(url, is(notNullValue()));
   }
 }

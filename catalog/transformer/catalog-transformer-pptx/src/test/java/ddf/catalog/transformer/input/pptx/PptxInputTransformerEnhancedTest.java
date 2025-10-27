@@ -215,7 +215,7 @@ public class PptxInputTransformerEnhancedTest {
 
     slideShow.getProperties().getCoreProperties().setTitle("Test Presentation");
     slideShow.getProperties().getCoreProperties().setCreator("Test Creator");
-    slideShow.getProperties().getCoreProperties().setSubject("Test Subject");
+    slideShow.getProperties().getCoreProperties().setSubjectProperty("Test Subject");
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     slideShow.write(baos);
