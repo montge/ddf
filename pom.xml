@@ -256,7 +256,7 @@
         <maven.failsafe.version>3.2.5</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <maven-jacoco-plugin.version>0.8.12</maven-jacoco-plugin.version>
-        <mime4j.version>0.8.7</mime4j.version>
+        <mime4j.version>0.8.13</mime4j.version>
         <mpegts-streamer.version>0.1.0_2</mpegts-streamer.version>
         <net.minidev.asm.version>1.0.2</net.minidev.asm.version>
         <netty.version>4.2.7.Final</netty.version>
