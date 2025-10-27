@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import ddf.security.encryption.EncryptionService;
+import ddf.security.permission.Permissions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,12 +30,14 @@ public class CswSourceConfigurationTest {
 
   @Mock private EncryptionService encryptionService;
 
+  @Mock private Permissions permissions;
+
   private CswSourceConfiguration configuration;
 
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    configuration = new CswSourceConfiguration(encryptionService);
+    configuration = new CswSourceConfiguration(encryptionService, permissions);
   }
 
   @Test
@@ -76,34 +79,36 @@ public class CswSourceConfigurationTest {
   }
 
   @Test
-  public void testSetAndGetCoordinateOrder() {
-    configuration.setCoordinateOrder(CswAxisOrder.LON_LAT);
-    assertThat(configuration.getCoordinateOrder(), is(CswAxisOrder.LON_LAT));
+  public void testSetAndGetCswAxisOrder() {
+    configuration.setCswAxisOrder(CswAxisOrder.LON_LAT);
+    assertThat(configuration.getCswAxisOrder(), is(CswAxisOrder.LON_LAT));
 
-    configuration.setCoordinateOrder(CswAxisOrder.LAT_LON);
-    assertThat(configuration.getCoordinateOrder(), is(CswAxisOrder.LAT_LON));
+    configuration.setCswAxisOrder(CswAxisOrder.LAT_LON);
+    assertThat(configuration.getCswAxisOrder(), is(CswAxisOrder.LAT_LON));
   }
 
   @Test
   public void testSetAndGetUsePosList() {
     configuration.setUsePosList(true);
-    assertThat(configuration.getUsePosList(), is(true));
+    assertThat(configuration.isSetUsePosList(), is(true));
 
     configuration.setUsePosList(false);
-    assertThat(configuration.getUsePosList(), is(false));
+    assertThat(configuration.isSetUsePosList(), is(false));
   }
 
   @Test
-  public void testSetAndGetMetacardMappings() {
-    String[] mappings = new String[] {"title=dc:title", "description=dc:description"};
-    configuration.setMetacardMappings(mappings);
-    assertThat(configuration.getMetacardMappings(), is(mappings));
+  public void testSetAndGetMetacardCswMappings() {
+    java.util.Map<String, String> mappings = new java.util.HashMap<>();
+    mappings.put("title", "dc:title");
+    mappings.put("description", "dc:description");
+    configuration.setMetacardCswMappings(mappings);
+    assertThat(configuration.getMetacardCswMappings(), is(mappings));
   }
 
   @Test
-  public void testSetAndGetPollInterval() {
-    configuration.setPollInterval(60000);
-    assertThat(configuration.getPollInterval(), is(60000));
+  public void testSetAndGetPollIntervalMinutes() {
+    configuration.setPollIntervalMinutes(60);
+    assertThat(configuration.getPollIntervalMinutes(), is(60));
   }
 
   @Test
@@ -139,51 +144,15 @@ public class CswSourceConfigurationTest {
   @Test
   public void testSetAndGetIsCqlForced() {
     configuration.setIsCqlForced(true);
-    assertThat(configuration.getIsCqlForced(), is(true));
+    assertThat(configuration.isCqlForced(), is(true));
 
     configuration.setIsCqlForced(false);
-    assertThat(configuration.getIsCqlForced(), is(false));
-  }
-
-  @Test
-  public void testSetAndGetEffectiveDateMapping() {
-    configuration.setEffectiveDateMapping("created");
-    assertThat(configuration.getEffectiveDateMapping(), is("created"));
-  }
-
-  @Test
-  public void testSetAndGetCreatedDateMapping() {
-    configuration.setCreatedDateMapping("dateSubmitted");
-    assertThat(configuration.getCreatedDateMapping(), is("dateSubmitted"));
-  }
-
-  @Test
-  public void testSetAndGetModifiedDateMapping() {
-    configuration.setModifiedDateMapping("modified");
-    assertThat(configuration.getModifiedDateMapping(), is("modified"));
-  }
-
-  @Test
-  public void testSetAndGetResourceUriMapping() {
-    configuration.setResourceUriMapping("source");
-    assertThat(configuration.getResourceUriMapping(), is("source"));
-  }
-
-  @Test
-  public void testSetAndGetThumbnailMapping() {
-    configuration.setThumbnailMapping("references");
-    assertThat(configuration.getThumbnailMapping(), is("references"));
-  }
-
-  @Test
-  public void testSetAndGetContentTypeMapping() {
-    configuration.setContentTypeMapping("type");
-    assertThat(configuration.getContentTypeMapping(), is("type"));
+    assertThat(configuration.isCqlForced(), is(false));
   }
 
   @Test
   public void testDefaultValues() {
-    CswSourceConfiguration newConfig = new CswSourceConfiguration(encryptionService);
+    CswSourceConfiguration newConfig = new CswSourceConfiguration(encryptionService, permissions);
 
     // Test that getters return reasonable defaults or null for unset values
     assertThat(newConfig.getCswUrl(), is(nullValue()));
@@ -198,9 +167,6 @@ public class CswSourceConfigurationTest {
 
     configuration.setUsername(null);
     assertThat(configuration.getUsername(), is(nullValue()));
-
-    configuration.setMetacardMappings(null);
-    assertThat(configuration.getMetacardMappings(), is(nullValue()));
   }
 
   @Test

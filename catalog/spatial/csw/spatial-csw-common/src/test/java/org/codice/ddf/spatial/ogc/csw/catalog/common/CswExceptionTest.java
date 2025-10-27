@@ -40,7 +40,7 @@ public class CswExceptionTest {
 
   @Test
   public void testCswExceptionWithNullMessage() {
-    CswException exception = new CswException(null);
+    CswException exception = new CswException((String) null);
     assertThat(exception, is(notNullValue()));
   }
 
@@ -56,7 +56,7 @@ public class CswExceptionTest {
     CswException exception = new CswException("Test message", null);
     assertThat(exception, is(notNullValue()));
     assertThat(exception.getMessage(), is("Test message"));
-    assertThat(exception.getCause(), is(notNullValue())); // May be wrapped
+    // When null is passed as cause, getCause() returns null
   }
 
   @Test

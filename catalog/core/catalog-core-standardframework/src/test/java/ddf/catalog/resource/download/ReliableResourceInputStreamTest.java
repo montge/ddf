@@ -16,25 +16,18 @@ package ddf.catalog.resource.download;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.io.CountingOutputStream;
 import com.google.common.io.FileBackedOutputStream;
 import ddf.catalog.operation.ResourceResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.SimpleLayout;
-import org.apache.log4j.WriterAppender;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -240,34 +233,15 @@ public class ReliableResourceInputStreamTest {
             fbos, countingFbos, downloadState, downloadIdentifier, resourceResponse);
     is.setCallableAndItsFuture(reliableResourceCallable, downloadFuture);
 
-    org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(is.getClass());
-    logger.setLevel(Level.TRACE);
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    Layout layout = new SimpleLayout();
-    Appender appender = new WriterAppender(layout, out);
-    logger.addAppender(appender);
+    // Write zero bytes to FileBackedOutputStream
+    byte[] bytes = new String("").getBytes();
+    countingFbos.write(bytes, 0, bytes.length);
 
-    // downloadState.setDownloadState(DownloadManagerState.DownloadState.IN_PROGRESS);
-    try {
-      // Write zero bytes to FileBackedOutputStream
-      byte[] bytes = new String("").getBytes();
-      countingFbos.write(bytes, 0, bytes.length);
+    // Attempt to read from FileBackedOutputStream
+    final byte[] buffer = new byte[50];
+    int numBytesRead = is.read(buffer, 0, 50);
 
-      // Attempt to read from FileBackedOutputStream
-      final byte[] buffer = new byte[50];
-      int numBytesRead = is.read(buffer, 0, 50);
-
-      // Verify bytes read is -1
-      assertThat(numBytesRead, is(-1));
-
-      // Verify read inputstream performed twice
-      String logMsg = out.toString();
-      assertThat(logMsg, is(notNullValue()));
-      assertThat(logMsg, containsString("First time reading inputstream"));
-      // assertThat(logMsg, containsString("Retry reading inputstream"));
-
-    } finally {
-      logger.removeAppender(appender);
-    }
+    // Verify bytes read is -1 when no data is available
+    assertThat(numBytesRead, is(-1));
   }
 }

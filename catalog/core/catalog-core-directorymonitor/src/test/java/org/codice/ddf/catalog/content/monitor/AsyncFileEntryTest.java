@@ -160,10 +160,11 @@ public class AsyncFileEntryTest {
 
     AsyncFileEntry entry1 = new AsyncFileEntry(file1);
     AsyncFileEntry entry2 = new AsyncFileEntry(file2);
+    AsyncFileEntry entry1Copy = new AsyncFileEntry(file1);
 
     assertThat(entry1.compareTo(entry2), lessThan(0));
     assertThat(entry2.compareTo(entry1), greaterThan(0));
-    assertThat(entry1.compareTo(entry1), is(0));
+    assertThat(entry1.compareTo(entry1Copy), is(0));
   }
 
   @Test
