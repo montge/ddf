@@ -94,7 +94,7 @@ jobs:
       # Only include ddf/ artifacts to reduce upload size
       # Other test jobs will download this to run tests against built artifacts
       - name: Upload Maven repository (ddf artifacts only)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: maven-repo-java-${{ matrix.java }}
           path: |
@@ -106,7 +106,7 @@ jobs:
       # Upload distribution ZIP (Java 17 only) for release/deployment
       - name: Upload distribution artifacts
         if: matrix.java == '17'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ddf-distribution
           path: distribution/ddf/target/ddf-*.zip
@@ -174,7 +174,7 @@ jobs:
       # Always upload even if tests fail to see which tests failed
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-libs-platform-core-java-${{ matrix.java }}
           path: '**/target/surefire-reports/*.xml'
@@ -184,7 +184,7 @@ jobs:
       # These will be aggregated later to show overall coverage
       - name: Upload JaCoCo coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco-reports-libs-platform-core-java-${{ matrix.java }}
           path: '**/target/site/jacoco/*.xml'
@@ -244,7 +244,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-catalog-core-java-${{ matrix.java }}
           path: '**/target/surefire-reports/*.xml'
@@ -252,7 +252,7 @@ jobs:
 
       - name: Upload JaCoCo coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco-reports-catalog-core-java-${{ matrix.java }}
           path: '**/target/site/jacoco/*.xml'
@@ -310,7 +310,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-features-transformers-plugins-java-${{ matrix.java }}
           path: '**/target/surefire-reports/*.xml'
@@ -318,7 +318,7 @@ jobs:
 
       - name: Upload JaCoCo coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco-reports-features-transformers-plugins-java-${{ matrix.java }}
           path: '**/target/site/jacoco/*.xml'
@@ -381,7 +381,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-admin-solr-spatial-java-${{ matrix.java }}
           path: '**/target/surefire-reports/*.xml'
@@ -389,7 +389,7 @@ jobs:
 
       - name: Upload JaCoCo coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco-reports-admin-solr-spatial-java-${{ matrix.java }}
           path: '**/target/site/jacoco/*.xml'
@@ -452,7 +452,7 @@ jobs:
 
       - name: Upload integration test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-integration-java-${{ matrix.java }}
           path: '**/target/failsafe-reports/*.xml'
@@ -460,7 +460,7 @@ jobs:
 
       - name: Upload JaCoCo coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jacoco-reports-integration-java-${{ matrix.java }}
           path: '**/target/site/jacoco/*.xml'
@@ -861,14 +861,14 @@ jobs:
           fi
 
       - name: Upload aggregated test summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-summary
           path: test-summary.md
           retention-days: 30
 
       - name: Upload aggregated coverage summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-summary
           path: coverage-summary.md
