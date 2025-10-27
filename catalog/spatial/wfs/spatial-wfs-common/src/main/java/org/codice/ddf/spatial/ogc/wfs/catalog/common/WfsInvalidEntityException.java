@@ -22,6 +22,16 @@ public class WfsInvalidEntityException extends WfsException {
     this.clazz = clazz;
   }
 
+  public WfsInvalidEntityException(String message) {
+    super(message);
+    this.clazz = null;
+  }
+
+  public WfsInvalidEntityException(String message, Throwable cause) {
+    super(message, cause);
+    this.clazz = null;
+  }
+
   public Class<?> getClazz() {
     return clazz;
   }

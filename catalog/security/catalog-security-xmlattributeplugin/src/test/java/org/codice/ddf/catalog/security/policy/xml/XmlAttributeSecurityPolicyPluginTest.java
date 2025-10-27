@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import junit.framework.Assert;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.PatternLayout;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,8 +90,6 @@ public class XmlAttributeSecurityPolicyPluginTest {
 
   @Before
   public void setUp() {
-    org.apache.log4j.Logger.getRootLogger()
-        .addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
     metacard.setMetadata(TEST_METADATA);
     plugin = new XmlAttributeSecurityPolicyPlugin();
     List<String> attributeUnions = Arrays.asList("controls", "marker");

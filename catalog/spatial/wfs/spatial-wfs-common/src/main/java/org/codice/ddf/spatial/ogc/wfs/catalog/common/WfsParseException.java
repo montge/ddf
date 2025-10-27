@@ -17,6 +17,10 @@ public class WfsParseException extends WfsException {
 
   private static final String BASE_MSG = "Error reading Response";
 
+  public WfsParseException(String message) {
+    super(BASE_MSG + ": " + message);
+  }
+
   public WfsParseException(String message, Throwable throwable) {
     super(BASE_MSG + ": " + message, throwable);
   }

@@ -17,4 +17,12 @@ public class WfsNullResponseException extends WfsException {
   public WfsNullResponseException() {
     super("Error handling response, response is null");
   }
+
+  public WfsNullResponseException(String message) {
+    super(message);
+  }
+
+  public WfsNullResponseException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
