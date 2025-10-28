@@ -24,6 +24,7 @@ import ddf.catalog.data.AttributeType;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.impl.AttributeImpl;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -271,7 +272,7 @@ public class KmlStyleMapEntryImplTest {
     MetacardType metacardType = mock(MetacardType.class);
     AttributeDescriptor descriptor = mock(AttributeDescriptor.class);
     AttributeType attributeType = mock(AttributeType.class);
-    Attribute attribute = new AttributeImpl(attributeName, value);
+    Attribute attribute = new AttributeImpl(attributeName, (Serializable) value);
 
     when(metacard.getMetacardType()).thenReturn(metacardType);
     when(metacard.getAttribute(attributeName)).thenReturn(attribute);

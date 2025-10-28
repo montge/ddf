@@ -54,16 +54,11 @@ public class RangeCommandTest {
           protected CatalogFacade getCatalog() {
             return mockCatalog;
           }
-
-          @Override
-          protected Object doExecute() throws Exception {
-            return executeWithSubject();
-          }
         };
 
     outputStream = new ByteArrayOutputStream();
     originalOut = System.out;
-    rangeCommand.console = new PrintStream(outputStream);
+    System.setOut(new PrintStream(outputStream));
   }
 
   @After
@@ -86,9 +81,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "price";
-    rangeCommand.lowerBound = "10";
-    rangeCommand.upperBound = "100";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "10";
+    rangeCommand.rangeEnd = "100";
 
     // Not executing full command, just verifying setup
   }
@@ -101,9 +95,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "created";
-    rangeCommand.lowerBound = "2023-01-01";
-    rangeCommand.upperBound = "2023-12-31";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "2023-01-01";
+    rangeCommand.rangeEnd = "2023-12-31";
 
     // Configuration test
   }
@@ -116,9 +109,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "quantity";
-    rangeCommand.lowerBound = "0";
-    rangeCommand.upperBound = "1000";
-    rangeCommand.numberOfItems = 20;
+    rangeCommand.rangeBeginning = "0";
+    rangeCommand.rangeEnd = "1000";
 
     // Test configuration
   }
@@ -131,9 +123,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "temperature";
-    rangeCommand.lowerBound = "0.5";
-    rangeCommand.upperBound = "100.5";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "0.5";
+    rangeCommand.rangeEnd = "100.5";
 
     // Configuration validation
   }
@@ -146,9 +137,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "elevation";
-    rangeCommand.lowerBound = "-100";
-    rangeCommand.upperBound = "500";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "-100";
+    rangeCommand.rangeEnd = "500";
 
     // Test with negative lower bound
   }
@@ -161,9 +151,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "status";
-    rangeCommand.lowerBound = "100";
-    rangeCommand.upperBound = "100";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "100";
+    rangeCommand.rangeEnd = "100";
 
     // Test with equal bounds (should match exact value)
   }
@@ -176,9 +165,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "fileSize";
-    rangeCommand.lowerBound = "1000000";
-    rangeCommand.upperBound = "10000000";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "1000000";
+    rangeCommand.rangeEnd = "10000000";
 
     // Test with large numeric values
   }
@@ -190,9 +178,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "score";
-    rangeCommand.lowerBound = "1000";
-    rangeCommand.upperBound = "2000";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "1000";
+    rangeCommand.rangeEnd = "2000";
 
     // Should handle no results gracefully
   }
@@ -205,9 +192,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "modified";
-    rangeCommand.lowerBound = String.valueOf(System.currentTimeMillis() - 86400000);
-    rangeCommand.upperBound = String.valueOf(System.currentTimeMillis());
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = String.valueOf(System.currentTimeMillis() - 86400000);
+    rangeCommand.rangeEnd = String.valueOf(System.currentTimeMillis());
 
     // Test with timestamp range
   }
@@ -220,9 +206,8 @@ public class RangeCommandTest {
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
     rangeCommand.attributeName = "custom.rating";
-    rangeCommand.lowerBound = "1";
-    rangeCommand.upperBound = "5";
-    rangeCommand.numberOfItems = 10;
+    rangeCommand.rangeBeginning = "1";
+    rangeCommand.rangeEnd = "5";
 
     // Test with custom attribute name
   }

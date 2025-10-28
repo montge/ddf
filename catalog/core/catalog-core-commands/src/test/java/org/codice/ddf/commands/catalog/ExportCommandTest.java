@@ -25,7 +25,6 @@ import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.data.impl.ResultImpl;
 import ddf.catalog.operation.QueryRequest;
 import ddf.catalog.operation.QueryResponse;
-import ddf.catalog.transform.CatalogTransformerException;
 import ddf.catalog.transform.MetacardTransformer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -69,18 +68,12 @@ public class ExportCommandTest {
           protected CatalogFacade getCatalog() {
             return mockCatalog;
           }
-
-          @Override
-          protected MetacardTransformer getTransformer(String transformerId)
-              throws CatalogTransformerException {
-            return mockTransformer;
-          }
         };
 
     // Capture console output
     outputStream = new ByteArrayOutputStream();
     originalOut = System.out;
-    exportCommand.console = new PrintStream(outputStream);
+    System.setOut(new PrintStream(outputStream));
   }
 
   @After
@@ -108,7 +101,7 @@ public class ExportCommandTest {
                 new java.io.ByteArrayInputStream("test".getBytes()),
                 new javax.activation.MimeType("text/xml")));
 
-    exportCommand.dirPath = exportDirectory.getAbsolutePath();
+    exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "*";
 
     // Verify exports are created
@@ -121,7 +114,7 @@ public class ExportCommandTest {
     when(mockQueryResponse.getResults()).thenReturn(results);
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
-    exportCommand.dirPath = exportDirectory.getAbsolutePath();
+    exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "title LIKE 'test*'";
 
     // Not executing, just verifying configuration
@@ -133,7 +126,7 @@ public class ExportCommandTest {
     when(mockQueryResponse.getResults()).thenReturn(results);
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
-    exportCommand.dirPath = exportDirectory.getAbsolutePath();
+    exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "*";
 
     // Configuration test
@@ -144,7 +137,7 @@ public class ExportCommandTest {
     File newDir = new File(exportDirectory, "subdir");
     assertThat("Directory should not exist yet", !newDir.exists());
 
-    exportCommand.dirPath = newDir.getAbsolutePath();
+    exportCommand.output = newDir.getAbsolutePath();
     exportCommand.cqlFilter = "*";
 
     // Command would create directory on execution
@@ -155,7 +148,7 @@ public class ExportCommandTest {
     when(mockQueryResponse.getResults()).thenReturn(new ArrayList<>());
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
-    exportCommand.dirPath = exportDirectory.getAbsolutePath();
+    exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "title LIKE 'nonexistent'";
 
     // No files should be created for empty results
