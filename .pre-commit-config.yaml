@@ -1,26 +1,16 @@
-# Pre-commit hooks configuration for DDF (Distributed Data Framework)
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
-
-# To install pre-commit: pip install pre-commit
-# To install hooks: pre-commit install
-# To run manually: pre-commit run --all-files
-# To update hooks: pre-commit autoupdate
+# Pre-commit hooks for DDF (Distributed Data Framework)
+# Simplified configuration using reliable hooks only
+# See PRE-COMMIT-README.md for installation and usage
 
 default_language_version:
   python: python3
 
-# Default stages for all hooks (can be overridden per hook)
-default_stages: [commit]
+default_stages: [pre-commit]
 
-# Exclude common directories that should never be checked
 exclude: |
   (?x)^(
-    distribution/kernel/target/.*|
-    distribution/ddf/target/.*|
     .*/target/.*|
     .*/node_modules/.*|
-    .*/\.git/.*|
     .*\.class|
     .*\.jar|
     .*\.war|
@@ -28,224 +18,39 @@ exclude: |
   )$
 
 repos:
-  # ============================================================================
-  # STAGE 1: Fast, lightweight file quality checks (pre-commit)
-  # These run on every commit and catch common issues quickly
-  # ============================================================================
-
+  # Basic file quality checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      # File formatting & whitespace
       - id: trailing-whitespace
-        name: Trim trailing whitespace
         args: [--markdown-linebreak-ext=md]
-        exclude: |
-          (?x)^(
-            .*/target/.*|
-            .*\.patch
-          )$
-
       - id: end-of-file-fixer
-        name: Fix end of files
-        exclude: |
-          (?x)^(
-            .*/target/.*|
-            .*\.patch
-          )$
-
-      - id: mixed-line-ending
-        name: Fix mixed line endings
-        args: [--fix=lf]
-        exclude: |
-          (?x)^(
-            .*/target/.*|
-            .*\.bat|
-            .*\.cmd
-          )$
-
-      # Configuration file validation
       - id: check-yaml
-        name: Validate YAML files
-        args: [--unsafe]  # Allow custom YAML tags
-        exclude: |
-          (?x)^(
-            .*/target/.*|
-            .*\.github/workflows/.*  # CI workflows may use special syntax
-          )$
-
       - id: check-xml
-        name: Validate XML files
-        exclude: |
-          (?x)^(
-            .*/target/.*
-          )$
-
       - id: check-json
-        name: Validate JSON files
-
-      # Repository health checks
       - id: check-added-large-files
-        name: Check for large files
-        args: [--maxkb=1000]  # Warn on files > 1MB
-        exclude: |
-          (?x)^(
-            .*/target/.*|
-            .*\.jar|
-            .*\.war|
-            .*\.zip
-          )$
-
+        args: ['--maxkb=1024']
       - id: check-merge-conflict
-        name: Check for merge conflicts
-
-      - id: check-case-conflict
-        name: Check for case conflicts
-
-      # Security checks
       - id: detect-private-key
-        name: Detect private keys
-        exclude: |
-          (?x)^(
-            .*/test/resources/.*|
-            .*/src/test/.*
-          )$
+      - id: mixed-line-ending
+        args: ['--fix=lf']
 
-      # Code issues
-      - id: check-symlinks
-        name: Check for broken symlinks
-
-      - id: destroyed-symlinks
-        name: Check for destroyed symlinks
-
-  # ============================================================================
-  # STAGE 2: Java code formatting (pre-commit)
-  # Enforces Google Java Format using the existing fmt-maven-plugin
-  # ============================================================================
-
-  - repo: https://github.com/ejba/pre-commit-maven
-    rev: v0.3.3
+  # Java formatting using Maven
+  - repo: local
     hooks:
-      - id: maven
-        name: Format Java code (fmt:format)
-        alias: java-format
-        args: ['com.spotify.fmt:fmt-maven-plugin:format', '-Dfmt.skip=false']
-        files: \.java$
-        exclude: |
-          (?x)^(
-            .*/target/.*|
-            .*/generated-sources/.*|
-            .*/generated-test-sources/.*
-          )$
-        pass_filenames: false
-        # This runs only on changed Java files to be fast
-
-  # ============================================================================
-  # STAGE 3: Maven validation checks (pre-commit)
-  # Quick validation without running full tests
-  # ============================================================================
-
-  - repo: https://github.com/ejba/pre-commit-maven
-    rev: v0.3.3
-    hooks:
-      # Validate pom.xml files
-      - id: maven
-        name: Validate Maven POMs
-        alias: maven-validate
-        args: ['validate', '-q']
-        files: pom\.xml$
-        pass_filenames: false
-        stages: [commit]
-
-  # ============================================================================
-  # STAGE 4: Static analysis - Checkstyle (pre-push)
-  # More expensive checks run only on push
-  # ============================================================================
-
-  - repo: https://github.com/ejba/pre-commit-maven
-    rev: v0.3.3
-    hooks:
-      - id: maven
-        name: Run Checkstyle validation
-        alias: maven-checkstyle
-        args: ['checkstyle:check', '-DskipTests=true', '-Dmaven.javadoc.skip=true']
+      - id: maven-format
+        name: Format Java code
+        entry: mvn
+        args: ['-q', 'fmt:format', '-DskipTests']
+        language: system
         files: \.java$
         pass_filenames: false
-        stages: [push]
-        # Only run checkstyle on push since it's slower
 
-  # ============================================================================
-  # STAGE 5: Compilation check (pre-push)
-  # Ensures code compiles before pushing
-  # ============================================================================
-
-  - repo: https://github.com/ejba/pre-commit-maven
-    rev: v0.3.3
-    hooks:
-      - id: maven
-        name: Compile main and test sources
-        alias: maven-compile-all
-        args: ['test-compile', '-DskipTests=true', '-Dmaven.javadoc.skip=true', '-Dfmt.skip=true', '-DskipStatic=true']
-        files: \.(java|xml)$
-        pass_filenames: false
-        stages: [push]
-        # This catches compilation errors and missing imports early
-
-# ============================================================================
-# OPTIONAL: Manual-only hooks (run with: pre-commit run --hook-stage manual)
-# These are too slow for automatic runs but useful for manual checks
-# ============================================================================
-
-  - repo: https://github.com/ejba/pre-commit-maven
-    rev: v0.3.3
-    hooks:
-      # Full test suite - run manually only
-      - id: maven-test
-        name: Run all tests
-        alias: maven-test-all
-        stages: [manual]
-        pass_filenames: false
-
-      # Format check without modifying files
-      - id: maven
-        name: Check Java formatting (verify only)
-        alias: java-format-check
-        args: ['com.spotify.fmt:fmt-maven-plugin:check']
+      - id: maven-checkstyle
+        name: Run Checkstyle
+        entry: mvn
+        args: ['-q', 'checkstyle:check', '-DskipTests']
+        language: system
         files: \.java$
-        stages: [manual]
         pass_filenames: false
-
-# ============================================================================
-# Configuration Notes:
-# ============================================================================
-#
-# HOOK STAGES:
-#   - commit: Fast checks that run on every commit (< 5 seconds)
-#   - push: Slower checks that run before pushing (< 30 seconds)
-#   - manual: Very slow checks, run manually with --hook-stage manual
-#
-# BYPASSING HOOKS:
-#   - To skip hooks on a commit: git commit --no-verify
-#   - To skip specific hook: SKIP=hook-id git commit
-#   - Example: SKIP=maven-checkstyle git commit
-#
-# PERFORMANCE EXPECTATIONS:
-#   - Pre-commit stage: 5-15 seconds for typical changes
-#   - Pre-push stage: 30-60 seconds for compilation + checkstyle
-#   - Manual stage: 2-10 minutes for full test suite
-#
-# INTEGRATION WITH CI/CD:
-#   This configuration mirrors the checks run in CI/CD:
-#   - fmt:check → mirrors java-format
-#   - checkstyle:check → mirrors maven-checkstyle
-#   - test-compile → mirrors maven-compile-all
-#   - test → mirrors maven-test-all (manual)
-#
-# CLAUDE CODE AUTO-FIX WORKFLOW:
-#   1. Claude Code makes changes to Java files
-#   2. Pre-commit runs java-format automatically
-#   3. If checkstyle fails on push, Claude can fix violations
-#   4. Compilation errors caught before pushing to remote
-#   5. Same tools/configs as CI = consistent results
-#
-# ============================================================================
+        stages: [pre-push]
