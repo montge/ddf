@@ -18,7 +18,7 @@
     </bean>
 
     <service ref="metacardResourceStatus" interface="ddf.catalog.plugin.PostQueryPlugin"/>
-    
+
     <reference id="resourceCache" interface="ddf.catalog.cache.ResourceCacheInterface"/>
 
 </blueprint>

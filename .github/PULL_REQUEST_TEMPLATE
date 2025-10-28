@@ -1,22 +1,22 @@
 #### What does this PR do?
 
-#### Who is reviewing it? 
+#### Who is reviewing it?
 <!--(please choose AT LEAST two reviewers that need to approve the PR before it can get merged)-->
 
-#### Select relevant component teams: 
+#### Select relevant component teams:
 <!--
-@codice/build 
-@codice/continuous-integration 
-@codice/core-apis 
-@codice/data 
-@codice/docs 
-@codice/io 
-@codice/ogc 
-@codice/security 
-@codice/solr 
-@codice/test 
-@codice/ui 
-@codice/website 
+@codice/build
+@codice/continuous-integration
+@codice/core-apis
+@codice/data
+@codice/docs
+@codice/io
+@codice/ogc
+@codice/security
+@codice/solr
+@codice/test
+@codice/ui
+@codice/website
 -->
 
 #### Ask 2 committers to review/merge the PR and tag them here.
@@ -37,8 +37,8 @@ If you don't know who to ask, you can request reviews in https://groups.google.c
 @emmberk
 @figliold
 @garrettfreibott
-@glenhein 
-@gordocanchola 
+@glenhein
+@gordocanchola
 @hayleynorton
 @jlcsmith
 @josephthweatt
@@ -81,9 +81,9 @@ Fixes: #____
 - [ ] Update / Add Integration Tests
 
 #### Notes on Review Process
-Please see [Notes on Review Process](https://codice.atlassian.net/wiki/spaces/DDF/pages/71946981/Pull+Request+Guidelines) for further guidance on requirements for merging and abbreviated reviews. 
+Please see [Notes on Review Process](https://codice.atlassian.net/wiki/spaces/DDF/pages/71946981/Pull+Request+Guidelines) for further guidance on requirements for merging and abbreviated reviews.
 
 #### Review Comment Legend:
-- ✏️ (Pencil) This comment is a nitpick or style suggestion, no action required for approval. This comment should provide a suggestion either as an in line code snippet or a gist. 
+- ✏️ (Pencil) This comment is a nitpick or style suggestion, no action required for approval. This comment should provide a suggestion either as an in line code snippet or a gist.
 - ❓ (Question Mark) This comment is to gain a clearer understanding of design or code choices, clarification is required but action may not be necessary for approval.
 - ❗ (Exclamation Mark) This comment is critical and requires clarification or action before approval.

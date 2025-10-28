@@ -32,7 +32,7 @@
             app/js/hawt-io-tab.js,app/js/underscore/underscore.js,app/js/backbone.js,app/client/views/ManagedServiceFactory.view.js
         </plugin-scripts>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>ddf.admin.core</groupId>

@@ -18,7 +18,7 @@
               OpenSearch description documents should include at least one Query element of role="example" that is expected to return search results. Search clients may use this example query to validate that the search engine is working properly.
             </xs:documentation>
           </xs:annotation>
-         
+
         </xs:element>
 		<xs:element name="totalResults" type="xs:long"/>
 		<xs:element name="startIndex" type="xs:long"/>
@@ -191,7 +191,7 @@
               OpenSearch description documents should include at least one Query element of role="example" that is expected to return search results. Search clients may use this example query to validate that the search engine is working properly.
             </xs:documentation>
           </xs:annotation>
-         
+
         </xs:element>
          <xs:element name="Developer" minOccurs="0" maxOccurs="1">
           <xs:annotation>
@@ -325,7 +325,7 @@
 
     </xs:complexType>
   </xs:element>
-  
+
   <xs:complexType name="QueryType">
             <xs:attribute name="role" use="required">
               <xs:annotation>

@@ -100,7 +100,7 @@ include::${pi.file}[]
 <#list pluginIntros?sort_by ("order") as pi>
 <#if pi.status == "published" && pi.order != ("00") && pi.order != ("9999")>
 
-==== ${pi.title} 
+==== ${pi.title}
 
 include::${pi.file}[leveloffset=+3]
 

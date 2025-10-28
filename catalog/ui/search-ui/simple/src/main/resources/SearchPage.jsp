@@ -1,6 +1,6 @@
 <%@ page import="org.codice.ddf.ui.searchui.simple.properties.UiConfigurationPropertiesFactory,org.codice.ddf.ui.searchui.simple.properties.UiConfigurationProperties" %>
 <!DOCTYPE html>
-<!-- 
+<!--
 /**
  * Copyright (c) Codice Foundation
  *
@@ -33,10 +33,10 @@
 <link href="lib/jquery/css/plugin/jquery-ui-timepicker-addon.css" rel="stylesheet">
 
 <!-- These CSS files have been compressed and aggregated into Search-min.css.  The list is here for easy modification for
-     the sake of debugging.  
+     the sake of debugging.
      TODO: Leverage something like http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/  for a better solution
  -->
-<!--  
+<!--
 <link href="css/searchPage.css?bust=${timestamp}" rel="stylesheet">
 <link href="css/recordView.css?bust=${timestamp}" rel="stylesheet">
 -->
@@ -67,7 +67,7 @@
 		    if(h.trim().length() > 0) { %>
              <div class="banner"><%=h %></div>
 		 <% } %>
-	
+
 		<div class="navbar-inner">
 			<div class="container">
 				<a class="brand" href="#">
@@ -379,13 +379,13 @@
 							</ul>
 						</div>
 					</div>
-					
+
 					<!--  this div contains the 'record view.'  Eventually we want to
 							make this re-usable somehow. -->
 					<div id="recordContentDiv">
 					</div>
 					<!-- End 'record view' area -->
-	
+
 				</div>
 				<div id="loadingView" class="msgView">
 					<div class="msgViewContainer">
@@ -446,15 +446,15 @@
 		if(f.trim().length() > 0) { %>
 		   <div class="navbar-fixed-bottom banner"><%=f %></div>
         <% } %>
-		
+
 	<!-- Placed at the end of the document so the pages load faster -->
 
 	<script type="text/javascript" src="lib/jquery/js/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/jquery-ui-1.12.1.min.js"></script>
-	
+
     <script type="text/javascript" src="lib/underscore-1.8.3/underscore-min.js"></script>
 
-	
+
 	<script type="text/javascript" src="lib/bootstrap-2.3.1/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="lib/bootstrap-extensions/js/partial-affix.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/purl.js"></script>
@@ -463,7 +463,7 @@
 	<script type="text/javascript" src="lib/handlebars-1.0.0/handlebars.js"></script>
 
 <!-- These scripts have been compressed and aggregated into Search-min.js.  The list is here for easy modification for
-     the sake of debugging.  
+     the sake of debugging.
      TODO: Leverage something like http://www.html5rocks.com/en/tutorials/developertools/sourcemaps/  for a better solution
  -->
 <!--

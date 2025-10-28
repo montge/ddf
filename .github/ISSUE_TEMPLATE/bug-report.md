@@ -20,7 +20,7 @@ is the best place for getting support.
 -->
 
 ### Description
-<!-- 
+<!--
 Description of the issue
 Are there any known workarounds?
 Severity of the bug (minor, major, critical)?

@@ -72,7 +72,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>
-                            catalog-core-actions, 
+                            catalog-core-actions,
                             commons-lang3,
                             handlebars,
                             antlr4-runtime
@@ -118,10 +118,10 @@
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>
-                                    <!-- 
-                                    The reason for thesholds below 75% is because there are a few 
-                                    package private methods that are overridden in the test classes for 
-                                    testing purposes. 
+                                    <!--
+                                    The reason for thesholds below 75% is because there are a few
+                                    package private methods that are overridden in the test classes for
+                                    testing purposes.
                                      -->
                                     <limits>
                                         <limit implementation="org.codice.jacoco.LenientLimit">

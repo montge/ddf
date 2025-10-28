@@ -20,7 +20,7 @@
         		<p>{{description}}</p>
         		<p><a href="{{baseUrl}}/search" class="btn btn-primary btn-large">Search {{productName}} &raquo;</a></p>
         	</div>
-        	
+
         </div>
         <div id="contactInfo" class="row">
         	<div class="span2 offset8">

@@ -23,7 +23,7 @@
           class="org.codice.ddf.catalog.download.action.ResourceDownloadActionProvider">
         <argument value="catalog.data.metacard.resource.download"/>
     </bean>
-    
+
     <service ref="resourceDownloadActionProvider" interface="ddf.action.ActionProvider">
         <service-properties>
             <entry key="id" value="catalog.data.metacard.resource.download"/>
@@ -52,5 +52,5 @@
 				class="org.codice.ddf.catalog.download.action.DownloadToLocalSiteExceptionMapper" />
 		</jaxrs:providers>
 	</jaxrs:server>
-    	    
+
 </blueprint>

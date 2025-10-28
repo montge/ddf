@@ -30,7 +30,7 @@
 
 	var newTop = offsetTop + scrollTop;
 	var totalSize = offsetTop + elementHeight + offsetBottom;
-	
+
 	var elementId = this.$element.attr('id');
 	if(! elementId) {
 		elementId = "";
@@ -41,7 +41,7 @@
 	if($("#" + elementId + "_hidden").height() !== totalSize) {
 		$("#" + elementId + "_hidden").height(totalSize);
 	}
-	
+
 	if(windowHeight < totalSize) {
 		var maxScroll = totalSize - windowHeight;
 		newTop = scrollTop < maxScroll ? offsetTop : scrollTop + offsetTop - maxScroll;
@@ -50,7 +50,7 @@
     this.partialaffixed = false;
 
 	position.top = newTop;
-	this.$element.offset(position);		
+	this.$element.offset(position);
 }
 
 

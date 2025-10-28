@@ -20,7 +20,7 @@
     <bean id="persistentStore" class="org.codice.ddf.persistence.internal.PersistentStoreImpl">
         <argument ref="solrFactory" />
     </bean>
-    
+
     <service ref="persistentStore" id="persistentStoreService"
              interface="org.codice.ddf.persistence.PersistentStore">
     </service>

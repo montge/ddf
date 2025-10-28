@@ -2,7 +2,7 @@
 <kml xmlns="http://www.opengis.net/kml/2.2">
 	<Document>
 		<Style id="bluenormal">
-<!-- Update when Icons become available 
+<!-- Update when Icons become available
       <IconStyle>
         <Icon>
           <href>/icons?iconId=bomber-2.png</href>
@@ -26,7 +26,7 @@
 			</BalloonStyle>
 		</Style>
 		<Style id="bluehighlight">
-    <!-- Update when Icons become available 
+    <!-- Update when Icons become available
       <IconStyle>
         <Icon>
           <href>/icons?iconId=bomber-2.png</href>

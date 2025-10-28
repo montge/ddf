@@ -84,7 +84,7 @@ $.datepicker.formatDate = function (format, date, settings) {
 					case 'y': // here is the workaround to enforce 4-digit output of a year when 'yy' is the year code
 						output += (lookAhead('y') ? ( (date.getFullYear() < 1000 ? '0' : '') +
 								(date.getFullYear() < 100 ? '0' : '') +
-								(date.getFullYear() < 10 ? '0' : '') + date.getFullYear() 
+								(date.getFullYear() < 10 ? '0' : '') + date.getFullYear()
 							) : (date.getYear() % 100 < 10 ? '0' : '') + date.getYear() % 100);
 						break;
 					case '@':

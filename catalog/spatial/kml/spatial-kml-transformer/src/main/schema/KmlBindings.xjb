@@ -5,9 +5,9 @@
 	<jaxb:bindings schemaLocation="ogckml22.xsd" node="//xsd:element[@name='scale']">
 	  <jaxb:class name="ScaleSimple"/>
 	</jaxb:bindings>
-	
+
 	<jaxb:bindings schemaLocation="ogckml22.xsd" node="//xsd:element[@name='snippet']">
 	  <jaxb:class name="SnippetSimple"/>
 	</jaxb:bindings>
-           
+
 </jaxb:bindings>

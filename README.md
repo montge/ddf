@@ -3,7 +3,7 @@
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or any later version. 
+ * version 3 of the License, or any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
@@ -18,7 +18,7 @@
 [![pullreminders](https://pullreminders.com/badge.svg)](https://pullreminders.com?ref=badge)
 
 
-Distributed Data Framework (DDF) is an open source, modular integration framework. 
+Distributed Data Framework (DDF) is an open source, modular integration framework.
 
 ## Features
  * Standardization
@@ -81,14 +81,14 @@ Distributed Data Framework (DDF) is an open source, modular integration framewor
     - Build simple Java Objects and wire them in via a choice of dependency injection frameworks
     - Make use of widely available documentation and components for DDF's underlying technologies
     - Modular development supports multi-organizational and multi-regional teams
- 
+
 ## Building
 ### What you need ###
 * [Install OpenJDK 11](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
 * Make sure that your JAVA\_HOME environment variable is set to the newly installed JDK location, and that your PATH includes %JAVA\_HOME%\bin (Windows) or $JAVA\_HOME$/bin (\*NIX).
 * [Install Maven 3.6.3 \(or later\)](http://maven.apache.org/download.html). Make sure that your PATH includes the MVN\_HOME/bin directory.
 * Set the MAVEN_OPTS variable with the appropriate memory settings
-### Optional 
+### Optional
 * If you do not wish to run formatting from the commandline (see below) you may use an IDE to format the code for you with the google-java-format plugins.
   - https://github.com/google/google-java-format
     * IntelliJ: https://plugins.jetbrains.com/plugin/8527
@@ -130,7 +130,7 @@ For additional information about building DDF, see [Building DDF](https://codice
 
 ## How to Run
 * Start SolrCloud based on the README in <ddf_repo_src>/distribution/docker/solrcloud
-* Unzip the distribution. 
+* Unzip the distribution.
 * Run the executable at <distribution_home>/bin/ddf.bat or <distribution_home>/bin/ddf
 
 ## Additional information
@@ -152,11 +152,10 @@ Many thanks for using DDF.
 
 ## Copyright / License
 Copyright (c) Codice Foundation
- 
-This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License 
-as published by the Free Software Foundation, either version 3 of the License, or any later version. 
- 
+
+This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License
+as published by the Free Software Foundation, either version 3 of the License, or any later version.
+
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
 <http://www.gnu.org/licenses/lgpl.html>.
- 

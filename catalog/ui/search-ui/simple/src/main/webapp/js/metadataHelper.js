@@ -13,10 +13,10 @@
 
 
 /**
- * 
+ *
  * This file is being used to come up with ways to display metadata xml in a way
  * that is functional and looks good.
- * 
+ *
  */
 
 /* hint for jslint.  Needed due to the recursive use of this function */
@@ -34,15 +34,15 @@ function convertAttributesToJson(attributes){
 
 function convertMetadataToJson(metadataString){
 	var xmlDoc, result, parent, element, i;
-	element = $.parseXML(metadataString);  
-	result = []; 
+	element = $.parseXML(metadataString);
+	result = [];
 	parent = $(xmlDoc)[0].firstChild;
 	console.log($(xmlDoc));
 	for(i in parent.children){
 		element = parent.children[i];
 		result.push(
-				{	title:element.localName, 
-					value:element.textContent, 
+				{	title:element.localName,
+					value:element.textContent,
 					attributes:convertAttributesToJson(element.attributes)
 				});
 	}
@@ -60,7 +60,7 @@ function styleXmlString(metadataString){
 	formatted = formatted.replace(/>/g,">>");
 	formatted = formatted.replace(/<</g,"<div><span style='color:blue'><</span><span style='color:maroon'>");
 	formatted = formatted.replace(/>>/g,"</span><span style='color:blue'>></span></div>");
-	
+
 	return "<div class='well'>"+formatted+"</div>";
 }
 
@@ -134,7 +134,7 @@ function buildMetadataHtml(xml){
 	var xmlDoc, root, html, item;
 	html = $("<ul class=\"nav nav-list tree\"></ul>");
 
-    xmlDoc = $.parseXML( xml ); 
+    xmlDoc = $.parseXML( xml );
     if (xmlDoc) {
         root = xmlDoc.documentElement;
     }  else {
@@ -148,5 +148,5 @@ function buildMetadataHtml(xml){
     item = buildHtmlFromNode(root);
     html.append(item);
 
-	return html; 
+	return html;
 }

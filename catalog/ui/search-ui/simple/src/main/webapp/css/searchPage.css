@@ -9,7 +9,7 @@
  * <http://www.gnu.org/licenses/lgpl.html>.
  *
  **/
- 
+
 div.banner {
 	width: 100%;
 	height: 20px;
@@ -29,7 +29,7 @@ body {
 }
 
 div.results {
-    padding-top:70px;	
+    padding-top:70px;
 }
 
 option.disabled_option {

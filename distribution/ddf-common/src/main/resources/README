@@ -2,7 +2,7 @@
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or any later version. 
+ * version 3 of the License, or any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
@@ -12,7 +12,7 @@
 
 Welcome to Distributed Data Framework (DDF)
 ============================================
-Distributed Data Framework (DDF) is an agile and modular integration framework. 
+Distributed Data Framework (DDF) is an agile and modular integration framework.
 
 The following benefits are provided:
   * Standardization
@@ -43,7 +43,7 @@ the release notes on the wiki for a list of supported and unsupported features.
 
 How to Run
 ==========
-* Unzip the distribution. 
+* Unzip the distribution.
 * Run the executable at <distribution_home>/bin/ddf.bat (Windows) or <distribution_home>/bin/ddf (*NIX)
 
 Additional Information
@@ -65,4 +65,3 @@ For information on contributing to DDF see http://www.codice.org/contributing.
 Many thanks for using DDF.
 
 The Codice DDF Development Team
-

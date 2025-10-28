@@ -19,7 +19,7 @@ rem
 
 rem ##############################################################################
 rem The only change in this script from Karaf's original script is to call ddf.bat
-rem instead of karaf.bat at the end of the file to gain restart support for 
+rem instead of karaf.bat at the end of the file to gain restart support for
 rem critical and out of memory errors
 rem ##############################################################################
 
@@ -101,4 +101,3 @@ endlocal
 if not "%PAUSE%" == "" pause
 
 :END_NO_PAUSE
-

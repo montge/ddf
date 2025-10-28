@@ -11,20 +11,20 @@
  **/
 
 /**
- * 
+ *
  * This file creates a 'ViewSwitcher' object, which is used to integrate the RecordView
- *  HTML into the Search Page.  
- *  
+ *  HTML into the Search Page.
+ *
  *  A ViewSwitcher is created by passing in \<div\> IDs for both the area to display
  *   results and the area to display specific record information.  When showResultsView
  *   or showRecordView is called, the relevant div is populated and shown, and the other
  *   is hidden.
- *   
+ *
  *  Additionally, showResultsView creates 'back', 'next', and 'previous' buttons for
  *   navigating between views or records.
- *   
+ *
  *  DEPENDENCIES: recordView.js, searchPage.js
- * 
+ *
  */
 
 
@@ -61,15 +61,15 @@ ViewSwitcher.prototype = {
 		},
 
 		showRecordView : function(index) {
-			var metacard, previousLi, nextLi, previousA, nextA, recordViewDivId, 
+			var metacard, previousLi, nextLi, previousA, nextA, recordViewDivId,
 					javascriptPrefix, backA, showResultsHref, showRecordHref, rv;
-			
+
 			this.currentView = this.METACARD_VIEW;
 			metacard = getMetacard(index);
 			if(metacard) {
 
 				$("#" + this.resultsDivId).hide();
-				
+
 				// Variables referencing element IDs or var names. Hopefully we find
 				//  a way to remove these in the future for better practices.
 				previousLi = "#previousRecordLi";
@@ -78,13 +78,13 @@ ViewSwitcher.prototype = {
 				nextA = nextLi+" a";
 				recordViewDivId = "recordContentDiv";
 				backA = "#backToResultsBtn a";
-				
+
 				javascriptPrefix = "javascript";
 				showResultsHref =  javascriptPrefix + ":viewSwitcher.showResultsView";
 				showRecordHref = javascriptPrefix + ":showMetacard";
-				
+
 				$(backA).attr("href", showResultsHref + "(" + index + ")");
-				
+
 				if(index === 1) {
 					$(previousLi).attr("class","disabled");
 					$(previousA).removeAttr("href");
@@ -99,9 +99,9 @@ ViewSwitcher.prototype = {
 					$(nextA).attr("href", showRecordHref + "(" + (index + 1) + ")");
 					$(nextLi).removeAttr("class");
 				}
-				
+
 				$("#" + this.recordDivId).show();
-				
+
 				rv = new RecordView(metacard);
 				rv.buildView(recordViewDivId);
 			}

@@ -48,7 +48,7 @@ IF "%HOW%" == "wrapper" (
 IF %RC%==0 (
   IF NOT "%PID%" == "" (
     REM Wait for the process to die
-    CALL :WAIT_FOR_PID  
+    CALL :WAIT_FOR_PID
     IF ERRORLEVEL 1 (
       SET RC=1
     ) ELSE (

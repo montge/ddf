@@ -11,15 +11,15 @@
  **/
 
 /**
- * 
+ *
  * This file creates a 'RecordView' object, which is an HTML representation of a metacard.
- * 
+ *
  * A RecordView is created by passing in a JSON metacard object.  Once created,
  * the buildView() function can be called, and the specified \<div\> will be filled
  * with the HTML representation of the record.
- * 
+ *
  * DEPENDENCIES: metadataHelper.js
- * 
+ *
  */
 
 Handlebars.registerHelper("formatDate", function(dateString, options) {
@@ -104,12 +104,9 @@ function RecordView(metacard){
 }
 
 RecordView.prototype = {
-	
-	buildView : function(divId){	
+
+	buildView : function(divId){
 		this._updateRecordDiv(divId);
 	}
-	
+
 };
-
-
-		

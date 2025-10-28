@@ -3,7 +3,7 @@
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or any later version. 
+ * version 3 of the License, or any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
@@ -17,7 +17,7 @@
 
 	<OCD description="JAAS LDAP configuration" name="Security JAAS LDAP"
          id="Ldap_Login_Config">
-	    
+
 	    <AD name="LDAP URL:" id="ldapUrl" required="true" type="String" cardinality="10"
             default="ldaps://${org.codice.ddf.system.hostname}:1636"
             description="LDAP or LDAPS server and port">
@@ -50,12 +50,12 @@
             default="false"
             description="Determines whether or not to use StartTLS when connecting via the ldap protocol. This setting is ignored if the URL uses ldaps.">
         </AD>
-	    
+
 	    <AD name="LDAP Bind User DN:" id="ldapBindUserDn" required="true" type="String"
             default="cn=admin"
             description="DN of the user to bind with LDAP. This user should have the ability to verify passwords and read attributes for any user.">
 	    </AD>
-	    
+
 	    <AD name="LDAP Bind User Password:" id="ldapBindUserPass" required="true" type="Password"
             default="secret"
             description="Password used to bind user with LDAP.">
@@ -70,26 +70,26 @@
 			default="member"
 			description="Attribute used to identify users in the group. Usually this is member or something similar.">
 		</AD>
-	    
+
 	    <AD name="LDAP User Login Attribute:" id="loginUserAttribute" required="true" type="String"
             default="uid"
             description="Attribute used as the login username. Usually this is uid, cn, or something similar.">
 	    </AD>
-	    
+
 	    <AD name="LDAP Base User DN:" id="userBaseDn" required="true" type="String"
             default="ou=users\,dc=example\,dc=com"
             description="Full LDAP path to where users can be found.">
 	    </AD>
-	    
+
 	    <AD name="LDAP Base Group DN:" id="groupBaseDn" required="true" type="String"
             default="ou=groups\,dc=example\,dc=com"
             description="Full LDAP path to where groups can be found.">
 	    </AD>
-	    
+
 	</OCD>
-	
+
 	<Designate factoryPid="Ldap_Login_Config" pid="Ldap_Login_Config">
 	    <Object ocdref="Ldap_Login_Config"/>
   	</Designate>
-  	
+
 </metatype:MetaData>

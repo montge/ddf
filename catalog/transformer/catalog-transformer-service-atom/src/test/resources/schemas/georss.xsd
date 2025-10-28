@@ -17,7 +17,7 @@
          <xs:documentation>Global element which acts as the head of a substitution group that may include any element which is a GeoRSS feature property</xs:documentation>
       </xs:annotation>
 	</xs:element>
-	<xs:complexType name="abstractFeaturePropertyType" abstract="true">    
+	<xs:complexType name="abstractFeaturePropertyType" abstract="true">
       <xs:annotation>
          <xs:documentation>Abstract type of georss feature properties</xs:documentation>
       </xs:annotation>
@@ -32,7 +32,7 @@
 
     <xs:complexType name="whereType">
        <xs:complexContent>
-         <xs:extension base="georss:abstractFeaturePropertyType"> 
+         <xs:extension base="georss:abstractFeaturePropertyType">
            <xs:choice>
             <xs:element ref="gml:Point"/>
             <xs:element ref="gml:LineString"/>
@@ -146,5 +146,5 @@
    </xs:simpleType>
 
     <!-- ================================================= -->
-   
+
 </xs:schema>

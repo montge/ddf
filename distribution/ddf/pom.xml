@@ -270,7 +270,7 @@
             <artifactId>docs</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
         <!-- Features to add to system repository -->
         <dependency>
             <groupId>ddf.catalog</groupId>

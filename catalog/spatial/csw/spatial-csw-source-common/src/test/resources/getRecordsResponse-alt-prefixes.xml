@@ -3,7 +3,7 @@
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or any later version. 
+ * version 3 of the License, or any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
@@ -37,13 +37,13 @@
       <terms:abstract>abstract 1</terms:abstract>
       <dc:rights xmlns:dc="http://purl.org/dc/elements/1.1/">copyright 1</dc:rights>
       <dc:rights xmlns:dc="http://purl.org/dc/elements/1.1/">copyright 2</dc:rights>
-      <dc:language xmlns:dc="http://purl.org/dc/elements/1.1/">english</dc:language>      
+      <dc:language xmlns:dc="http://purl.org/dc/elements/1.1/">english</dc:language>
       <ows:BoundingBox xmlns:ows="http://www.opengis.net/ows" crs="EPSG:RD_New (28992)">
         <ows:LowerCorner>5.121 52.139</ows:LowerCorner>
         <ows:UpperCorner>4.468 52.517</ows:UpperCorner>
-      </ows:BoundingBox>   
+      </ows:BoundingBox>
       <dc:type xmlns:dc="http://purl.org/dc/elements/1.1/">dataset</dc:type>
-      <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">Shapefile</dc:format> 
+      <dc:format xmlns:dc="http://purl.org/dc/elements/1.1/">Shapefile</dc:format>
     </rec:Record>
     <ns2:Record xmlns:ns2="http://www.opengis.net/cat/csw/2.0.2">
       <dc:identifier xmlns:dc="http://purl.org/dc/elements/1.1/">{23362852-F370-4369-B0B2-BE74B2859614}</dc:identifier>

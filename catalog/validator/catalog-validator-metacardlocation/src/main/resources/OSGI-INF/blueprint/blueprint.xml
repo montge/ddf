@@ -19,7 +19,7 @@
     <bean id="metacardLocationValidator" class="org.codice.ddf.validator.metacard.location.MetacardLocationValidator">
         <argument ref="wktValidator"/>
     </bean>
-    
+
     <service ref="metacardLocationValidator">
         <interfaces>
             <value>ddf.catalog.validation.MetacardValidator</value>

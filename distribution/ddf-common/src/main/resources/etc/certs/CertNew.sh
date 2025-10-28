@@ -1,4 +1,4 @@
-#! /bin/bash 
+#! /bin/bash
 #
 # Usage:
 #   CertNew.sh [-cn <cn>|-dn <dn>] [-san <tag:name,tag:name,...>]
@@ -16,7 +16,7 @@
 #      IP - ip address (V4 or V6)
 #      dirName - directory name
 #
-# Create new certificate and certificate chain signed by Demo Certificate Authority.  
+# Create new certificate and certificate chain signed by Demo Certificate Authority.
 # The new certificate chain and private key are installed in the keystore.
 # The alias will be the same as the common name.
 # The localhost key will be deleted from the keystore.

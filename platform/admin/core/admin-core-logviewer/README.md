@@ -32,7 +32,7 @@ To run tests, do:
 
 ## What is expected from the backend?
 The backend is expected to send a JSON object formatted as follows:
-    
+
     {
         "request": {
             "mbean": "example.logging.service",
@@ -49,5 +49,5 @@ The backend is expected to send a JSON object formatted as follows:
             }
         ]
     }
-    
+
 The `value` field contains the list of log items that will be parsed and added.

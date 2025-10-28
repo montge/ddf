@@ -3,7 +3,7 @@
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or any later version. 
+ * version 3 of the License, or any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
@@ -90,124 +90,124 @@
    <content>
      <nitf>
        <header>
-        <version>1.1</version> 
-        <fileDateTime>2001-12-17T09:30:47-05:00</fileDateTime> 
-        <fileTitle>Quait</fileTitle> 
-        <complexityLevel>String</complexityLevel> 
-        <originatorName>String</originatorName> 
-        <originatingStationId>String</originatingStationId> 
+        <version>1.1</version>
+        <fileDateTime>2001-12-17T09:30:47-05:00</fileDateTime>
+        <fileTitle>Quait</fileTitle>
+        <complexityLevel>String</complexityLevel>
+        <originatorName>String</originatorName>
+        <originatingStationId>String</originatingStationId>
          <security>
-          <classification>UnClass</classification> 
-          <disseminationControl>FOUO</disseminationControl> 
-          <releasableTo>String</releasableTo> 
-          <codeWords>to</codeWords> 
-          <controlCode>to</controlCode> 
-          <releaseInstruction>String</releaseInstruction> 
-          <controlNumber>String</controlNumber> 
+          <classification>UnClass</classification>
+          <disseminationControl>FOUO</disseminationControl>
+          <releasableTo>String</releasableTo>
+          <codeWords>to</codeWords>
+          <controlCode>to</controlCode>
+          <releaseInstruction>String</releaseInstruction>
+          <controlNumber>String</controlNumber>
            <classificationInfo>
-            <system>String</system> 
-            <authority>String</authority> 
-            <authorityType>O</authorityType> 
-            <text>String</text> 
-            <reason>String</reason> 
-            <date>1967-08-13</date> 
+            <system>String</system>
+            <authority>String</authority>
+            <authorityType>O</authorityType>
+            <text>String</text>
+            <reason>String</reason>
+            <date>1967-08-13</date>
           </classificationInfo>
            <declassificationInfo>
-            <type>DD</type> 
-            <date>1967-08-13</date> 
+            <type>DD</type>
+            <date>1967-08-13</date>
           </declassificationInfo>
         </security>
       </header>
        <image>
          <header>
-          <id>Oil Fields</id> 
-          <dateTime>2001-12-17T09:30:47-05:00</dateTime> 
-          <title>Kuwaiti Oil Fields</title> 
-          <source>U2</source> 
-          <numberOfRows>2</numberOfRows> 
-          <numberOfColumns>2</numberOfColumns> 
+          <id>Oil Fields</id>
+          <dateTime>2001-12-17T09:30:47-05:00</dateTime>
+          <title>Kuwaiti Oil Fields</title>
+          <source>U2</source>
+          <numberOfRows>2</numberOfRows>
+          <numberOfColumns>2</numberOfColumns>
            <band>
-            <numberOfBands>9</numberOfBands> 
-            <representation>R</representation> 
-            <subcategory>token</subcategory> 
+            <numberOfBands>9</numberOfBands>
+            <representation>R</representation>
+            <subcategory>token</subcategory>
           </band>
-          <bitsPerPixelPerBand>96</bitsPerPixelPerBand> 
-          <representation>BCS-A</representation> 
-          <category>VIS</category> 
-          <mode>B</mode> 
-          <magnification>3.1416</magnification> 
+          <bitsPerPixelPerBand>96</bitsPerPixelPerBand>
+          <representation>BCS-A</representation>
+          <category>VIS</category>
+          <mode>B</mode>
+          <magnification>3.1416</magnification>
            <compression>
-            <scheme>NC</scheme> 
-            <rateCode>token</rateCode> 
+            <scheme>NC</scheme>
+            <rateCode>token</rateCode>
           </compression>
            <security>
-            <classification>UnClass</classification> 
-            <disseminationControl>FOUO</disseminationControl> 
-            <releasableTo>String</releasableTo> 
-            <codeWords>to</codeWords> 
-            <controlCode>to</controlCode> 
-            <releaseInstruction>String</releaseInstruction> 
-            <controlNumber>String</controlNumber> 
+            <classification>UnClass</classification>
+            <disseminationControl>FOUO</disseminationControl>
+            <releasableTo>String</releasableTo>
+            <codeWords>to</codeWords>
+            <controlCode>to</controlCode>
+            <releaseInstruction>String</releaseInstruction>
+            <controlNumber>String</controlNumber>
              <classificationInfo>
-              <system>String</system> 
-              <authority>String</authority> 
-              <authorityType>O</authorityType> 
-              <text>String</text> 
-              <reason>String</reason> 
-              <date>1967-08-13</date> 
+              <system>String</system>
+              <authority>String</authority>
+              <authorityType>O</authorityType>
+              <text>String</text>
+              <reason>String</reason>
+              <date>1967-08-13</date>
             </classificationInfo>
              <declassificationInfo>
-              <type>DD</type> 
-              <date>1967-08-13</date> 
+              <type>DD</type>
+              <date>1967-08-13</date>
             </declassificationInfo>
           </security>
            <coverage>
              <point>
                <coordinate>
                  <ellipsoid>
-                  <latitude>30.50</latitude> 
-                  <longitude>47.85</longitude> 
+                  <latitude>30.50</latitude>
+                  <longitude>47.85</longitude>
                 </ellipsoid>
-                <text>String</text> 
+                <text>String</text>
               </coordinate>
-              <elevation uom="m" factor="1">3.1416</elevation> 
+              <elevation uom="m" factor="1">3.1416</elevation>
             </point>
              <point>
                <coordinate>
                  <ellipsoid>
-                  <latitude>30.50</latitude> 
-                  <longitude>48.6</longitude> 
+                  <latitude>30.50</latitude>
+                  <longitude>48.6</longitude>
                 </ellipsoid>
-                <text>String</text> 
+                <text>String</text>
               </coordinate>
-              <elevation uom="m" factor="1">3.1416</elevation> 
+              <elevation uom="m" factor="1">3.1416</elevation>
             </point>
              <point>
                <coordinate>
                  <ellipsoid>
-                  <latitude>29.75</latitude> 
-                  <longitude>48.6</longitude> 
+                  <latitude>29.75</latitude>
+                  <longitude>48.6</longitude>
                 </ellipsoid>
-                <text>String</text> 
+                <text>String</text>
               </coordinate>
-              <elevation uom="m" factor="1">3.1416</elevation> 
+              <elevation uom="m" factor="1">3.1416</elevation>
             </point>
              <point>
                <coordinate>
                  <ellipsoid>
-                  <latitude>29.75</latitude> 
-                  <longitude>47.85</longitude> 
+                  <latitude>29.75</latitude>
+                  <longitude>47.85</longitude>
                 </ellipsoid>
-                <text>String</text> 
+                <text>String</text>
               </coordinate>
-              <elevation uom="m" factor="1">3.1416</elevation> 
+              <elevation uom="m" factor="1">3.1416</elevation>
             </point>
           </coverage>
            <target>
-            <id>DAS000-001</id> 
-            <suffix>String</suffix> 
+            <id>DAS000-001</id>
+            <suffix>String</suffix>
           </target>
-          <comment>Text</comment> 
+          <comment>Text</comment>
         </header>
       </image>
     </nitf>

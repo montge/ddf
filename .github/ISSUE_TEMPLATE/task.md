@@ -20,7 +20,7 @@ is the best place for getting support.
 -->
 
 ### Description
-<!-- 
+<!--
 Description of the issue
 Why is this being updated or changed?
 -->

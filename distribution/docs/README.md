@@ -8,7 +8,7 @@ Documentation is made available in a single document, or individual sections can
 Overview of what DDF is and what DDF does
 
 ### DDF: Quick Start Guide
-Set up a test, demonstration, or evaluation instance of DDF 
+Set up a test, demonstration, or evaluation instance of DDF
 
 ### Managing DDF
 How to install, configure, and maintain DDF
@@ -53,7 +53,7 @@ These artifacts are produced by the standard build
 
 ### plugins
 
-- `<maven-dependency-plugin>` This plugin retrieves any content from upstream projects. 
+- `<maven-dependency-plugin>` This plugin retrieves any content from upstream projects.
 - `<maven-resources-plugin>` copies all of the content, images, scripts, and configuration files to the target directory. During this process, the text files are filtered to replace placeholders with the configured values.
 - `<jbake-maven-plugin>` takes the filtered content pages and applies freemarker tempates to determine the order of the documents.
   - The asciidoc files (`.adoc`) have assigned `type`, `order` and `parent` properties in their headers that determine placement within larger sections.

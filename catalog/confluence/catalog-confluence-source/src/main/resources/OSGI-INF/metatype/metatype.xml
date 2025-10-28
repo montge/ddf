@@ -4,7 +4,7 @@
  * Copyright (c) Codice Foundation
  *
  * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either
- * version 3 of the License, or any later version. 
+ * version 3 of the License, or any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details. A copy of the GNU Lesser General Public License is distributed along with this program and can be found at
@@ -21,7 +21,7 @@
 
         <AD name="Confluence Rest URL" id="endpointUrl" required="true"
             type="String"
-            description="The Confluence Rest API endpoint URL. Example: https://<host>:<port>/rest/api/content"/>
+            description="The Confluence Rest API endpoint URL. Example: https://&lt;host&gt;:&lt;port&gt;/rest/api/content"/>
         <AD name="Authentication Type" id="authenticationType" type="String" default="none"
             description="The authentication type to use when federating. None/Dynamic will still attempt PKI and/or SAML ECP authentication if available.">
             <Option label="None/Dynamic" value="none"/>
@@ -72,7 +72,7 @@
 
         <AD name="Confluence Rest URL" id="endpointUrl" required="true"
             type="String"
-            description="The Confluence Rest API endpoint URL. Example: https://<host>:<port>/rest/api/content"/>
+            description="The Confluence Rest API endpoint URL. Example: https://&lt;host&gt;:&lt;port&gt;/rest/api/content"/>
         <AD name="Authentication Type" id="authenticationType" type="String" default="none"
             description="The authentication type to use when federating. None/Dynamic will still attempt PKI and/or SAML ECP authentication if available.">
             <Option label="None/Dynamic" value="none"/>

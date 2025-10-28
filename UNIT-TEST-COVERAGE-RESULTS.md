@@ -59,7 +59,7 @@
 ### Key Test Methods
 ```java
 testInitializeWithMultipleContexts()
-testHandleStoreThrowsIOException() 
+testHandleStoreThrowsIOException()
 testHandleDeleteWithNullPid()
 testSetPropertyWithDifferentTypes()
 testSanitizedPropertiesFreeOfFelixInternalValues()
@@ -190,7 +190,7 @@ testLatencyMeasurementConsistency()
 public class ConfigurationManagerEnhancedTest {
   @Mock private ConfigurationAdmin mockConfigAdmin;
   @Mock private Configuration mockConfiguration;
-  
+
   @Before
   public void setUp() {
     // Setup mocks

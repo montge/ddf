@@ -26,10 +26,10 @@ version: '3.7'
 services:
   solr:
     image: codice/ddf-solr:<ddf-version>
-    # Ports are unnecessary when running ddf and solr in 
+    # Ports are unnecessary when running ddf and solr in
     # the same compose deployment, in that scenario ddf can connect to solr
     # via the service name and actual solr port. For example `solr:8983`
-    ports: 
+    ports:
       - 8994:8983
     environment:
       # Provide cores to create at startup

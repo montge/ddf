@@ -332,7 +332,7 @@
             <version>1.2</version>
         </dependency>
         <!-- END -->
-        
+
         <dependency>
             <groupId>ddf.platform</groupId>
             <artifactId>bootflag-api</artifactId>

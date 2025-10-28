@@ -65,7 +65,7 @@ include::config.adoc[]
 
 ifdef::backend-pdf[]
 
-<<< 
+<<<
 
 [index]
 == Index

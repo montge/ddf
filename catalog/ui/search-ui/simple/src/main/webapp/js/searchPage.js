@@ -39,7 +39,7 @@ $.ajax(
 		var sources, types, type, to, i, j, id, o;
 		sources = data;
 		types = {};
-		
+
 		for(i = 0; i < sources.length; i++) {
 			id = sources[i].id;
 			o = new Option(id, id);
@@ -49,7 +49,7 @@ $.ajax(
 				$(o).attr("class", "disabled_option");
 			}
 			$("#federationSources").append(o);
-			
+
 			for(j = 0; j < sources[i].contentTypes.length; j++) {
 				types[sources[i].contentTypes[j].name]=true;
 			}
@@ -61,8 +61,8 @@ $.ajax(
 			$("#typeList").append(to);
 		}
 	});
-	
-	
+
+
 var pendingRequest = null;
 function cancelRequest() {
 	if(pendingRequest) {
@@ -145,7 +145,7 @@ function setUpPaging(hits, start, pageSize) {
 	if(hits > pageSize) {
 		numOfPages = Math.ceil(hits / pageSize);
 		currentPage = Math.ceil((start - 1) / pageSize) + 1;
-		
+
 		startPage = 1;
 		endPage = 1;
 
@@ -160,7 +160,7 @@ function setUpPaging(hits, start, pageSize) {
 			startPage = currentPage - 1;
 			endPage = currentPage + 2;
 		}
-		
+
 		if(startPage === currentPage) {
 			$("<li class='disabled'><a>Prev</a></li>").appendTo(pages);
 		} else {
@@ -193,7 +193,7 @@ function getCoordinates(coordinates) {
 	var val, i;
 	if($.isArray(coordinates[0])) {
 		val = "(" + getCoordinates(coordinates[0]);
-		
+
 		for(i = 1; i < coordinates.length; i++) {
 			val += ", " + getCoordinates(coordinates[i]);
 		}
@@ -212,7 +212,7 @@ function getGeometry(geometry) {
 		return geometry.type + "(" + getCoordinates(geometry.coordinates) + ")";
 	} catch(err) {
 		return "";
-	}	
+	}
 }
 
 function getDate(props) {
@@ -240,7 +240,7 @@ function formatDate(dateStr) {
 function createRow(index) {
 	var metacard, props, row, title, link, source,location, date, thumbnail,
 			product, productLink, productIcon, thumbnailLink, thumbnailImage, javascript;
-	
+
 	javascript = "javascript";
 	metacard = resultsMapping[index];
 	props = metacard.properties;
@@ -259,7 +259,7 @@ function createRow(index) {
 	location.text(getGeometry(metacard.geometry));
 
 	date = getDate(props);
-	
+
 	thumbnail = $("<td>");
 	if(props.thumbnail) {
 		thumbnailLink = $("<a>");
@@ -276,7 +276,7 @@ function createRow(index) {
 	product = $("<td>");
 	productLink = $("<a>");
 	product.append(productLink);
-	productLink.attr("target", "_blank"); 
+	productLink.attr("target", "_blank");
 	productLink.attr("href", getServicesUrl() + "../../services/catalog/sources/" + props["source-id"] + "/" + props.id + "?transform=resource");
 	productIcon = $("<i>");
 	productIcon.attr("class", "icon-download-alt icon-2x");
@@ -291,7 +291,7 @@ function createRow(index) {
 	row.append(date);
 	row.append(thumbnail);
 	row.append(product);
-	
+
 	return row;
 }
 
@@ -352,7 +352,7 @@ function getResults(startVal, showList) {
 	if(haveResultsPageForItem(startVal)) {
 		loadPageForItem(startVal);
 		return;
-	}	
+	}
 	$('input[name=start]').val(getPageStartIndex(startVal));
 
 	showLoading();
@@ -370,7 +370,7 @@ function getResults(startVal, showList) {
 			results.showList = true;
 		}
 		sendResults(results);
-	}).fail(function() { 
+	}).fail(function() {
 		showError("Failed to get results from server");
 	}).always(function() {
 		pendingRequest = null;
@@ -392,7 +392,7 @@ function getMetacard(index) {
 }
 
 function showMetacard(index) {
-	getViewSwitcher().setCurrentIndex(index);	
+	getViewSwitcher().setCurrentIndex(index);
 	getViewSwitcher().showRecordView(index);
 }
 
@@ -401,7 +401,7 @@ function hideLoading(startVal, showResults) {
 	if(showResults || getViewSwitcher().getCurrentView() === getViewSwitcher().RESULTS_VIEW) {
 		getViewSwitcher().showResultsView();
 	} else {
-		showMetacard(getViewSwitcher().getCurrentIndex());		
+		showMetacard(getViewSwitcher().getCurrentIndex());
 	}
 }
 
@@ -411,7 +411,7 @@ function showResults(results) {
 	assignResults(results.results, results.start);
 	buildRows(results.start, results.start + results.results.length - 1);
 
-	hideLoading(results.start, results.showList);	
+	hideLoading(results.start, results.showList);
 }
 
 function showThumbnail(title, thumbnail) {
@@ -429,14 +429,14 @@ function updateFederationWarning(src) {
 	if(src) {
 		$('#federationListWarning').hide();
 	} else {
-		$('#federationListWarning').show();		
-	}	
+		$('#federationListWarning').show();
+	}
 }
 
-function restoreFederationSelections(src) {	
+function restoreFederationSelections(src) {
 	if(src) {
 		var sources = src.split(",");
-	
+
 		$.each(sources, function() {
 			$("select[name=federationSources] option:contains('" + this + "')").attr("selected", "selected");
 		});
@@ -450,11 +450,11 @@ function updateFederation() {
 	updateFederationWarning(src);
 }
 
-function restoreTypeSelection(type) {	
+function restoreTypeSelection(type) {
 	$("select[name=typeList] option:contains('" + type + "')").attr("selected", "selected");
 }
 
-function restoreCountSelection(count) {	
+function restoreCountSelection(count) {
 	$("select[name=count] option").filter(function() {return $(this).text() === count;}).attr("selected", "selected");
 }
 
@@ -470,12 +470,12 @@ function getPositiveIntValue(offset) {
 	var offsetValue, offsetIntValue;
 	offsetValue = Number(offset);
 	offsetIntValue = Math.floor(offsetValue);
-	
-	if(offsetIntValue > 0) { 
+
+	if(offsetIntValue > 0) {
 		return offsetIntValue;
-	} else { 
-		return "";				
-	} 
+	} else {
+		return "";
+	}
 }
 
 
@@ -490,7 +490,7 @@ function isNonNegativeInteger(value) {
 }
 
 
-function validateNumberInRange(min, max, value, revertValue, revertIfOutOfRange) {	
+function validateNumberInRange(min, max, value, revertValue, revertIfOutOfRange) {
 	var newValue = value;
 	if(! value) {
 		newValue = "";
@@ -500,16 +500,16 @@ function validateNumberInRange(min, max, value, revertValue, revertIfOutOfRange)
 		if(revertIfOutOfRange) {
 			newValue = revertValue;
 		} else {
-			newValue = Number(min);	
+			newValue = Number(min);
 		}
 	} else if(!isNaN(max) && Number(max) < Number(value)) {
 		if(revertIfOutOfRange) {
-			newValue = revertValue;			
+			newValue = revertValue;
 		} else {
 			newValue = Number(max);
 		}
-	} 
-	
+	}
+
 	return newValue;
 }
 
@@ -570,7 +570,7 @@ function clearAbsoluteTime() {
 
 function updateAbsoluteTime() {
 	var start, end;
-	
+
 	start = $('input[name=absoluteStartTime]').datepicker( "getDate" );
 	end = $('input[name=absoluteEndTime]').datepicker( "getDate" );
 
@@ -579,10 +579,10 @@ function updateAbsoluteTime() {
 			$('input[name=absoluteStartTime]').datepicker( "setDate", end);
 			$('input[name=absoluteEndTime]').datepicker( "setDate", start);
 		}
-		
+
 		$('input[name=dtstart]').val($('input[name=absoluteStartTime]').val());
 		$('input[name=dtend]').val($('input[name=absoluteEndTime]').val());
-		
+
 		$('#timeAbsoluteWarning').hide();
 	} else {
 		$('#timeAbsoluteWarning').show();
@@ -646,8 +646,8 @@ $('#absoluteEndTime').datetimepicker({
 
 function clearPointRadius() {
 	$('input[name=lat]').val("");
-	$('input[name=lon]').val("");	
-	$('input[name=radius]').val("");				
+	$('input[name=lon]').val("");
+	$('input[name=radius]').val("");
 }
 
 function clearBoundingBox() {
@@ -665,11 +665,11 @@ var radiusValue = parseFloat(urlVals.param('radiusValue'), 10);
 $('input[name=radiusValue]').val(radiusValue);
 if(urlVals.param('radiusUnits')) {
 	$('select[name=radiusUnits]').val(urlVals.param('radiusUnits'));
-}	
+}
 
 var relOffsetEntry = getPositiveIntValue(urlVals.param('offsetTime'));
 $('input[name=offsetTime]').val(relOffsetEntry);
-			
+
 
 function updateOffset() {
 	relOffsetEntry = validatePositiveInteger($('input[name=offsetTime]'), relOffsetEntry);
@@ -686,16 +686,16 @@ function updatePointRadius() {
 	pointRadiusLatitude = validateNumber($('input[name=latitude]'), pointRadiusLatitude);
 	pointRadiusLongitude = validateNumber($('input[name=longitude]'), pointRadiusLongitude);
 	radiusValue = validateNumber($('input[name=radiusValue]'), radiusValue);
-	
+
 	if(pointRadiusLatitude && pointRadiusLongitude && radiusValue) {
 		$('input[name=lat]').val(pointRadiusLatitude);
-		$('input[name=lon]').val(pointRadiusLongitude);	
+		$('input[name=lon]').val(pointRadiusLongitude);
 		$('input[name=radius]').val(getDistanceInMeters(radiusValue, $('select[name=radiusUnits]').val()));
 		$('#pointRadiusWarning').hide();
 	} else {
 		clearPointRadius();
 		$('#pointRadiusWarning').show();
-	}	
+	}
 }
 
 var bboxWest =  validateNumberInRange(-180, 180, urlVals.param('west'), "");
@@ -712,16 +712,16 @@ function updateBoundingBox() {
 	bboxSouth = validateNumber($('input[name=south]'), bboxSouth);
 	bboxEast= validateNumber($('input[name=east]'), bboxEast);
 	bboxNorth= validateNumber($('input[name=north]'), bboxNorth);
-	
+
 	if(bboxNorth && bboxSouth && Number(bboxSouth) > Number(bboxNorth)) {
 		var tmp = bboxSouth;
 		bboxSouth = bboxNorth;
 		bboxNorth = tmp;
-		
+
 		$('input[name=north]').val(bboxNorth);
-		$('input[name=south]').val(bboxSouth);		
+		$('input[name=south]').val(bboxSouth);
 	}
-	
+
 	if(bboxWest && bboxSouth && bboxEast && bboxNorth) {
 		$('input[name=bbox]').val(bboxWest + "," + bboxSouth + "," + bboxEast + "," + bboxNorth);
 		$('#boundingBoxWarning').hide();
@@ -736,7 +736,7 @@ $('input[name=q]').val(urlVals.param('q'));
 
 if(urlVals.param('offsetTimeUnits')) {
 	$('select[name=offsetTimeUnits]').val(urlVals.param('offsetTimeUnits'));
-}	
+}
 
 $('input[name=absoluteStartTime]').val(urlVals.param('absoluteStartTime'));
 $('input[name=absoluteEndTime]').val(urlVals.param('absoluteEndTime'));
@@ -744,7 +744,7 @@ $('input[name=absoluteEndTime]').val(urlVals.param('absoluteEndTime'));
 if(urlVals.param('dtoffset')) {
 	$('input[name=dtoffset]').val(urlVals.param('dtoffset'));
 	$('button[name=relativeTimeButton]').click();
-	updateOffset();	
+	updateOffset();
 } else if(urlVals.param('dtstart') && urlVals.param('dtend')) {
 	$('input[name=dtstart]').val(urlVals.param('dtstart'));
 	$('input[name=dtend]').val(urlVals.param('dtend'));
@@ -755,12 +755,12 @@ if(urlVals.param('dtoffset')) {
 
 
 if(urlVals.param('radius')) {
-	$('button[name=pointRadiusButton]').click();		
+	$('button[name=pointRadiusButton]').click();
 	updatePointRadius();
 //} else if(urlVals.param('geometry')) {
-//	$('button[name=wktButton]').click();		
+//	$('button[name=wktButton]').click();
 } else if(urlVals.param('bbox')) {
-	$('button[name=bboxButton]').click();		
+	$('button[name=bboxButton]').click();
 	updateBoundingBox();
 } else {
 	$('button[name=noLocationButton]').click();
@@ -774,7 +774,7 @@ $('input[name=src]').val(src);
 if(!src) {
 	$('button[name=enterpriseFederationButton]').click();
 } else if(src === "local") {
-	$('button[name=noFederationButton]').click();		
+	$('button[name=noFederationButton]').click();
 } else {
 	$('button[name=selectedFederationButton]').click();
 	restoreFederationSelections(src);
@@ -786,7 +786,7 @@ restoreTypeSelection(urlVals.param('typeList'));
 if(type) {
 	$('button[name=typeButton]').click();
 } else {
-	$('button[name=noTypeButton]').click();		
+	$('button[name=noTypeButton]').click();
 }
 
 restoreCountSelection(urlVals.param('count'));
@@ -807,7 +807,7 @@ $('button[name=absoluteTimeButton]').on('click', function (e) {
 	updateAbsoluteTime();
 	clearOffset();
 });
-		
+
 $('button[name=noLocationButton]').on('click', function (e) {
 	clearPointRadius();
 	clearBoundingBox();
@@ -831,7 +831,7 @@ $('button[name=bboxButton]').on('click', function (e) {
 $('button[name=noTypeButton]').on('click', function (e) {
 	clearType();
 });
-		
+
 $('button[name=typeButton]').on('click', function (e) {
 	updateType();
 });
@@ -848,25 +848,22 @@ $('button[name=enterpriseFederationButton]').on('click', function (e) {
 	$('input[name=src]').val("");
 });
 
-function resetForm() {	
+function resetForm() {
 	$('input[name=format]').val("geojson");
 	$('select[name=count]').val("10");
 	$('input[name=start]').val("1");
-	
+
 	$('button[name=noLocationButton]').click();
 	clearPointRadius();
 	clearBoundingBox();
-		
+
 	$('button[name=noTemporalButton]').click();
 	clearOffset();
 	clearAbsoluteTime();
 
 	$('button[name=noFederationButton]').click();
 	$('input[name=src]').val("local");
-	
-	$('button[name=noTypeButton]').click();	
+
+	$('button[name=noTypeButton]').click();
 	clearType();
 }
-
-
-		
