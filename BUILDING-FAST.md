@@ -226,6 +226,51 @@ mvn fmt:format
 
 ## GitHub Actions Workflow
 
+GitHub Actions uses a parallel test strategy with 7 jobs:
+1. **Build** - Compile all modules without tests (~30-40 min)
+2. **Test Libs + Platform Core** - Test foundational libraries (~45-70 min)
+3. **Test Catalog Core** - Test core catalog (~50-80 min)
+4. **Test Features + Transformers + Plugins** - Test plugins (~35-50 min)
+5. **Test Admin + Solr + Spatial** - Test admin/search (~40-60 min)
+6. **Integration Tests** - OSGi container tests (~60-120 min)
+7. **Aggregate Results** - Collect and report results (~10-20 min)
+
+### Simulate CI Build Locally
+
+Run the same build as CI Job 1 (Build All Modules):
+
+```bash
+./build-scripts/ci-build-local.sh
+```
+
+This runs:
+```bash
+mvn --batch-mode --errors --fail-at-end --show-version -T 1C clean install -DskipTests
+```
+
+### Run Specific Test Groups
+
+Test specific groups like CI does (after building):
+
+```bash
+# Test libs and platform core (CI Job 2)
+./build-scripts/ci-test-group.sh libs-platform-core
+
+# Test catalog core (CI Job 3)
+./build-scripts/ci-test-group.sh catalog-core
+
+# Test features, transformers, plugins (CI Job 4)
+./build-scripts/ci-test-group.sh features-transformers-plugins
+
+# Test admin, Solr, spatial (CI Job 5)
+./build-scripts/ci-test-group.sh admin-solr-spatial
+
+# Run integration tests (CI Job 6)
+./build-scripts/ci-test-group.sh integration
+```
+
+### Pre-Push Checklist
+
 To ensure your changes will pass CI:
 
 1. **Format code:**
@@ -238,12 +283,27 @@ To ensure your changes will pass CI:
    pre-commit run --all-files
    ```
 
-3. **Build like CI:**
+3. **Run pre-push hooks:**
    ```bash
-   mvn install -Dci
+   pre-commit run --hook-stage pre-push --all-files
    ```
 
-4. **Commit and push:**
+4. **Build like CI (recommended):**
+   ```bash
+   ./build-scripts/ci-build-local.sh
+   ```
+
+   Or if you prefer traditional Maven:
+   ```bash
+   mvn clean install -T 1C -DskipTests
+   ```
+
+5. **Optionally test specific groups:**
+   ```bash
+   ./build-scripts/ci-test-group.sh <group-name>
+   ```
+
+6. **Commit and push:**
    ```bash
    git add .
    git commit -m "Your message"
