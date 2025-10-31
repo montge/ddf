@@ -559,4 +559,3 @@ mvn clean test jacoco:report -T 1C
 **Document Version:** 1.0
 **Status:** Java 21 compatibility complete - Full verification in progress
 **Next Action:** Wait for full test suite completion, then generate coverage baseline
-

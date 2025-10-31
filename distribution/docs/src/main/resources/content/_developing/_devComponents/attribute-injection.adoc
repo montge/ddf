@@ -106,4 +106,3 @@ Add a second key for `attributeTypes` to register the new types defined previous
   }
 }
 ----
-

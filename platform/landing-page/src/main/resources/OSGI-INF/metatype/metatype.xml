@@ -61,7 +61,7 @@
                 default="Bookmarks"
         />
         <AD
-                description="Additional links to be displayed on the landing page. Use the format <text>,<link> (e.g. example, http://www.example.com)."
+                description="Additional links to be displayed on the landing page. Use the format &lt;text&gt;,&lt;link&gt; (e.g. example, http://www.example.com)."
                 name="Additional Links" id="links" required="true" type="String"
                 cardinality="100"
                 />

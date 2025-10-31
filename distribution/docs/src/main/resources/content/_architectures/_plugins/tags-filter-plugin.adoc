@@ -19,5 +19,3 @@ The Tags Filter Plugin is installed by default with a standard installation in t
 == Configuring the Tags Filter Plugin
 
 The Tags Filter Plugin has no configurable properties.
-
-

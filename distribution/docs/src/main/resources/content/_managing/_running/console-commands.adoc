@@ -16,4 +16,3 @@ The ${command-console} is available to the user when the distribution is started
 ====
 The majority of functionality and information available on the ${admin-console} is also available on the Command Line Console.
 ====
-

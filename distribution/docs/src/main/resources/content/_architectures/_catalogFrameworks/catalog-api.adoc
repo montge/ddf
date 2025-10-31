@@ -155,4 +155,3 @@ ${branding} can send/receive notifications of "Activities" occurring in the syst
 Currently, the notifications provide information about resource retrieval only.
 
 Activity events include the status and progress of actions that are being performed by the user, such as searches and downloads.
-

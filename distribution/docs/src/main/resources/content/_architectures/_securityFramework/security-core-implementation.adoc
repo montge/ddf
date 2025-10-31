@@ -17,4 +17,3 @@ It is *recommended* to use this bundle as it contains the reference implementati
 === Configuring the Security Core Implementation
 
 The Security Core Implementation has no configurable properties.
-

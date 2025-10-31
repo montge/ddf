@@ -43,4 +43,3 @@ The Metacard Attribute Security Policy Plugin is installed by default with a sta
 
 See <<{reference-prefix}org.codice.ddf.catalog.security.policy.metacard.MetacardAttributeSecurityPolicyPlugin,Metacard
  Attribute Security Policy Plugin configurations>> for all possible configurations.
-

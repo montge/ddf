@@ -36,4 +36,3 @@ ${secure_url}/path/to/endpoint
 ==== Usage Limitations with {endpoint name}
 
 // delete if not applicable
-

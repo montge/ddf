@@ -52,4 +52,3 @@
     <service ref="attributeClaimsHandler" interface="org.codice.ddf.security.SystemHighAttributes"/>
 
 </blueprint>
-

@@ -27,4 +27,3 @@ level 2
 </#list>
 </#if>
 </#list>
-

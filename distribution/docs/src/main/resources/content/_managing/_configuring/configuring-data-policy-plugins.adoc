@@ -77,4 +77,3 @@ The XML Attribute Security Policy Plugin finds security attributes contained in 
 
 See <<{reference-prefix}org.codice.ddf.catalog.security.policy.xml.XmlAttributeSecurityPolicyPlugin,XML Attribute Security Policy Plugin
  configurations>> for all possible configurations.
-

@@ -192,4 +192,3 @@ The SP is then signaled to supply the originally requested resource, assuming th
 The ambiguity in parts of the spec with regard to selecting an IdP to use and logging into that IdP can lead to integration issues between different systems.
 However, this method of authentication is not necessarily expected to work by default with anything other than other instances of ${branding}.
 It does, however, provide a starting point that downstream projects can leverage in order to provide ECP based authentication for their particular scenario or to connect to other systems that utilize SAML ECP.
-

@@ -40,4 +40,3 @@ Relative paths are assumed to be relative to `${home_directory}/schematron`.
 |true
 
 |===
-

@@ -18,4 +18,3 @@ Do not uninstall the Security Core API as it is integral to system function and 
 === Configuring the Security Core API
 
 The Security Core API has no configurable properties.
-

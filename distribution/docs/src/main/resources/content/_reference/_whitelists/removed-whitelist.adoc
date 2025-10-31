@@ -92,4 +92,3 @@ ${ddf-spatial}
 * `org.codice.ddf.spatial.geocoding.context`
 * `org.codice.ddf.spatial.kml.endpoint`
 * `org.codice.ddf.spatial.ogc.catalog.resource.impl`
-

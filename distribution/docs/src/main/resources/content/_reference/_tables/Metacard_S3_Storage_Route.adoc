@@ -84,4 +84,3 @@ If you wish to include date, you would use {{dateFormat created yyyy-MM-dd}}
 |true
 
 |===
-

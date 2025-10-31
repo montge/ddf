@@ -19,5 +19,3 @@ include::${subSection.file}[leveloffset=+2]
 </#list>
 </#if>
 </#list>
-
-

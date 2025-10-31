@@ -20,4 +20,3 @@ To change HTTP or HTTPS ports from the default values, edit the `custom.system.p
 Do not use the ${admin-console} to change the HTTP port.
 While the ${admin-console}'s Pax Web Runtime offers this configuration option, it has proven to be unreliable and may crash the system.
 ====
-

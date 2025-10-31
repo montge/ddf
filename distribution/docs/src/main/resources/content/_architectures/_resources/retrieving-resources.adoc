@@ -45,4 +45,3 @@ The `ResourceReader` or `Source` is also responsible for determining the ``
 `Resource` extends `BinaryContent` and includes a `getName` method. 
 `BinaryContent` has methods to get the `InputStream`, `byte` array, MIME type, and size of the represented binary data.
 An implementation of `BinaryContent` (`BinaryContentImpl`) can be found in the Catalog API in the `${ddf-branding}.catalog.data` package.
-

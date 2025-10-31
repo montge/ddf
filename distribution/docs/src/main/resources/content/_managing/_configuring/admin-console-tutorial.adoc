@@ -72,4 +72,3 @@ In the ${admin-console}, Features are found on the *Features* tab of the *System
 . Installed features are shown with a *stop* icon under the *Actions* column.
 .. Select the *stop* icon for the desired feature.
 .. The *Status* changes from *Installed* to *Uninstalled*.
-

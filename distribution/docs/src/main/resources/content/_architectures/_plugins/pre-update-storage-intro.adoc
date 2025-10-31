@@ -7,4 +7,3 @@
 :order: 13
 
 ((Pre-Update storage plugins)) are invoked immediately before an item is updated in the content repository.
-

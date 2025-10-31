@@ -174,4 +174,3 @@ class OperationsCatalogStoreSupportSpec extends Specification {
         return catProv
     }
 }
-

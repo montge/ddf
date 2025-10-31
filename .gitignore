@@ -40,3 +40,6 @@ buildNumber.properties
 .mvn/timing.properties
 coverage/
 .nyc_output
+# Virtual environment
+venv/
+.venv/

@@ -38,4 +38,3 @@ This document last updated: ${timestamp}.
 endif::[]
 // workaround to remove "table of contents" blocks from table cells
 :toc!:
-

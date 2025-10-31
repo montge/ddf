@@ -296,4 +296,3 @@ Plugins are called in a specific order during different operations. <<{developin
 +----------------------------------------------+
 
 ....
-

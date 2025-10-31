@@ -76,4 +76,3 @@ Metadata standards use XML or JSON, or both.
 |<<{metadata-prefix}common_metadata_attributes,Standard attributes>>
 
 |===
-

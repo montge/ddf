@@ -28,4 +28,3 @@ Set the configurations needed to run ${branding}.
 ... See <<{quickstart-prefix}certificates_quick_start,Certificates (Quick Start)>> for more details.
 .. Click *Next*
 .. Click *Finish*
-

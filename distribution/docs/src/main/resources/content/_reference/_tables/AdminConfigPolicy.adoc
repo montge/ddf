@@ -33,4 +33,3 @@ The entry should be the format of: `configuration ID = "user attribute name=user
 |false
 
 |===
-

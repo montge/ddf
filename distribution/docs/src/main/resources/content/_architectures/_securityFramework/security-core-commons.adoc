@@ -14,4 +14,3 @@ Most notably, this bundle contains the `ddf.security.audit.SecurityLogger` class
 === Configuring the Security Core Commons
 
 The Security Core Commons bundle has no configurable properties.
-

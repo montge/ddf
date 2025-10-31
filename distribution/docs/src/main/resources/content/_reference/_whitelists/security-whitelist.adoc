@@ -67,4 +67,3 @@ In package `org.codice.ddf.security.policy.context`
 
 * `ContextPolicy`
 * `ContextPolicyManager`
-

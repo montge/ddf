@@ -24,5 +24,3 @@ In package `org.codice.ddf.branding`
 In package `org.codice.ddf.configuration`
 
 * `ConfigurationWatcher` Deprecated
-
-

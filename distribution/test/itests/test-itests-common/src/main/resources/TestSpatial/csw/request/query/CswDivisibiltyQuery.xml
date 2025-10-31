@@ -32,5 +32,3 @@
     </csw:Query>
     <csw:DistributedSearch hopCount="2"/>
 </csw:GetRecords>
-
-

@@ -1537,6 +1537,3 @@ Include an XML message body with a `GetCapabilities` element.
     </ogc:Filter_Capabilities>
 </csw:Capabilities>
 ----
-
-
-

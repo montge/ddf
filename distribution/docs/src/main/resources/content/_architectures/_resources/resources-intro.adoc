@@ -74,5 +74,3 @@ A ${branding} `Metacard` contains the `getResourceUri` method, which is used to 
 |                                                    \--------------------/    |
 +------------------------------------------------------------------------------+
 ....
-
-

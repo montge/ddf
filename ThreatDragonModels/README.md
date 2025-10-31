@@ -22,4 +22,3 @@ NOTE: Editing and then saving a threat model will push commits onto the correspo
 
 In the [desktop application](https://github.com/mike-goodwin/owasp-threat-dragon-desktop/releases), threat models are opened from the local file system.
 NOTE: Copying and/ore pasting do not work in the desktop application (verified on OSX).
-

@@ -12,4 +12,3 @@ The *Security Attributes (union)* field computes the union of values for each at
 == Installing the XML Attribute Security Policy Plugin
 
 The XML Attribute Security Policy Plugin is installed by default with a standard installation in the ${ddf-security} application.
-

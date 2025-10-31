@@ -35,4 +35,3 @@ In package `org.codice.ddf.spatial.ogc.wfs.v1_0_0.catalog.converter`
 In package `org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.converter`
 
 * `FeatureConverterFactory`
-

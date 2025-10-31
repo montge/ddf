@@ -28,4 +28,3 @@ See also <<_ddf.platform.ui.config,Platform UI Config>>.
 |true
 
 |===
-

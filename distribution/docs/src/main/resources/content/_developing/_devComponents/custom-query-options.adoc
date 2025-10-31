@@ -77,4 +77,3 @@ The `commons-${ddf-branding}` bundle provides utilities and functionality common
 
 `${ddf-branding}.util.XPathHelper` provides convenience methods for executing XPath operations on XML.
 It also provides convenience methods for converting XML as a `String` from a `org.w3c.dom.Document` object and vice versa.
-

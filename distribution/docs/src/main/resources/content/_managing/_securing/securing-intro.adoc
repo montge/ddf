@@ -20,4 +20,3 @@ A detailed view is available of the properties to update.
 ====
 
 Security concerns are highlighted in the configuration sections to follow.
-

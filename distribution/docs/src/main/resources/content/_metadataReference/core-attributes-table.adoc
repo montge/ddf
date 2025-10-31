@@ -157,4 +157,3 @@ a|The generic types of the resource including the http://dublincore.org/document
 |
 
 |===
-

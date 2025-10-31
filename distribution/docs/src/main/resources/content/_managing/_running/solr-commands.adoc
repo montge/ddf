@@ -27,4 +27,3 @@ the backup. In SolrCloud deployments the directory containing the files to resto
 
 
 |===
-

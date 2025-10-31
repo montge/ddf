@@ -14,7 +14,21 @@ exclude: |
     .*\.class|
     .*\.jar|
     .*\.war|
-    .*\.zip
+    .*\.zip|
+    .*/malformed.*\.xml|
+    .*/invalid.*\.json|
+    .*/notKml\.kml|
+    .*/empty\.geojson|
+    .*/SAMLResponse-malformedAssertion\.xml|
+    .*/csw-query\.xml|
+    .*/csw-function-query\.xml|
+    .*/demoCA/private/.*|
+    .*localhost-key\.pem|
+    .*asdf\.key|
+    .*/not_keystore\.jks|
+    .*metacard3InvalidXml\.xml|
+    platform/solr/solr-factory-impl/src/test/resources/.*|
+    catalog/transformer/catalog-transformer-service-atom/src/test/resources/schemas/atom\.rng
   )$
 
 repos:

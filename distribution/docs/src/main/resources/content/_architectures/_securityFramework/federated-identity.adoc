@@ -75,4 +75,3 @@ NOTE: With federated identity, results are filtered both by the federated Source
 WARNING: Support for federated identity was added in DDF 2.8.x. Federated Sources older than this
 do not perform any filtering. Instead, they return all available results and leave filtering
 up to the client.
-

@@ -96,4 +96,3 @@
     getSourceAvailabilities();
     getHeaderFooter();
 })();
-

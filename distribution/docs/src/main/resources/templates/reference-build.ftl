@@ -10,4 +10,3 @@ include::${reference.file}[leveloffset=+1]
 </#list>
 </#if>
 </#list>
-

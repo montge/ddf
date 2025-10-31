@@ -59,4 +59,3 @@ learning resources.
 
 It is highly recommended that you familiarize yourself with the technology
 stack before you start hacking on map-layers.
-

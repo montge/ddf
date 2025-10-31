@@ -17,4 +17,3 @@ include::${subMetadataReference.file}[leveloffset=+2]
 </#list>
 </#if>
 </#list>
-
