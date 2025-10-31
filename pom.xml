@@ -1454,6 +1454,63 @@
                 </plugins>
             </reporting>
         </profile>
+
+        <!-- Fast development profile - skips time-consuming checks -->
+        <profile>
+            <id>fast</id>
+            <activation>
+                <property>
+                    <name>fast</name>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+                <checkstyle.skip>true</checkstyle.skip>
+                <dependency-check.skip>true</dependency-check.skip>
+                <enforcer.skip>true</enforcer.skip>
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+                <maven.source.skip>true</maven.source.skip>
+                <fmt.skip>true</fmt.skip>
+            </properties>
+        </profile>
+
+        <!-- Quick compile profile - only compiles, no packaging -->
+        <profile>
+            <id>quick</id>
+            <activation>
+                <property>
+                    <name>quick</name>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+                <checkstyle.skip>true</checkstyle.skip>
+                <dependency-check.skip>true</dependency-check.skip>
+                <enforcer.skip>true</enforcer.skip>
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+                <maven.source.skip>true</maven.source.skip>
+                <fmt.skip>true</fmt.skip>
+                <maven.install.skip>true</maven.install.skip>
+            </properties>
+        </profile>
+
+        <!-- CI profile - runs all checks like GitHub Actions -->
+        <profile>
+            <id>ci</id>
+            <activation>
+                <property>
+                    <name>ci</name>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>false</skipTests>
+                <checkstyle.skip>false</checkstyle.skip>
+                <dependency-check.skip>false</dependency-check.skip>
+                <enforcer.skip>false</enforcer.skip>
+                <maven.javadoc.skip>false</maven.javadoc.skip>
+                <fmt.skip>false</fmt.skip>
+            </properties>
+        </profile>
     </profiles>
     <!--
       Dependencies listed here will always be used in all sub poms.

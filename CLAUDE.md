@@ -10,11 +10,29 @@ Distributed Data Framework (DDF) is an open source, modular integration framewor
 
 ## Build Commands
 
+> **⚡ Fast Build Guide:** See [BUILDING-FAST.md](BUILDING-FAST.md) for strategies to speed up development iteration by 40-90%.
+
+### Quick Reference
+| Use Case | Command |
+|----------|---------|
+| **Fast development build** | `mvn install -Dfast` |
+| **Quick compile check** | `mvn compile -Dquick` |
+| **Build single module** | `./build-scripts/build-module.sh <module>` |
+| **CI-like validation** | `mvn install -Dci` |
+| **Format code** | `mvn fmt:format` |
+
 ### Full Build
 ```bash
 mvn install
 ```
 Compiles all modules, runs tests, and creates distribution under `distribution/ddf/target/`.
+**Note:** This can take 30-60 minutes. Use `-Dfast` for faster iteration.
+
+### Fast Development Build (Recommended)
+```bash
+mvn install -Dfast
+```
+Skips tests, checkstyle, and other time-consuming checks for rapid iteration (~40-60% faster).
 
 ### Build Without Tests
 ```bash
@@ -23,8 +41,12 @@ mvn install -DskipTests
 
 ### Build Specific Module
 ```bash
+# Using helper script (recommended)
+./build-scripts/build-module.sh catalog/core/catalog-core-standardframework
+
+# Or navigate and build directly
 cd catalog/core/catalog-core-standardframework
-mvn install
+mvn install -Dfast
 ```
 
 ### Code Formatting
@@ -35,7 +57,7 @@ Required if build fails with formatting violations. Uses google-java-format.
 
 ### Clean Build
 ```bash
-mvn clean install
+mvn clean install -Dfast
 ```
 
 ## Testing
