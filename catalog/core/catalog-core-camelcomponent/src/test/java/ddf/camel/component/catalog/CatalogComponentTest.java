@@ -27,6 +27,7 @@ import de.kalpatec.pojosr.framework.PojoServiceRegistryFactoryImpl;
 import de.kalpatec.pojosr.framework.launch.PojoServiceRegistry;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
-import org.apache.tika.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -236,7 +237,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     bundleContext.registerService(InputTransformer.class.getName(), mockTransformer, props);
 
     // Send in sample XML as InputStream to InputTransformer
-    InputStream input = IOUtils.toInputStream(xmlInput);
+    InputStream input = IOUtils.toInputStream(xmlInput, StandardCharsets.UTF_8);
 
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
@@ -270,7 +271,7 @@ public class CatalogComponentTest extends CamelTestSupport {
         .thenReturn(list);
 
     // Send in sample XML as InputStream to InputTransformer
-    InputStream input = IOUtils.toInputStream(xmlInput);
+    InputStream input = IOUtils.toInputStream(xmlInput, StandardCharsets.UTF_8);
 
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
@@ -314,7 +315,7 @@ public class CatalogComponentTest extends CamelTestSupport {
         .thenReturn((List) Arrays.asList(mockTransformer));
 
     // Send in sample XML as InputStream to InputTransformer
-    InputStream input = IOUtils.toInputStream(xmlInput);
+    InputStream input = IOUtils.toInputStream(xmlInput, StandardCharsets.UTF_8);
 
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
