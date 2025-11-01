@@ -140,6 +140,7 @@ public class CollectionPermissionImpl implements CollectionPermission {
    *
    * @return String representation of this collection of permissions
    */
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     for (Permission perm : permissionList) {

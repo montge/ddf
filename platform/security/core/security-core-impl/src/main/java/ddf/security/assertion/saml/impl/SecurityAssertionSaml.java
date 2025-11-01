@@ -537,6 +537,7 @@ public class SecurityAssertionSaml implements SecurityAssertion {
     }
 
     /** Returns the name of the principal in string format. */
+    @Override
     public String toString() {
       return getName();
     }

@@ -116,22 +116,19 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.bouncycastle</groupId>
-                                    <artifactId>bcprov-jdk15on</artifactId>
-                                    <version>${bouncy.version}</version>
+                                    <artifactId>bcprov-jdk18on</artifactId>
                                     <outputDirectory>${setup.folder}/jdk9plus</outputDirectory>
                                     <destFileName>bcprov-${bouncy.version}.jar</destFileName>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.bouncycastle</groupId>
-                                    <artifactId>bcmail-jdk15on</artifactId>
-                                    <version>${bouncy.version}</version>
+                                    <artifactId>bcmail-jdk18on</artifactId>
                                     <outputDirectory>${setup.folder}/jdk9plus</outputDirectory>
                                     <destFileName>bcmail-${bouncy.version}.jar</destFileName>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.bouncycastle</groupId>
-                                    <artifactId>bcpkix-jdk15on</artifactId>
-                                    <version>${bouncy.version}</version>
+                                    <artifactId>bcpkix-jdk18on</artifactId>
                                     <outputDirectory>${setup.folder}/jdk9plus</outputDirectory>
                                     <destFileName>bcpkix-${bouncy.version}.jar</destFileName>
                                 </artifactItem>

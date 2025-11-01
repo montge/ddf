@@ -66,6 +66,7 @@ public class ExtendedGetFeatureType extends GetFeatureType
     return (this.startIndex != null);
   }
 
+  @Override
   public StringBuilder appendFields(
       ObjectLocator locator, StringBuilder buffer, ToStringStrategy2 strategy) {
     super.appendFields(locator, buffer, strategy);
@@ -78,6 +79,7 @@ public class ExtendedGetFeatureType extends GetFeatureType
     return buffer;
   }
 
+  @Override
   public boolean equals(
       ObjectLocator thisLocator,
       ObjectLocator thatLocator,
@@ -111,6 +113,7 @@ public class ExtendedGetFeatureType extends GetFeatureType
     return true;
   }
 
+  @Override
   public int hashCode(ObjectLocator locator, HashCodeStrategy2 strategy) {
     int currentHashCode = super.hashCode(locator, strategy);
     {
@@ -126,6 +129,7 @@ public class ExtendedGetFeatureType extends GetFeatureType
     return currentHashCode;
   }
 
+  @Override
   public Object copyTo(ObjectLocator locator, Object target, CopyStrategy2 strategy) {
     final Object draftCopy = ((target == null) ? createNewInstance() : target);
     super.copyTo(locator, draftCopy, strategy);
@@ -154,6 +158,7 @@ public class ExtendedGetFeatureType extends GetFeatureType
     return draftCopy;
   }
 
+  @Override
   public void mergeFrom(
       ObjectLocator leftLocator,
       ObjectLocator rightLocator,

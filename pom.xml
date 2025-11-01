@@ -158,7 +158,7 @@
         <apache.shiro.version>1.13.0</apache.shiro.version>
         <asm.version>9.3</asm.version>
         <awaitility.version>3.1.6</awaitility.version>
-        <bouncy.version>1.69</bouncy.version>
+        <bouncy.version>1.78.1</bouncy.version>
         <c3p0.version>0.9.5.5</c3p0.version>
         <cal10n.version>0.8.1</cal10n.version>
         <cal10n.thirdparty.bundle.version>${cal10n.version}_1</cal10n.thirdparty.bundle.version>
@@ -411,21 +411,61 @@
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml-core</artifactId>
                 <version>${opensaml.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml-xmlsec-api</artifactId>
                 <version>${opensaml.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml-xmlsec-impl</artifactId>
                 <version>${opensaml.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.opensaml</groupId>
                 <artifactId>opensaml-soap-impl</artifactId>
                 <version>${opensaml.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jaxb</groupId>
@@ -785,6 +825,141 @@
                 <groupId>org.apache.mina</groupId>
                 <artifactId>mina-core</artifactId>
                 <version>${mina.version}</version>
+            </dependency>
+
+            <!-- Bouncy Castle - Cryptography Libraries (upgraded to 1.78.1 for CVE fixes) -->
+            <!-- CVE-2024-30171 (HIGH 7.5): Timing-based information disclosure (Bleichenbacher/Marvin attack) -->
+            <!-- CVE-2024-30172 (MEDIUM 5.5): Ed25519 infinite loop DoS -->
+            <!-- CVE-2024-29857 (HIGH 7.5): EC certificate parsing CPU consumption DoS -->
+            <!-- CVE-2024-34447 (MEDIUM 5.3): DNS poisoning vulnerability via endpoint identification -->
+            <!-- Legacy versions 1.64, 1.68, 1.70 had additional HIGH/CRITICAL vulnerabilities -->
+            <!-- All old jdk15on artifacts excluded; using jdk18on for Java 11+ compatibility -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bouncy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcmail-jdk18on</artifactId>
+            <version>${bouncy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpg-jdk18on</artifactId>
+            <version>${bouncy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcutil-jdk18on</artifactId>
+                <version>${bouncy.version}</version>
+            </dependency>
+
+            <!-- Apache Santuario XML Security - exclude old Bouncy Castle versions -->
+            <dependency>
+                <groupId>org.apache.santuario</groupId>
+                <artifactId>xmlsec</artifactId>
+                <version>${xmlsec.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Cryptacular - exclude old Bouncy Castle versions -->
+            <dependency>
+                <groupId>org.cryptacular</groupId>
+                <artifactId>cryptacular</artifactId>
+                <version>1.2.4</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Pac4j JWT - exclude old Bouncy Castle versions -->
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-jwt</artifactId>
+                <version>${pac4j.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Pac4j Core - exclude old Bouncy Castle versions -->
+            <dependency>
+                <groupId>org.pac4j</groupId>
+                <artifactId>pac4j-core</artifactId>
+                <version>${pac4j.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- OpenSAML 3.x (legacy) security API - exclude old Bouncy Castle versions -->
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-security-api</artifactId>
+                <version>3.4.6</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- OpenSAML 3.x (legacy) security impl - exclude old Bouncy Castle versions -->
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml-security-impl</artifactId>
+                <version>3.4.6</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcprov-jdk15on</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>

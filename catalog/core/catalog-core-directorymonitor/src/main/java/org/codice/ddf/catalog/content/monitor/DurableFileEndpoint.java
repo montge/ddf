@@ -126,6 +126,7 @@ public class DurableFileEndpoint extends FileEndpoint {
     return file.toURI().toString();
   }
 
+  @Override
   public void setFile(File file) {
     this.file = file;
     // update configuration as well

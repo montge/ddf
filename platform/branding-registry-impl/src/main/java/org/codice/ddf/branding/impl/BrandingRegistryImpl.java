@@ -42,6 +42,7 @@ public class BrandingRegistryImpl implements BrandingRegistry {
       Collections.synchronizedMap(
           new TreeMap<>(
               new ServiceComparator() {
+                @Override
                 public int compare(ServiceReference ref1, ServiceReference ref2) {
                   return ref2.compareTo(ref1);
                 }
@@ -119,6 +120,7 @@ public class BrandingRegistryImpl implements BrandingRegistry {
     return new ArrayList<>(brandingPlugins.values());
   }
 
+  @Override
   public void setBrandingPlugins(List<BrandingPlugin> brandingPlugins) {}
 
   class BrandingListener implements ServiceListener {

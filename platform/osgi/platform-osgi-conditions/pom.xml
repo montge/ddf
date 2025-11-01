@@ -39,9 +39,9 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcprov-jdk18on</artifactId>
             <version>${bouncy.version}</version>
-        </dependency>
+            </dependency>
     </dependencies>
     <build>
         <plugins>

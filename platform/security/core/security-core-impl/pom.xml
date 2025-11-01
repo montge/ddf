@@ -125,9 +125,9 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
+            <artifactId>bcprov-jdk18on</artifactId>
             <version>${bouncy.version}</version>
-        </dependency>
+            </dependency>
         <dependency>
             <groupId>org.apache.karaf.jaas</groupId>
             <artifactId>org.apache.karaf.jaas.boot</artifactId>
@@ -186,8 +186,8 @@
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bouncy.version}</version>
+                <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncy.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.santuario</groupId>
@@ -196,8 +196,8 @@
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcpkix-jdk15on</artifactId>
-                <version>${bouncy.version}</version>
+                <artifactId>bcpkix-jdk18on</artifactId>
+            <version>${bouncy.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>

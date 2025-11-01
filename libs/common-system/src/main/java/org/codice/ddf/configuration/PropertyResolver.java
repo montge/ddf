@@ -100,6 +100,7 @@ public class PropertyResolver {
    *
    * @return
    */
+  @Override
   public String toString() {
     return getResolvedString();
   }

@@ -162,6 +162,7 @@ public class TimeLimitedMatcher {
     return matches;
   }
 
+  @Override
   public String toString() {
     return String.format("TimeLimitedMatcher of [%s]", matcher.toString());
   }

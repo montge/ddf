@@ -186,8 +186,8 @@
         <dependencies>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bouncy.version}</version>
+                <artifactId>bcprov-jdk18on</artifactId>
+            <version>${bouncy.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

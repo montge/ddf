@@ -52,11 +52,13 @@ public class PropertyIsFuzzyFunction extends FunctionExpressionImpl {
     return params.get(1);
   }
 
+  @Override
   public boolean equals(Object obj) {
     return super.equals(obj);
   }
 
   // findbugs: parent class overrides equals() but not hashcode
+  @Override
   public int hashCode() {
 
     return 31
