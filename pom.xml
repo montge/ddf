@@ -115,7 +115,7 @@
         <gib.enabled>false</gib.enabled>
         <gib.failOnError>false</gib.failOnError>
 
-        <jknack.handlebars.version>4.3.0</jknack.handlebars.version>
+        <jknack.handlebars.version>4.5.0</jknack.handlebars.version>
         <picocontainer.version>1.3_1</picocontainer.version>
         <dom4j.bundle.version>2.1.3_1</dom4j.bundle.version>
 
@@ -332,6 +332,7 @@
         <micrometer.prometheus-client.version>0.12.0</micrometer.prometheus-client.version>
         <micrometer.opentelemetry.version>1.9.1</micrometer.opentelemetry.version>
         <zstd-jni.version>1.4.9-1</zstd-jni.version>
+        <tomcat-embed.version>9.0.98</tomcat-embed.version>
 
         <!-- Command line argument properties for the maven-surefire-plugin -->
         <surefire.argline.append />
@@ -759,6 +760,28 @@
                 <groupId>io.netty</groupId>
                 <artifactId>netty-transport-classes-epoll</artifactId>
                 <version>${netty.version}</version>
+            </dependency>
+
+            <!-- Tomcat Embed - Override transitive dependencies from Pax Web (fixes CVE-2024-50379 and 25+ others) -->
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat-embed.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-jasper</artifactId>
+                <version>${tomcat-embed.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <version>${tomcat-embed.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>${tomcat-embed.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

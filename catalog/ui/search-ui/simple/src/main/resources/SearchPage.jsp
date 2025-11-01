@@ -460,7 +460,7 @@
 	<script type="text/javascript" src="lib/jquery/js/plugin/purl.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/jquery-ui-datepicker-4digitYearOverride-addon.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/jquery-ui-timepicker-addon.js"></script>
-	<script type="text/javascript" src="lib/handlebars-1.0.0/handlebars.js"></script>
+	<script type="text/javascript" src="lib/handlebars-4.7.8/handlebars.js"></script>
 
 <!-- These scripts have been compressed and aggregated into Search-min.js.  The list is here for easy modification for
      the sake of debugging.
