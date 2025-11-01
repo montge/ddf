@@ -309,7 +309,7 @@
         <spatial4j.version>0.8</spatial4j.version>
         <spring.version>5.3.39</spring.version>
         <spring-osgi-mock.version>1.2.1</spring-osgi-mock.version>
-        <tika.version>1.28.5</tika.version>
+        <tika.version>3.2.2</tika.version>
         <usng4j.version>0.4</usng4j.version>
         <validation.version>1.1.0.Final</validation.version>
         <woodstox.core.version>6.2.8</woodstox.core.version>
@@ -503,7 +503,7 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.tika</groupId>
-                <artifactId>tika-parsers</artifactId>
+                <artifactId>tika-parsers-standard-package</artifactId>
                 <version>${tika.version}</version>
                 <exclusions>
                     <exclusion>

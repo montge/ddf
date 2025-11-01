@@ -128,7 +128,7 @@
         <!-- BEGIN: Tika dependencies -->
         <dependency>
             <groupId>org.apache.tika</groupId>
-            <artifactId>tika-bundle</artifactId>
+            <artifactId>tika-parsers-standard-package</artifactId>
             <version>${tika.version}</version>
         </dependency>
         <dependency>

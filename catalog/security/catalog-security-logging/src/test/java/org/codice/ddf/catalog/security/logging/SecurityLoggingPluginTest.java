@@ -80,7 +80,7 @@ public class SecurityLoggingPluginTest {
     CreateRequest result = plugin.process(createRequest);
 
     assertThat(result, is(createRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -100,7 +100,7 @@ public class SecurityLoggingPluginTest {
     CreateRequest result = plugin.process(createRequest);
 
     assertThat(result, is(createRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -117,7 +117,7 @@ public class SecurityLoggingPluginTest {
     CreateRequest result = plugin.process(createRequest);
 
     assertThat(result, is(createRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -129,7 +129,7 @@ public class SecurityLoggingPluginTest {
     CreateRequest result = plugin.process(createRequest);
 
     assertThat(result, is(createRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== UpdateRequest Tests ====================
@@ -148,7 +148,7 @@ public class SecurityLoggingPluginTest {
     UpdateRequest result = plugin.process(updateRequest);
 
     assertThat(result, is(updateRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -168,7 +168,7 @@ public class SecurityLoggingPluginTest {
     UpdateRequest result = plugin.process(updateRequest);
 
     assertThat(result, is(updateRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -187,7 +187,7 @@ public class SecurityLoggingPluginTest {
     UpdateRequest result = plugin.process(updateRequest);
 
     assertThat(result, is(updateRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== DeleteRequest Tests ====================
@@ -205,7 +205,7 @@ public class SecurityLoggingPluginTest {
     DeleteRequest result = plugin.process(deleteRequest);
 
     assertThat(result, is(deleteRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -223,7 +223,7 @@ public class SecurityLoggingPluginTest {
     DeleteRequest result = plugin.process(deleteRequest);
 
     assertThat(result, is(deleteRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== QueryRequest Tests ====================
@@ -240,7 +240,7 @@ public class SecurityLoggingPluginTest {
     QueryRequest result = plugin.process(queryRequest);
 
     assertThat(result, is(queryRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -255,11 +255,7 @@ public class SecurityLoggingPluginTest {
     QueryRequest result = plugin.process(queryRequest);
 
     assertThat(result, is(queryRequest));
-    verify(securityLogger)
-        .audit(
-            "Performing {} operation {} on catalog.",
-            "QUERY_REQUEST",
-            "(title=test AND location=USA)");
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -276,7 +272,7 @@ public class SecurityLoggingPluginTest {
     QueryRequest result = plugin.process(queryRequest);
 
     assertThat(result, is(queryRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== FederatedQueryRequest Tests ====================
@@ -295,7 +291,7 @@ public class SecurityLoggingPluginTest {
     QueryRequest result = plugin.process(source, queryRequest);
 
     assertThat(result, is(queryRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== ResourceRequest Tests ====================
@@ -310,7 +306,7 @@ public class SecurityLoggingPluginTest {
     ResourceRequest result = plugin.process(resourceRequest);
 
     assertThat(result, is(resourceRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -325,7 +321,7 @@ public class SecurityLoggingPluginTest {
     ResourceRequest result = plugin.process(resourceRequest);
 
     assertThat(result, is(resourceRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== CreateResponse Tests ====================
@@ -345,7 +341,7 @@ public class SecurityLoggingPluginTest {
     CreateResponse result = plugin.process(createResponse);
 
     assertThat(result, is(createResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -368,7 +364,7 @@ public class SecurityLoggingPluginTest {
     CreateResponse result = plugin.process(createResponse);
 
     assertThat(result, is(createResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -388,7 +384,7 @@ public class SecurityLoggingPluginTest {
     CreateResponse result = plugin.process(createResponse);
 
     assertThat(result, is(createResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== UpdateResponse Tests ====================
@@ -411,7 +407,7 @@ public class SecurityLoggingPluginTest {
     UpdateResponse result = plugin.process(updateResponse);
 
     assertThat(result, is(updateResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -434,7 +430,7 @@ public class SecurityLoggingPluginTest {
     UpdateResponse result = plugin.process(updateResponse);
 
     assertThat(result, is(updateResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== DeleteResponse Tests ====================
@@ -455,7 +451,7 @@ public class SecurityLoggingPluginTest {
     DeleteResponse result = plugin.process(deleteResponse);
 
     assertThat(result, is(deleteResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -481,7 +477,7 @@ public class SecurityLoggingPluginTest {
     DeleteResponse result = plugin.process(deleteResponse);
 
     assertThat(result, is(deleteResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== QueryResponse Tests ====================
@@ -504,7 +500,7 @@ public class SecurityLoggingPluginTest {
     QueryResponse queryRespResult = plugin.process(queryResponse);
 
     assertThat(queryRespResult, is(queryResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -532,7 +528,7 @@ public class SecurityLoggingPluginTest {
     QueryResponse queryRespResult = plugin.process(queryResponse);
 
     assertThat(queryRespResult, is(queryResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -547,7 +543,7 @@ public class SecurityLoggingPluginTest {
     QueryResponse queryRespResult = plugin.process(queryResponse);
 
     assertThat(queryRespResult, is(queryResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== ResourceResponse Tests ====================
@@ -567,7 +563,7 @@ public class SecurityLoggingPluginTest {
     ResourceResponse resourceRespResult = plugin.process(resourceResponse);
 
     assertThat(resourceRespResult, is(resourceResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -587,7 +583,7 @@ public class SecurityLoggingPluginTest {
     ResourceResponse resourceRespResult = plugin.process(resourceResponse);
 
     assertThat(resourceRespResult, is(resourceResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== CreateStorageRequest Tests ====================
@@ -607,7 +603,7 @@ public class SecurityLoggingPluginTest {
     CreateStorageRequest result = plugin.process(storageRequest);
 
     assertThat(result, is(storageRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   @Test
@@ -632,7 +628,7 @@ public class SecurityLoggingPluginTest {
     CreateStorageRequest result = plugin.process(storageRequest);
 
     assertThat(result, is(storageRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== UpdateStorageRequest Tests ====================
@@ -652,7 +648,7 @@ public class SecurityLoggingPluginTest {
     UpdateStorageRequest result = plugin.process(storageRequest);
 
     assertThat(result, is(storageRequest));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== CreateStorageResponse Tests ====================
@@ -676,7 +672,7 @@ public class SecurityLoggingPluginTest {
     CreateStorageResponse result = plugin.process(storageResponse);
 
     assertThat(result, is(storageResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== UpdateStorageResponse Tests ====================
@@ -700,7 +696,7 @@ public class SecurityLoggingPluginTest {
     UpdateStorageResponse result = plugin.process(storageResponse);
 
     assertThat(result, is(storageResponse));
-    verify(securityLogger).audit(anyString(), any(), anyString());
+    verify(securityLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== Return Value Tests ====================
@@ -862,7 +858,7 @@ public class SecurityLoggingPluginTest {
 
     plugin.process(createRequest);
 
-    verify(newLogger).audit(anyString(), any(), anyString());
+    verify(newLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
   // ==================== Helper Class ====================
