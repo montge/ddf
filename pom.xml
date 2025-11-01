@@ -303,7 +303,7 @@
         <solr.httpclient.version>4.5.13</solr.httpclient.version>
         <solr.httpcore.version>4.4.15</solr.httpcore.version>
         <solr.httpmime.version>4.5.13</solr.httpmime.version>
-        <solr.zookeeper.version>3.9.1</solr.zookeeper.version>
+        <solr.zookeeper.version>3.9.3</solr.zookeeper.version>
         <solr.spatial4j.version>0.8</solr.spatial4j.version>
         <spark.version>2.9.2</spark.version>
         <spatial4j.version>0.8</spatial4j.version>
@@ -333,6 +333,7 @@
         <micrometer.opentelemetry.version>1.9.1</micrometer.opentelemetry.version>
         <zstd-jni.version>1.4.9-1</zstd-jni.version>
         <tomcat-embed.version>9.0.98</tomcat-embed.version>
+        <mina.version>2.1.10</mina.version>
 
         <!-- Command line argument properties for the maven-surefire-plugin -->
         <surefire.argline.append />
@@ -777,6 +778,13 @@
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-websocket</artifactId>
                 <version>${tomcat-embed.version}</version>
+            </dependency>
+
+            <!-- Apache MINA (override transitive dependencies to fix CVE-2024-52046 - CRITICAL RCE) -->
+            <dependency>
+                <groupId>org.apache.mina</groupId>
+                <artifactId>mina-core</artifactId>
+                <version>${mina.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
