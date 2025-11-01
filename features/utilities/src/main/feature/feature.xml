@@ -230,7 +230,7 @@
 
     <feature name="geotools" version="${project.version}">
         <feature>javax-inject</feature>
-        <bundle>wrap:mvn:org.geotools/gt-opengis/${org.geotools.version}$Bundle-Name=gt-opengis&amp;Bundle-SymbolicName=gt-opengis</bundle>
+        <bundle>wrap:mvn:org.geotools/gt-api/${org.geotools.version}$Bundle-Name=gt-api&amp;Bundle-SymbolicName=gt-api</bundle>
         <bundle>wrap:mvn:org.geotools/gt-main/${org.geotools.version}$Bundle-Name=gt-main&amp;Bundle-SymbolicName=gt-main</bundle>
         <bundle>wrap:mvn:org.geotools/gt-cql/${org.geotools.version}$Bundle-Name=gt-cql&amp;Bundle-SymbolicName=gt-cql</bundle>
         <bundle>wrap:mvn:org.geotools/gt-jts-wrapper/${org.geotools.version}$Bundle-Name=gt-jts-wrapper&amp;Bundle-SymbolicName=gt-jts-wrapper</bundle>

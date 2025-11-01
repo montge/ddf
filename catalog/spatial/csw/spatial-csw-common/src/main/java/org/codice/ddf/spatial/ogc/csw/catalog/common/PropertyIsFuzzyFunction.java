@@ -14,11 +14,11 @@
 package org.codice.ddf.spatial.ogc.csw.catalog.common;
 
 import java.util.List;
+import org.geotools.api.filter.capability.FunctionName;
+import org.geotools.api.filter.expression.Expression;
+import org.geotools.api.filter.expression.Literal;
 import org.geotools.filter.FunctionExpressionImpl;
 import org.geotools.filter.capability.FunctionNameImpl;
-import org.opengis.filter.capability.FunctionName;
-import org.opengis.filter.expression.Expression;
-import org.opengis.filter.expression.Literal;
 
 /**
  * The PropertyIsFuzzyFunction contains two parameters that can be used to build a {@link

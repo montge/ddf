@@ -19,10 +19,11 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.geotools.api.filter.capability.FunctionName;
+import org.geotools.api.filter.expression.Expression;
+import org.geotools.api.filter.expression.Literal;
 import org.geotools.filter.FunctionExpressionImpl;
-import org.opengis.filter.capability.FunctionName;
-import org.opengis.filter.expression.Expression;
-import org.opengis.filter.expression.Literal;
+import org.geotools.filter.capability.FunctionNameImpl;
 
 /** The DivisibleByFunction contains two parameters that can be used to build a filter. */
 public class DivisibleByFunction extends FunctionExpressionImpl {
@@ -31,11 +32,14 @@ public class DivisibleByFunction extends FunctionExpressionImpl {
   public static final String FUNCTION_NAME_STRING = "divisibleBy";
 
   public static final FunctionName FUNCTION_NAME =
-      FunctionExpressionImpl.functionName(
-          FUNCTION_NAME_STRING, "return:Boolean", "property:String", "divisor:Long");
+      new FunctionNameImpl(
+          FUNCTION_NAME_STRING,
+          Boolean.class,
+          FunctionNameImpl.parameter("property", String.class),
+          FunctionNameImpl.parameter("divisor", Long.class));
 
   public DivisibleByFunction(List<Expression> parameters, Literal fallback) {
-    super(FUNCTION_NAME);
+    super(FUNCTION_NAME_STRING, fallback);
 
     notNull(parameters, "Parameters are required");
     isTrue(
@@ -43,8 +47,8 @@ public class DivisibleByFunction extends FunctionExpressionImpl {
         String.format(
             "%s expression requires at least %s parameters", FUNCTION_NAME_STRING, NUM_PARAMETERS));
 
-    setParameters(parameters);
-    setFallbackValue(fallback);
+    this.params = parameters;
+    this.functionName = FUNCTION_NAME;
   }
 
   @Override

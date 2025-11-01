@@ -14,7 +14,7 @@
 package ddf.catalog.filter;
 
 import java.util.Date;
-import org.opengis.filter.Filter;
+import org.geotools.api.filter.Filter;
 
 /**
  * Completes the fluent API to create a {@link org.opengis.filter.PropertyIsEqualTo} {@link Filter}

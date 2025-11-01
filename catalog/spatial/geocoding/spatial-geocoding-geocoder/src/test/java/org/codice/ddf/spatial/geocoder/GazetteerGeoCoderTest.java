@@ -31,13 +31,14 @@ import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryable;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
-import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
-import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.opengis.geometry.primitive.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
 public class GazetteerGeoCoderTest {
+  private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
   private static final String TEST_POINT = "POINT (1.0 2.0)";
 
   private static final GeoEntry GEO_ENTRY_1 =
@@ -82,8 +83,8 @@ public class GazetteerGeoCoderTest {
     assertThat(geoResult.getFullName(), is(equalTo(GEO_ENTRY_1.getName())));
 
     final Point point =
-        new PointImpl(
-            new DirectPositionImpl(GEO_ENTRY_1.getLongitude(), GEO_ENTRY_1.getLatitude()));
+        GEOMETRY_FACTORY.createPoint(
+            new Coordinate(GEO_ENTRY_1.getLongitude(), GEO_ENTRY_1.getLatitude()));
     assertThat(geoResult.getPoint(), is(equalTo(point)));
   }
 

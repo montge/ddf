@@ -25,12 +25,13 @@ import static org.codice.ddf.spatial.geocoding.GeoCodingConstants.POPULATED_PLAC
 import java.util.ArrayList;
 import java.util.List;
 import org.codice.ddf.spatial.geocoding.GeoEntry;
-import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
-import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
-import org.opengis.geometry.DirectPosition;
-import org.opengis.geometry.primitive.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
 public final class GeoResultCreator {
+  private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+
   private GeoResultCreator() {}
 
   public static GeoResult createGeoResult(
@@ -50,16 +51,16 @@ public final class GeoResultCreator {
       }
     }
 
-    final DirectPosition northWest = new DirectPositionImpl(longitude - offset, latitude + offset);
-    final DirectPosition southEast = new DirectPositionImpl(longitude + offset, latitude - offset);
+    final Coordinate northWest = new Coordinate(longitude - offset, latitude + offset);
+    final Coordinate southEast = new Coordinate(longitude + offset, latitude - offset);
     final List<Point> bbox = new ArrayList<>();
-    bbox.add(new PointImpl(northWest));
-    bbox.add(new PointImpl(southEast));
+    bbox.add(GEOMETRY_FACTORY.createPoint(northWest));
+    bbox.add(GEOMETRY_FACTORY.createPoint(southEast));
 
-    final DirectPosition directPosition = new DirectPositionImpl(longitude, latitude);
+    final Coordinate coordinate = new Coordinate(longitude, latitude);
 
     final GeoResult geoResult = new GeoResult();
-    geoResult.setPoint(new PointImpl(directPosition));
+    geoResult.setPoint(GEOMETRY_FACTORY.createPoint(coordinate));
     geoResult.setBbox(bbox);
     geoResult.setFullName(name);
     return geoResult;

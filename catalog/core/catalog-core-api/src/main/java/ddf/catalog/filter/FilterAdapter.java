@@ -14,7 +14,7 @@
 package ddf.catalog.filter;
 
 import ddf.catalog.source.UnsupportedQueryException;
-import org.opengis.filter.Filter;
+import org.geotools.api.filter.Filter;
 
 /**
  * {@code FilterAdapter} visits a {@link Filter} and invokes {@link FilterDelegate} methods with
