@@ -54,13 +54,11 @@ public class XstreamPathConverter implements Converter {
     XstreamPathValueTracker pathValueTracker = new XstreamPathValueTracker();
     pathValueTracker.buildPaths((LinkedHashSet<Path>) context.get(PATH_KEY));
 
-    if (pathValueTracker != null) {
+    PathTracker tracker = new PathTracker();
+    PathTrackingReader pathReader = new PathTrackingReader(reader, tracker);
 
-      PathTracker tracker = new PathTracker();
-      PathTrackingReader pathReader = new PathTrackingReader(reader, tracker);
+    readPath(pathReader, tracker, pathValueTracker, false);
 
-      readPath(pathReader, tracker, pathValueTracker, false);
-    }
     return pathValueTracker;
   }
 

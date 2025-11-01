@@ -33,10 +33,10 @@ public class ExportCategory implements RtfCategory {
   private String title;
   private List<String> attributes;
 
-  public interface ExportValue<T, R extends ValueType> {
+  public interface ExportValue<T> {
     T getValue();
 
-    R getType();
+    ValueType getType();
   }
 
   public enum ValueType {

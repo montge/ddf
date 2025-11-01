@@ -80,9 +80,8 @@ public class HttpSessionFactory implements SessionFactory {
         String sessionId =
             sessionHandler.getSessionIdManager().newSessionId(request, System.currentTimeMillis());
         Session cachedSession = sessionCache.get(sessionId);
-        if (cachedSession != null
-            && cachedSession instanceof HttpSession
-            && cachedSession.isValid()) {
+        if (cachedSession != null && cachedSession.isValid()) {
+          // Session extends HttpSession, so cast is safe
           HttpSession session = (HttpSession) cachedSession;
           request.enterSession(session);
           request.setSession(session);
