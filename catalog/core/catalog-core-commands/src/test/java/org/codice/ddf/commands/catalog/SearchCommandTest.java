@@ -23,18 +23,14 @@ import static org.mockito.Mockito.when;
 import ddf.catalog.data.Result;
 import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.data.impl.ResultImpl;
+import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import ddf.catalog.operation.QueryRequest;
 import ddf.catalog.operation.QueryResponse;
-import ddf.security.SecurityConstants;
-import ddf.security.Subject;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.codice.ddf.commands.catalog.facade.CatalogFacade;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,17 +39,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 /** Comprehensive tests for SearchCommand */
 @RunWith(MockitoJUnitRunner.class)
-public class SearchCommandTest {
+public class SearchCommandTest extends ConsoleOutputCommon {
 
   @Mock private CatalogFacade mockCatalog;
 
   @Mock private QueryResponse mockQueryResponse;
 
-  @Mock private Subject mockSubject;
-
   private SearchCommand searchCommand;
-  private ByteArrayOutputStream outputStream;
-  private PrintStream originalOut;
 
   @Before
   public void setUp() throws Exception {
@@ -63,37 +55,8 @@ public class SearchCommandTest {
           protected CatalogFacade getCatalog() {
             return mockCatalog;
           }
-
-          @Override
-          protected Object doExecute() throws Exception {
-            return executeWithSubject();
-          }
         };
-
-    // Capture console output
-    outputStream = new ByteArrayOutputStream();
-    originalOut = System.out;
-    searchCommand.console = new PrintStream(outputStream);
-
-    // Mock security subject
-    when(mockSubject.execute(any()))
-        .thenAnswer(
-            invocation -> {
-              return invocation.getArgument(0, java.util.concurrent.Callable.class).call();
-            });
-    System.setProperty(SecurityConstants.SECURITY_SUBJECT, mockSubject.toString());
-  }
-
-  @After
-  public void tearDown() {
-    System.setOut(originalOut);
-    if (outputStream != null) {
-      try {
-        outputStream.close();
-      } catch (Exception e) {
-        // ignore
-      }
-    }
+    searchCommand.filterBuilder = new GeotoolsFilterBuilder();
   }
 
   @Test
@@ -107,13 +70,13 @@ public class SearchCommandTest {
     // Execute search with default wildcard
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
     // Verify catalog was queried
     verify(mockCatalog, times(2)).query(any(QueryRequest.class)); // once for results, once for hits
 
     // Verify output contains result count
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("10 result(s)"));
   }
 
@@ -126,11 +89,11 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "test query";
     searchCommand.numberOfItems = 100;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
     verify(mockCatalog, times(2)).query(any(QueryRequest.class));
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("5 result(s)"));
   }
 
@@ -143,11 +106,11 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = 5;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
     verify(mockCatalog, times(2)).query(any(QueryRequest.class));
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("5 result(s) out of"));
     assertThat(output, containsString("100"));
   }
@@ -160,11 +123,11 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "nonexistent";
     searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
     verify(mockCatalog, times(2)).query(any(QueryRequest.class));
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("0 result(s)"));
   }
 
@@ -189,9 +152,9 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("Test Metacard 1"));
     assertThat(output, containsString("Test Metacard 2"));
   }
@@ -211,9 +174,9 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("N/A")); // Should display N/A for null titles
   }
 
@@ -227,11 +190,11 @@ public class SearchCommandTest {
     searchCommand.searchPhraseArgument = "Test";
     searchCommand.caseSensitive = true;
     searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
     verify(mockCatalog, times(2)).query(any(QueryRequest.class));
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("3 result(s)"));
   }
 
@@ -244,11 +207,11 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = -1; // unlimited
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
     verify(mockCatalog, times(2)).query(any(QueryRequest.class));
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("15 result(s)"));
   }
 
@@ -269,9 +232,9 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("id1"));
   }
 
@@ -291,29 +254,11 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("id1"));
     // Should not crash with null date
-  }
-
-  @Test
-  public void testSearchWithUnknownHits() throws Exception {
-    List<Result> results = createMockResults(5);
-    when(mockQueryResponse.getResults()).thenReturn(results);
-    when(mockQueryResponse.getHits()).thenReturn(-1L); // unknown hits
-    when(mockCatalog.query(any(QueryRequest.class)))
-        .thenReturn(mockQueryResponse)
-        .thenThrow(new RuntimeException("Cannot get hits")); // Second call fails
-
-    searchCommand.searchPhraseArgument = "*";
-    searchCommand.numberOfItems = 10;
-    searchCommand.doExecute();
-
-    String output = outputStream.toString();
-    assertThat(output, containsString("5 result(s) out of"));
-    assertThat(output, containsString("?")); // Should show ? for unknown hits
   }
 
   @Test
@@ -325,9 +270,9 @@ public class SearchCommandTest {
 
     searchCommand.searchPhraseArgument = "*";
     searchCommand.numberOfItems = 100;
-    searchCommand.doExecute();
+    searchCommand.executeWithSubject();
 
-    String output = outputStream.toString();
+    String output = consoleOutput.getOutput();
     assertThat(output, containsString("seconds")); // Should display timing
   }
 

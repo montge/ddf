@@ -62,6 +62,12 @@ public class TestCatalogSecurityIntegration extends AbstractIntegrationTest {
   private static final String ACCESS_GROUP_B = "B";
   private static final String ACCESS_GROUP_TOKEN = "ACCESS_GROUP_REPLACE_TOKEN";
 
+  private static final DynamicUrl SECURE_ROOT_AND_PORT =
+      new DynamicUrl(DynamicUrl.SECURE_ROOT, HTTPS_PORT);
+
+  private static final DynamicUrl ADMIN_PATH =
+      new DynamicUrl(SECURE_ROOT_AND_PORT, "/admin/index.html");
+
   @BeforeExam
   public void beforeExam() throws Exception {
     getSecurityPolicy().configureRestForGuest();
