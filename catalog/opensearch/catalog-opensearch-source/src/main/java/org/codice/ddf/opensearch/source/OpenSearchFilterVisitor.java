@@ -406,7 +406,7 @@ public class OpenSearchFilterVisitor extends DefaultFilterVisitor {
       return;
     }
 
-    final org.opengis.filter.expression.Expression expression1 = filter.getExpression1();
+    final Expression expression1 = filter.getExpression1();
     final String expectedSpatialSearchTerm = OpenSearchConstants.SUPPORTED_SPATIAL_SEARCH_TERM;
     if (!expectedSpatialSearchTerm.equals(expression1.toString())) {
       LOGGER.debug(
@@ -429,13 +429,6 @@ public class OpenSearchFilterVisitor extends DefaultFilterVisitor {
     if (distance <= radiusRangeLowerBound) {
       LOGGER.debug(
           "Radius must be greater than {}. Ignoring DWithin filter.", radiusRangeLowerBound);
-    } else if (geometryExpression instanceof PointImpl) {
-      PointImpl point = (PointImpl) literalWrapper.evaluate(null);
-      double[] coords = point.getCentroid().getCoordinate();
-      LOGGER.trace("point: coords[0] = {},   coords[1] = {}", coords[0], coords[1]);
-      LOGGER.trace("radius = {}", distance);
-      openSearchFilterVisitorObject.addPointRadiusSearch(
-          new PointRadius(coords[0], coords[1], distance));
     } else if (geometryExpression instanceof Point) {
       Point point = (Point) literalWrapper.evaluate(null);
       Coordinate coords = point.getCoordinate();
@@ -462,7 +455,7 @@ public class OpenSearchFilterVisitor extends DefaultFilterVisitor {
       return;
     }
 
-    final org.opengis.filter.expression.Expression expression1 = filter.getExpression1();
+    final Expression expression1 = filter.getExpression1();
     final String expectedSpatialSearchTerm = OpenSearchConstants.SUPPORTED_SPATIAL_SEARCH_TERM;
     if (!expectedSpatialSearchTerm.equals(expression1.toString())) {
       LOGGER.debug(
@@ -515,7 +508,7 @@ public class OpenSearchFilterVisitor extends DefaultFilterVisitor {
       return;
     }
 
-    final org.opengis.filter.expression.Expression expression1 = filter.getExpression1();
+    final Expression expression1 = filter.getExpression1();
     final String expectedTemporalSearchTerm = OpenSearchConstants.SUPPORTED_TEMPORAL_SEARCH_TERM;
     if (!expectedTemporalSearchTerm.equals(expression1.toString())) {
       LOGGER.debug(
