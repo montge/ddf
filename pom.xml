@@ -498,6 +498,16 @@
             </dependency>
             <!-- END: BOMs -->
 
+            <!-- Security fix: Override vulnerable groovy-all 2.4.7 from org.codice.test:failsafe-controller
+                 CVE-2016-6814: Groovy before 2.4.8 has unsafe deserialization (RCE vulnerability)
+                 Using 2.4.21 (last 2.4.x release) for maximum compatibility
+                 This override forces all transitive dependencies to use a safe version -->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>2.4.21</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
