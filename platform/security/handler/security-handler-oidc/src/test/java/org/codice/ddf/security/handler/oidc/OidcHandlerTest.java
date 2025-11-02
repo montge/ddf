@@ -84,9 +84,10 @@ public class OidcHandlerTest {
                     .getResourceAsStream("authorizationCode.txt")));
     idTokenString =
         CharStreams.toString(
-            new InputStreamReader(
-                OidcHandlerTest.class.getClassLoader().getResourceAsStream("idToken.jwt"),
-                StandardCharsets.UTF_8));
+                new InputStreamReader(
+                    OidcHandlerTest.class.getClassLoader().getResourceAsStream("idToken.jwt"),
+                    StandardCharsets.UTF_8))
+            .trim();
     stateString =
         CharStreams.toString(
             new InputStreamReader(
