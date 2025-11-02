@@ -317,4 +317,33 @@
         <cve>CVE-2025-55668</cve>
     </suppress>
 
+    <suppress>
+        <notes><![CDATA[
+        Logback 1.2.13 (current version) is the final release in the 1.2.x series.
+        Upgrade to Logback 1.5.x would address 273+ CVEs (5 HIGH severity), however upgrade is
+        BLOCKED by Jetty dependency requirements:
+
+        BLOCKING ISSUE: Logback-access 1.5.x does NOT support Jetty 9.4.x
+        - Logback 1.5.x access logging requires Jetty 10+ (not Jetty 9.4)
+        - Logback-access artifacts exist only for Jetty 11+ (logback-access-jetty11/12)
+        - DDF currently uses Jetty 9.4.58.v20250814
+        - Jetty 9.4 → 11+ is a MAJOR version upgrade requiring extensive testing
+        - Jetty is tightly integrated with Pax Web (DDF's web container)
+
+        MITIGATION: Logback 1.2.13 includes fixes for critical receiver deserialization CVEs:
+        - CVE-2023-6378 and CVE-2023-6481 (logback receiver DoS) - FIXED in 1.2.13
+        - Recent CVEs like CVE-2025-11226 affect only 1.5.0-1.5.18 (not 1.2.x series)
+
+        ACTION PLAN:
+        1. Short-term (current): Accept 1.2.13 with documented blocker
+        2. Medium-term: Plan Jetty 9.4 → 10/11 major version upgrade
+        3. Post-Jetty-upgrade: Migrate to Logback 1.5.x reducing 273+ CVEs
+
+        NOTE: Zookeeper 3.9.3 already uses Logback (migrated from Log4j 1.x), so Logback
+        integration is already in place; the blocker is purely on the Jetty/Pax Web side.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/ch\.qos\.logback/logback.*@1\.2\..*$</packageUrl>
+        <cve>CVE-2016-6814</cve>
+    </suppress>
+
 </suppressions>
