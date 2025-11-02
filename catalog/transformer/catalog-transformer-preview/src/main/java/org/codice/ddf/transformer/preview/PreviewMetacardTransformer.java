@@ -19,8 +19,10 @@ import ddf.catalog.data.impl.BinaryContentImpl;
 import ddf.catalog.data.types.experimental.Extracted;
 import ddf.catalog.transform.CatalogTransformerException;
 import ddf.catalog.transform.MetacardTransformer;
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.tika.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -59,7 +60,8 @@ public class PreviewMetacardTransformer implements MetacardTransformer {
 
     String preview = getPreviewText(metacard);
 
-    return new BinaryContentImpl(IOUtils.toInputStream(preview));
+    return new BinaryContentImpl(
+        new ByteArrayInputStream(preview.getBytes(StandardCharsets.UTF_8)));
   }
 
   private String getPreviewText(Metacard metacard) {

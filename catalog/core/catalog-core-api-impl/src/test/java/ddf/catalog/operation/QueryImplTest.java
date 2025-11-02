@@ -17,11 +17,11 @@ import static org.junit.Assert.assertEquals;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.operation.impl.QueryImpl;
-import org.geotools.api.filter.Filter;
-import org.geotools.api.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryImpl;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
 
 /** @author willisod */
 public class QueryImplTest {

@@ -34,16 +34,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Pattern;
-import org.geotools.api.filter.Filter;
-import org.geotools.api.filter.PropertyIsEqualTo;
-import org.geotools.api.filter.expression.Expression;
-import org.geotools.api.filter.expression.Literal;
-import org.geotools.api.filter.expression.PropertyName;
-import org.geotools.api.temporal.Instant;
-import org.geotools.api.temporal.Period;
-import org.geotools.api.temporal.PeriodDuration;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FunctionImpl;
+import org.geotools.geometry.GeometryBuilder;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.UomOgcMapping;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPeriod;
@@ -53,6 +47,14 @@ import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.opengis.filter.Filter;
+import org.opengis.filter.PropertyIsEqualTo;
+import org.opengis.filter.expression.Expression;
+import org.opengis.filter.expression.Literal;
+import org.opengis.filter.expression.PropertyName;
+import org.opengis.temporal.Instant;
+import org.opengis.temporal.Period;
+import org.opengis.temporal.PeriodDuration;
 
 public class FilterAdapterTest {
 
@@ -78,6 +80,9 @@ public class FilterAdapterTest {
   private static final PropertyName TEST_PROPERTY = FF.property(TEST_PROPERTY_VALUE);
 
   private static final Literal FOO_LITERAL = FF.literal(FOO_LITERAL_VALUE);
+
+  private static final GeometryBuilder GEO_BUILDER =
+      new GeometryBuilder(DefaultGeographicCRS.WGS84);
 
   private static final WKTReader WKT_READER = new WKTReader();
 

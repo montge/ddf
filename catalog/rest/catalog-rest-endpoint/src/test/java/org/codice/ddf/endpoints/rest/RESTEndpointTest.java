@@ -39,9 +39,11 @@ import ddf.catalog.source.SourceUnavailableException;
 import ddf.mime.MimeTypeMapper;
 import ddf.mime.tika.TikaMimeTypeResolver;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +51,6 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import org.apache.tika.io.IOUtils;
 import org.codice.ddf.attachment.impl.AttachmentParserImpl;
 import org.codice.ddf.rest.service.impl.CatalogServiceImpl;
 import org.junit.Test;
@@ -236,7 +237,7 @@ public class RESTEndpointTest {
     String transformer = mockTestSetup(framework, TestType.SUCCESS_TEST);
     Response response = executeTest(framework, transformer, true);
 
-    String responseMessage = IOUtils.toString((ByteArrayInputStream) response.getEntity());
+    String responseMessage = inputStreamToString((ByteArrayInputStream) response.getEntity());
     assertEquals(GET_STREAM, responseMessage);
     assertEquals(OK, response.getStatus());
     assertEquals(GET_TYPE_OUTPUT, response.getMetadata().toString());
@@ -249,7 +250,7 @@ public class RESTEndpointTest {
     String transformer = mockTestSetup(framework, TestType.KML_TEST);
     Response response = executeTest(framework, transformer, true);
 
-    String responseMessage = IOUtils.toString((ByteArrayInputStream) response.getEntity());
+    String responseMessage = inputStreamToString((ByteArrayInputStream) response.getEntity());
     assertEquals(GET_STREAM, responseMessage);
     assertEquals(OK, response.getStatus());
     assertEquals(GET_KML_TYPE_OUTPUT, response.getMetadata().toString());
@@ -263,7 +264,7 @@ public class RESTEndpointTest {
     String transformer = mockTestSetup(framework, TestType.SUCCESS_TEST);
     Response response = executeTest(framework, transformer, false);
 
-    String responseMessage = IOUtils.toString((ByteArrayInputStream) response.getEntity());
+    String responseMessage = inputStreamToString((ByteArrayInputStream) response.getEntity());
     assertEquals(GET_STREAM, responseMessage);
     assertEquals(OK, response.getStatus());
     assertEquals(GET_TYPE_OUTPUT, response.getMetadata().toString());
@@ -277,7 +278,7 @@ public class RESTEndpointTest {
     String transformer = mockTestSetup(framework, TestType.RESOURCE_TEST);
     Response response = executeTest(framework, transformer, true);
 
-    String responseMessage = IOUtils.toString((ByteArrayInputStream) response.getEntity());
+    String responseMessage = inputStreamToString((ByteArrayInputStream) response.getEntity());
     assertEquals(GET_STREAM, responseMessage);
     assertEquals(OK, response.getStatus());
     assertEquals(GET_TYPE_OUTPUT, response.getMetadata().toString());
@@ -291,7 +292,7 @@ public class RESTEndpointTest {
     String transformer = mockTestSetup(framework, TestType.RESOURCE_TEST);
     Response response = executeTest(framework, transformer, false);
 
-    String responseMessage = IOUtils.toString((ByteArrayInputStream) response.getEntity());
+    String responseMessage = inputStreamToString((ByteArrayInputStream) response.getEntity());
     assertEquals(GET_STREAM, responseMessage);
     assertEquals(OK, response.getStatus());
     assertEquals(GET_TYPE_OUTPUT, response.getMetadata().toString());
@@ -431,5 +432,13 @@ public class RESTEndpointTest {
     SUCCESS_TEST,
     RESOURCE_TEST,
     KML_TEST
+  }
+
+  /**
+   * Helper method to convert InputStream to String using UTF-8 encoding. This replaces the
+   * deprecated IOUtils.toString() from Apache Tika.
+   */
+  private String inputStreamToString(InputStream inputStream) throws IOException {
+    return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
   }
 }

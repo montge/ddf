@@ -53,6 +53,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -75,7 +76,6 @@ import net.opengis.cat.csw.v_2_0_2.QueryType;
 import net.opengis.cat.csw.v_2_0_2.ResultType;
 import net.opengis.cat.csw.v_2_0_2.SearchResultsType;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tika.io.IOUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswJAXBElementProvider;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswRecordCollection;
@@ -169,9 +169,13 @@ public class GetRecordsResponseConverterTest {
             + "    </csw:Record>\r\n"
             + "  </csw:SearchResults>\r\n"
             + "</csw:GetRecordsResponse>";
-    InputStream inStream = IOUtils.toInputStream(xml);
+    InputStream inStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
     CswRecordCollection cswRecords = (CswRecordCollection) xstream.fromXML(inStream);
-    IOUtils.closeQuietly(inStream);
+    try {
+      inStream.close();
+    } catch (Exception e) {
+      // Ignore close exceptions
+    }
 
     List<Metacard> metacards = cswRecords.getCswRecords();
     assertThat(metacards, not(nullValue()));
@@ -265,7 +269,7 @@ public class GetRecordsResponseConverterTest {
             + "</ows:BoundingBox></csw:Record><"
             + "/csw:SearchResults>"
             + "</csw:GetRecordsResponse>";
-    InputStream inStream = IOUtils.toInputStream(xml);
+    InputStream inStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
 
     ArgumentCaptor<UnmarshallingContext> captor =
         ArgumentCaptor.forClass(UnmarshallingContext.class);
@@ -274,7 +278,11 @@ public class GetRecordsResponseConverterTest {
         new XppReader(
             new InputStreamReader(inStream), XmlPullParserFactory.newInstance().newPullParser());
     xstream.unmarshal(reader, null, null);
-    IOUtils.closeQuietly(inStream);
+    try {
+      inStream.close();
+    } catch (Exception e) {
+      // Ignore close exceptions
+    }
 
     verify(mockProvider, times(1)).unmarshal(any(HierarchicalStreamReader.class), captor.capture());
 
@@ -341,9 +349,13 @@ public class GetRecordsResponseConverterTest {
             + "    </csw:Record>\r\n"
             + "  </csw:SearchResults>\r\n"
             + "</csw:GetRecordsResponse>";
-    InputStream inStream = IOUtils.toInputStream(xml);
+    InputStream inStream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
     CswRecordCollection cswRecords = (CswRecordCollection) xstream.fromXML(inStream);
-    IOUtils.closeQuietly(inStream);
+    try {
+      inStream.close();
+    } catch (Exception e) {
+      // Ignore close exceptions
+    }
 
     assertThat(cswRecords.getNumberOfRecordsReturned(), is(10L));
     assertThat(cswRecords.getNumberOfRecordsMatched(), is(479L));

@@ -250,7 +250,7 @@
         <!-- Transitive dependencies, used for versionInProject() -->
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-api</artifactId>
+            <artifactId>gt-opengis</artifactId>
             <version>${org.geotools.version}</version>
         </dependency>
         <dependency>

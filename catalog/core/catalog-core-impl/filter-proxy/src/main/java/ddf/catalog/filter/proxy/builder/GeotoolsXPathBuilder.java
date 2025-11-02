@@ -15,7 +15,7 @@ package ddf.catalog.filter.proxy.builder;
 
 import ddf.catalog.filter.ContextualExpressionBuilder;
 import ddf.catalog.filter.XPathBuilder;
-import org.geotools.api.filter.Filter;
+import org.opengis.filter.Filter;
 
 public class GeotoolsXPathBuilder extends GeotoolsBuilder implements XPathBuilder {
 

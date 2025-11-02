@@ -67,6 +67,12 @@
             <groupId>xalan</groupId>
             <artifactId>serializer</artifactId>
         </dependency>
+        <!-- for SpatialFilter's PrimitiveFactoryImpl class -->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-jts-wrapper</artifactId>
+            <version>${org.geotools.version}</version>
+        </dependency>
         <dependency>
             <groupId>ddf.platform.util</groupId>
             <artifactId>platform-util</artifactId>
@@ -74,11 +80,6 @@
         <dependency>
             <groupId>ddf.catalog.core</groupId>
             <artifactId>catalog-core-api-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
-            <version>${org.geotools.version}</version>
         </dependency>
     </dependencies>
     <build>

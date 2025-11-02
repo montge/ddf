@@ -277,7 +277,7 @@ public class OidcTokenValidator {
         String accessTokenString = accessToken.getValue();
         Base64URL header =
             new Base64URL(accessTokenString.substring(0, accessTokenString.indexOf('.')));
-        JSONObject jsonObject = JSONObjectUtils.parse(header.decodeToString());
+        JSONObject jsonObject = new JSONObject(JSONObjectUtils.parse(header.decodeToString()));
         expectedAlgorithm = Header.parseAlgorithm(jsonObject);
       } else {
         expectedAlgorithm = idToken.getHeader().getAlgorithm();

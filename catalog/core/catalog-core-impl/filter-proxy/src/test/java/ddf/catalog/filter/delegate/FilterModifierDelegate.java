@@ -14,7 +14,7 @@
 package ddf.catalog.filter.delegate;
 
 import ddf.catalog.filter.FilterBuilder;
-import org.geotools.api.filter.Filter;
+import org.opengis.filter.Filter;
 
 public class FilterModifierDelegate extends CopyFilterDelegate {
   public FilterModifierDelegate(FilterBuilder filterBuilder) {

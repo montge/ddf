@@ -14,7 +14,7 @@
 package ddf.catalog.filter.proxy.builder;
 
 import ddf.catalog.filter.NumericalExpressionBuilder;
-import org.geotools.api.filter.Filter;
+import org.opengis.filter.Filter;
 
 public final class GeotoolsNumericalExpressionBuilder extends GeotoolsBuilder
     implements NumericalExpressionBuilder {

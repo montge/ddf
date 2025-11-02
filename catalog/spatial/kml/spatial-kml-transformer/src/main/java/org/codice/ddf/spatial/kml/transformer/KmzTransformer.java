@@ -28,7 +28,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
-import org.apache.tika.io.IOUtils;
 import org.codice.ddf.platform.util.TemporaryFileBackedOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +114,7 @@ public class KmzTransformer implements QueryResponseTransformer, MetacardTransfo
         InputStream inputStream = kml.getInputStream(); ) {
       final ZipEntry e = new ZipEntry(DOC_KML);
       zipOutputStream.putNextEntry(e);
-      IOUtils.copy(inputStream, zipOutputStream);
+      inputStream.transferTo(zipOutputStream);
       zipOutputStream.closeEntry();
       zipOutputStream.finish();
       final InputStream zipFile = temporaryFileBackedOutputStream.asByteSource().openStream();

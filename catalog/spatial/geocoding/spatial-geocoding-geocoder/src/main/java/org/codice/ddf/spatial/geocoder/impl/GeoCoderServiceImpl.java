@@ -22,8 +22,8 @@ import org.codice.ddf.spatial.geocoder.GeoResult;
 import org.codice.ddf.spatial.geocoding.GeoCoderService;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Point;
+import org.opengis.geometry.DirectPosition;
+import org.opengis.geometry.primitive.Point;
 
 public class GeoCoderServiceImpl implements GeoCoderService {
 
@@ -89,20 +89,21 @@ public class GeoCoderServiceImpl implements GeoCoderService {
   }
 
   void transformGeoResult(GeoResult geoResult, JSONArray resources) {
-    Coordinate coordinate = geoResult.getPoint().getCoordinate();
+    DirectPosition directPosition = geoResult.getPoint().getDirectPosition();
+    double[] coords = directPosition.getCoordinate();
 
-    double longitude = coordinate.x;
-    double latitude = coordinate.y;
+    double longitude = coords[0];
+    double latitude = coords[1];
 
     JSONObject resource = new JSONObject();
     JSONArray bbox = new JSONArray();
     List<Point> points = geoResult.getBbox();
-    Coordinate upperCorner = points.get(0).getCoordinate();
-    Coordinate lowerCorner = points.get(1).getCoordinate();
-    bbox.add(upperCorner.y);
-    bbox.add(upperCorner.x);
-    bbox.add(lowerCorner.y);
-    bbox.add(lowerCorner.x);
+    DirectPosition upperCorner = points.get(0).getDirectPosition();
+    DirectPosition lowerCorner = points.get(1).getDirectPosition();
+    bbox.add(upperCorner.getCoordinate()[1]);
+    bbox.add(upperCorner.getCoordinate()[0]);
+    bbox.add(lowerCorner.getCoordinate()[1]);
+    bbox.add(lowerCorner.getCoordinate()[0]);
     resource.put("bbox", bbox);
     JSONObject point = new JSONObject();
     point.put("type", "Point");

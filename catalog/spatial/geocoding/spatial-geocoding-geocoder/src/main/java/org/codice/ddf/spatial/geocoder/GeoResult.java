@@ -14,7 +14,7 @@
 package org.codice.ddf.spatial.geocoder;
 
 import java.util.List;
-import org.locationtech.jts.geom.Point;
+import org.opengis.geometry.primitive.Point;
 
 public class GeoResult {
 

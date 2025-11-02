@@ -13,11 +13,12 @@
  */
 package ddf.catalog.filter.impl;
 
-import org.geotools.api.filter.FilterVisitor;
-import org.geotools.api.filter.PropertyIsEqualTo;
-import org.geotools.api.filter.expression.Expression;
-import org.geotools.api.filter.expression.Literal;
-import org.geotools.api.filter.expression.PropertyName;
+import org.opengis.annotation.XmlElement;
+import org.opengis.filter.FilterVisitor;
+import org.opengis.filter.PropertyIsEqualTo;
+import org.opengis.filter.expression.Expression;
+import org.opengis.filter.expression.Literal;
+import org.opengis.filter.expression.PropertyName;
 
 /**
  * Simple implementation of filter that does not depend on GeoTools. Please use {@link
@@ -41,21 +42,25 @@ public class PropertyIsEqualToLiteral implements PropertyIsEqualTo {
   }
 
   @Override
+  @XmlElement("expression")
   public Expression getExpression1() {
     return propertyName;
   }
 
   @Override
+  @XmlElement("expression")
   public Expression getExpression2() {
     return literal;
   }
 
   @Override
+  @XmlElement("matchCase")
   public boolean isMatchingCase() {
     return true;
   }
 
   @Override
+  @XmlElement("matchAction")
   public MatchAction getMatchAction() {
     return MatchAction.ANY;
   }

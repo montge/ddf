@@ -19,12 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import org.geotools.api.filter.Filter;
-import org.geotools.api.filter.FilterFactory;
-import org.geotools.api.filter.expression.Expression;
-import org.geotools.api.filter.expression.Literal;
-import org.geotools.api.temporal.Instant;
-import org.geotools.api.temporal.Period;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.temporal.object.DefaultInstant;
@@ -34,6 +28,13 @@ import org.geotools.temporal.object.DefaultPosition;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.Expression;
+import org.opengis.filter.expression.Literal;
+import org.opengis.temporal.Instant;
+import org.opengis.temporal.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.units.indriya.function.DefaultNumberSystem;
@@ -46,7 +47,7 @@ class GeotoolsBuilder {
 
   private static WKTReader reader = new WKTReader();
 
-  private FilterFactory factory = new FilterFactoryImpl();
+  private FilterFactory2 factory = new FilterFactoryImpl();
 
   private String attribute;
 

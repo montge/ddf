@@ -13,7 +13,7 @@
  */
 package ddf.catalog.filter;
 
-import org.geotools.api.filter.Filter;
+import org.opengis.filter.Filter;
 
 /**
  * Completes building a {@link Filter} based on Contextual relevance

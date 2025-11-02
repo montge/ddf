@@ -13,7 +13,7 @@
  */
 package ddf.catalog.filter;
 
-import org.geotools.api.filter.Filter;
+import org.opengis.filter.Filter;
 
 /** @author Michael Menousek */
 public interface NumericalRangeExpressionBuilder {

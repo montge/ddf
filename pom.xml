@@ -272,7 +272,7 @@
         <nimbus.content-type.version>2.1</nimbus.content-type.version>
         <nimbus.jose.jwt.version>10.5</nimbus.jose.jwt.version>
         <nimbus.langtag.version>1.4.4</nimbus.langtag.version>
-        <org.geotools.version>31.6</org.geotools.version>
+        <org.geotools.version>24.6</org.geotools.version>
         <!-- Note: The swissbox version needs to match the version used by pax-exam . -->
         <org.ops4j.pax.swissbox.version>1.8.5</org.ops4j.pax.swissbox.version>
         <org.rrd4j.version>3.3.1</org.rrd4j.version>
@@ -597,7 +597,7 @@
             <!-- BEGIN: GeoTools dependencies -->
             <dependency>
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-api</artifactId>
+                <artifactId>gt-opengis</artifactId>
                 <version>${org.geotools.version}</version>
             </dependency>
             <dependency>
@@ -608,6 +608,11 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-cql</artifactId>
+                <version>${org.geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-jts-wrapper</artifactId>
                 <version>${org.geotools.version}</version>
             </dependency>
             <dependency>
