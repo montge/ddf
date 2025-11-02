@@ -34,7 +34,6 @@ import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
 import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.saml.SamlAssertionWrapper;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.joda.time.DateTime;
@@ -44,6 +43,8 @@ import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilder;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLRuntimeException;
 import org.opensaml.saml.common.SAMLVersion;
@@ -546,7 +547,21 @@ public class SamlProtocol {
       throws WSSecurityException, XMLStreamException {
     Element domElement = getDomElement(node);
     if (domElement != null) {
-      return OpenSAMLUtil.fromDom(domElement);
+      try {
+        Unmarshaller unmarshaller =
+            XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(domElement);
+        if (unmarshaller == null) {
+          throw new WSSecurityException(
+              WSSecurityException.ErrorCode.FAILURE,
+              "Unable to find unmarshaller for element: " + domElement.getLocalName());
+        }
+        return unmarshaller.unmarshall(domElement);
+      } catch (UnmarshallingException e) {
+        throw new WSSecurityException(
+            WSSecurityException.ErrorCode.FAILURE,
+            "Unable to unmarshall element: " + domElement.getLocalName(),
+            e);
+      }
     }
     return null;
   }

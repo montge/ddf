@@ -41,12 +41,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.protocol.BasicHttpContext;
-import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.util.DOM2Writer;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
 import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
@@ -64,10 +65,6 @@ public class LogoutMessageImpl implements LogoutMessage {
   private static final String SAML_SOAP_ACTION = "http://www.oasis-open.org/committees/security";
 
   private static final String ISSUER_CANNOT_BE_NULL_MSG = "Issuer cannot be null";
-
-  static {
-    OpenSAMLUtil.initSamlEngine();
-  }
 
   private SystemCrypto systemCrypto;
   private UuidGenerator uuidGenerator;
@@ -91,12 +88,19 @@ public class LogoutMessageImpl implements LogoutMessage {
       Document responseDoc =
           StaxUtils.read(
               new ByteArrayInputStream(samlLogoutResponse.getBytes(StandardCharsets.UTF_8)));
-      XMLObject xmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+      Element element = responseDoc.getDocumentElement();
+      Unmarshaller unmarshaller =
+          XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+      if (unmarshaller == null) {
+        throw new LogoutSecurityException(
+            "Unable to find unmarshaller for element: " + element.getLocalName());
+      }
+      XMLObject xmlObject = unmarshaller.unmarshall(element);
       if (xmlObject instanceof SignableSAMLObject) {
         return new LogoutWrapperImpl<>((SignableSAMLObject) xmlObject);
       }
       return null;
-    } catch (WSSecurityException e) {
+    } catch (UnmarshallingException e) {
       throw new LogoutSecurityException(e);
     }
   }
@@ -106,12 +110,19 @@ public class LogoutMessageImpl implements LogoutMessage {
     try {
       Document responseDoc =
           StaxUtils.read(new ByteArrayInputStream(samlObject.getBytes(StandardCharsets.UTF_8)));
-      XMLObject responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+      Element element = responseDoc.getDocumentElement();
+      Unmarshaller unmarshaller =
+          XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+      if (unmarshaller == null) {
+        throw new LogoutSecurityException(
+            "Unable to find unmarshaller for element: " + element.getLocalName());
+      }
+      XMLObject responseXmlObject = unmarshaller.unmarshall(element);
       if (LogoutResponse.class.isAssignableFrom(responseXmlObject.getClass())) {
         return new LogoutWrapperImpl<>((LogoutResponse) responseXmlObject);
       }
       return null;
-    } catch (WSSecurityException e) {
+    } catch (UnmarshallingException e) {
       throw new LogoutSecurityException(e);
     }
   }
@@ -121,12 +132,19 @@ public class LogoutMessageImpl implements LogoutMessage {
     try {
       Document requestDoc =
           StaxUtils.read(new ByteArrayInputStream(samlObject.getBytes(StandardCharsets.UTF_8)));
-      XMLObject requestXmlObject = OpenSAMLUtil.fromDom(requestDoc.getDocumentElement());
+      Element element = requestDoc.getDocumentElement();
+      Unmarshaller unmarshaller =
+          XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+      if (unmarshaller == null) {
+        throw new LogoutSecurityException(
+            "Unable to find unmarshaller for element: " + element.getLocalName());
+      }
+      XMLObject requestXmlObject = unmarshaller.unmarshall(element);
       if (LogoutRequest.class.isAssignableFrom(requestXmlObject.getClass())) {
         return new LogoutWrapperImpl<>((LogoutRequest) requestXmlObject);
       }
       return null;
-    } catch (WSSecurityException e) {
+    } catch (UnmarshallingException e) {
       throw new LogoutSecurityException(e);
     }
   }

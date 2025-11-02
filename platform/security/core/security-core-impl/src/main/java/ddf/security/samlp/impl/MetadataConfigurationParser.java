@@ -52,11 +52,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.staxutils.StaxUtils;
-import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.configuration.PropertyResolver;
 import org.codice.ddf.platform.util.StandardThreadFactoryBuilder;
 import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.slf4j.Logger;
@@ -76,10 +77,6 @@ public class MetadataConfigurationParser {
   private static final String HTTP = "http://";
 
   private static final String FILE = "file:";
-
-  static {
-    OpenSAMLUtil.initSamlEngine();
-  }
 
   private final Map<String, EntityDescriptor> entityDescriptorMap = new ConcurrentHashMap<>();
   private final Consumer<EntityDescriptor> updateCallback;
@@ -289,10 +286,17 @@ public class MetadataConfigurationParser {
     }
     XMLObject entityXmlObj;
     try {
-      entityXmlObj = OpenSAMLUtil.fromDom(entityDoc.getDocumentElement());
-    } catch (WSSecurityException ex) {
+      org.w3c.dom.Element element = entityDoc.getDocumentElement();
+      Unmarshaller unmarshaller =
+          XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+      if (unmarshaller == null) {
+        throw new IllegalArgumentException(
+            "Unable to find unmarshaller for element: " + element.getLocalName());
+      }
+      entityXmlObj = unmarshaller.unmarshall(element);
+    } catch (UnmarshallingException ex) {
       throw new IllegalArgumentException(
-          "Unable to convert EntityDescriptor document to XMLObject.");
+          "Unable to convert EntityDescriptor document to XMLObject.", ex);
     }
     if (entityXmlObj instanceof EntitiesDescriptor) {
       return ((EntitiesDescriptor) entityXmlObj).getEntityDescriptors();

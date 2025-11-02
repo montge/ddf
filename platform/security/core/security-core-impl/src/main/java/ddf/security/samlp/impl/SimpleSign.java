@@ -40,7 +40,6 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.CryptoType;
 import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.saml.SAMLKeyInfo;
 import org.apache.wss4j.common.saml.SAMLUtil;
 import org.apache.wss4j.common.util.DOM2Writer;
@@ -52,6 +51,9 @@ import org.apache.wss4j.dom.validate.Credential;
 import org.apache.wss4j.dom.validate.SignatureTrustValidator;
 import org.apache.wss4j.dom.validate.Validator;
 import org.apache.xml.security.algorithms.JCEMapper;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.saml.common.SAMLObjectContentReference;
 import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.saml2.core.Assertion;
@@ -142,7 +144,22 @@ public class SimpleSign {
 
     final Document responseDoc =
         StaxUtils.read(new ByteArrayInputStream(nodeToString.getBytes(StandardCharsets.UTF_8)));
-    return (T) OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    Element element = responseDoc.getDocumentElement();
+    try {
+      Unmarshaller unmarshaller =
+          XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+      if (unmarshaller == null) {
+        throw new WSSecurityException(
+            WSSecurityException.ErrorCode.FAILURE,
+            "Unable to find unmarshaller for element: " + element.getLocalName());
+      }
+      return (T) unmarshaller.unmarshall(element);
+    } catch (UnmarshallingException e) {
+      throw new WSSecurityException(
+          WSSecurityException.ErrorCode.FAILURE,
+          "Unable to unmarshall element: " + element.getLocalName(),
+          e);
+    }
   }
 
   public void signUriString(String queryParams, UriBuilder uriBuilder) throws SignatureException {

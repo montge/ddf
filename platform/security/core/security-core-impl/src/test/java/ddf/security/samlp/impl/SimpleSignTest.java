@@ -39,8 +39,10 @@ import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.wss4j.common.crypto.Merlin;
 import org.apache.wss4j.common.crypto.PasswordEncryptor;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.util.DOM2Writer;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.io.UnmarshallingException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -114,7 +116,10 @@ public class SimpleSignTest {
   public void testSignSamlObject() throws Exception {
 
     Document responseDoc = StaxUtils.read(new ByteArrayInputStream(cannedResponse.getBytes()));
-    XMLObject responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    Element element = responseDoc.getDocumentElement();
+    Unmarshaller unmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    XMLObject responseXmlObject = unmarshaller.unmarshall(element);
     org.opensaml.saml.saml2.core.Response response =
         (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.signSamlObject(response);
@@ -123,7 +128,10 @@ public class SimpleSignTest {
     Element requestElement = OpenSAMLUtil.toDom(response, doc);
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
-    responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    Element element = responseDoc.getDocumentElement();
+    Unmarshaller unmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    responseXmlObject = unmarshaller.unmarshall(element);
     response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.validateSignature(response.getSignature(), response.getDOM().getOwnerDocument());
   }
@@ -132,7 +140,10 @@ public class SimpleSignTest {
   public void testSignSamlObjectThenModify() throws Exception {
 
     Document responseDoc = StaxUtils.read(new ByteArrayInputStream(cannedResponse.getBytes()));
-    XMLObject responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    Element element = responseDoc.getDocumentElement();
+    Unmarshaller unmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    XMLObject responseXmlObject = unmarshaller.unmarshall(element);
     org.opensaml.saml.saml2.core.Response response =
         (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.signSamlObject(response);
@@ -142,7 +153,9 @@ public class SimpleSignTest {
     requestElement.setAttribute("oops", "changedit");
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
-    responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    element = responseDoc.getDocumentElement();
+    unmarshaller = XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    responseXmlObject = unmarshaller.unmarshall(element);
     response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.validateSignature(response.getSignature(), response.getDOM().getOwnerDocument());
   }
@@ -151,7 +164,10 @@ public class SimpleSignTest {
   public void testSignSamlObjectModifyAndResign() throws Exception {
 
     Document responseDoc = StaxUtils.read(new ByteArrayInputStream(cannedResponse.getBytes()));
-    XMLObject responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    Element element = responseDoc.getDocumentElement();
+    Unmarshaller unmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    XMLObject responseXmlObject = unmarshaller.unmarshall(element);
     org.opensaml.saml.saml2.core.Response response =
         (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.signSamlObject(response);
@@ -169,7 +185,9 @@ public class SimpleSignTest {
     Element requestElement = OpenSAMLUtil.toDom(response, doc);
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
-    responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    element = responseDoc.getDocumentElement();
+    unmarshaller = XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    responseXmlObject = unmarshaller.unmarshall(element);
     response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.validateSignature(response.getSignature(), response.getDOM().getOwnerDocument());
   }
@@ -177,7 +195,10 @@ public class SimpleSignTest {
   @Test
   public void testForceSign() throws Exception {
     Document responseDoc = StaxUtils.read(new ByteArrayInputStream(cannedResponse.getBytes()));
-    XMLObject responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+    Element element = responseDoc.getDocumentElement();
+    Unmarshaller unmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    XMLObject responseXmlObject = unmarshaller.unmarshall(element);
     org.opensaml.saml.saml2.core.Response response =
         (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     response = simpleSign.forceSignSamlObject(response);

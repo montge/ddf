@@ -63,7 +63,6 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoType;
 import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.saml.builder.SAML2Constants;
 import org.apache.wss4j.common.util.DOM2Writer;
 import org.codice.ddf.configuration.SystemBaseUrl;
@@ -79,6 +78,9 @@ import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
 import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -460,12 +462,21 @@ public class AssertionConsumerService {
     try {
       Document responseDoc =
           StaxUtils.read(new ByteArrayInputStream(samlResponse.getBytes(StandardCharsets.UTF_8)));
-      XMLObject responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+      Element element = responseDoc.getDocumentElement();
+      Unmarshaller unmarshaller =
+          XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+      if (unmarshaller == null) {
+        LOGGER.debug(
+            "Failed to convert AuthN response string to object. Unable to find unmarshaller for element: {}",
+            element.getLocalName());
+        return null;
+      }
+      XMLObject responseXmlObject = unmarshaller.unmarshall(element);
 
       if (responseXmlObject instanceof org.opensaml.saml.saml2.core.Response) {
         response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
       }
-    } catch (XMLStreamException | WSSecurityException e) {
+    } catch (XMLStreamException | UnmarshallingException e) {
       LOGGER.debug("Failed to convert AuthN response string to object.", e);
     }
 

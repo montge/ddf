@@ -40,8 +40,9 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import org.apache.cxf.staxutils.StaxUtils;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.configuration.SystemBaseUrl;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -97,7 +98,10 @@ public class AttributeQueryClaimsHandlerTest {
       Document responseDoc;
       try {
         responseDoc = StaxUtils.read(new ByteArrayInputStream(cannedResponse.getBytes()));
-        XMLObject responseXmlObject = OpenSAMLUtil.fromDom(responseDoc.getDocumentElement());
+        org.w3c.dom.Element element = responseDoc.getDocumentElement();
+        Unmarshaller unmarshaller =
+            XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+        XMLObject responseXmlObject = unmarshaller.unmarshall(element);
         Response response = (Response) responseXmlObject;
         // Extract Assertion from response.
         Assertion assertion = response.getAssertions().get(0);
