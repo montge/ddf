@@ -145,7 +145,7 @@
 
         <!--Documentation properties-->
         <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
-        <asciidoctorj.diagram.version>2.3.1</asciidoctorj.diagram.version>
+        <asciidoctorj.diagram.version>2.3.2</asciidoctorj.diagram.version>
         <asciidoctorj.pdf.version>1.6.0</asciidoctorj.pdf.version>
         <asciidoctorj.version>2.5.8</asciidoctorj.version>
         <jruby.version>9.3.15.0</jruby.version>
@@ -972,6 +972,17 @@
                         <artifactId>bcpkix-jdk15on</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <!-- Override PlantUML version to latest to eliminate CVEs -->
+            <dependency>
+                <groupId>net.sourceforge.plantuml</groupId>
+                <artifactId>plantuml</artifactId>
+                <version>1.2025.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctorj-diagram-plantuml</artifactId>
+                <version>1.2025.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
