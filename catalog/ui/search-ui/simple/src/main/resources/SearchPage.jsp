@@ -26,7 +26,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<link href="lib/bootstrap-2.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="lib/bootstrap-3.4.1/css/bootstrap.min.css" rel="stylesheet">
 <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
 <link href="lib/jquery/css/smoothness/jquery-ui-1.9.1.custom.min.css" rel="stylesheet">
@@ -449,13 +449,13 @@
 
 	<!-- Placed at the end of the document so the pages load faster -->
 
-	<script type="text/javascript" src="lib/jquery/js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/js/jquery-3.7.1.min.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/jquery-ui-1.12.1.min.js"></script>
 
     <script type="text/javascript" src="lib/underscore-1.8.3/underscore-min.js"></script>
 
 
-	<script type="text/javascript" src="lib/bootstrap-2.3.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="lib/bootstrap-3.4.1/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="lib/bootstrap-extensions/js/partial-affix.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/purl.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/jquery-ui-datepicker-4digitYearOverride-addon.js"></script>

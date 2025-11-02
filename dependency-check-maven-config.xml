@@ -150,22 +150,17 @@
         <cve>CVE-2020-11980</cve>
     </suppress>
 
-    <suppress>
-        <notes>
-            Zookeeper is the only thing still using Log4J, and it has suppressions for both the
-            following CVEs.
-
-            CVE-2019-17571  https://issues.apache.org/jira/browse/ZOOKEEPER-3677 (Zookeeper not affected)
-            CVE-2020-9488   https://issues.apache.org/jira/browse/ZOOKEEPER-3817 (DDF not affected,
-                            doesn't configure Zookeeper with an SMTPAppender)
-
-            Once Zookeeper migrates to Log4J2, we can remove this suppression. See
-            https://issues.apache.org/jira/browse/ZOOKEEPER-2342
-        </notes>
-        <packageUrl regex="true">^pkg:maven/log4j/log4j@.*$</packageUrl>
-        <cve>CVE-2019-17571</cve>
-        <cve>CVE-2020-9488</cve>
-    </suppress>
+    <!-- REMOVED: Log4j 1.x suppression - no longer needed
+         Zookeeper 3.9.3 migrated to Logback (not Log4j 1.x or Log4j 2).
+         Log4j 1.x is no longer in the dependency tree, eliminating these CVEs:
+         - CVE-2021-4104 (CRITICAL): JMSAppender deserialization RCE
+         - CVE-2019-17571 (CRITICAL): SocketServer deserialization RCE
+         - CVE-2022-23302 (CRITICAL): JMSSink deserialization RCE
+         - CVE-2022-23305 (CRITICAL): JDBCAppender SQL injection
+         - CVE-2022-23307 (CRITICAL): Chainsaw deserialization RCE
+         - CVE-2020-9488 (LOW): SMTPAppender information disclosure
+         See https://issues.apache.org/jira/browse/ZOOKEEPER-4427 (Zookeeper Logback migration)
+    -->
 
     <suppress>
         <notes>
@@ -215,6 +210,70 @@
         <cve>CVE-2022-1379</cve>
         <cve>CVE-2022-1231</cve>
         <cve>CVE-2023-3431</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        JRuby (used by AsciiDoctor) is only used during documentation generation (docs module).
+        Not included in production distribution or runtime.
+        CVE-2025-46551: JRuby vulnerability - requires investigation, but docs-only use case.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.jruby/jruby.*@.*$</packageUrl>
+        <cve>CVE-2025-46551</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        SnakeYAML is a transitive dependency of JRuby, which is only used during documentation
+        generation (docs module). Not included in production distribution or runtime.
+        CVE-2022-1471: Deserialization vulnerability - not exploitable in docs build
+        (no untrusted YAML deserialization occurs during documentation generation).
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.yaml/snakeyaml@.*$</packageUrl>
+        <cve>CVE-2022-1471</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        BouncyCastle is a transitive dependency of JRuby, which is only used during documentation
+        generation (docs module). Not included in production distribution or runtime.
+        CVE-2023-33202: Weak password-based encryption - not used in docs build.
+        ]]></notes>
+        <filePath regex="true">.*bcprov-jdk18on.*\.jar</filePath>
+        <cve>CVE-2023-33202</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        JLine is a transitive dependency of JRuby, which is only used during documentation
+        generation (docs module). Not included in production distribution or runtime.
+        CVE-2023-50572: Command injection via environment variables - not exploitable in
+        controlled build environment.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/jline/jline@.*$</packageUrl>
+        <cve>CVE-2023-50572</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        Asciidoctor Diagram Ditaamini is only used during documentation generation (docs module).
+        Not included in production distribution or runtime.
+        CVE-2018-18385: Potential DoS vulnerability - not exploitable in controlled build environment.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.asciidoctor/asciidoctorj\-diagram\-ditaamini@.*$</packageUrl>
+        <cve>CVE-2018-18385</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        Apache XMLGraphics Commons is only used during documentation generation (docs module)
+        via asciidoctorj-diagram-batik for SVG rendering.
+        Not included in production distribution or runtime.
+        CVE-2021-37533: ReDoS vulnerability in XMP metadata parsing - not exploitable in docs build
+        (no untrusted XMP input processed during documentation generation).
+        ]]></notes>
+        <filePath regex="true">.*xmlgraphics-commons.*\.jar</filePath>
+        <cve>CVE-2021-37533</cve>
     </suppress>
 
 </suppressions>
