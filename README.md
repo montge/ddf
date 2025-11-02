@@ -14,6 +14,23 @@
 <img src="http://www.codice.org/ddf/images/ddf_logo.png"/>
 
 # [Distributed Data Framework \(DDF\)](http://ddf.codice.org/)
+
+[![Build Status](https://github.com/montge/ddf/workflows/Build%20and%20Test/badge.svg)](https://github.com/montge/ddf/actions)
+[![Security Scanning](https://github.com/montge/ddf/workflows/Security%20Scanning/badge.svg)](https://github.com/montge/ddf/security/code-scanning)
+[![License](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.org/)
+[![Maven](https://img.shields.io/badge/Maven-3.6.3+-red.svg)](https://maven.apache.org/)
+
+[![Karaf](https://img.shields.io/badge/Karaf-4.3.7-blue.svg)](https://karaf.apache.org/)
+[![Solr](https://img.shields.io/badge/Solr-9.0.0-yellow.svg)](https://solr.apache.org/)
+[![CXF](https://img.shields.io/badge/CXF-3.6.8-green.svg)](https://cxf.apache.org/)
+[![Camel](https://img.shields.io/badge/Camel-3.18.8-orange.svg)](https://camel.apache.org/)
+[![GeoTools](https://img.shields.io/badge/GeoTools-31.6-brightgreen.svg)](https://geotools.org/)
+
+[![Security](https://img.shields.io/badge/Security-477%20Critical-yellow.svg)](https://github.com/montge/ddf/security/dependabot)
+[![Test Coverage](https://img.shields.io/badge/Coverage-88%20Security%20Tests-green.svg)](https://github.com/montge/ddf/tree/master/platform/security)
+[![CodeQL](https://img.shields.io/badge/CodeQL-Active-brightgreen.svg)](https://github.com/montge/ddf/security/code-scanning)
+
 [![CLA assistant](https://cla-assistant.io/readme/badge/codice/ddf)](https://cla-assistant.io/codice/ddf)
 [![pullreminders](https://pullreminders.com/badge.svg)](https://pullreminders.com?ref=badge)
 
