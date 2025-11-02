@@ -150,11 +150,35 @@ jobs:
             dependency_check_report.md
           retention-days: 30
 
-      - name: Upload SARIF to GitHub Security
+      - name: Find SARIF report file
         if: always()
+        id: find-sarif
+        run: |
+          # Find the first SARIF report (dependency-check generates per-module reports)
+          # Prefer root-level report if it exists, otherwise use first found
+          if [ -f "target/dependency-check-report.sarif" ]; then
+            SARIF_FILE="target/dependency-check-report.sarif"
+          else
+            SARIF_FILE=$(find . -name "dependency-check-report.sarif" -type f ! -path "*/target/*/target/*" | head -1)
+          fi
+          
+          if [ -n "$SARIF_FILE" ] && [ -f "$SARIF_FILE" ]; then
+            echo "Found SARIF file: $SARIF_FILE"
+            echo "sarif_file=$SARIF_FILE" >> $GITHUB_OUTPUT
+            # CodeQL upload-sarif action requires a single file, so we'll use the found file
+            # If multiple reports exist, we use the first one (typically root or largest module)
+          else
+            echo "No SARIF file found. Dependency-check may not have generated a SARIF report."
+            echo "This is not necessarily an error - HTML and JSON reports are still available."
+            echo "sarif_file=" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+
+      - name: Upload SARIF to GitHub Security
+        if: always() && steps.find-sarif.outputs.sarif_file != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: target/dependency-check-report.sarif
+          sarif_file: ${{ steps.find-sarif.outputs.sarif_file }}
         continue-on-error: true
 
       - name: Comment PR with vulnerability summary

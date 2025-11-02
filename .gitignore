@@ -28,6 +28,14 @@ jmeter.log
 *.jmx.log
 *.jtl
 
+# Build artifacts - log files (keeping specific patterns above)
+*.log
+# Allow specific config files that end in .log.cfg
+!*.log.cfg
+
+# Build artifacts - compiled class files (target/ directories already ignored)
+*.class
+
 # Maven Ignores (https://raw.githubusercontent.com/github/gitignore/master/Maven.gitignore)
 target/
 pom.xml.tag
