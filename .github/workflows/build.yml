@@ -156,7 +156,7 @@ jobs:
       # Download pre-built artifacts from build job
       # This allows us to run tests without rebuilding
       - name: Download Maven repository
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: maven-repo-java-${{ matrix.java }}
           path: ~/.m2/repository
@@ -231,7 +231,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: maven-repo-java-${{ matrix.java }}
           path: ~/.m2/repository
@@ -297,7 +297,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: maven-repo-java-${{ matrix.java }}
           path: ~/.m2/repository
@@ -368,7 +368,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: maven-repo-java-${{ matrix.java }}
           path: ~/.m2/repository
@@ -439,7 +439,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: maven-repo-java-${{ matrix.java }}
           path: ~/.m2/repository
@@ -498,14 +498,14 @@ jobs:
           python-version: '3.11'
 
       - name: Download all test results artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           pattern: test-results-*
           path: aggregated-results/tests
           merge-multiple: true
 
       - name: Download all coverage artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           pattern: jacoco-reports-*
           path: aggregated-results/coverage
