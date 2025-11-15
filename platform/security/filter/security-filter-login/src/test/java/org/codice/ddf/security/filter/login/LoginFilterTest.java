@@ -37,7 +37,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.HandlerResultImpl;
@@ -49,6 +48,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.opensaml.core.config.InitializationService;
 
 public class LoginFilterTest {
   private static final SecurityFilterChain FAIL_FILTER_CHAIN =
@@ -76,8 +76,8 @@ public class LoginFilterTest {
   @Mock private ContextPolicyManager contextPolicyManager;
 
   @BeforeClass
-  public static void init() {
-    OpenSAMLUtil.initSamlEngine();
+  public static void init() throws Exception {
+    InitializationService.initialize();
   }
 
   @Before

@@ -59,7 +59,6 @@ import org.apache.cxf.rs.security.saml.sso.SamlpRequestComponentBuilder;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.saml.builder.SAML2Constants;
 import org.apache.wss4j.common.util.DOM2Writer;
 import org.codice.ddf.configuration.SystemBaseUrl;
@@ -75,10 +74,13 @@ import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.codice.ddf.security.util.SAMLUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.config.ConfigurationService;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.AuthnContextClassRef;
@@ -144,7 +146,11 @@ public class IdpHandler implements AuthenticationHandler {
   public static final String TLS_SERVER_END_POINT = "tls-server-end-point";
 
   static {
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      LOGGER.error("Unable to initialize OpenSAML", e);
+    }
     XMLObjectProviderRegistry xmlObjectProviderRegistry =
         ConfigurationService.get(XMLObjectProviderRegistry.class);
     xmlObjectProviderRegistry.registerObjectProvider(
@@ -494,12 +500,12 @@ public class IdpHandler implements AuthenticationHandler {
   }
 
   private String convertXmlObjectToString(XMLObject xmlObject) throws WSSecurityException {
-    Document doc = DOMUtils.createDocument();
-    doc.appendChild(doc.createElement("root"));
-
-    Element requestElement = OpenSAMLUtil.toDom(xmlObject, doc);
-
-    return DOM2Writer.nodeToString(requestElement);
+    try {
+      Element requestElement = XMLObjectSupport.marshall(xmlObject);
+      return DOM2Writer.nodeToString(requestElement);
+    } catch (MarshallingException e) {
+      throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e);
+    }
   }
 
   private void doHttpRedirectBinding(HttpServletRequest request, HttpServletResponse response)
@@ -631,17 +637,14 @@ public class IdpHandler implements AuthenticationHandler {
         simpleSign.signSamlObject(authnRequest);
       }
 
-      Document doc = DOMUtils.createDocument();
-      doc.appendChild(doc.createElement("root"));
-
-      Element requestElement = OpenSAMLUtil.toDom(authnRequest, doc);
+      Element requestElement = XMLObjectSupport.marshall(authnRequest);
 
       String requestMessage = DOM2Writer.nodeToString(requestElement);
 
       LOGGER.trace(requestMessage);
 
       return requestMessage;
-    } catch (WSSecurityException e) {
+    } catch (MarshallingException e) {
       LOGGER.info(UNABLE_TO_ENCODE_SAML_AUTHN_REQUEST, e);
       throw new AuthenticationFailureException(UNABLE_TO_ENCODE_SAML_AUTHN_REQUEST);
     } catch (SignatureException e) {

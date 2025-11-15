@@ -68,13 +68,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.util.DOM2Writer;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.platform.session.api.HttpSessionInvalidator;
 import org.codice.ddf.security.handler.SessionToken;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.core.StatusCode;
@@ -115,7 +117,11 @@ public class LogoutRequestService {
   private static final String SIGNATURE = "Signature";
 
   static {
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      LOGGER.error("Unable to initialize OpenSAML", e);
+    }
   }
 
   private final RelayStates<String> relayStates;
@@ -252,14 +258,16 @@ public class LogoutRequestService {
 
   String encodeSaml(LogoutWrapper<LogoutRequest> logoutRequest)
       throws SignatureException, WSSecurityException {
-    Document doc = DOMUtils.createDocument();
-    doc.appendChild(doc.createElement(ROOT_NODE_NAME));
-    LOGGER.debug("Signing SAML POST LogoutRequest.");
-    simpleSign.signSamlObject(logoutRequest.getMessage());
-    LOGGER.debug("Converting SAML Request to DOM");
-    String assertionResponse =
-        DOM2Writer.nodeToString(OpenSAMLUtil.toDom(logoutRequest.getMessage(), doc));
-    return Base64.getEncoder().encodeToString(assertionResponse.getBytes(StandardCharsets.UTF_8));
+    try {
+      LOGGER.debug("Signing SAML POST LogoutRequest.");
+      simpleSign.signSamlObject(logoutRequest.getMessage());
+      LOGGER.debug("Converting SAML Request to DOM");
+      Element element = XMLObjectSupport.marshall((XMLObject) logoutRequest.getMessage());
+      String assertionResponse = DOM2Writer.nodeToString(element);
+      return Base64.getEncoder().encodeToString(assertionResponse.getBytes(StandardCharsets.UTF_8));
+    } catch (MarshallingException e) {
+      throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e);
+    }
   }
 
   private Response getSamlpRedirectLogoutRequest(
@@ -633,12 +641,16 @@ public class LogoutRequestService {
       Envelope soapMessage = SamlProtocol.createSoapMessage(logoutResponse);
 
       LOGGER.debug("Converting SAML Response to DOM");
-      String assertionResponse = DOM2Writer.nodeToString(OpenSAMLUtil.toDom(soapMessage, doc));
+      Element element = XMLObjectSupport.marshall(soapMessage);
+      String assertionResponse = DOM2Writer.nodeToString(element);
       String encodedSamlResponse =
           Base64.getEncoder().encodeToString(assertionResponse.getBytes(StandardCharsets.UTF_8));
 
       return Response.ok(encodedSamlResponse).build();
-    } catch (SignatureException | WSSecurityException | XMLStreamException e) {
+    } catch (SignatureException
+        | XMLStreamException
+        | MarshallingException
+        | WSSecurityException e) {
       LOGGER.debug("Failure constructing SOAP LogoutResponse", e);
       return Response.serverError().build();
     }
@@ -647,24 +659,26 @@ public class LogoutRequestService {
   private Response getSamlpPostLogoutResponse(
       String relayState, LogoutWrapper<LogoutResponse> samlResponse)
       throws WSSecurityException, SignatureException {
-    LOGGER.debug("Configuring SAML Response for POST.");
-    Document doc = DOMUtils.createDocument();
-    doc.appendChild(doc.createElement(ROOT_NODE_NAME));
-    LOGGER.debug("Signing SAML POST Response.");
-    simpleSign.signSamlObject(samlResponse.getMessage());
-    LOGGER.debug("Converting SAML Response to DOM");
-    String assertionResponse =
-        DOM2Writer.nodeToString(OpenSAMLUtil.toDom(samlResponse.getMessage(), doc));
-    String encodedSamlResponse =
-        Base64.getEncoder().encodeToString(assertionResponse.getBytes(StandardCharsets.UTF_8));
+    try {
+      LOGGER.debug("Configuring SAML Response for POST.");
+      LOGGER.debug("Signing SAML POST Response.");
+      simpleSign.signSamlObject(samlResponse.getMessage());
+      LOGGER.debug("Converting SAML Response to DOM");
+      Element element = XMLObjectSupport.marshall((XMLObject) samlResponse.getMessage());
+      String assertionResponse = DOM2Writer.nodeToString(element);
+      String encodedSamlResponse =
+          Base64.getEncoder().encodeToString(assertionResponse.getBytes(StandardCharsets.UTF_8));
 
-    return Response.ok(
-            HtmlResponseTemplate.getPostPage(
-                idpMetadata.getSingleLogoutLocation(),
-                SamlProtocol.Type.RESPONSE,
-                encodedSamlResponse,
-                relayState))
-        .build();
+      return Response.ok(
+              HtmlResponseTemplate.getPostPage(
+                  idpMetadata.getSingleLogoutLocation(),
+                  SamlProtocol.Type.RESPONSE,
+                  encodedSamlResponse,
+                  relayState))
+          .build();
+    } catch (MarshallingException e) {
+      throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e);
+    }
   }
 
   private Response getSamlpRedirectLogoutResponse(

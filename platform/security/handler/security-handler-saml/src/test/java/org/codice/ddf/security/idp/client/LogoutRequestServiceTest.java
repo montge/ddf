@@ -61,13 +61,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.platform.session.api.HttpSessionInvalidator;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.LogoutRequest;
@@ -276,7 +276,11 @@ public class LogoutRequestServiceTest {
     when(logoutMessage.extractSamlLogoutRequest(any(String.class)))
         .thenReturn(requestLogoutWrapper);
     Issuer issuer = mock(Issuer.class);
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      throw new RuntimeException("Unable to initialize OpenSAML", e);
+    }
     LogoutResponse logoutResponse = new LogoutResponseBuilder().buildObject();
     when(logoutRequest.getIssuer()).thenReturn(issuer);
     when(logoutRequest.getIssueInstant()).thenReturn(new DateTime());

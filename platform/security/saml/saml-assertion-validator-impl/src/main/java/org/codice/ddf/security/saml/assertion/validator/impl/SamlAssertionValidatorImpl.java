@@ -37,7 +37,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
 import org.apache.wss4j.common.ext.WSSecurityException;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.saml.SamlAssertionWrapper;
 import org.apache.wss4j.dom.WSDocInfo;
 import org.apache.wss4j.dom.engine.WSSConfig;
@@ -53,8 +52,11 @@ import org.codice.ddf.platform.util.properties.PropertiesLoader;
 import org.codice.ddf.security.handler.SAMLAuthenticationToken;
 import org.codice.ddf.security.saml.assertion.validator.SamlAssertionValidator;
 import org.joda.time.DateTime;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.SAMLObjectBuilder;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.Issuer;
@@ -71,11 +73,17 @@ import org.w3c.dom.Node;
 
 public class SamlAssertionValidatorImpl implements SamlAssertionValidator {
 
-  static {
-    OpenSAMLUtil.initSamlEngine();
-  }
-
   private static final Logger LOGGER = LoggerFactory.getLogger(SamlAssertionValidatorImpl.class);
+
+  private static final String HOLDER_OF_KEY_METHOD = "urn:oasis:names:tc:SAML:2.0:cm:holder-of-key";
+
+  static {
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      LOGGER.error("Unable to initialize OpenSAML", e);
+    }
+  }
 
   private static final XMLUtils XML_UTILS = XMLUtils.getInstance();
 
@@ -149,7 +157,12 @@ public class SamlAssertionValidatorImpl implements SamlAssertionValidator {
 
       BUILDER.get().reset();
       Document doc = BUILDER.get().newDocument();
-      Element policyElement = OpenSAMLUtil.toDom(samlResponse, doc);
+      Element policyElement;
+      try {
+        policyElement = XMLObjectSupport.marshall(samlResponse);
+      } catch (MarshallingException e) {
+        throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e);
+      }
       doc.appendChild(policyElement);
 
       Credential credential = new Credential();
@@ -300,7 +313,7 @@ public class SamlAssertionValidatorImpl implements SamlAssertionValidator {
     List<String> confirmationMethods = assertion.getConfirmationMethods();
     boolean hasHokMethod = false;
     for (String method : confirmationMethods) {
-      if (OpenSAMLUtil.isMethodHolderOfKey(method)) {
+      if (HOLDER_OF_KEY_METHOD.equals(method)) {
         hasHokMethod = true;
       }
     }
@@ -310,7 +323,7 @@ public class SamlAssertionValidatorImpl implements SamlAssertionValidator {
         List<SubjectConfirmation> subjectConfirmations =
             assertion.getSaml2().getSubject().getSubjectConfirmations();
         for (SubjectConfirmation subjectConfirmation : subjectConfirmations) {
-          if (OpenSAMLUtil.isMethodHolderOfKey(subjectConfirmation.getMethod())) {
+          if (HOLDER_OF_KEY_METHOD.equals(subjectConfirmation.getMethod())) {
             Element dom = subjectConfirmation.getSubjectConfirmationData().getDOM();
             Node keyInfo = dom.getFirstChild();
             Node x509Data = keyInfo.getFirstChild();

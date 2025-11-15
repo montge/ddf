@@ -57,7 +57,6 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.wss4j.common.crypto.Crypto;
@@ -77,14 +76,18 @@ import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.io.Unmarshaller;
 import org.opensaml.core.xml.io.UnmarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 @Path("sso")
 public class AssertionConsumerService {
@@ -122,7 +125,11 @@ public class AssertionConsumerService {
   private ContextPolicyManager contextPolicyManager;
 
   static {
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      LOGGER.error("Unable to initialize OpenSAML", e);
+    }
   }
 
   private SamlSecurity samlSecurity;
@@ -440,10 +447,13 @@ public class AssertionConsumerService {
             assertionConsumerServiceLocation,
             assertionConsumerServiceLocation);
 
-    Document doc = DOMUtils.createDocument();
-    doc.appendChild(doc.createElement("root"));
-    return Response.ok(DOM2Writer.nodeToString(OpenSAMLUtil.toDom(entityDescriptor, doc, false)))
-        .build();
+    try {
+      return Response.ok(DOM2Writer.nodeToString(XMLObjectSupport.marshall(entityDescriptor)))
+          .build();
+    } catch (MarshallingException e) {
+      LOGGER.error("Unable to marshall EntityDescriptor", e);
+      return Response.serverError().build();
+    }
   }
 
   private X509Certificate findCertificate(String alias, Crypto crypto) throws WSSecurityException {

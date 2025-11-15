@@ -42,7 +42,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.session.SessionException;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
@@ -55,6 +54,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.opensaml.core.config.InitializationService;
 
 /** Additional test coverage for LoginFilter exception handling and edge cases. */
 @RunWith(MockitoJUnitRunner.class)
@@ -73,8 +73,8 @@ public class LoginFilterSecurityExceptionTest {
   @Mock private X509Certificate[] x509Certificates;
 
   @BeforeClass
-  public static void init() {
-    OpenSAMLUtil.initSamlEngine();
+  public static void init() throws Exception {
+    InitializationService.initialize();
   }
 
   @Before

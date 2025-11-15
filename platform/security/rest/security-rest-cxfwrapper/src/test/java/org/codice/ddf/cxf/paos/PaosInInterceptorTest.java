@@ -49,18 +49,18 @@ import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.phase.Phase;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensaml.core.config.ConfigurationService;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 
 public class PaosInInterceptorTest {
 
   @Before
-  public void setup() {
-    OpenSAMLUtil.initSamlEngine();
+  public void setup() throws Exception {
+    InitializationService.initialize();
     XMLObjectProviderRegistry xmlObjectProviderRegistry =
         ConfigurationService.get(XMLObjectProviderRegistry.class);
     xmlObjectProviderRegistry.registerObjectProvider(

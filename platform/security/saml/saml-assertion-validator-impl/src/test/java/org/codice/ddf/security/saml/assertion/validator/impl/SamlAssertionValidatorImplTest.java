@@ -28,11 +28,9 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 import org.apache.commons.io.IOUtils;
-import org.apache.cxf.helpers.DOMUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.CryptoType;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.apache.wss4j.common.util.DOM2Writer;
 import org.bouncycastle.util.encoders.Base64;
 import org.codice.ddf.platform.filter.AuthenticationFailureException;
@@ -43,7 +41,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AttributeStatement;
@@ -81,7 +83,6 @@ import org.opensaml.xmlsec.signature.impl.X509CertificateBuilder;
 import org.opensaml.xmlsec.signature.impl.X509DataBuilder;
 import org.opensaml.xmlsec.signature.impl.X509SubjectNameBuilder;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class SamlAssertionValidatorImplTest {
@@ -97,7 +98,11 @@ public class SamlAssertionValidatorImplTest {
   private SamlAssertionValidatorImpl samlAssertionValidator;
 
   static {
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      throw new RuntimeException("Unable to initialize OpenSAML", e);
+    }
   }
 
   @Before
@@ -308,7 +313,11 @@ public class SamlAssertionValidatorImplTest {
     assertion.getAttributeStatements().add(attributeStatement);
 
     if (sign) {
-      Signature signature = OpenSAMLUtil.buildSignature();
+      Signature signature =
+          (Signature)
+              XMLObjectProviderRegistrySupport.getBuilderFactory()
+                  .getBuilder(Signature.DEFAULT_ELEMENT_NAME)
+                  .buildObject(Signature.DEFAULT_ELEMENT_NAME);
       signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
       signature.setSignatureAlgorithm(WSS4JConstants.RSA);
 
@@ -408,7 +417,11 @@ public class SamlAssertionValidatorImplTest {
     attributeStatement.getAttributes().add(attribute);
     assertion.getAttributeStatements().add(attributeStatement);
 
-    Signature signature = OpenSAMLUtil.buildSignature();
+    Signature signature =
+        (Signature)
+            XMLObjectProviderRegistrySupport.getBuilderFactory()
+                .getBuilder(Signature.DEFAULT_ELEMENT_NAME)
+                .buildObject(Signature.DEFAULT_ELEMENT_NAME);
     signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
     signature.setSignatureAlgorithm(WSS4JConstants.RSA);
 
@@ -431,10 +444,11 @@ public class SamlAssertionValidatorImplTest {
   }
 
   private String samlObjectToString(XMLObject samlObject) throws Exception {
-    Document doc = DOMUtils.createDocument();
-    doc.appendChild(doc.createElement("root"));
-
-    Element samlElement = OpenSAMLUtil.toDom(samlObject, doc);
-    return DOM2Writer.nodeToString(samlElement);
+    try {
+      Element samlElement = XMLObjectSupport.marshall(samlObject);
+      return DOM2Writer.nodeToString(samlElement);
+    } catch (MarshallingException e) {
+      throw new Exception("Unable to marshall SAML object", e);
+    }
   }
 }

@@ -47,7 +47,6 @@ import javax.xml.soap.SOAPPart;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.security.AccessDeniedException;
 import org.apache.cxf.message.Message;
@@ -58,15 +57,16 @@ import org.codice.ddf.platform.util.TemporaryFileBackedOutputStream;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.io.Unmarshaller;
 import org.opensaml.core.xml.io.UnmarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.IDPEntry;
 import org.opensaml.saml.saml2.core.IDPList;
 import org.opensaml.saml.saml2.ecp.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -198,7 +198,7 @@ public class PaosInInterceptor extends AbstractPhaseInterceptor<Message> {
             // one
             // but the spec doesn't specify how this is supposed to be done
             idpEntry = idpEntrys.get(0);
-          } catch (UnmarshallingException | WSSecurityException e) {
+          } catch (UnmarshallingException e) {
             // TODO figure out IdP alternatively
             LOGGER.info(
                 "Unable to determine IdP appropriately. ECP connection will fail. SP may be incorrectly configured. Contact the administrator for the remote system.");
@@ -287,7 +287,7 @@ public class PaosInInterceptor extends AbstractPhaseInterceptor<Message> {
       throw new Fault(
           new AccessDeniedException(
               "Unable to complete SAML ECP connection. The server's response was not in the correct format."));
-    } catch (UnmarshallingException | WSSecurityException e) {
+    } catch (WSSecurityException e) {
       throw new Fault(
           new AccessDeniedException(
               "Unable to complete SAML ECP connection. Unable to send SOAP request messages."));
@@ -429,12 +429,10 @@ public class PaosInInterceptor extends AbstractPhaseInterceptor<Message> {
     ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(PaosInInterceptor.class.getClassLoader());
     try {
-      Document doc = DOMUtils.createDocument();
-      doc.appendChild(doc.createElement("root"));
-
-      Element requestElement = OpenSAMLUtil.toDom(xmlObject, null);
-
+      Element requestElement = XMLObjectSupport.marshall(xmlObject);
       return DOM2Writer.nodeToString(requestElement);
+    } catch (MarshallingException e) {
+      throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e);
     } finally {
       Thread.currentThread().setContextClassLoader(contextClassLoader);
     }

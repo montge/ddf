@@ -45,6 +45,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opensaml.core.config.InitializationException;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.Unmarshaller;
@@ -131,7 +132,7 @@ public class AttributeQueryClaimsHandlerTest {
 
   @BeforeClass
   public static void init() throws InitializationException {
-    OpenSAMLUtil.initSamlEngine();
+    InitializationService.initialize();
   }
 
   @Before

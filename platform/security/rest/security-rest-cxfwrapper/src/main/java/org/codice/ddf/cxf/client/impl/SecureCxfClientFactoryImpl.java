@@ -72,7 +72,6 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.shiro.subject.Subject;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.configuration.PropertyResolver;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.cxf.client.SecureCxfClientFactory;
@@ -83,6 +82,7 @@ import org.codice.ddf.cxf.paos.PaosInInterceptor;
 import org.codice.ddf.cxf.paos.PaosOutInterceptor;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.opensaml.core.config.ConfigurationService;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,7 +171,11 @@ public class SecureCxfClientFactoryImpl<T> implements SecureCxfClientFactory<T> 
   private String password;
 
   static {
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      LOGGER.error("Unable to initialize OpenSAML", e);
+    }
     XMLObjectProviderRegistry xmlObjectProviderRegistry =
         ConfigurationService.get(XMLObjectProviderRegistry.class);
     xmlObjectProviderRegistry.registerObjectProvider(

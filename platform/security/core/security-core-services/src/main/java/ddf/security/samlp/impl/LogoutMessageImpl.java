@@ -28,7 +28,6 @@ import javax.servlet.http.Cookie;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.lang.Validate;
-import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.rs.security.saml.sso.SSOConstants;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.http.client.ResponseHandler;
@@ -46,8 +45,10 @@ import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.io.Unmarshaller;
 import org.opensaml.core.xml.io.UnmarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
@@ -245,10 +246,8 @@ public class LogoutMessageImpl implements LogoutMessage {
   @Override
   public Element getElementFromSaml(LogoutWrapper xmlObject) throws LogoutSecurityException {
     try {
-      Document doc = DOMUtils.createDocument();
-      doc.appendChild(doc.createElement("root"));
-      return OpenSAMLUtil.toDom((XMLObject) xmlObject.getMessage(), doc);
-    } catch (WSSecurityException e) {
+      return XMLObjectSupport.marshall((XMLObject) xmlObject.getMessage());
+    } catch (MarshallingException e) {
       throw new LogoutSecurityException(e);
     }
   }
@@ -308,15 +307,11 @@ public class LogoutMessageImpl implements LogoutMessage {
       LogoutWrapper samlObject, URI target, String relayState, String requestType)
       throws LogoutSecurityException, SignatureException, IOException {
     try {
-      Document doc = DOMUtils.createDocument();
-      doc.appendChild(doc.createElement("root"));
       SamlSecurity samlSecurity = new SamlSecurity();
+      Element element = XMLObjectSupport.marshall((XMLObject) samlObject.getMessage());
       String encodedResponse =
           URLEncoder.encode(
-              samlSecurity.deflateAndBase64Encode(
-                  DOM2Writer.nodeToString(
-                      OpenSAMLUtil.toDom((XMLObject) samlObject.getMessage(), doc, false))),
-              "UTF-8");
+              samlSecurity.deflateAndBase64Encode(DOM2Writer.nodeToString(element)), "UTF-8");
       String requestToSign =
           String.format(
               "%s=%s&%s=%s", requestType, encodedResponse, SSOConstants.RELAY_STATE, relayState);
@@ -325,7 +320,7 @@ public class LogoutMessageImpl implements LogoutMessage {
       uriBuilder.queryParam(SSOConstants.RELAY_STATE, relayState);
       new SimpleSign(systemCrypto).signUriString(requestToSign, uriBuilder);
       return uriBuilder.build();
-    } catch (WSSecurityException e) {
+    } catch (MarshallingException e) {
       throw new LogoutSecurityException(e);
     }
   }

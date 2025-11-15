@@ -44,7 +44,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.HandlerResultImpl;
@@ -58,6 +57,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.opensaml.core.config.InitializationService;
 
 /** Comprehensive test coverage for LoginFilter to increase coverage to 85%+. */
 @RunWith(MockitoJUnitRunner.class)
@@ -76,8 +76,8 @@ public class LoginFilterCoverageTest {
   @Mock private X509Certificate[] x509Certificates;
 
   @BeforeClass
-  public static void init() {
-    OpenSAMLUtil.initSamlEngine();
+  public static void init() throws Exception {
+    InitializationService.initialize();
   }
 
   @Before

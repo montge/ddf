@@ -35,12 +35,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Dispatch;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opensaml.core.config.InitializationException;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.saml2.core.Assertion;
 
@@ -79,7 +79,7 @@ public class AttributeQueryClientTest {
 
   @BeforeClass
   public static void init() throws InitializationException {
-    OpenSAMLUtil.initSamlEngine();
+    InitializationService.initialize();
   }
 
   @Before
