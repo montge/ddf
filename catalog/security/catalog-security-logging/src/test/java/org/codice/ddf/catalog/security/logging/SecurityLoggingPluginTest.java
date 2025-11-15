@@ -861,6 +861,57 @@ public class SecurityLoggingPluginTest {
     verify(newLogger).audit(anyString(), any(Object.class), any(Object.class));
   }
 
+  // ==================== Remote Operation Tests (Branch Coverage) ====================
+
+  @Test
+  public void testProcessCreateRequestRemoteOperation() throws Exception {
+    Metacard metacard1 = mock(Metacard.class);
+    when(metacard1.getId()).thenReturn("remote-id-1");
+
+    CreateRequest createRequest = mock(CreateRequest.class);
+    Set<String> storeIds = new HashSet<>();
+    storeIds.add("remote-source-1");
+    Map<String, Serializable> properties =
+        Collections.singletonMap("local-destination", Boolean.FALSE);
+
+    when(createRequest.getMetacards()).thenReturn(Collections.singletonList(metacard1));
+    when(createRequest.getStoreIds()).thenReturn(storeIds);
+    when(createRequest.hasProperties()).thenReturn(true);
+    when(createRequest.getProperties()).thenReturn(properties);
+
+    CreateRequest result = plugin.process(createRequest);
+
+    assertThat(result, is(createRequest));
+    verify(securityLogger)
+        .audit(anyString(), any(Object.class), any(Object.class), any(Object.class));
+  }
+
+  @Test
+  public void testProcessCreateResponseRemoteOperation() throws Exception {
+    Metacard metacard1 = mock(Metacard.class);
+    when(metacard1.getId()).thenReturn("remote-id-1");
+
+    CreateRequest createRequest = mock(CreateRequest.class);
+    Set<String> storeIds = new HashSet<>();
+    storeIds.add("remote-source-1");
+    Map<String, Serializable> properties =
+        Collections.singletonMap("local-destination", Boolean.FALSE);
+
+    when(createRequest.getStoreIds()).thenReturn(storeIds);
+    when(createRequest.hasProperties()).thenReturn(true);
+    when(createRequest.getProperties()).thenReturn(properties);
+
+    CreateResponse createResponse = mock(CreateResponse.class);
+    when(createResponse.getCreatedMetacards()).thenReturn(Collections.singletonList(metacard1));
+    when(createResponse.getRequest()).thenReturn(createRequest);
+
+    CreateResponse result = plugin.process(createResponse);
+
+    assertThat(result, is(createResponse));
+    verify(securityLogger)
+        .audit(anyString(), any(Object.class), any(Object.class), any(Object.class));
+  }
+
   // ==================== Helper Class ====================
 
   private static class TestMapEntry implements Map.Entry<Serializable, Metacard> {
