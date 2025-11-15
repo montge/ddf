@@ -51,3 +51,6 @@ coverage/
 # Virtual environment
 venv/
 .venv/
+
+# Local AI-generated content and scratch files
+.local/

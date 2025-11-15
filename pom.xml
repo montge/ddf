@@ -508,6 +508,22 @@
                 <version>2.4.21</version>
             </dependency>
 
+            <!-- Compatibility fix: Force Apache Axiom 1.2.14 for Abdera 1.1.3 compatibility
+                 Abdera 1.1.3 (last release 2012, abandoned project) requires Axiom 1.2.x
+                 Axiom 2.x has breaking changes (removed OMLinkedListImplFactory class)
+                 This override ensures GeoRSS formatter tests work correctly
+                 Related: GitHub Issue #30 -->
+            <dependency>
+                <groupId>org.apache.ws.commons.axiom</groupId>
+                <artifactId>axiom-api</artifactId>
+                <version>1.2.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons.axiom</groupId>
+                <artifactId>axiom-impl</artifactId>
+                <version>1.2.14</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>

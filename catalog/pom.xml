@@ -30,7 +30,10 @@
         <logkit.version>1.0.1</logkit.version>
         <cdi-api.version>1.2</cdi-api.version>
         <xalan.version>2.7.2</xalan.version>
-        <axiom.version>2.0.0</axiom.version>
+        <!-- Axiom 1.2.14: Required for Abdera 1.1.3 compatibility (GeoRSS formatter)
+             Abdera is abandoned (last release 2012) and requires Axiom 1.2.x
+             Axiom 2.x has breaking changes. See GitHub Issue #30 -->
+        <axiom.version>1.2.14</axiom.version>
         <!--
             Remove restlet.version property and restlet dependencies from the dependencyManagement section when
             Solr version is updated (see DDF-1203).
