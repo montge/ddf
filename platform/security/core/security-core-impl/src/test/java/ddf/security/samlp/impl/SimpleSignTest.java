@@ -40,9 +40,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.wss4j.common.crypto.Merlin;
 import org.apache.wss4j.common.crypto.PasswordEncryptor;
 import org.apache.wss4j.common.util.DOM2Writer;
-import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
-import org.opensaml.core.xml.io.Unmarshaller;
-import org.opensaml.core.xml.io.UnmarshallingException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -51,6 +48,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 import org.opensaml.saml.saml2.core.impl.SubjectConfirmationDataBuilder;
@@ -154,7 +153,8 @@ public class SimpleSignTest {
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
     element = responseDoc.getDocumentElement();
-    unmarshaller = XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    unmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
     responseXmlObject = unmarshaller.unmarshall(element);
     response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.validateSignature(response.getSignature(), response.getDOM().getOwnerDocument());
@@ -186,7 +186,8 @@ public class SimpleSignTest {
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
     element = responseDoc.getDocumentElement();
-    unmarshaller = XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
+    unmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
     responseXmlObject = unmarshaller.unmarshall(element);
     response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.validateSignature(response.getSignature(), response.getDOM().getOwnerDocument());
