@@ -34,7 +34,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.ws.rs.core.UriBuilder;
 import javax.xml.stream.XMLStreamException;
-import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.rs.security.saml.sso.SSOConstants;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.wss4j.common.WSS4JConstants;
@@ -51,9 +50,12 @@ import org.apache.wss4j.dom.validate.Credential;
 import org.apache.wss4j.dom.validate.SignatureTrustValidator;
 import org.apache.wss4j.dom.validate.Validator;
 import org.apache.xml.security.algorithms.JCEMapper;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.io.Unmarshaller;
 import org.opensaml.core.xml.io.UnmarshallingException;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.common.SAMLObjectContentReference;
 import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.saml2.core.Assertion;
@@ -76,7 +78,11 @@ public class SimpleSign {
   private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSign.class);
 
   static {
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      LOGGER.error("Unable to initialize OpenSAML", e);
+    }
   }
 
   private static final String RSA_ALGO_URI = WSS4JConstants.RSA;
@@ -136,9 +142,13 @@ public class SimpleSign {
       throws SignatureException, WSSecurityException, XMLStreamException {
     signSamlObject(samlObject);
 
-    Document doc = DOMUtils.createDocument();
-    doc.appendChild(doc.createElement("root"));
-    Element reqElem = OpenSAMLUtil.toDom(samlObject, doc);
+    Element reqElem;
+    try {
+      reqElem = XMLObjectSupport.marshall(samlObject);
+    } catch (MarshallingException e) {
+      throw new WSSecurityException(
+          WSSecurityException.ErrorCode.FAILURE, e, "Unable to marshall SAML object");
+    }
 
     String nodeToString = DOM2Writer.nodeToString(reqElem);
 
@@ -157,8 +167,8 @@ public class SimpleSign {
     } catch (UnmarshallingException e) {
       throw new WSSecurityException(
           WSSecurityException.ErrorCode.FAILURE,
-          "Unable to unmarshall element: " + element.getLocalName(),
-          e);
+          e,
+          "Unable to unmarshall element: " + element.getLocalName());
     }
   }
 
@@ -388,8 +398,12 @@ public class SimpleSign {
     X509Certificate[] certificates = getSignatureCertificates();
     PrivateKey privateKey = getSignaturePrivateKey();
 
-    // Create the signature
-    Signature signature = OpenSAMLUtil.buildSignature();
+    // Create the signature using OpenSAML 4.x API
+    Signature signature =
+        (Signature)
+            XMLObjectProviderRegistrySupport.getBuilderFactory()
+                .getBuilder(Signature.DEFAULT_ELEMENT_NAME)
+                .buildObject(Signature.DEFAULT_ELEMENT_NAME);
     if (signature == null) {
       throw new SignatureException("Unable to build signature.");
     }

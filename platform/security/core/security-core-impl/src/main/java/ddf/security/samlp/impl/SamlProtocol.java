@@ -37,7 +37,6 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.common.saml.SamlAssertionWrapper;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.joda.time.DateTime;
-import org.opensaml.core.config.InitializationException;
 import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.XMLObjectBuilder;
@@ -100,14 +99,12 @@ public class SamlProtocol {
 
   /** This static block must be before the builder factories to ensure the engine is initialized */
   static {
-    OpenSAMLUtil.initSamlEngine();
-
     ClassLoader tccl = Thread.currentThread().getContextClassLoader();
     Thread.currentThread().setContextClassLoader(SamlProtocol.class.getClassLoader());
     try {
       InitializationService.initialize();
-    } catch (InitializationException e) {
-      throw new SAMLRuntimeException("Unable to Initialize SAML SOAP builders.");
+    } catch (Exception e) {
+      throw new SAMLRuntimeException("Unable to Initialize SAML SOAP builders.", e);
     } finally {
       Thread.currentThread().setContextClassLoader(tccl);
     }
@@ -559,8 +556,8 @@ public class SamlProtocol {
       } catch (UnmarshallingException e) {
         throw new WSSecurityException(
             WSSecurityException.ErrorCode.FAILURE,
-            "Unable to unmarshall element: " + domElement.getLocalName(),
-            e);
+            e,
+            "Unable to unmarshall element: " + domElement.getLocalName());
       }
     }
     return null;
