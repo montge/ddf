@@ -144,7 +144,8 @@
         <project.report.output.directory>project-info</project.report.output.directory>
 
         <!--Documentation properties-->
-        <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
+        <!-- Upgraded from 2.2.4 to 3.0.0 to fix JRuby STRIO_READABLE NoSuchFieldError (Issue #39) -->
+        <asciidoctor.maven.plugin.version>3.0.0</asciidoctor.maven.plugin.version>
         <asciidoctorj.diagram.version>2.3.2</asciidoctorj.diagram.version>
         <asciidoctorj.pdf.version>1.6.0</asciidoctorj.pdf.version>
         <asciidoctorj.version>2.5.8</asciidoctorj.version>
