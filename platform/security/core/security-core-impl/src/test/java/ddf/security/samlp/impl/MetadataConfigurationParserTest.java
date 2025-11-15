@@ -35,7 +35,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.bootstrap.HttpServer;
 import org.apache.http.impl.bootstrap.ServerBootstrap;
 import org.apache.http.protocol.HttpRequestHandler;
-import org.apache.wss4j.common.saml.OpenSAMLUtil;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -43,6 +42,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 
 public class MetadataConfigurationParserTest {
@@ -62,7 +62,11 @@ public class MetadataConfigurationParserTest {
   public void before() throws Exception {
     System.setProperty("org.ops4j.pax.logging.DefaultServiceLog.level", "INFO");
     MockitoAnnotations.initMocks(this);
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      throw new RuntimeException("Unable to initialize OpenSAML", e);
+    }
 
     entityDescriptorPath =
         Paths.get(getClass().getResource("/etc/metadata/entityDescriptor.xml").toURI());

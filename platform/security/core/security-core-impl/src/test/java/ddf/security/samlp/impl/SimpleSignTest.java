@@ -33,7 +33,6 @@ import java.util.Base64;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import javax.ws.rs.core.UriBuilder;
-import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.jaxrs.impl.UriBuilderImpl;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -47,9 +46,12 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.util.XMLObjectSupport;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.SubjectConfirmationData;
 import org.opensaml.saml.saml2.core.impl.SubjectConfirmationDataBuilder;
@@ -80,7 +82,11 @@ public class SimpleSignTest {
 
   @BeforeClass
   public static void init() {
-    OpenSAMLUtil.initSamlEngine();
+    try {
+      InitializationService.initialize();
+    } catch (Exception e) {
+      throw new RuntimeException("Unable to initialize OpenSAML", e);
+    }
     Security.addProvider(new BouncyCastleProvider());
   }
 
@@ -123,12 +129,16 @@ public class SimpleSignTest {
         (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.signSamlObject(response);
 
-    Document doc = DOMUtils.createDocument();
-    Element requestElement = OpenSAMLUtil.toDom(response, doc);
+    Element requestElement;
+    try {
+      requestElement = XMLObjectSupport.marshall(response);
+    } catch (MarshallingException e) {
+      throw new RuntimeException("Unable to marshall SAML object", e);
+    }
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
-    Element element = responseDoc.getDocumentElement();
-    Unmarshaller unmarshaller =
+    element = responseDoc.getDocumentElement();
+    unmarshaller =
         XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
     responseXmlObject = unmarshaller.unmarshall(element);
     response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
@@ -147,8 +157,12 @@ public class SimpleSignTest {
         (org.opensaml.saml.saml2.core.Response) responseXmlObject;
     simpleSign.signSamlObject(response);
 
-    Document doc = DOMUtils.createDocument();
-    Element requestElement = OpenSAMLUtil.toDom(response, doc);
+    Element requestElement;
+    try {
+      requestElement = XMLObjectSupport.marshall(response);
+    } catch (MarshallingException e) {
+      throw new RuntimeException("Unable to marshall SAML object", e);
+    }
     requestElement.setAttribute("oops", "changedit");
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
@@ -181,8 +195,12 @@ public class SimpleSignTest {
           .forEach(sc -> sc.setSubjectConfirmationData(scd));
     }
 
-    Document doc = DOMUtils.createDocument();
-    Element requestElement = OpenSAMLUtil.toDom(response, doc);
+    Element requestElement;
+    try {
+      requestElement = XMLObjectSupport.marshall(response);
+    } catch (MarshallingException e) {
+      throw new RuntimeException("Unable to marshall SAML object", e);
+    }
     String responseMessage = DOM2Writer.nodeToString(requestElement);
     responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
     element = responseDoc.getDocumentElement();
