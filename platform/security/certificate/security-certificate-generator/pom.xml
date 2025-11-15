@@ -133,7 +133,9 @@
                         <configuration>
                             <rules>
                                 <ArtifactSizeEnforcerRule implementation="org.codice.maven.artifactsize.ArtifactSizeEnforcerRule">
-                                    <maxArtifactSize>7.7_MB</maxArtifactSize>
+                                    <!-- Increased from 7.7 MB to 12 MB due to BouncyCastle jdk18on dependencies
+                                         TODO: Investigate if JAR can be optimized (Issue #38) -->
+                                    <maxArtifactSize>12_MB</maxArtifactSize>
                                 </ArtifactSizeEnforcerRule>
                             </rules>
                         </configuration>
