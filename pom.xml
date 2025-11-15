@@ -144,13 +144,12 @@
         <project.report.output.directory>project-info</project.report.output.directory>
 
         <!--Documentation properties-->
-        <!-- Note: Cannot upgrade to 3.0.0 - causes jbake-maven-plugin ASM incompatibility
-             Docs build should be skipped in CI (see Issue #39) -->
+        <!-- Upgraded JRuby to 9.4.8.0 to fix STRIO_READABLE NoSuchFieldError (Issue #39) -->
         <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
         <asciidoctorj.diagram.version>2.3.2</asciidoctorj.diagram.version>
         <asciidoctorj.pdf.version>1.6.0</asciidoctorj.pdf.version>
         <asciidoctorj.version>2.5.8</asciidoctorj.version>
-        <jruby.version>9.4.12.1</jruby.version>
+        <jruby.version>9.4.8.0</jruby.version>
         <openlayers.version>4.6.5</openlayers.version>
 
         <abdera.osgi.version>1.1.3_2</abdera.osgi.version>
