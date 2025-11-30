@@ -247,7 +247,7 @@
         <jts.spatial4j.version>1.17.0</jts.spatial4j.version>
         <jvnet-ogc.version>2.6.1</jvnet-ogc.version>
         <jwnl.version>1.4_rc3</jwnl.version>
-        <karaf.version>4.3.10</karaf.version>
+        <karaf.version>4.4.8</karaf.version>
         <jansi.version>2.4.0</jansi.version>
         <org.osgi.util.promise.version>1.2.0</org.osgi.util.promise.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
