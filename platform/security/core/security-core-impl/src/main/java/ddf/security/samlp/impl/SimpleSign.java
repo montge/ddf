@@ -67,6 +67,7 @@ import org.opensaml.xmlsec.signature.KeyInfo;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.opensaml.xmlsec.signature.support.SignatureValidator;
+import org.opensaml.xmlsec.signature.support.Signer;
 import org.opensaml.xmlsec.signature.support.impl.provider.ApacheSantuarioSignatureValidationProviderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -441,5 +442,15 @@ public class SimpleSign {
 
     samlObject.releaseDOM();
     samlObject.releaseChildrenDOM(true);
+
+    // Marshall the SAML object to create the DOM, then sign it
+    try {
+      XMLObjectSupport.marshall(samlObject);
+      Signer.signObject(signature);
+    } catch (MarshallingException e) {
+      throw new SignatureException("Error marshalling SAML object for signing", e);
+    } catch (org.opensaml.xmlsec.signature.support.SignatureException e) {
+      throw new SignatureException("Error signing SAML object", e);
+    }
   }
 }

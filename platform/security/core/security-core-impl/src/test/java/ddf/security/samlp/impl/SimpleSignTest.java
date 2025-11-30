@@ -195,6 +195,9 @@ public class SimpleSignTest {
           .forEach(sc -> sc.setSubjectConfirmationData(scd));
     }
 
+    // Re-sign after modification (the signature was invalidated by the changes above)
+    simpleSign.signSamlObject(response);
+
     Element requestElement;
     try {
       requestElement = XMLObjectSupport.marshall(response);
