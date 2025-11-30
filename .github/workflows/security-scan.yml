@@ -161,7 +161,7 @@ jobs:
           else
             SARIF_FILE=$(find . -name "dependency-check-report.sarif" -type f ! -path "*/target/*/target/*" | head -1)
           fi
-          
+
           if [ -n "$SARIF_FILE" ] && [ -f "$SARIF_FILE" ]; then
             echo "Found SARIF file: $SARIF_FILE"
             echo "sarif_file=$SARIF_FILE" >> $GITHUB_OUTPUT
@@ -268,7 +268,12 @@ jobs:
           queries: security-extended,security-and-quality
 
       - name: Build for CodeQL analysis
-        run: mvn $MAVEN_CLI_OPTS -Dmaven.test.skip=true -Denforcer.skip=true clean install
+        run: |
+          # Skip docs module (JRuby/asciidoctor issues) and distribution modules
+          # CodeQL only needs compiled source code, not full distribution builds
+          mvn $MAVEN_CLI_OPTS -Dmaven.test.skip=true -Denforcer.skip=true \
+              -pl '!distribution/docs,!distribution/ddf,!distribution/ddf-catalog' \
+              clean install
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
