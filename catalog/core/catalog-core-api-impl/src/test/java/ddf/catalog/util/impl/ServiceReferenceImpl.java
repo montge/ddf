@@ -20,7 +20,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
-public class ServiceReferenceImpl implements ServiceReference {
+public class ServiceReferenceImpl implements ServiceReference<Object> {
 
   Map<String, Object> map = new HashMap<String, Object>();
 
@@ -77,5 +77,10 @@ public class ServiceReferenceImpl implements ServiceReference {
     // check ids, then it is the same serviceReference
 
     return 0;
+  }
+
+  @Override
+  public <A> A adapt(Class<A> type) {
+    return null;
   }
 }
