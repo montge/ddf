@@ -61,7 +61,7 @@
                         </goals>
                         <configuration>
                             <addTransitiveFeatures>true</addTransitiveFeatures>
-                            <resolveDefinedRepositoriesRecursively>false</resolveDefinedRepositoriesRecursively>
+                            <resolveDefinedRepositoriesRecursively>true</resolveDefinedRepositoriesRecursively>
                             <descriptors>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
