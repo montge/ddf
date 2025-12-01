@@ -46,7 +46,7 @@
     <parent>
         <groupId>ddf</groupId>
         <artifactId>ddf-parent</artifactId>
-        <version>1.0.12</version>
+        <version>3.0.4</version>
     </parent>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
