@@ -57,7 +57,7 @@
 
     <!-- Start of app features -->
 
-    <repository>mvn:org.apache.karaf.features/spring/${karaf.version}/xml/features</repository>
+    <!-- Spring 5.3.x feature is provided by ddf.features/kernel (via security) -->
     <repository>mvn:ddf.features/security/${project.version}/xml/features</repository>
     <repository>mvn:ddf.features/utilities/${project.version}/xml/features</repository>
 

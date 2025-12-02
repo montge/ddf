@@ -88,7 +88,8 @@ jobs:
           cache: 'maven'
 
       - name: Build all modules (skip tests)
-        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipTests
+        # Skip docs module due to JRuby/asciidoctor compatibility issues (Issue #39)
+        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipTests -pl '!distribution/docs'
 
       # Upload Maven repository containing all built artifacts
       # Only include ddf/ artifacts to reduce upload size

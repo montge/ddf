@@ -20,6 +20,21 @@
     <repository>mvn:org.apache.karaf.features/specs/${karaf.version}/xml/features</repository>
     <repository>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</repository>
 
+    <!--
+        Spring 5.3.x features for DDF
+        Karaf 4.4.8 only provides Spring 6.1.x which is incompatible with DDF's javax.* based code.
+        These features override Karaf's spring features to provide Spring 5.3.x until DDF migrates to Spring 6.x.
+    -->
+    <feature name="spring" description="Spring 5.3.x support" version="${spring.osgi.bundle.version}">
+        <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/1.0_6</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-core/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-expression/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-beans/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-aop/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-context/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-context-support/${spring.osgi.bundle.version}</bundle>
+    </feature>
+
     <feature name="kernel" version="${project.version}"
              description="Minimual set of features and dependencies commonly used.">
         <feature version="${karaf.version}">standard</feature>

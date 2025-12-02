@@ -78,11 +78,13 @@ jobs:
           cache: 'maven'
 
       - name: Build changed modules
+        # Skip docs module due to JRuby/asciidoctor compatibility issues (Issue #39)
         run: |
           mvn $MAVEN_CLI_OPTS \
             -T 1C \
             -Dgib.enabled=true \
             -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }} \
+            -pl '!distribution/docs' \
             clean install
 
       - name: Upload test results
@@ -130,7 +132,8 @@ jobs:
           cache: 'maven'
 
       - name: Build and test
-        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipITs
+        # Skip docs module due to JRuby/asciidoctor compatibility issues (Issue #39)
+        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipITs -pl '!distribution/docs'
 
       - name: Upload distribution artifacts
         if: matrix.java == '17'
