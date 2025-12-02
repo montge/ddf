@@ -78,6 +78,8 @@
                             <addTransitiveFeatures>true</addTransitiveFeatures>
                             <resolveDefinedRepositoriesRecursively>true</resolveDefinedRepositoriesRecursively>
                             <descriptors>
+                                <!-- Include pax-cdi-features explicitly to avoid RELEASE version resolution issues -->
+                                <descriptor>mvn:org.ops4j.pax.cdi/pax-cdi-features/${pax.cdi.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
