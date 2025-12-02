@@ -76,9 +76,10 @@
                         </goals>
                         <configuration>
                             <addTransitiveFeatures>true</addTransitiveFeatures>
-                            <resolveDefinedRepositoriesRecursively>true</resolveDefinedRepositoriesRecursively>
+                            <!-- Disable recursive repository resolution to avoid pax-cdi RELEASE version range issues -->
+                            <resolveDefinedRepositoriesRecursively>false</resolveDefinedRepositoriesRecursively>
                             <descriptors>
-                                <!-- Include pax-cdi-features explicitly to avoid RELEASE version resolution issues -->
+                                <!-- Include pax-cdi-features explicitly since recursive resolution is disabled -->
                                 <descriptor>mvn:org.ops4j.pax.cdi/pax-cdi-features/${pax.cdi.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
