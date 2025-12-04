@@ -452,7 +452,7 @@
 	<script type="text/javascript" src="lib/jquery/js/jquery-3.7.1.min.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/jquery-ui-1.13.3.min.js"></script>
 
-    <script type="text/javascript" src="lib/underscore-1.8.3/underscore-min.js"></script>
+    <script type="text/javascript" src="lib/underscore-1.13.7/underscore-min.js"></script>
 
 
 	<script type="text/javascript" src="lib/bootstrap-3.4.1/js/bootstrap.min.js"></script>
