@@ -29,7 +29,7 @@
 <link href="lib/bootstrap-3.4.1/css/bootstrap.min.css" rel="stylesheet">
 <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
-<link href="lib/jquery/css/smoothness/jquery-ui-1.9.1.custom.min.css" rel="stylesheet">
+<link href="lib/jquery/css/smoothness/jquery-ui-1.13.3.custom.min.css" rel="stylesheet">
 <link href="lib/jquery/css/plugin/jquery-ui-timepicker-addon.css" rel="stylesheet">
 
 <!-- These CSS files have been compressed and aggregated into Search-min.css.  The list is here for easy modification for
@@ -450,7 +450,7 @@
 	<!-- Placed at the end of the document so the pages load faster -->
 
 	<script type="text/javascript" src="lib/jquery/js/jquery-3.7.1.min.js"></script>
-	<script type="text/javascript" src="lib/jquery/js/jquery-ui-1.12.1.min.js"></script>
+	<script type="text/javascript" src="lib/jquery/js/jquery-ui-1.13.3.min.js"></script>
 
     <script type="text/javascript" src="lib/underscore-1.8.3/underscore-min.js"></script>
 
