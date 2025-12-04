@@ -42,8 +42,20 @@ public class KlvLocalSet extends KlvDataElement<KlvContext> {
 
   @Override
   protected void decodeValue(final Klv klv) {
+    // This method is kept for backward compatibility but creates a new decoder
+    // without depth tracking. The overloaded method with parentDecoder should be
+    // preferred for proper recursion depth limiting.
     try {
       value = new KlvDecoder(localSetKlvContext).decode(klv.getValue());
+    } catch (KlvDecodingException e) {
+      LOGGER.debug("Couldn't decode the KLV local set named {}", name, e);
+    }
+  }
+
+  @Override
+  protected void decodeValue(final Klv klv, final KlvDecoder parentDecoder) {
+    try {
+      value = parentDecoder.createChildDecoder(localSetKlvContext).decode(klv.getValue());
     } catch (KlvDecodingException e) {
       LOGGER.debug("Couldn't decode the KLV local set named {}", name, e);
     }

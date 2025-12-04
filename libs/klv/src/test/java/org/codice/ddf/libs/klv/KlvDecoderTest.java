@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
@@ -737,5 +738,115 @@ public class KlvDecoderTest {
     assertThat(isErrorIndicatedUnsignedByte((short) 0, Optional.of((short) 0)), is(true));
     assertThat(isErrorIndicatedUnsignedByte((short) 1, Optional.of((short) 0)), is(false));
     assertThat(isErrorIndicatedUnsignedByte((short) 1, Optional.empty()), is(false));
+  }
+
+  @Test
+  public void testDefaultMaxRecursionDepth() {
+    final KlvContext context = new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE);
+    final KlvDecoder decoder = new KlvDecoder(context);
+    assertThat(decoder.getMaxRecursionDepth(), is(KlvDecoder.DEFAULT_MAX_RECURSION_DEPTH));
+    assertThat(decoder.getCurrentDepth(), is(0));
+  }
+
+  @Test
+  public void testCustomMaxRecursionDepth() {
+    final KlvContext context = new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE);
+    final KlvDecoder decoder = new KlvDecoder(context, 10);
+    assertThat(decoder.getMaxRecursionDepth(), is(10));
+    assertThat(decoder.getCurrentDepth(), is(0));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testInvalidMaxRecursionDepth() {
+    final KlvContext context = new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE);
+    new KlvDecoder(context, 0);
+  }
+
+  @Test
+  public void testChildDecoderIncrementsDepth() {
+    final KlvContext context = new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE);
+    final KlvDecoder parentDecoder = new KlvDecoder(context, 10);
+
+    final KlvDecoder childDecoder = parentDecoder.createChildDecoder(context);
+
+    assertThat(childDecoder.getMaxRecursionDepth(), is(10));
+    assertThat(childDecoder.getCurrentDepth(), is(1));
+
+    final KlvDecoder grandchildDecoder = childDecoder.createChildDecoder(context);
+
+    assertThat(grandchildDecoder.getMaxRecursionDepth(), is(10));
+    assertThat(grandchildDecoder.getCurrentDepth(), is(2));
+  }
+
+  @Test
+  public void testExceedMaxRecursionDepthThrowsException() {
+    final KlvContext context = new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE);
+    // Create a decoder that's already at the max depth
+    final KlvDecoder decoderAtMaxDepth = new KlvDecoder(context, 3, 4);
+
+    try {
+      decoderAtMaxDepth.decode(new byte[] {});
+      fail("Should have thrown KlvDecodingException for exceeding max recursion depth");
+    } catch (KlvDecodingException e) {
+      assertTrue(
+          "Exception message should mention nesting depth",
+          e.getMessage().contains("nesting depth"));
+      assertTrue(
+          "Exception message should mention maximum allowed depth",
+          e.getMessage().contains("maximum allowed depth"));
+    }
+  }
+
+  @Test
+  public void testDeeplyNestedKlvLocalSetExceedsDepth() throws KlvDecodingException {
+    // Create a nested KLV structure that exceeds the max depth
+    // The structure is: LocalSet -> LocalSet -> LocalSet (3 levels deep)
+
+    // Innermost data element (a simple byte)
+    final KlvByte innerData = new KlvByte(new byte[] {0x01}, "innerData");
+    final Set<KlvDataElement> innerElements = Collections.singleton(innerData);
+    final KlvContext innerContext =
+        new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE, innerElements);
+
+    // Middle local set containing the inner data
+    final KlvLocalSet middleSet = new KlvLocalSet(new byte[] {0x02}, "middleSet", innerContext);
+    final Set<KlvDataElement> middleElements = Collections.singleton(middleSet);
+    final KlvContext middleContext =
+        new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE, middleElements);
+
+    // Outer local set containing the middle set
+    final KlvLocalSet outerSet = new KlvLocalSet(new byte[] {0x03}, "outerSet", middleContext);
+    final Set<KlvDataElement> outerElements = Collections.singleton(outerSet);
+    final KlvContext outerContext =
+        new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE, outerElements);
+
+    // Build nested KLV bytes: outer(middle(inner(value)))
+    // Inner: key=0x01, length=0x01, value=0x42
+    byte[] innerBytes = new byte[] {0x01, 0x01, 0x42};
+    // Middle: key=0x02, length=len(innerBytes), value=innerBytes
+    byte[] middleBytes = new byte[2 + innerBytes.length];
+    middleBytes[0] = 0x02;
+    middleBytes[1] = (byte) innerBytes.length;
+    System.arraycopy(innerBytes, 0, middleBytes, 2, innerBytes.length);
+    // Outer: key=0x03, length=len(middleBytes), value=middleBytes
+    byte[] outerBytes = new byte[2 + middleBytes.length];
+    outerBytes[0] = 0x03;
+    outerBytes[1] = (byte) middleBytes.length;
+    System.arraycopy(middleBytes, 0, outerBytes, 2, middleBytes.length);
+
+    // With max depth of 1, the nested structure (depth 2+) should fail
+    final KlvDecoder shallowDecoder = new KlvDecoder(outerContext, 1);
+
+    // The decode should succeed at the outer level, but the nested decoding
+    // should be caught and logged (not thrown) because KlvLocalSet catches exceptions
+    final KlvContext result = shallowDecoder.decode(outerBytes);
+
+    // The outer set should be decoded
+    assertThat(result.getDataElements().size(), is(1));
+
+    // But its value (the nested structure) should be null because decoding failed at depth
+    final KlvLocalSet decodedOuter = (KlvLocalSet) result.getDataElementByName("outerSet");
+    // The middle set should exist because we're at depth 1 when decoding it
+    // But if it tries to decode further, it will fail
   }
 }

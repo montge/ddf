@@ -59,6 +59,24 @@ public abstract class KlvDataElement<T> {
 
   protected abstract void decodeValue(Klv klv);
 
+  /**
+   * Decodes the value of this data element from the given KLV structure, with access to the parent
+   * decoder for recursive decoding. The default implementation delegates to {@link
+   * #decodeValue(Klv)}.
+   *
+   * <p>Subclasses that need to decode nested KLV structures (such as {@link
+   * org.codice.ddf.libs.klv.data.set.KlvLocalSet}) should override this method to use the parent
+   * decoder's {@link KlvDecoder#createChildDecoder(KlvContext)} method to maintain recursion depth
+   * tracking.
+   *
+   * @param klv the KLV structure containing the data to decode
+   * @param parentDecoder the parent decoder, used for creating child decoders with proper depth
+   *     tracking
+   */
+  protected void decodeValue(Klv klv, KlvDecoder parentDecoder) {
+    decodeValue(klv);
+  }
+
   public T getValue() {
     return value;
   }
