@@ -27,7 +27,7 @@
              description="Dependencies for the core security APIs.">
         <!-- Third Party Features -->
         <feature prerequisite="true">wrap</feature>
-        <feature>pax-http-whiteboard</feature>
+        <feature>pax-web-whiteboard</feature>
 
         <!-- External DDF Features -->
         <feature>jackson</feature>
