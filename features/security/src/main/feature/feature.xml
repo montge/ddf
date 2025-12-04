@@ -141,7 +141,7 @@
         <!-- Third Party Features -->
         <feature>spring</feature>
         <feature>war</feature>
-        <feature>pax-jetty</feature>
+        <feature>pax-web-jetty</feature>
         <feature>pax-http-jetty</feature>
 
         <!-- External DDF Features -->
