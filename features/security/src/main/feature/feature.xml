@@ -142,7 +142,7 @@
         <feature>spring</feature>
         <feature>war</feature>
         <feature>pax-web-jetty</feature>
-        <feature>pax-http-jetty</feature>
+        <feature>pax-web-http-jetty</feature>
 
         <!-- External DDF Features -->
         <feature>apache-commons</feature>
