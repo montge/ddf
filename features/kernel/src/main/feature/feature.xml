@@ -50,6 +50,16 @@
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/${spring.osgi.bundle.version}</bundle>
     </feature>
 
+    <!--
+        CXF RS Security SSO SAML feature
+        This feature was removed from CXF 3.6.x but the bundle still exists.
+        DDF requires this for SAML SSO support.
+    -->
+    <feature name="cxf-rs-security-sso-saml" description="CXF RS Security SSO SAML" version="${cxf.version}">
+        <feature version="${cxf.version}">cxf-rs-security-xml</feature>
+        <bundle start-level="40">mvn:org.apache.cxf/cxf-rt-rs-security-sso-saml/${cxf.version}</bundle>
+    </feature>
+
     <feature name="kernel" version="${project.version}"
              description="Minimual set of features and dependencies commonly used.">
         <feature version="${karaf.version}">standard</feature>
