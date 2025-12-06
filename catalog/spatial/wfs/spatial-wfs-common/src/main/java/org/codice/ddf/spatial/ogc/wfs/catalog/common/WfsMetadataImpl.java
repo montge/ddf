@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.codice.ddf.spatial.ogc.wfs.featuretransformer.WfsMetadata;
 
 public final class WfsMetadataImpl<T> implements WfsMetadata<T> {

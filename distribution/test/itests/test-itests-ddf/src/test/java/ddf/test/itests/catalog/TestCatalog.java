@@ -86,7 +86,7 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.xpath.XPathExpressionException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.model.ModelCamelContext;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.codice.ddf.catalog.content.monitor.ContentDirectoryMonitor;

@@ -53,7 +53,7 @@ import net.opengis.cat.csw.v_2_0_2.QueryType;
 import net.opengis.cat.csw.v_2_0_2.ResultType;
 import net.opengis.filter.v_1_1_0.FilterType;
 import net.opengis.filter.v_1_1_0.SortByType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswException;

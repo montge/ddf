@@ -18,7 +18,7 @@ import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.transform.CatalogTransformerException;
 import java.util.List;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -16,7 +16,7 @@ package org.codice.ddf.libs.geo.util;
 import javax.measure.IncommensurableException;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.codice.ddf.libs.geo.GeoFormatException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.measure.Measure;

@@ -28,7 +28,7 @@ import ddf.catalog.operation.UpdateResponse;
 import ddf.catalog.operation.impl.UpdateImpl;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.junit.Test;
 
 public class ResponseSplitterTest {

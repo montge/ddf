@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.spatial.geocoding.GeoCodingConstants;

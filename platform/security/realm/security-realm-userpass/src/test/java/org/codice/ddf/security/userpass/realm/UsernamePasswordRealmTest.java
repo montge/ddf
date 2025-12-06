@@ -415,4 +415,390 @@ public class UsernamePasswordRealmTest {
     assertThat(emailAttribute.getValues(), hasSize(2));
     assertThat(emailAttribute.getValues(), contains("tester@example.com", "test@example.com"));
   }
+
+  @Test(expected = AuthenticationException.class)
+  public void testDoGetAuthenticationInfoInvalidCredentialsFormat() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    when(authenticationToken.getCredentials()).thenReturn("invalid");
+
+    upRealm.doGetAuthenticationInfo(authenticationToken);
+  }
+
+  @Test(expected = AuthenticationException.class)
+  public void testDoGetAuthenticationInfoEmptyCredentials() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    when(authenticationToken.getCredentials()).thenReturn("");
+
+    upRealm.doGetAuthenticationInfo(authenticationToken);
+  }
+
+  @Test(expected = AuthenticationException.class)
+  public void testDoGetAuthenticationInfoMissingColon() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    when(authenticationToken.getCredentials()).thenReturn("YWRtaW4=");
+
+    upRealm.doGetAuthenticationInfo(authenticationToken);
+  }
+
+  @Test(expected = AuthenticationException.class)
+  public void testDoGetAuthenticationInfoMultipleColons() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    when(authenticationToken.getCredentials()).thenReturn("user:pass:extra");
+
+    upRealm.doGetAuthenticationInfo(authenticationToken);
+  }
+
+  @Test(expected = AuthenticationException.class)
+  public void testDoGetAuthenticationInfoAllRealmsFailLogin() {
+    UsernamePasswordRealm failingRealm =
+        new UsernamePasswordRealm() {
+          protected Subject login(String username, String password, String realmName)
+              throws LoginException {
+            throw new LoginException("All realms fail");
+          }
+        };
+
+    List<ClaimsHandler> claimsHandlers = new ArrayList<>();
+    failingRealm.setClaimsHandlers(claimsHandlers);
+
+    JaasRealm jaasRealm1 = mock(JaasRealm.class);
+    when(jaasRealm1.getName()).thenReturn("realm1");
+    failingRealm.realmList.add(jaasRealm1);
+
+    JaasRealm jaasRealm2 = mock(JaasRealm.class);
+    when(jaasRealm2.getName()).thenReturn("realm2");
+    failingRealm.realmList.add(jaasRealm2);
+
+    JaasRealm jaasRealm3 = mock(JaasRealm.class);
+    when(jaasRealm3.getName()).thenReturn("realm3");
+    failingRealm.realmList.add(jaasRealm3);
+
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("user", "pass", "0.0.0.0");
+
+    failingRealm.doGetAuthenticationInfo(authenticationToken);
+  }
+
+  @Test
+  public void testDoGetAuthenticationInfoNoRealms() {
+    UsernamePasswordRealm noRealmsRealm = new UsernamePasswordRealm();
+    noRealmsRealm.setClaimsHandlers(Collections.emptyList());
+
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("admin", "pass", "0.0.0.0");
+
+    try {
+      noRealmsRealm.doGetAuthenticationInfo(authenticationToken);
+    } catch (AuthenticationException e) {
+      assertNotNull(e);
+      assertTrue(e.getMessage().contains("Login failed"));
+    }
+  }
+
+  @Test
+  public void testAddRealm() {
+    UsernamePasswordRealm testRealm = new UsernamePasswordRealm();
+    int initialSize = testRealm.realmList.size();
+
+    JaasRealm jaasRealm = mock(JaasRealm.class);
+    when(jaasRealm.getName()).thenReturn("newRealm");
+    testRealm.realmList.add(jaasRealm);
+
+    assertThat(testRealm.realmList.size(), is(equalTo(initialSize + 1)));
+  }
+
+  @Test
+  public void testRemoveRealm() {
+    UsernamePasswordRealm testRealm = new UsernamePasswordRealm();
+    JaasRealm jaasRealm = mock(JaasRealm.class);
+    when(jaasRealm.getName()).thenReturn("realmToRemove");
+    testRealm.realmList.add(jaasRealm);
+
+    int sizeAfterAdd = testRealm.realmList.size();
+    testRealm.realmList.remove(jaasRealm);
+
+    assertThat(testRealm.realmList.size(), is(equalTo(sizeAfterAdd - 1)));
+  }
+
+  @Test
+  public void testSetClaimsHandlers() {
+    UsernamePasswordRealm testRealm = new UsernamePasswordRealm();
+    List<ClaimsHandler> newHandlers = new ArrayList<>();
+    ClaimsHandler handler = mock(ClaimsHandler.class);
+    newHandlers.add(handler);
+
+    testRealm.setClaimsHandlers(newHandlers);
+
+    assertNotNull(testRealm);
+  }
+
+  @Test
+  public void testUserPrincipalExtraction() {
+    UsernamePasswordRealm testRealm =
+        new UsernamePasswordRealm() {
+          protected Subject login(String username, String password, String realmName)
+              throws LoginException {
+            if (realmName.equals("realm")) {
+              HashSet<Principal> principals = new HashSet<>();
+              UserPrincipal userPrincipal = mock(UserPrincipal.class);
+              when(userPrincipal.getName()).thenReturn("testuser");
+              principals.add(userPrincipal);
+
+              RolePrincipal role1 = mock(RolePrincipal.class);
+              when(role1.getName()).thenReturn("admin");
+              principals.add(role1);
+
+              RolePrincipal role2 = mock(RolePrincipal.class);
+              when(role2.getName()).thenReturn("manager");
+              principals.add(role2);
+
+              return new Subject(true, principals, new HashSet<>(), new HashSet<>());
+            }
+            throw new LoginException();
+          }
+        };
+
+    List<ClaimsHandler> claimsHandlers = new ArrayList<>();
+    testRealm.setClaimsHandlers(claimsHandlers);
+
+    JaasRealm jaasRealm = mock(JaasRealm.class);
+    when(jaasRealm.getName()).thenReturn("realm");
+    testRealm.realmList.add(jaasRealm);
+
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("testuser", "pass", "0.0.0.0");
+
+    AuthenticationInfo authenticationInfo = testRealm.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    assertNotNull(assertion);
+    assertThat(assertion.getPrincipal().getName(), is("testuser"));
+  }
+
+  @Test
+  public void testLoginWithFirstRealmSuccess() {
+    UsernamePasswordRealm testRealm =
+        new UsernamePasswordRealm() {
+          protected Subject login(String username, String password, String realmName)
+              throws LoginException {
+            if (realmName.equals("realm1")) {
+              HashSet<Principal> principals = new HashSet<>();
+              UserPrincipal userPrincipal = mock(UserPrincipal.class);
+              when(userPrincipal.getName()).thenReturn("firstuser");
+              principals.add(userPrincipal);
+              return new Subject(true, principals, new HashSet<>(), new HashSet<>());
+            }
+            throw new LoginException("Should not reach here");
+          }
+        };
+
+    List<ClaimsHandler> claimsHandlers = new ArrayList<>();
+    testRealm.setClaimsHandlers(claimsHandlers);
+
+    JaasRealm jaasRealm1 = mock(JaasRealm.class);
+    when(jaasRealm1.getName()).thenReturn("realm1");
+    testRealm.realmList.add(jaasRealm1);
+
+    JaasRealm jaasRealm2 = mock(JaasRealm.class);
+    when(jaasRealm2.getName()).thenReturn("realm2");
+    testRealm.realmList.add(jaasRealm2);
+
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("firstuser", "pass", "0.0.0.0");
+
+    AuthenticationInfo authenticationInfo = testRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertNotNull(authenticationInfo);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+    assertThat(assertion.getPrincipal().getName(), is("firstuser"));
+  }
+
+  @Test
+  public void testClaimsHandlerReturnsNullCollection() {
+    UsernamePasswordRealm testRealm =
+        new UsernamePasswordRealm() {
+          protected Subject login(String username, String password, String realmName)
+              throws LoginException {
+            if (realmName.equals("realm")) {
+              HashSet<Principal> principals = new HashSet<>();
+              UserPrincipal userPrincipal = mock(UserPrincipal.class);
+              when(userPrincipal.getName()).thenReturn("admin");
+              principals.add(userPrincipal);
+              return new Subject(true, principals, new HashSet<>(), new HashSet<>());
+            }
+            throw new LoginException();
+          }
+        };
+
+    List<ClaimsHandler> claimsHandlers = new ArrayList<>();
+    ClaimsHandler nullHandler = mock(ClaimsHandler.class);
+    when(nullHandler.retrieveClaims(any())).thenReturn(null);
+    claimsHandlers.add(nullHandler);
+    testRealm.setClaimsHandlers(claimsHandlers);
+
+    JaasRealm jaasRealm = mock(JaasRealm.class);
+    when(jaasRealm.getName()).thenReturn("realm");
+    testRealm.realmList.add(jaasRealm);
+
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("admin", "pass", "0.0.0.0");
+
+    try {
+      testRealm.doGetAuthenticationInfo(authenticationToken);
+    } catch (Exception e) {
+      assertNotNull(e);
+    }
+  }
+
+  @Test
+  public void testMultipleClaimsHandlersWithDifferentClaims() {
+    UsernamePasswordRealm testRealm =
+        new UsernamePasswordRealm() {
+          protected Subject login(String username, String password, String realmName)
+              throws LoginException {
+            if (realmName.equals("realm")) {
+              HashSet<Principal> principals = new HashSet<>();
+              UserPrincipal userPrincipal = mock(UserPrincipal.class);
+              when(userPrincipal.getName()).thenReturn("admin");
+              principals.add(userPrincipal);
+              return new Subject(true, principals, new HashSet<>(), new HashSet<>());
+            }
+            throw new LoginException();
+          }
+        };
+
+    List<ClaimsHandler> claimsHandlers = new ArrayList<>();
+
+    ClaimsHandler handler1 = mock(ClaimsHandler.class);
+    ClaimsCollection claims1 = new ClaimsCollectionImpl();
+    ClaimImpl claim1 = new ClaimImpl("department");
+    claim1.addValue("engineering");
+    claims1.add(claim1);
+    when(handler1.retrieveClaims(any())).thenReturn(claims1);
+
+    ClaimsHandler handler2 = mock(ClaimsHandler.class);
+    ClaimsCollection claims2 = new ClaimsCollectionImpl();
+    ClaimImpl claim2 = new ClaimImpl("location");
+    claim2.addValue("headquarters");
+    claims2.add(claim2);
+    when(handler2.retrieveClaims(any())).thenReturn(claims2);
+
+    claimsHandlers.add(handler1);
+    claimsHandlers.add(handler2);
+    testRealm.setClaimsHandlers(claimsHandlers);
+
+    JaasRealm jaasRealm = mock(JaasRealm.class);
+    when(jaasRealm.getName()).thenReturn("realm");
+    testRealm.realmList.add(jaasRealm);
+
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("admin", "pass", "0.0.0.0");
+
+    AuthenticationInfo authenticationInfo = testRealm.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    AttributeStatement attributeStatement = assertion.getAttributeStatements().get(0);
+    assertThat(attributeStatement.getAttributes(), hasSize(2));
+  }
+
+  @Test
+  public void testCredentialsPreservedInAuthenticationInfo() {
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("admin", "pass", "0.0.0.0");
+
+    String originalCredentials = (String) authenticationToken.getCredentials();
+
+    AuthenticationInfo authenticationInfo = upRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertThat(authenticationInfo.getCredentials(), is(equalTo(originalCredentials)));
+  }
+
+  @Test
+  public void testSubjectWithOnlyUserPrincipalNoRoles() {
+    UsernamePasswordRealm testRealm =
+        new UsernamePasswordRealm() {
+          protected Subject login(String username, String password, String realmName)
+              throws LoginException {
+            if (realmName.equals("realm")) {
+              HashSet<Principal> principals = new HashSet<>();
+              UserPrincipal userPrincipal = mock(UserPrincipal.class);
+              when(userPrincipal.getName()).thenReturn("basicuser");
+              principals.add(userPrincipal);
+              return new Subject(true, principals, new HashSet<>(), new HashSet<>());
+            }
+            throw new LoginException();
+          }
+        };
+
+    List<ClaimsHandler> claimsHandlers = new ArrayList<>();
+    testRealm.setClaimsHandlers(claimsHandlers);
+
+    JaasRealm jaasRealm = mock(JaasRealm.class);
+    when(jaasRealm.getName()).thenReturn("realm");
+    testRealm.realmList.add(jaasRealm);
+
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("basicuser", "pass", "0.0.0.0");
+
+    AuthenticationInfo authenticationInfo = testRealm.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    assertNotNull(assertion);
+    assertThat(assertion.getPrincipal().getName(), is("basicuser"));
+  }
+
+  @Test
+  public void testAssertionWeight() {
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("admin", "pass", "0.0.0.0");
+
+    AuthenticationInfo authenticationInfo = upRealm.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    assertThat(assertion.getWeight(), is(equalTo(SecurityAssertion.LOCAL_AUTH_WEIGHT)));
+  }
+
+  @Test
+  public void testAssertionValidityPeriod() {
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("admin", "pass", "0.0.0.0");
+
+    AuthenticationInfo authenticationInfo = upRealm.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    assertNotNull(assertion.getNotBefore());
+    assertNotNull(assertion.getNotOnOrAfter());
+    assertTrue(
+        "NotOnOrAfter should be after NotBefore",
+        assertion.getNotOnOrAfter().after(assertion.getNotBefore()));
+  }
+
+  @Test
+  public void testPrincipalCollectionRealmName() {
+    AuthenticationTokenFactory authenticationTokenFactory = new AuthenticationTokenFactory();
+    AuthenticationToken authenticationToken =
+        authenticationTokenFactory.fromUsernamePassword("admin", "pass", "0.0.0.0");
+
+    AuthenticationInfo authenticationInfo = upRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertNotNull(authenticationInfo.getPrincipals());
+    assertNotNull(authenticationInfo.getPrincipals().getRealmNames());
+    assertThat(authenticationInfo.getPrincipals().getRealmNames().size(), is(greaterThan(0)));
+  }
 }

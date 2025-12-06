@@ -56,7 +56,7 @@ import net.opengis.gml.v_3_1_1.MultiPolygonType;
 import net.opengis.gml.v_3_1_1.PointType;
 import net.opengis.gml.v_3_1_1.PolygonPropertyType;
 import net.opengis.gml.v_3_1_1.PolygonType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.FeatureMetacardType;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsConstants;

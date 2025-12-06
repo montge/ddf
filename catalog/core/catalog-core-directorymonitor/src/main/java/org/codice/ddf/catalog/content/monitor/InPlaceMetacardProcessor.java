@@ -32,7 +32,7 @@ import java.util.Optional;
 import javax.xml.bind.DatatypeConverter;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**

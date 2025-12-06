@@ -91,7 +91,7 @@ import net.opengis.wfs.v_1_1_0.FeatureTypeType;
 import net.opengis.wfs.v_1_1_0.QueryType;
 import net.opengis.wfs.v_1_1_0.ResultTypeType;
 import net.opengis.wfs.v_1_1_0.WFSCapabilitiesType;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.codice.ddf.cxf.client.ClientBuilder;

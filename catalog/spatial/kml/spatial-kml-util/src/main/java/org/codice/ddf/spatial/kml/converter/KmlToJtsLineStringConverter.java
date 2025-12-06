@@ -14,7 +14,7 @@
 package org.codice.ddf.spatial.kml.converter;
 
 import de.micromata.opengis.kml.v_2_2_0.LineString;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;

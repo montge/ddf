@@ -24,6 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import ddf.security.assertion.Attribute;
@@ -358,6 +359,271 @@ public class GuestRealmTest {
     assertTrue(
         "NotOnOrAfter should be after NotBefore",
         securityAssertion.getNotOnOrAfter().after(securityAssertion.getNotBefore()));
+  }
+
+  @Test
+  public void testSetAttributesWithInvalidURISyntax() {
+    GuestRealm newRealm = new GuestRealm();
+    newRealm.setSecurityLogger(securityLogger);
+    newRealm.setAttributes(Arrays.asList("not a valid uri=value", "http://valid.com/claim=value"));
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    SecurityAssertion securityAssertion =
+        (SecurityAssertion) authenticationInfo.getPrincipals().asList().get(1);
+    assertThat(securityAssertion.getAttributeStatements().get(0).getAttributes(), hasSize(1));
+  }
+
+  @Test
+  public void testAttributesWithEmptyValue() {
+    GuestRealm newRealm = new GuestRealm();
+    newRealm.setSecurityLogger(securityLogger);
+    newRealm.setAttributes(Arrays.asList("http://example.com/claim=value"));
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    SecurityAssertion securityAssertion =
+        (SecurityAssertion) authenticationInfo.getPrincipals().asList().get(1);
+    assertThat(securityAssertion.getAttributeStatements().get(0).getAttributes(), hasSize(1));
+    Attribute claimAttribute =
+        securityAssertion.getAttributeStatements().get(0).getAttributes().get(0);
+    assertThat(claimAttribute.getValues(), hasSize(1));
+    assertThat(claimAttribute.getValues().get(0), is(equalTo("value")));
+  }
+
+  @Test
+  public void testAttributesWithMultiplePipeDelimitedValues() {
+    GuestRealm newRealm = new GuestRealm();
+    newRealm.setSecurityLogger(securityLogger);
+    newRealm.setAttributes(Arrays.asList("http://example.com/roles=role1|role2|role3|role4|role5"));
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    SecurityAssertion securityAssertion =
+        (SecurityAssertion) authenticationInfo.getPrincipals().asList().get(1);
+    Attribute rolesAttribute =
+        securityAssertion.getAttributeStatements().get(0).getAttributes().get(0);
+    assertThat(rolesAttribute.getValues(), hasSize(5));
+    assertThat(
+        rolesAttribute.getValues(),
+        containsInAnyOrder("role1", "role2", "role3", "role4", "role5"));
+  }
+
+  @Test
+  public void testAttributesWithSpecialCharacters() {
+    GuestRealm newRealm = new GuestRealm();
+    newRealm.setSecurityLogger(securityLogger);
+    newRealm.setAttributes(
+        Arrays.asList(
+            "http://example.com/name=Test User@Domain.com",
+            "http://example.com/group=Dev&QA|Support"));
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    SecurityAssertion securityAssertion =
+        (SecurityAssertion) authenticationInfo.getPrincipals().asList().get(1);
+    assertThat(securityAssertion.getAttributeStatements().get(0).getAttributes(), hasSize(2));
+  }
+
+  @Test
+  public void testDifferentIpAddresses() {
+    String[] ipAddresses = {
+      "127.0.0.1", "192.168.0.1", "10.0.0.1", "172.16.0.1", "255.255.255.255", "0.0.0.0"
+    };
+
+    for (String ip : ipAddresses) {
+      BaseAuthenticationToken baseAuthenticationToken =
+          new MockBaseAuthenticationToken("principal", "credentials", ip);
+      baseAuthenticationToken.setAllowGuest(true);
+
+      AuthenticationInfo authenticationInfo =
+          guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+      String principalName = (String) authenticationInfo.getPrincipals().asList().get(0);
+      assertThat(principalName, is(equalTo("Guest@" + ip)));
+    }
+  }
+
+  @Test
+  public void testRealmNameInPrincipalCollection() {
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    PrincipalCollection principals = authenticationInfo.getPrincipals();
+    assertNotNull(principals.getRealmNames());
+    assertThat(principals.getRealmNames().size(), is(equalTo(1)));
+  }
+
+  @Test
+  public void testAttributesWithOnlyEquals() {
+    GuestRealm newRealm = new GuestRealm();
+    newRealm.setSecurityLogger(securityLogger);
+    newRealm.setAttributes(Arrays.asList("=", "==", "==="));
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    SecurityAssertion securityAssertion =
+        (SecurityAssertion) authenticationInfo.getPrincipals().asList().get(1);
+    assertThat(securityAssertion.getAttributeStatements().get(0).getAttributes(), hasSize(0));
+  }
+
+  @Test
+  public void testAttributesWithWhitespace() {
+    GuestRealm newRealm = new GuestRealm();
+    newRealm.setSecurityLogger(securityLogger);
+    newRealm.setAttributes(
+        Arrays.asList(
+            "http://example.com/claim1=  value with spaces  ",
+            "http://example.com/claim2=\ttab\tvalue"));
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    SecurityAssertion securityAssertion =
+        (SecurityAssertion) authenticationInfo.getPrincipals().asList().get(1);
+    assertThat(securityAssertion.getAttributeStatements().get(0).getAttributes(), hasSize(2));
+  }
+
+  @Test
+  public void testGuestAuthenticationTokenWithDifferentIp() {
+    GuestAuthenticationToken guestToken =
+        new GuestAuthenticationToken("203.0.113.42", securityLogger);
+
+    boolean supports = guestRealm.supports(guestToken);
+    assertTrue(supports);
+
+    AuthenticationInfo authenticationInfo = guestRealm.doGetAuthenticationInfo(guestToken);
+    assertNotNull(authenticationInfo);
+
+    String principalName = (String) authenticationInfo.getPrincipals().asList().get(0);
+    assertThat(principalName, is(equalTo("Guest@203.0.113.42")));
+  }
+
+  @Test
+  public void testTokenWithEmptyIpAddress() {
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    String principalName = (String) authenticationInfo.getPrincipals().asList().get(0);
+    assertThat(principalName, is(equalTo("Guest@")));
+  }
+
+  @Test
+  public void testTokenWithNullIpAddress() {
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", null);
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    String principalName = (String) authenticationInfo.getPrincipals().asList().get(0);
+    assertThat(principalName, is(equalTo("Guest@")));
+  }
+
+  @Test
+  public void testAttributesWithNoEquals() {
+    GuestRealm newRealm = new GuestRealm();
+    newRealm.setSecurityLogger(securityLogger);
+    newRealm.setAttributes(Arrays.asList("noequals", "alsonoequals"));
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo authenticationInfo =
+        newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    SecurityAssertion securityAssertion =
+        (SecurityAssertion) authenticationInfo.getPrincipals().asList().get(1);
+    assertThat(securityAssertion.getAttributeStatements().get(0).getAttributes(), hasSize(0));
+  }
+
+  @Test
+  public void testSetSecurityLogger() {
+    GuestRealm newRealm = new GuestRealm();
+    SecurityLogger newLogger = mock(SecurityLogger.class);
+    newRealm.setSecurityLogger(newLogger);
+    newRealm.setAttributes(Collections.emptyList());
+
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "192.168.1.1");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    newRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    verify(newLogger).audit("Guest assertion generated for IP address: 192.168.1.1");
+  }
+
+  @Test
+  public void testSupportsWithAllowGuestFalseButGuestToken() {
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(false);
+
+    boolean supports = guestRealm.supports(baseAuthenticationToken);
+    assertFalse(supports);
+
+    GuestAuthenticationToken guestToken = new GuestAuthenticationToken("0.0.0.0", securityLogger);
+    boolean guestSupports = guestRealm.supports(guestToken);
+    assertTrue(guestSupports);
+  }
+
+  @Test
+  public void testConsecutiveCallsGenerateUniqueAssertions() {
+    BaseAuthenticationToken baseAuthenticationToken =
+        new MockBaseAuthenticationToken("principal", "credentials", "0.0.0.0");
+    baseAuthenticationToken.setAllowGuest(true);
+
+    AuthenticationInfo first = guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+    AuthenticationInfo second = guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+    AuthenticationInfo third = guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
+
+    assertNotSame(first, second);
+    assertNotSame(second, third);
+    assertNotSame(first, third);
+
+    SecurityAssertion firstAssertion = (SecurityAssertion) first.getPrincipals().asList().get(1);
+    SecurityAssertion secondAssertion = (SecurityAssertion) second.getPrincipals().asList().get(1);
+
+    assertNotSame(firstAssertion, secondAssertion);
   }
 
   class MockBaseAuthenticationToken extends BaseAuthenticationToken {

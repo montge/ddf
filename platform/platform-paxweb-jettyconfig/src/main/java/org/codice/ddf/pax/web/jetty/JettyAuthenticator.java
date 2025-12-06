@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 import javax.servlet.Filter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.codice.ddf.platform.filter.AuthenticationChallengeException;
 import org.codice.ddf.platform.filter.AuthenticationException;

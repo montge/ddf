@@ -13,9 +13,9 @@
  */
 package ddf.catalog.pubsub.criteria.geospatial;
 
-import org.geotools.geometry.jts.WKTReader2;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 public class GeospatialEvaluationCriteriaImpl implements GeospatialEvaluationCriteria {
   private Geometry criteria;
@@ -36,7 +36,7 @@ public class GeospatialEvaluationCriteriaImpl implements GeospatialEvaluationCri
 
   public GeospatialEvaluationCriteriaImpl(
       Geometry criteria, String geoOperation, String input, double distance) throws ParseException {
-    WKTReader2 wktreader = new WKTReader2();
+    WKTReader wktreader = new WKTReader();
 
     this.criteria = criteria;
     this.geoOperation = geoOperation;
@@ -46,7 +46,7 @@ public class GeospatialEvaluationCriteriaImpl implements GeospatialEvaluationCri
 
   public GeospatialEvaluationCriteriaImpl(Geometry criteria, String operation, String input)
       throws ParseException {
-    WKTReader2 wktreader = new WKTReader2();
+    WKTReader wktreader = new WKTReader();
     this.criteria = criteria;
     this.geoOperation = operation;
     this.input = wktreader.read(input);

@@ -58,7 +58,7 @@ import java.util.UUID;
 import org.apache.camel.component.file.GenericFile;
 import org.apache.camel.component.file.GenericFileMessage;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.collections4.map.HashedMap;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.junit.Before;
 import org.junit.Rule;

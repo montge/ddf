@@ -67,7 +67,7 @@ import net.opengis.ows.v_1_0_0.DomainType;
 import net.opengis.ows.v_1_0_0.Operation;
 import net.opengis.ows.v_1_0_0.OperationsMetadata;
 import net.opengis.ows.v_1_0_0.ServiceIdentification;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.codice.ddf.spatial.ogc.catalog.MetadataTransformer;
 import org.codice.ddf.spatial.ogc.catalog.common.AvailabilityTask;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.Csw;

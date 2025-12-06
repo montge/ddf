@@ -40,7 +40,7 @@ import ddf.security.SecurityConstants
 import ddf.security.Subject
 import ddf.security.audit.SecurityLogger
 import ddf.security.permission.impl.PermissionsImpl
-import org.apache.commons.collections.CollectionUtils
+import org.apache.commons.collections4.CollectionUtils
 import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 import spock.lang.Shared

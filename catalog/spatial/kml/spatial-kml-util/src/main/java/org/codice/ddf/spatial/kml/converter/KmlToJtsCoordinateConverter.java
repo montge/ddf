@@ -17,7 +17,7 @@ import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class KmlToJtsCoordinateConverter {
 

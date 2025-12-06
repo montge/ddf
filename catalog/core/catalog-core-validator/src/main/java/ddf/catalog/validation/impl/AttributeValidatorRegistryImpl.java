@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class AttributeValidatorRegistryImpl implements AttributeValidatorRegistry {
   private final Map<String, Set<AttributeValidator>> attributeValidatorMap =

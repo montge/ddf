@@ -20,9 +20,9 @@ import ddf.catalog.pubsub.criteria.geospatial.GeospatialEvaluator;
 import ddf.catalog.pubsub.internal.PubSubConstants;
 import java.util.Iterator;
 import java.util.Map;
-import org.geotools.geometry.jts.WKTReader2;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.osgi.service.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class GeospatialPredicate implements Predicate {
     this.distance = distance;
 
     try {
-      WKTReader2 wktreader = new WKTReader2();
+      WKTReader wktreader = new WKTReader();
       this.geoCriteria = wktreader.read(wkt);
     } catch (Exception e) {
       LOGGER.debug("Exception reading WKT", e);

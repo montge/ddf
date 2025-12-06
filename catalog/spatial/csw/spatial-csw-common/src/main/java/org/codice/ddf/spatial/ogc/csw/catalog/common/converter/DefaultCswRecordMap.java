@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.GmdConstants;
 import org.xml.sax.helpers.NamespaceSupport;

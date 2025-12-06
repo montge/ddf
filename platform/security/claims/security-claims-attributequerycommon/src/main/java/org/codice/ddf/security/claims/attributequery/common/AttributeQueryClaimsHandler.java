@@ -36,7 +36,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.resource.URIResolver;
 import org.codice.ddf.configuration.PropertyResolver;

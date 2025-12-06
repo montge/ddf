@@ -24,7 +24,7 @@ import ddf.catalog.pubsub.predicate.Predicate;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;

@@ -17,7 +17,7 @@ import com.google.common.base.Preconditions;
 import ddf.catalog.validation.violation.ValidationViolation;
 import java.util.Collections;
 import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
