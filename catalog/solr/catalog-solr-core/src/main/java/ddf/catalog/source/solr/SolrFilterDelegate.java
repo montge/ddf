@@ -24,8 +24,8 @@ import ddf.measure.Distance;
 import ddf.measure.Distance.LinearUnit;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,7 +34,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -139,9 +138,8 @@ public class SolrFilterDelegate extends FilterDelegate<SolrQuery> {
 
   private static final double DEFAULT_ERROR_IN_DEGREES = metersToDegrees(DEFAULT_ERROR_IN_METERS);
 
-  private static final TimeZone UTC_TIME_ZONE = TimeZone.getTimeZone("UTC");
-
-  private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+  private static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneOffset.UTC);
 
   private final DynamicSchemaResolver resolver;
 
@@ -161,7 +159,6 @@ public class SolrFilterDelegate extends FilterDelegate<SolrQuery> {
       DynamicSchemaResolver resolver, Map<String, Serializable> enabledFeatures) {
     this.resolver = resolver;
     this.enabledFeatures = enabledFeatures;
-    dateFormat.setTimeZone(UTC_TIME_ZONE);
   }
 
   private static double metersToDegrees(double distance) {
@@ -350,7 +347,7 @@ public class SolrFilterDelegate extends FilterDelegate<SolrQuery> {
   public SolrQuery propertyIsEqualTo(String propertyName, Date exactDate) {
     String mappedPropertyName = getMappedPropertyName(propertyName, AttributeFormat.DATE, true);
     SolrQuery query = new SolrQuery();
-    query.setQuery(" " + mappedPropertyName + ":" + QUOTE + dateFormat.format(exactDate) + QUOTE);
+    query.setQuery(" " + mappedPropertyName + ":" + QUOTE + formatDate(exactDate) + QUOTE);
     return query;
   }
 
@@ -674,7 +671,7 @@ public class SolrFilterDelegate extends FilterDelegate<SolrQuery> {
   }
 
   private String formatDate(Date date) {
-    return dateFormat.format(date);
+    return DATE_FORMATTER.format(date.toInstant());
   }
 
   @Override

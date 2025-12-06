@@ -22,8 +22,10 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -83,7 +85,8 @@ public class GsonTypeAdapters {
 
     static final String DATE_FORMAT = "dd MMM yyyy HH:mm:ss zzz";
 
-    final SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+    private static final DateTimeFormatter DATE_FORMATTER =
+        DateTimeFormatter.ofPattern(DATE_FORMAT).withZone(ZoneId.systemDefault());
 
     public static final TypeAdapterFactory FACTORY =
         new TypeAdapterFactory() {
@@ -123,7 +126,7 @@ public class GsonTypeAdapters {
           if (value instanceof byte[]) {
             out.value(Base64.getEncoder().encodeToString((byte[]) value));
           } else if (value instanceof Date) {
-            out.value(formatter.format((Date) value));
+            out.value(DATE_FORMATTER.format(((Date) value).toInstant()));
           } else if (value instanceof String) {
             out.value((String) value);
           } else if (value instanceof Long) {
@@ -222,8 +225,9 @@ public class GsonTypeAdapters {
               return Base64.getDecoder().decode(String.valueOf(in.nextString()));
             case DATE_SUFFIX:
               try {
-                return formatter.parse(String.valueOf(in.nextString()));
-              } catch (ParseException e) {
+                return Date.from(
+                    Instant.from(DATE_FORMATTER.parse(String.valueOf(in.nextString()))));
+              } catch (DateTimeParseException e) {
                 return null;
               }
             case INT_SUFFIX:

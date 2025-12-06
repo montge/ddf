@@ -27,7 +27,6 @@ import ddf.catalog.validation.MetacardValidator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -152,8 +151,7 @@ public class ValidateCommand extends CqlCommands {
     } catch (UnsupportedQueryException
         | SourceUnavailableException
         | FederationException
-        | CQLException
-        | ParseException e) {
+        | CQLException e) {
       throw new CatalogCommandException("Error executing catalog:validate", e);
     }
     return results;

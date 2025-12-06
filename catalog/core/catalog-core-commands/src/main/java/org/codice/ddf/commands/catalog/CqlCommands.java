@@ -19,8 +19,10 @@ import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.types.Core;
 import ddf.catalog.filter.FilterBuilder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,6 +41,8 @@ import org.opengis.filter.Filter;
 public abstract class CqlCommands extends CatalogCommands {
 
   public static final String DATE_FORMAT = "MM-dd-yyyy";
+
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
   public static final String DEFAULT_TEMPORAL_PROPERTY = Core.CREATED;
 
@@ -189,11 +193,12 @@ public abstract class CqlCommands extends CatalogCommands {
 
   private long filterCurrentTime;
 
-  protected Filter getFilter() throws ParseException, CQLException {
+  protected Filter getFilter() throws DateTimeParseException, CQLException {
     return getFilter(filterBuilder);
   }
 
-  protected Filter getFilter(FilterBuilder filterBuilder) throws CQLException, ParseException {
+  protected Filter getFilter(FilterBuilder filterBuilder)
+      throws CQLException, DateTimeParseException {
     filterCurrentTime = System.currentTimeMillis();
 
     if (cqlFilter != null) {
@@ -203,14 +208,18 @@ public abstract class CqlCommands extends CatalogCommands {
     final long start = getFilterStartTime();
     final long end = filterCurrentTime;
     final String temporalPropertyToFilter = getTemporalProperty();
-    final SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 
     if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+      LocalDate startLocalDate = LocalDate.parse(startDate, DATE_FORMATTER);
+      LocalDate endLocalDate = LocalDate.parse(endDate, DATE_FORMATTER);
+      Date parsedStartDate =
+          Date.from(startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+      Date parsedEndDate = Date.from(endLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
       return filterBuilder
           .attribute(temporalPropertyToFilter)
           .is()
           .during()
-          .dates(formatter.parse(startDate), formatter.parse(endDate));
+          .dates(parsedStartDate, parsedEndDate);
     } else if (start > 0 && end > 0) {
       return filterBuilder
           .attribute(temporalPropertyToFilter)

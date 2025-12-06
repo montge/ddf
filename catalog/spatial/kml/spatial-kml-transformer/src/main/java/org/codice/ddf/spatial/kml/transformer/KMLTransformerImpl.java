@@ -50,8 +50,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -61,7 +59,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.UUID;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -98,6 +95,9 @@ public class KMLTransformerImpl implements KMLTransformer {
   private static final Logger LOGGER = LoggerFactory.getLogger(KMLTransformerImpl.class);
 
   private static final String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+  private static final DateTimeFormatter EFFECTIVE_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withZone(ZoneId.of("GMT"));
 
   @VisibleForTesting static final MimeType KML_MIMETYPE = new MimeType();
 
@@ -191,13 +191,11 @@ public class KMLTransformerImpl implements KMLTransformer {
     kmlPlacemark.setId("Placemark-" + entry.getId());
     kmlPlacemark.setName(entry.getTitle());
 
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     String effectiveTime;
     if (entry.getEffectiveDate() == null) {
-      effectiveTime = dateFormat.format(new Date());
+      effectiveTime = EFFECTIVE_DATE_FORMATTER.format(Instant.now());
     } else {
-      effectiveTime = dateFormat.format(entry.getEffectiveDate());
+      effectiveTime = EFFECTIVE_DATE_FORMATTER.format(entry.getEffectiveDate().toInstant());
     }
     TimeSpan timeSpan = KmlFactory.createTimeSpan();
     timeSpan.setBegin(effectiveTime);

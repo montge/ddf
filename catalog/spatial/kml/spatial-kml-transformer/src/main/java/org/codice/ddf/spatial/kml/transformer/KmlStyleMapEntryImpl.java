@@ -16,10 +16,10 @@ package org.codice.ddf.spatial.kml.transformer;
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.Metacard;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
-import java.util.TimeZone;
 import org.apache.commons.math3.util.Precision;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 public class KmlStyleMapEntryImpl implements KmlStyleMapEntry {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(KmlStyleMapEntryImpl.class);
+
+  private static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withZone(ZoneId.of("GMT"));
 
   private String attributeName;
 
@@ -116,12 +119,10 @@ public class KmlStyleMapEntryImpl implements KmlStyleMapEntry {
         return Boolean.valueOf(attributeValue).equals(attribute.getValue());
       case DATE:
         try {
-          SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-          dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-          String mappedDate = dateFormat.format(dateFormat.parse(attributeValue));
-          String metacardDate = dateFormat.format((Date) attribute.getValue());
+          String mappedDate = DATE_FORMATTER.format(DATE_FORMATTER.parse(attributeValue));
+          String metacardDate = DATE_FORMATTER.format(((Date) attribute.getValue()).toInstant());
           return mappedDate.equals(metacardDate);
-        } catch (ParseException e) {
+        } catch (DateTimeParseException e) {
           LOGGER.debug("Unable to parse date and perform comparison.", e);
           return false;
         }

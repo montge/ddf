@@ -22,8 +22,10 @@ import ddf.catalog.operation.QueryRequest;
 import ddf.catalog.operation.SourceResponse;
 import ddf.catalog.operation.impl.QueryImpl;
 import ddf.catalog.operation.impl.QueryRequestImpl;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import org.apache.karaf.shell.api.action.Argument;
@@ -53,6 +55,8 @@ public class RangeCommand extends CatalogCommands {
   private static final String NUMBER = "#";
 
   private static final String DATE_FORMAT = "MM-dd-yyyy";
+
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
   @Argument(
       name = "ATTRIBUTE_NAME",
@@ -97,30 +101,32 @@ public class RangeCommand extends CatalogCommands {
     Date wayInTheFuture = new DateTime().plusYears(5000).toDate();
     Date endDate = wayInTheFuture;
 
-    SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-
     if (WILDCARD.equals(rangeBeginning) && WILDCARD.equals(rangeEnd)) {
       filter = filterBuilder.attribute(attributeName).before().date(endDate);
     } else if (WILDCARD.equals(rangeBeginning) && !WILDCARD.equals(rangeEnd)) {
       try {
-        endDate = formatter.parse(rangeEnd);
-      } catch (ParseException e) {
+        LocalDate localDate = LocalDate.parse(rangeEnd, DATE_FORMATTER);
+        endDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+      } catch (DateTimeParseException e) {
         throw new InterruptedException("Could not parse second parameter [" + rangeEnd + "]");
       }
       filter = filterBuilder.attribute(attributeName).before().date(endDate);
     } else if (!WILDCARD.equals(rangeBeginning) && WILDCARD.equals(rangeEnd)) {
       try {
-        Date startDate = formatter.parse(rangeBeginning);
+        LocalDate localDate = LocalDate.parse(rangeBeginning, DATE_FORMATTER);
+        Date startDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         filter = filterBuilder.attribute(attributeName).during().dates(startDate, endDate);
-      } catch (ParseException e) {
+      } catch (DateTimeParseException e) {
         throw new InterruptedException("Could not parse first parameter [" + rangeBeginning + "]");
       }
     } else {
       try {
-        Date startDate = formatter.parse(rangeBeginning);
-        endDate = formatter.parse(rangeEnd);
+        LocalDate startLocalDate = LocalDate.parse(rangeBeginning, DATE_FORMATTER);
+        LocalDate endLocalDate = LocalDate.parse(rangeEnd, DATE_FORMATTER);
+        Date startDate = Date.from(startLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        endDate = Date.from(endLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         filter = filterBuilder.attribute(attributeName).during().dates(startDate, endDate);
-      } catch (ParseException e) {
+      } catch (DateTimeParseException e) {
         throw new InterruptedException("Could not parse date parameters.");
       }
     }

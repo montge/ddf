@@ -23,7 +23,7 @@ import ddf.catalog.operation.impl.QueryRequestImpl;
 import ddf.catalog.source.IngestException;
 import ddf.catalog.source.SourceUnavailableException;
 import ddf.catalog.util.impl.ResultIterable;
-import java.text.ParseException;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -113,7 +113,10 @@ public class RemoveCommand extends CqlCommands {
         printErrorMessage("No documents match provided IDs or filter");
         LOGGER.debug("No documents deleted using the catalog:remove command");
       }
-    } catch (IngestException | SourceUnavailableException | ParseException | CQLException e) {
+    } catch (IngestException
+        | SourceUnavailableException
+        | DateTimeParseException
+        | CQLException e) {
       throw new CatalogCommandException("Error executing catalog:remove", e);
     }
     return null;

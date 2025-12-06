@@ -26,12 +26,12 @@ import ddf.geo.formatter.CompositeGeometry;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.xml.bind.DatatypeConverter;
@@ -57,6 +57,9 @@ import org.slf4j.LoggerFactory;
 public class GeoJsonMetacardTransformer implements MetacardTransformer {
 
   public static final String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+  private static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern(ISO_8601_DATE_FORMAT).withZone(ZoneId.of("GMT"));
 
   public static final String ID = "geojson";
 
@@ -162,10 +165,7 @@ public class GeoJsonMetacardTransformer implements MetacardTransformer {
       case BOOLEAN:
         return value;
       case DATE:
-        SimpleDateFormat dateFormat = new SimpleDateFormat(ISO_8601_DATE_FORMAT);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-        return dateFormat.format((Date) value);
+        return DATE_FORMATTER.format(((Date) value).toInstant());
       case BINARY:
         byte[] bytes = (byte[]) value;
         String base64 = DatatypeConverter.printBase64Binary(bytes);

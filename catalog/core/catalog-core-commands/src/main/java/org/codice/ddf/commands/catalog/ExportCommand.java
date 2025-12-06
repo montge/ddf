@@ -49,7 +49,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -623,7 +622,7 @@ public class ExportCommand extends CqlCommands {
   }
 
   @Override
-  protected Filter getFilter() throws ParseException, CQLException {
+  protected Filter getFilter() throws CQLException {
     Filter filter = super.getFilter();
     if (archived) {
       filter =

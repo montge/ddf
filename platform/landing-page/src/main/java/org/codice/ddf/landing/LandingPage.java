@@ -25,9 +25,10 @@ import com.github.jknack.handlebars.io.TemplateLoader;
 import com.google.common.annotations.VisibleForTesting;
 import ddf.platform.resource.bundle.locator.ResourceBundleLocator;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -88,6 +89,12 @@ public class LandingPage extends HttpServlet {
   private static final String LANDING_PAGE_FILE = "index";
 
   private static final String NO_DATE = "No date specified";
+
+  private static final DateTimeFormatter SIMPLE_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("MM/dd/yy");
+
+  private static final DateTimeFormatter FULL_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 
   private static final String LANDING_PAGE_BASE_NAME = "LandingPageBundle";
 
@@ -251,11 +258,11 @@ public class LandingPage extends HttpServlet {
   }
 
   private Date dateFromString(String dateString) {
-    final DateFormat format = new SimpleDateFormat("MM/dd/yy");
     Date date;
     try {
-      date = format.parse(dateString);
-    } catch (ParseException e) {
+      LocalDate localDate = LocalDate.parse(dateString, SIMPLE_DATE_FORMATTER);
+      date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    } catch (DateTimeParseException e) {
       date = new Date(0L);
     }
     return date;
@@ -328,8 +335,7 @@ public class LandingPage extends HttpServlet {
       if (reformat) { // Return the date in a nice-looking format. Used for displaying the dates on
         // the Web page.
         final Date date = dateFromString(matchedText);
-        final SimpleDateFormat format = new SimpleDateFormat("MMMM dd, yyyy");
-        return format.format(date);
+        return FULL_DATE_FORMATTER.format(date.toInstant().atZone(ZoneId.systemDefault()));
       } else { // Just return the date as it was in the announcement.
         return matchedText;
       }

@@ -18,7 +18,8 @@ import ddf.catalog.data.types.Contact;
 import ddf.catalog.data.types.Core;
 import ddf.catalog.data.types.Topic;
 import ddf.catalog.filter.impl.SimpleFilterDelegate;
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -38,6 +39,9 @@ public class ConfluenceFilterDelegate extends SimpleFilterDelegate<String> {
   public static final Map<String, ConfluenceQueryParameter> QUERY_PARAMETERS;
 
   private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+
+  private static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern(DATE_FORMAT).withZone(ZoneId.systemDefault());
 
   private static final String EMPTY_GROUP_PATTERN = "\\(\\s*\\)";
 
@@ -135,7 +139,7 @@ public class ConfluenceFilterDelegate extends SimpleFilterDelegate<String> {
     return getConfluenceParameter(
         propertyName,
         null,
-        param -> param.getGreaterThanExpression(new SimpleDateFormat(DATE_FORMAT).format(date)));
+        param -> param.getGreaterThanExpression(DATE_FORMATTER.format(date.toInstant())));
   }
 
   @Override
@@ -143,7 +147,7 @@ public class ConfluenceFilterDelegate extends SimpleFilterDelegate<String> {
     return getConfluenceParameter(
         propertyName,
         null,
-        param -> param.getGreaterThanExpression(new SimpleDateFormat(DATE_FORMAT).format(date)));
+        param -> param.getGreaterThanExpression(DATE_FORMATTER.format(date.toInstant())));
   }
 
   @Override
@@ -151,7 +155,7 @@ public class ConfluenceFilterDelegate extends SimpleFilterDelegate<String> {
     return getConfluenceParameter(
         propertyName,
         null,
-        param -> param.getLessThanExpression(new SimpleDateFormat(DATE_FORMAT).format(date)));
+        param -> param.getLessThanExpression(DATE_FORMATTER.format(date.toInstant())));
   }
 
   @Override
@@ -160,9 +164,9 @@ public class ConfluenceFilterDelegate extends SimpleFilterDelegate<String> {
         propertyName,
         null,
         param ->
-            param.getGreaterThanExpression(new SimpleDateFormat(DATE_FORMAT).format(startDate))
+            param.getGreaterThanExpression(DATE_FORMATTER.format(startDate.toInstant()))
                 + " AND "
-                + param.getLessThanExpression(new SimpleDateFormat(DATE_FORMAT).format(endDate)));
+                + param.getLessThanExpression(DATE_FORMATTER.format(endDate.toInstant())));
   }
 
   private String getConfluenceParameter(
