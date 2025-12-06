@@ -55,13 +55,15 @@ public class MetadataConfigurationParserTest {
   private String serverAddress;
   public static final Long SEVEN_DAYS = Duration.ofDays(7).toMillis();
 
+  private AutoCloseable mocks;
+
   @Mock HttpRequestHandler handler;
   public static final String CACHE_DURATION_REGEX = "cacheDuration=\"\\w*\"";
 
   @Before
   public void before() throws Exception {
     System.setProperty("org.ops4j.pax.logging.DefaultServiceLog.level", "INFO");
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
     try {
       InitializationService.initialize();
     } catch (Exception e) {
@@ -87,6 +89,7 @@ public class MetadataConfigurationParserTest {
   public void after() throws Exception {
     System.clearProperty("org.ops4j.pax.logging.DefaultServiceLog.level");
     server.stop();
+    mocks.close();
   }
 
   @Test

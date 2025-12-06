@@ -129,7 +129,7 @@
                             httpcore,
                             commons-beanutils,
                             commons-validator,
-                            commons-collections,
+                            commons-collections4,
                             commons-digester,
                             security-pdp-authzrealm
                         </Embed-Dependency>

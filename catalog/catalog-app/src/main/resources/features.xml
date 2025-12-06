@@ -219,7 +219,7 @@
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xstream/${xstream.bundle.version}
         </bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xpp3/${xpp3.bundle.version}</bundle>
-        <bundle>mvn:commons-collections/commons-collections/${commons-collections.version}</bundle>
+        <bundle>mvn:org.apache.commons/commons-collections4/${commons-collections4.version}</bundle>
     </feature>
 
     <feature name="catalog-security-filter" version="${project.version}"

@@ -44,6 +44,8 @@ public class AuthorizationFilterPermissionsTest {
 
   private AuthorizationFilter filter;
 
+  private AutoCloseable mocks;
+
   @Mock private HttpServletRequest request;
   @Mock private HttpServletResponse response;
   @Mock private SecurityFilterChain filterChain;
@@ -54,7 +56,7 @@ public class AuthorizationFilterPermissionsTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     filter = new AuthorizationFilter(contextPolicyManager);
     filter.setSecurityLogger(securityLogger);
@@ -67,8 +69,9 @@ public class AuthorizationFilterPermissionsTest {
   }
 
   @After
-  public void cleanup() {
+  public void cleanup() throws Exception {
     ThreadContext.unbindSubject();
+    mocks.close();
   }
 
   @Test

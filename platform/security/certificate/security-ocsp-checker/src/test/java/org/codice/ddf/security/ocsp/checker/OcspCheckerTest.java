@@ -53,6 +53,7 @@ import org.codice.ddf.cxf.client.impl.ClientBuilderImpl;
 import org.codice.ddf.cxf.oauth.OAuthSecurity;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.codice.ddf.security.ocsp.checker.OcspChecker.OcspCheckerException;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -82,6 +83,8 @@ public class OcspCheckerTest {
   private final List<URI> revokedEndpoints = new ArrayList<>();
   private final List<URI> unknownEndpoints = new ArrayList<>();
   private final List<URI> brokenEndpoints = new ArrayList<>();
+
+  private AutoCloseable mocks;
 
   // mocks
   @Mock private Response goodResponse;
@@ -119,7 +122,7 @@ public class OcspCheckerTest {
 
   @Before
   public void setup() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     when(goodWebClient.type(anyString())).thenReturn(goodWebClient);
     when(goodWebClient.accept(anyString())).thenReturn(goodWebClient);
@@ -178,6 +181,11 @@ public class OcspCheckerTest {
         };
 
     when(factory.<WebClient>getClientBuilder()).thenReturn(clientBuilder);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @AfterClass

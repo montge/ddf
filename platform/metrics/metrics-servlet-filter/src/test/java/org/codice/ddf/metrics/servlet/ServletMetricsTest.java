@@ -33,6 +33,7 @@ import javax.servlet.AsyncListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.http.HttpFilterChain;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -61,9 +62,11 @@ public class ServletMetricsTest {
 
   private Iterable<Tag> tags = DEFAULT_TAGS;
 
+  private AutoCloseable mocks;
+
   @Before
   public void before() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     meterRegistry = new SimpleMeterRegistry();
     Metrics.addRegistry(meterRegistry);
@@ -78,6 +81,11 @@ public class ServletMetricsTest {
     when(mockRequest.isAsyncStarted()).thenReturn(false);
     when(mockRequest.getMethod()).thenReturn(DEFAULT_METHOD);
     when(mockResponse.getStatus()).thenReturn(DEFAULT_STATUS);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @Test

@@ -48,6 +48,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -77,6 +78,8 @@ public class AssertionConsumerServiceTest {
   private SimpleSign simpleSign;
   private IdpMetadata idpMetadata;
   private AssertionConsumerService assertionConsumerService;
+
+  private AutoCloseable mocks;
 
   // mocks
   @Mock private EncryptionService encryptionService;
@@ -115,7 +118,7 @@ public class AssertionConsumerServiceTest {
 
   @Before
   public void setup() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     systemCrypto =
         new SystemCrypto("encryption.properties", "signature.properties", encryptionService);
@@ -158,6 +161,11 @@ public class AssertionConsumerServiceTest {
     assertionConsumerService.setSessionFactory(sessionFactory);
     assertionConsumerService.setContextPolicyManager(contextPolicyManager);
     assertionConsumerService.setSamlSecurity(new SamlSecurity());
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @Test

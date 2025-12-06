@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import ddf.security.encryption.EncryptionService;
 import ddf.security.permission.Permissions;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -34,10 +35,17 @@ public class CswSourceConfigurationTest {
 
   private CswSourceConfiguration configuration;
 
+  private AutoCloseable mocks;
+
   @Before
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
     configuration = new CswSourceConfiguration(encryptionService, permissions);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @Test

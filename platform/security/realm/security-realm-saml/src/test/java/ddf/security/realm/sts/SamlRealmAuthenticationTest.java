@@ -34,6 +34,7 @@ import org.codice.ddf.platform.filter.AuthenticationFailureException;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.SAMLAuthenticationToken;
 import org.codice.ddf.security.saml.assertion.validator.SamlAssertionValidator;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -45,6 +46,8 @@ public class SamlRealmAuthenticationTest {
 
   private SamlRealm realm;
 
+  private AutoCloseable mocks;
+
   @Mock private SamlAssertionValidator samlAssertionValidator;
   @Mock private SAMLAuthenticationToken samlToken;
   @Mock private Element securityTokenElement;
@@ -52,11 +55,16 @@ public class SamlRealmAuthenticationTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     realm = new SamlRealm();
     realm.setSamlAssertionValidator(samlAssertionValidator);
     realm.setUsernameAttributeList(Arrays.asList("uid", "username"));
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @Test

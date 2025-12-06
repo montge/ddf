@@ -31,6 +31,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,6 +54,8 @@ public class MetacardResourceStatusTest {
 
   private static final String RESOURCE_SIZE = "354";
 
+  private AutoCloseable mocks;
+
   @Mock private ResourceCacheInterface cache;
 
   @Mock private ReliableResource cachedResource;
@@ -63,7 +66,12 @@ public class MetacardResourceStatusTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   /**

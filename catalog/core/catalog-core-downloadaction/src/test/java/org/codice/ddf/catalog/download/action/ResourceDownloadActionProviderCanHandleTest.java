@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.codice.ddf.catalog.resource.cache.ResourceCacheServiceMBean;
 import org.codice.ddf.configuration.SystemBaseUrl;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,8 @@ public class ResourceDownloadActionProviderCanHandleTest {
   @Mock private ResourceCacheServiceMBean mockResourceCacheServiceMBeanProxy;
 
   private ResourceDownloadActionProvider actionProvider;
+
+  private AutoCloseable mocks;
 
   private String siteName;
 
@@ -96,7 +99,7 @@ public class ResourceDownloadActionProviderCanHandleTest {
 
   @Before
   public void setup() {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, "localhost");
     actionProvider =
         new ResourceDownloadActionProvider(ACTION_PROVIDER_ID) {
@@ -110,6 +113,11 @@ public class ResourceDownloadActionProviderCanHandleTest {
             return LOCAL_SITE_NAME;
           }
         };
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @Test

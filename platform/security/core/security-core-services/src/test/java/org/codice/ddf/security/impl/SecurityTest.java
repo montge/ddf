@@ -25,7 +25,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 import ddf.security.Subject;
 import ddf.security.audit.SecurityLogger;
@@ -36,10 +35,12 @@ import java.net.URISyntaxException;
 import java.security.PrivilegedAction;
 import java.util.concurrent.Callable;
 import org.apache.shiro.subject.ExecutionException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
@@ -48,6 +49,8 @@ import org.osgi.service.cm.ConfigurationAdmin;
 public class SecurityTest {
 
   private org.codice.ddf.security.impl.Security security;
+
+  private AutoCloseable mocks;
 
   @Mock private org.apache.shiro.subject.Subject shiroSubject;
 
@@ -60,7 +63,7 @@ public class SecurityTest {
     System.setProperty("karaf.local.roles", "admin,local");
     security = new Security();
 
-    initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     when(shiroSubject.execute(callable)).thenReturn("Success!");
 
@@ -74,6 +77,11 @@ public class SecurityTest {
     security = spy(security);
 
     security.setSecurityLogger(mock(SecurityLogger.class));
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @Test

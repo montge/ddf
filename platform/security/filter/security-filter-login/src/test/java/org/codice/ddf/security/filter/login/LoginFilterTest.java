@@ -43,6 +43,7 @@ import org.codice.ddf.security.handler.HandlerResultImpl;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,6 +59,7 @@ public class LoginFilterTest {
   private LoginFilter loginFilter;
   private Subject subject;
   private PrincipalHolder principalHolder;
+  private AutoCloseable mocks;
 
   // mocks
   @Mock private HttpServletRequest requestMock;
@@ -82,7 +84,7 @@ public class LoginFilterTest {
 
   @Before
   public void setup() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    mocks = MockitoAnnotations.openMocks(this);
 
     SimplePrincipalCollection principalCollection = new SimplePrincipalCollection();
     principalHolder = new PrincipalHolder();
@@ -119,6 +121,11 @@ public class LoginFilterTest {
     when(sessionMock.getAttribute(SECURITY_TOKEN_KEY)).thenReturn(principalHolder);
 
     when(contextPolicyManager.getSessionAccess()).thenReturn(true);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    mocks.close();
   }
 
   @Test

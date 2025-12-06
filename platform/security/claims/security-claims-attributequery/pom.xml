@@ -54,7 +54,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>
-                            commons-collections,
+                            commons-collections4,
                             security-claims-attributequerycommon
                         </Embed-Dependency>
                         <Export-Package />
