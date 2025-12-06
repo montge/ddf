@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.platform.logging;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.ops4j.pax.logging.spi.PaxLoggingEvent;
 import org.osgi.service.log.LogLevel;
 

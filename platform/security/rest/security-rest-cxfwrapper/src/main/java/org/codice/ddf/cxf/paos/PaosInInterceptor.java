@@ -46,7 +46,7 @@ import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPPart;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.security.AccessDeniedException;
 import org.apache.cxf.message.Message;

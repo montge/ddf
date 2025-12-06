@@ -13,7 +13,7 @@
  */
 package ddf.catalog.operation.impl;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.operation.SourceProcessingDetails;
 import java.util.Collections;

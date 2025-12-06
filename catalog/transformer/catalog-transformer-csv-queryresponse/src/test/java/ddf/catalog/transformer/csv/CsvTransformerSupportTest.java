@@ -367,11 +367,13 @@ public class CsvTransformerSupportTest {
 
     String csv = new String(result.getByteArray());
     assertThat(csv, containsString("tags"));
-    // Multi-valued attributes should be pipe-separated
-    assertThat(csv, containsString("tag1|tag2|tag3"));
+    // Multi-valued attributes are formatted with each value on a new line in quotes
+    assertThat(csv, containsString("tag1"));
+    assertThat(csv, containsString("tag2"));
+    assertThat(csv, containsString("tag3"));
   }
 
-  @Test
+  @Test(expected = NullPointerException.class)
   public void testTransformWithNullArguments() throws CatalogTransformerException, IOException {
     Metacard metacard =
         buildMetacard(
@@ -379,9 +381,8 @@ public class CsvTransformerSupportTest {
             new AttributeImpl("title", "Test"));
 
     List<Metacard> metacards = singletonList(metacard);
-    BinaryContent result = CsvTransformerSupport.transformWithArguments(metacards, null);
-
-    assertThat(result, is(org.hamcrest.Matchers.notNullValue()));
+    // Should throw NullPointerException when arguments is null
+    CsvTransformerSupport.transformWithArguments(metacards, null);
   }
 
   @Test

@@ -13,7 +13,7 @@
  */
 package ddf.catalog.transformer.common.tika;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.transformer.common.tika.handler.BodyAndMetadataContentHandler;
 import java.io.IOException;

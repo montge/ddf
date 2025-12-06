@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.confluence.common.Confluence;
 
 public class ConfluenceFilterDelegate extends SimpleFilterDelegate<String> {

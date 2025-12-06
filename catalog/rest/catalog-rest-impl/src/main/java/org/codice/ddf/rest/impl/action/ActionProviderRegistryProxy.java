@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.configuration.DictionaryMap;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;

@@ -18,7 +18,7 @@ import ddf.catalog.data.Metacard;
 import ddf.catalog.operation.ResourceRequest;
 import java.util.Collections;
 import java.util.Set;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 
 /** Class used to create keys for the {@link ResourceCache} class. */
 public class CacheKey {

@@ -17,7 +17,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;

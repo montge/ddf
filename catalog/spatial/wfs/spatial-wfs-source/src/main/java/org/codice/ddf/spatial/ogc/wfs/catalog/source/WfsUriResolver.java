@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.spatial.ogc.wfs.catalog.source;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ws.commons.schema.resolver.DefaultURIResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

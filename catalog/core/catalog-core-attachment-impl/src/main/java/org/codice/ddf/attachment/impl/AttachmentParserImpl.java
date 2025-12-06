@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.attachment.AttachmentInfo;
 import org.codice.ddf.attachment.AttachmentParser;
 import org.slf4j.Logger;

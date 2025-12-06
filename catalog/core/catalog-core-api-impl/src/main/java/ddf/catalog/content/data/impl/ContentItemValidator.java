@@ -15,7 +15,7 @@ package ddf.catalog.content.data.impl;
 
 import ddf.catalog.content.data.ContentItem;
 import java.util.regex.Pattern;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Validates {@link ContentItem}s to ensure they adhere to the URI & file-naming conventions

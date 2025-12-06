@@ -28,8 +28,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /** Validates an attribute's value(s) against a set of acceptable values. */
 public class EnumerationValidator implements AttributeValidator {

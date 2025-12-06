@@ -17,7 +17,7 @@ import static ddf.catalog.Constants.CDM_LOGGER_NAME;
 
 import java.io.File;
 import java.util.function.Consumer;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

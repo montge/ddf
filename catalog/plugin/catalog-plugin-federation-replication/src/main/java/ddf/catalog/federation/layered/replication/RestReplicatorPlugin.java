@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codice.ddf.configuration.PropertyResolver;
 import org.slf4j.Logger;

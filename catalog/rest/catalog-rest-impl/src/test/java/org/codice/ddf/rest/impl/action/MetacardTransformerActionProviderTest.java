@@ -25,14 +25,13 @@ import ddf.action.Action;
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.types.Core;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
-import org.apache.commons.lang.CharEncoding;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.junit.Before;
 import org.junit.Test;
@@ -146,8 +145,8 @@ public class MetacardTransformerActionProviderTest extends AbstractActionProvide
     testProvider.getMetacardActionUrl(REMOTE_SOURCE_ID, metacard);
   }
 
-  private URL getUrl(String metacardId) throws MalformedURLException, UnsupportedEncodingException {
-    String encodedMetacardId = URLEncoder.encode(metacardId, CharEncoding.UTF_8);
+  private URL getUrl(String metacardId) throws MalformedURLException {
+    String encodedMetacardId = URLEncoder.encode(metacardId, StandardCharsets.UTF_8);
     String urlString =
         String.format(
             "%s%s/%s/%s?transform=%s",

@@ -14,7 +14,7 @@
 package ddf.mime.tika;
 
 import ddf.mime.MimeTypeResolver;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.mime.MimeType;

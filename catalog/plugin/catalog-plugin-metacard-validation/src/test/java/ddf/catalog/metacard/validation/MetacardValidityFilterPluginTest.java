@@ -424,9 +424,12 @@ public class MetacardValidityFilterPluginTest {
 
   @Test
   public void testNullQuery() throws Exception {
+    Map<String, Serializable> properties = new HashMap<>();
+    properties.put(SecurityConstants.SECURITY_SUBJECT, mock(Subject.class));
+
     QueryRequest queryRequest = mock(QueryRequest.class);
     when(queryRequest.getQuery()).thenReturn(null);
-    when(queryRequest.getProperties()).thenReturn(createSubjectRequestProperties(false));
+    when(queryRequest.getProperties()).thenReturn(properties);
 
     QueryRequest returnRequest = metacardValidityFilterPlugin.process(LOCAL_PROVIDER, queryRequest);
     assertThat(returnRequest.equals(queryRequest), is(true));
@@ -443,10 +446,14 @@ public class MetacardValidityFilterPluginTest {
 
   @Test
   public void testMultipleAttributeMappings() {
-    List<String> mappings = Arrays.asList("attribute1=role1,role2", "attribute2=role3,role4,role5");
-    metacardValidityFilterPlugin.setAttributeMap(mappings);
+    // Create a new instance without the setUp mapping
+    MetacardValidityFilterPlugin freshPlugin =
+        new MetacardValidityFilterPlugin(filterBuilder, Collections.singletonList(LOCAL_PROVIDER));
 
-    Map<String, List<String>> resultMap = metacardValidityFilterPlugin.getAttributeMap();
+    List<String> mappings = Arrays.asList("attribute1=role1,role2", "attribute2=role3,role4,role5");
+    freshPlugin.setAttributeMap(mappings);
+
+    Map<String, List<String>> resultMap = freshPlugin.getAttributeMap();
     assertThat(resultMap.size(), is(2));
     assertThat(resultMap.get("attribute1").size(), is(2));
     assertThat(resultMap.get("attribute2").size(), is(3));

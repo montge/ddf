@@ -38,7 +38,7 @@ import net.opengis.filter.v_1_1_0.PropertyNameType;
 import net.opengis.filter.v_1_1_0.SortByType;
 import net.opengis.filter.v_1_1_0.SortOrderType;
 import net.opengis.filter.v_1_1_0.SortPropertyType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.log.sanitizer.LogSanitizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

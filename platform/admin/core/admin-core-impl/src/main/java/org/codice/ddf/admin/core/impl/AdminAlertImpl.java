@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.management.NotCompliantMBeanException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.codice.ddf.admin.core.api.jmx.AdminAlertMBean;
 import org.codice.ddf.log.sanitizer.LogSanitizer;

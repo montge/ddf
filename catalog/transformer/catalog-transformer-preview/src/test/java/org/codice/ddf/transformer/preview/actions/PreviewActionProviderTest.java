@@ -27,11 +27,10 @@ import ddf.catalog.data.Attribute;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.impl.AttributeImpl;
 import ddf.catalog.data.types.experimental.Extracted;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import org.apache.commons.lang.CharEncoding;
+import java.nio.charset.StandardCharsets;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.junit.Test;
 
@@ -89,9 +88,8 @@ public class PreviewActionProviderTest {
     assertThat(url, is(anotherOne));
   }
 
-  private URL getUrl(String metacardId, String metacardSource)
-      throws MalformedURLException, UnsupportedEncodingException {
-    String encodedMetacardId = URLEncoder.encode(metacardId, CharEncoding.UTF_8);
+  private URL getUrl(String metacardId, String metacardSource) throws MalformedURLException {
+    String encodedMetacardId = URLEncoder.encode(metacardId, StandardCharsets.UTF_8);
     String urlString =
         String.format(
             "%s%s/%s/%s?transform=preview",

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.jaxrs.ext.ResourceComparator;
 import org.apache.cxf.jaxrs.ext.xml.XMLSource;

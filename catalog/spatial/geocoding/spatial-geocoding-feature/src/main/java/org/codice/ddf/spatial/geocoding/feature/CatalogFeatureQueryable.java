@@ -27,7 +27,7 @@ import ddf.catalog.source.UnsupportedQueryException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.codice.ddf.spatial.geocoding.FeatureQueryException;
 import org.codice.ddf.spatial.geocoding.FeatureQueryable;
 import org.geotools.feature.simple.SimpleFeatureBuilder;

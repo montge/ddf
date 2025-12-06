@@ -37,7 +37,7 @@ import java.util.function.BiFunction;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.imageio.ImageIO;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.la4j.Vector;
 import org.la4j.vector.dense.BasicVector;
 import org.locationtech.jts.geom.Coordinate;

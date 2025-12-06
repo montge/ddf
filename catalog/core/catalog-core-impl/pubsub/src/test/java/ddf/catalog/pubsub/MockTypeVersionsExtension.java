@@ -15,7 +15,7 @@ package ddf.catalog.pubsub;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class MockTypeVersionsExtension {
   private String extensionTypeName;

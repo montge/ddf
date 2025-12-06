@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.platform.io;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.io.IOException;
 import java.io.InputStream;

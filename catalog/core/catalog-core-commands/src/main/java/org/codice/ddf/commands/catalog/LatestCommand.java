@@ -14,7 +14,7 @@
 package org.codice.ddf.commands.catalog;
 
 import static ddf.catalog.util.impl.ResultIterable.resultIterable;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.google.common.collect.Lists;
 import ddf.catalog.data.Result;

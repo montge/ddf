@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.lucene.store.Directory;
 import org.geotools.xml.filter.FilterTransformer;
 import org.junit.Test;

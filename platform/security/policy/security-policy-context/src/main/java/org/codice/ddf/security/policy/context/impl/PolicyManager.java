@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.configuration.PropertyResolver;
 import org.codice.ddf.platform.util.properties.PropertiesLoader;
 import org.codice.ddf.security.policy.context.ContextPolicy;

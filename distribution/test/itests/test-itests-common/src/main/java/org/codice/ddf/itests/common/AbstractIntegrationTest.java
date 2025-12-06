@@ -70,9 +70,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.karaf.bundle.core.BundleService;
 import org.apache.karaf.features.BootFinished;
 import org.apache.karaf.features.FeaturesService;
@@ -884,7 +884,7 @@ public abstract class AbstractIntegrationTest {
   public static String getFileContent(
       String filePath, ImmutableMap<String, String> params, Class classRelativeToResource) {
 
-    StrSubstitutor strSubstitutor = new StrSubstitutor(params);
+    StringSubstitutor strSubstitutor = new StringSubstitutor(params);
 
     strSubstitutor.setVariablePrefix(RESOURCE_VARIABLE_DELIMETER);
     strSubstitutor.setVariableSuffix(RESOURCE_VARIABLE_DELIMETER);

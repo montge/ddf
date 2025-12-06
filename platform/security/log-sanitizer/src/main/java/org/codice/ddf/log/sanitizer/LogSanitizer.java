@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.log.sanitizer;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class LogSanitizer {
 
@@ -38,6 +38,6 @@ public class LogSanitizer {
       // Explicitly log the empty string for null or empty values coming out of toString
       return "";
     }
-    return StringEscapeUtils.escapeHtml(objStr.replace('\n', '_').replace('\r', '_'));
+    return StringEscapeUtils.escapeHtml4(objStr.replace('\n', '_').replace('\r', '_'));
   }
 }

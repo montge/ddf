@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jcodec.api.JCodecException;
 import org.jcodec.containers.mps.MTSUtils.StreamType;
 import org.jcodec.containers.mps.psi.PMTSection;

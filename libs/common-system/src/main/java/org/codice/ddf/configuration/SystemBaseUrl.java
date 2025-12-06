@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.configuration;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An immutable utility class for getting system url information. Information is pulled from the

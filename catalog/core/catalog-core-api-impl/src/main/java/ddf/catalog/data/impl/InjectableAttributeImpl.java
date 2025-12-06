@@ -13,7 +13,7 @@
  */
 package ddf.catalog.data.impl;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.data.InjectableAttribute;
 import java.util.Collection;

@@ -14,7 +14,7 @@
 package ddf.catalog.data.inject;
 
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.AttributeInjector;

@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.libs.mpeg.transport;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

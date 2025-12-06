@@ -15,7 +15,7 @@ package ddf.catalog.data.impl;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.AttributeType;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Simple implementation of {@link AttributeDescriptor}

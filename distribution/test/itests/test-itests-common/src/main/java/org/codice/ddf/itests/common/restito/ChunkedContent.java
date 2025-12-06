@@ -25,7 +25,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.grizzly.http.server.Response;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.slf4j.Logger;

@@ -20,12 +20,15 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import de.micromata.opengis.kml.v_2_2_0.Document;
+import de.micromata.opengis.kml.v_2_2_0.Folder;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
+import de.micromata.opengis.kml.v_2_2_0.Point;
 import java.io.InputStream;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
 
 public class KmlDocumentToJtsGeometryConverterTest {
   private static Document testKmlDocument;
@@ -51,6 +54,92 @@ public class KmlDocumentToJtsGeometryConverterTest {
   @Test
   public void testConvertNullKmlDocumentReturnsNullJtsGeometry() {
     Geometry jtsGeometry = KmlDocumentToJtsGeometryConverter.from(null);
+
+    assertThat(jtsGeometry, nullValue());
+  }
+
+  @Test
+  public void testConvertEmptyKmlDocumentReturnsNull() {
+    Document emptyDocument = new Document();
+
+    Geometry jtsGeometry = KmlDocumentToJtsGeometryConverter.from(emptyDocument);
+
+    assertThat(jtsGeometry, nullValue());
+  }
+
+  @Test
+  public void testConvertKmlDocumentWithSinglePlacemark() {
+    Document document = new Document();
+    Placemark placemark = document.createAndAddPlacemark();
+    Point point = placemark.createAndSetPoint();
+    point.addToCoordinates(-122.0822035425683, 37.42228990140251);
+
+    Geometry jtsGeometry = KmlDocumentToJtsGeometryConverter.from(document);
+
+    assertThat(jtsGeometry, notNullValue());
+    assertThat(jtsGeometry, is(org.hamcrest.Matchers.instanceOf(GeometryCollection.class)));
+    assertThat(jtsGeometry.getNumGeometries(), is(equalTo(1)));
+  }
+
+  @Test
+  public void testConvertKmlDocumentWithMultiplePlacemarks() {
+    Document document = new Document();
+
+    Placemark placemark1 = document.createAndAddPlacemark();
+    Point point1 = placemark1.createAndSetPoint();
+    point1.addToCoordinates(-122.0822035425683, 37.42228990140251);
+
+    Placemark placemark2 = document.createAndAddPlacemark();
+    Point point2 = placemark2.createAndSetPoint();
+    point2.addToCoordinates(-122.084075, 37.4220033612141);
+
+    Geometry jtsGeometry = KmlDocumentToJtsGeometryConverter.from(document);
+
+    assertThat(jtsGeometry, notNullValue());
+    assertThat(jtsGeometry.getNumGeometries(), is(equalTo(2)));
+  }
+
+  @Test
+  public void testConvertKmlDocumentWithMixedFeatures() {
+    Document document = new Document();
+
+    Placemark placemark = document.createAndAddPlacemark();
+    Point point = placemark.createAndSetPoint();
+    point.addToCoordinates(-122.0822035425683, 37.42228990140251);
+
+    Folder folder = document.createAndAddFolder();
+    Placemark nestedPlacemark = folder.createAndAddPlacemark();
+    Point nestedPoint = nestedPlacemark.createAndSetPoint();
+    nestedPoint.addToCoordinates(-122.084075, 37.4220033612141);
+
+    Geometry jtsGeometry = KmlDocumentToJtsGeometryConverter.from(document);
+
+    assertThat(jtsGeometry, notNullValue());
+    assertThat(jtsGeometry.getNumGeometries(), is(equalTo(2)));
+  }
+
+  @Test
+  public void testConvertKmlDocumentWithNullGeometries() {
+    Document document = new Document();
+    Placemark placemark1 = document.createAndAddPlacemark();
+    Point point1 = placemark1.createAndSetPoint();
+    point1.addToCoordinates(-122.0822035425683, 37.42228990140251);
+
+    document.createAndAddPlacemark();
+
+    Geometry jtsGeometry = KmlDocumentToJtsGeometryConverter.from(document);
+
+    assertThat(jtsGeometry, notNullValue());
+    assertThat(jtsGeometry.getNumGeometries(), is(equalTo(1)));
+  }
+
+  @Test
+  public void testConvertKmlDocumentWithOnlyNullGeometries() {
+    Document document = new Document();
+    document.createAndAddPlacemark();
+    document.createAndAddPlacemark();
+
+    Geometry jtsGeometry = KmlDocumentToJtsGeometryConverter.from(document);
 
     assertThat(jtsGeometry, nullValue());
   }

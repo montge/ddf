@@ -47,7 +47,7 @@ import java.util.Map;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.rs.security.oauth2.client.Consumer;

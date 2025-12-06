@@ -13,7 +13,7 @@
  */
 package ddf.measure;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import java.util.HashSet;
 import java.util.Set;

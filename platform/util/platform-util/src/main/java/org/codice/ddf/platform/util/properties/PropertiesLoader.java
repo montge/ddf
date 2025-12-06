@@ -31,8 +31,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.BiFunction;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 import org.codice.ddf.configuration.AbsolutePathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -279,9 +279,9 @@ public final class PropertiesLoader {
     Properties filtered = new Properties();
     for (Map.Entry<?, ?> entry : props.entrySet()) {
       filtered.put(
-          StrSubstitutor.replaceSystemProperties(entry.getKey()),
-          StrSubstitutor.replaceSystemProperties(entry.getValue()));
-      StrSubstitutor.replaceSystemProperties(new Object());
+          StringSubstitutor.replaceSystemProperties(entry.getKey()),
+          StringSubstitutor.replaceSystemProperties(entry.getValue()));
+      StringSubstitutor.replaceSystemProperties(new Object());
     }
     return filtered;
   }

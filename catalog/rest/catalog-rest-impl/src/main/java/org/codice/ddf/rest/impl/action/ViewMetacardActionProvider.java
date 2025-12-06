@@ -19,13 +19,12 @@ import static org.codice.ddf.rest.api.CatalogService.SOURCES_PATH;
 import ddf.action.Action;
 import ddf.action.impl.ActionImpl;
 import ddf.catalog.data.Metacard;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import org.apache.commons.lang.CharEncoding;
+import java.nio.charset.StandardCharsets;
 import org.codice.ddf.catalog.actions.AbstractMetacardActionProvider;
 import org.codice.ddf.configuration.SystemBaseUrl;
 
@@ -41,9 +40,9 @@ public class ViewMetacardActionProvider extends AbstractMetacardActionProvider {
 
   @Override
   protected URL getMetacardActionUrl(String metacardSource, Metacard metacard)
-      throws MalformedURLException, URISyntaxException, UnsupportedEncodingException {
-    String encodedMetacardId = URLEncoder.encode(metacard.getId(), CharEncoding.UTF_8);
-    String encodedMetacardSource = URLEncoder.encode(metacardSource, CharEncoding.UTF_8);
+      throws MalformedURLException, URISyntaxException {
+    String encodedMetacardId = URLEncoder.encode(metacard.getId(), StandardCharsets.UTF_8);
+    String encodedMetacardSource = URLEncoder.encode(metacardSource, StandardCharsets.UTF_8);
     return getActionUrl(encodedMetacardSource, encodedMetacardId);
   }
 

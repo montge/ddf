@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.internal.country.converter.api.CountryCodeConverter;
 import org.codice.ddf.platform.util.properties.PropertiesLoader;
 import org.slf4j.Logger;

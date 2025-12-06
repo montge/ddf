@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.security.impl;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import com.google.common.annotations.VisibleForTesting;
 import ddf.security.Subject;

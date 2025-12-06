@@ -14,8 +14,8 @@
 package ddf.catalog.transformer.input.geojson;
 
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang.StringUtils.isEmpty;
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.codice.gsonsupport.GsonTypeAdapters.MAP_STRING_TO_OBJECT_TYPE;
 
 import com.google.gson.Gson;

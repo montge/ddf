@@ -219,7 +219,7 @@ public class DownloadsStatusEventPublisher {
           progress = UNKNOWN_PROGRESS;
           if (metacard != null) {
             String resourceSizeStr = metacard.getResourceSize();
-            if (org.apache.commons.lang.math.NumberUtils.isNumber(resourceSizeStr)) {
+            if (org.apache.commons.lang3.math.NumberUtils.isCreatable(resourceSizeStr)) {
               Long resourceSize = Long.parseLong(resourceSizeStr);
               if (resourceSize > 0) {
                 progress = (int) (bytes * ONE_HUNDRED_PERCENT / resourceSize);

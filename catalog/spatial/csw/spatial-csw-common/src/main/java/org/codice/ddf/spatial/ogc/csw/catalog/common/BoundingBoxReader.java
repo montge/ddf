@@ -14,7 +14,7 @@
 package org.codice.ddf.spatial.ogc.csw.catalog.common;
 
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.libs.geo.GeoFormatException;
 import org.codice.ddf.libs.geo.util.GeospatialUtil;
 import org.locationtech.jts.geom.Coordinate;

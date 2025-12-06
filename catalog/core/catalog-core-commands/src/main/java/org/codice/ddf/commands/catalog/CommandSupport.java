@@ -14,7 +14,7 @@
 package org.codice.ddf.commands.catalog;
 
 import java.io.PrintStream;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.karaf.shell.api.action.Action;
 import org.fusesource.jansi.Ansi;
 

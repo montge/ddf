@@ -15,7 +15,7 @@ package org.codice.ddf.admin.insecure.defaults.service;
 
 import java.util.List;
 import java.util.Properties;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.admin.insecure.defaults.service.Alert.Level;
 
 public abstract class CryptoPropertiesFileValidator extends PropertiesFileValidator {

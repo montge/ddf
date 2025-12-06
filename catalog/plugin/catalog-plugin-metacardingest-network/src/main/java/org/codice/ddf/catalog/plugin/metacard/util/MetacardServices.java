@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.catalog.plugin.metacard.util;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import com.google.common.collect.ImmutableList;
 import ddf.catalog.data.Attribute;

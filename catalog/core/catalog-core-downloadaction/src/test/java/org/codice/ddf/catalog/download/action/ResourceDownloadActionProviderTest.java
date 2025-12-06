@@ -20,12 +20,11 @@ import static org.mockito.Mockito.when;
 
 import ddf.action.Action;
 import ddf.catalog.data.Metacard;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import org.apache.commons.lang.CharEncoding;
+import java.nio.charset.StandardCharsets;
 import org.codice.ddf.catalog.resource.cache.ResourceCacheServiceMBean;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.junit.Before;
@@ -111,8 +110,8 @@ public class ResourceDownloadActionProviderTest {
     actionProvider.getMetacardActionUrl(REMOTE_SITE_NAME, mockMetacard);
   }
 
-  private URL getUrl(String metacardId) throws MalformedURLException, UnsupportedEncodingException {
-    String encodedMetacardId = URLEncoder.encode(metacardId, CharEncoding.UTF_8);
+  private URL getUrl(String metacardId) throws MalformedURLException {
+    String encodedMetacardId = URLEncoder.encode(metacardId, StandardCharsets.UTF_8);
     String urlString =
         String.format(
             "%s?source=%s&metacard=%s", CONTEXT_PATH, REMOTE_SITE_NAME, encodedMetacardId);

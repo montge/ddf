@@ -13,7 +13,7 @@
  */
 package ddf.catalog.data.defaultvalues;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.data.DefaultAttributeValueRegistry;
 import java.io.Serializable;

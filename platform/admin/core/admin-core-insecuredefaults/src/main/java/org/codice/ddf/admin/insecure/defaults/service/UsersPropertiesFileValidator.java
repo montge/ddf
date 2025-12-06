@@ -16,7 +16,7 @@ package org.codice.ddf.admin.insecure.defaults.service;
 import ddf.security.audit.SecurityLogger;
 import java.util.List;
 import java.util.Properties;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.admin.insecure.defaults.service.Alert.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

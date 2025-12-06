@@ -42,7 +42,7 @@ import org.apache.camel.model.ModelCamelContext;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.model.ThreadsDefinition;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.security.Security;
 import org.slf4j.Logger;

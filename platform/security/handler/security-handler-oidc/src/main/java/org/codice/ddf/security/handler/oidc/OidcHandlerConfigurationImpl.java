@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.security.handler.oidc;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.pac4j.oidc.config.OidcConfiguration.IMPLICIT_FLOWS;
 
 import com.google.common.annotations.VisibleForTesting;

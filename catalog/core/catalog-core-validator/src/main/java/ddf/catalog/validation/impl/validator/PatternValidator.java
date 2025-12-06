@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Validates an attribute's value(s) against a regular expression.

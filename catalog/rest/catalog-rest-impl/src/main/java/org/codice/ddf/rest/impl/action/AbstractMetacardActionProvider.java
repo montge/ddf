@@ -16,10 +16,9 @@ package org.codice.ddf.rest.impl.action;
 import ddf.action.Action;
 import ddf.action.ActionProvider;
 import ddf.catalog.data.Metacard;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import org.apache.commons.lang.CharEncoding;
-import org.apache.commons.lang.StringUtils;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
 import org.slf4j.Logger;
@@ -68,13 +67,8 @@ public abstract class AbstractMetacardActionProvider implements ActionProvider {
     String metacardId = null;
     String metacardSource = null;
 
-    try {
-      metacardId = URLEncoder.encode(metacard.getId(), CharEncoding.UTF_8);
-      metacardSource = URLEncoder.encode(getSource(metacard), CharEncoding.UTF_8);
-    } catch (UnsupportedEncodingException e) {
-      LOGGER.info("Unsupported Encoding exception", e);
-      return null;
-    }
+    metacardId = URLEncoder.encode(metacard.getId(), StandardCharsets.UTF_8);
+    metacardSource = URLEncoder.encode(getSource(metacard), StandardCharsets.UTF_8);
 
     return getAction(metacardId, metacardSource);
   }

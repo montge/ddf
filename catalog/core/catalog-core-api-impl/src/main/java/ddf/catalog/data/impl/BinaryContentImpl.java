@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.activation.MimeType;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /** This class is a common implementation of the {@link BinaryContent} interface. */
 public class BinaryContentImpl implements BinaryContent {

@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.detect.DefaultProbDetector;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.io.TikaInputStream;

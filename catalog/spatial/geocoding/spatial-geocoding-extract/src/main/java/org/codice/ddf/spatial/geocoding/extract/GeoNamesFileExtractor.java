@@ -31,7 +31,7 @@ import java.util.zip.ZipInputStream;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codice.ddf.platform.util.TemporaryFileBackedOutputStream;

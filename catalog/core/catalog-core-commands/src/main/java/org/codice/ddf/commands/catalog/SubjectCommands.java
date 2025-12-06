@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.commands.catalog;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import ddf.security.service.SecurityServiceException;
 import java.io.IOException;

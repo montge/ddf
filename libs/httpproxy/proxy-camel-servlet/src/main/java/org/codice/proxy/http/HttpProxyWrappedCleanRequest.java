@@ -15,7 +15,7 @@ package org.codice.proxy.http;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Wrapper for the HttpServletRequest which cleans up bad query strings

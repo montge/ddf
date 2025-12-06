@@ -53,7 +53,7 @@ import org.apache.camel.http.common.HttpMessage;
 import org.apache.camel.http.common.HttpRegistry;
 import org.apache.camel.http.common.HttpRegistryProvider;
 import org.apache.camel.support.DefaultExchange;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.log.sanitizer.LogSanitizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

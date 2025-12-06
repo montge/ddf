@@ -53,7 +53,7 @@ import ddf.catalog.util.impl.Requests;
 import ddf.security.audit.SecurityLogger;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /** Logs the current operation being performed to the security logger. */
 public class SecurityLoggingPlugin

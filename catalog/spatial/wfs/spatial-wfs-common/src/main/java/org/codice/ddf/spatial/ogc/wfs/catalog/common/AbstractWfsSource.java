@@ -22,7 +22,7 @@ import ddf.catalog.util.impl.MaskableImpl;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.xml.namespace.QName;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

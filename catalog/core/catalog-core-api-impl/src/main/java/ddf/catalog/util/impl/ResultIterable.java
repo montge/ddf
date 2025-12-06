@@ -14,8 +14,8 @@
 package ddf.catalog.util.impl;
 
 import static com.google.common.collect.Iterators.limit;
-import static org.apache.commons.lang.Validate.isTrue;
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.CatalogFramework;
 import ddf.catalog.data.Metacard;

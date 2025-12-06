@@ -16,7 +16,7 @@ package org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common;
 import java.lang.reflect.Type;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

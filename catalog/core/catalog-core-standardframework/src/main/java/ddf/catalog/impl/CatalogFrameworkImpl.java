@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.codice.ddf.configuration.DictionaryMap;
 import org.codice.ddf.configuration.SystemInfo;
 import org.osgi.framework.Bundle;

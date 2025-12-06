@@ -51,7 +51,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.http.HttpStatus;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.itests.common.XmlSearch;
@@ -886,8 +886,8 @@ public class TestSpatial extends AbstractIntegrationTest {
 
   private String getPagingMaxRecordsQuery(int maxRecords) {
     String rawCswQuery = savedCswQueries.get("CswPagingTestLikeQuery");
-    StrSubstitutor strSubstitutor =
-        new StrSubstitutor(ImmutableMap.of("maxRecords", "" + maxRecords));
+    StringSubstitutor strSubstitutor =
+        new StringSubstitutor(ImmutableMap.of("maxRecords", "" + maxRecords));
 
     strSubstitutor.setVariablePrefix(RESOURCE_VARIABLE_DELIMETER);
     strSubstitutor.setVariableSuffix(RESOURCE_VARIABLE_DELIMETER);
@@ -912,8 +912,8 @@ public class TestSpatial extends AbstractIntegrationTest {
   }
 
   private String substitutePagingParams(String rawCswRecord, int testNum, String identifier) {
-    StrSubstitutor strSubstitutor =
-        new StrSubstitutor(ImmutableMap.of("identifier", identifier, "testNum", "" + testNum));
+    StringSubstitutor strSubstitutor =
+        new StringSubstitutor(ImmutableMap.of("identifier", identifier, "testNum", "" + testNum));
 
     strSubstitutor.setVariablePrefix(RESOURCE_VARIABLE_DELIMETER);
     strSubstitutor.setVariableSuffix(RESOURCE_VARIABLE_DELIMETER);

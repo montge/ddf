@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.security.servlet.whoami;
 
-import static org.apache.commons.lang.Validate.notEmpty;
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.security.SubjectOperations;
 import ddf.security.assertion.Attribute;

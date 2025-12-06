@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
@@ -201,7 +201,7 @@ public final class SecurityLoggerImpl implements ddf.security.audit.SecurityLogg
   private String cleanAndEncode(String message) {
     String clean = message.replace('\n', '_').replace('\r', '_');
     if (REQUIRE_AUDIT_ENCODING) {
-      clean = StringEscapeUtils.escapeHtml(clean);
+      clean = StringEscapeUtils.escapeHtml4(clean);
     }
     return clean;
   }

@@ -56,7 +56,7 @@ import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPPart;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.wss4j.common.crypto.Crypto;

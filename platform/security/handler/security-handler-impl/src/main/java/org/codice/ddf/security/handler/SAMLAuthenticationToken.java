@@ -14,7 +14,7 @@
 package org.codice.ddf.security.handler;
 
 import ddf.security.assertion.SecurityAssertion;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -26,7 +26,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.locationtech.jts.geom.Geometry;
 import org.slf4j.Logger;

@@ -25,7 +25,7 @@ import ddf.security.service.SecurityServiceException;
 import java.util.function.Function;
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.MessageContext;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.binding.soap.model.SoapOperationInfo;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.security.AccessDeniedException;

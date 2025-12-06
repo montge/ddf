@@ -19,7 +19,7 @@ import ddf.catalog.transform.CatalogTransformerException;
 import java.util.List;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

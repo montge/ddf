@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.platform.email.impl;
 
-import static org.apache.commons.lang.Validate.isTrue;
-import static org.apache.commons.lang.Validate.notEmpty;
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.isTrue;
+import static org.apache.commons.lang3.Validate.notEmpty;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.security.audit.SecurityLogger;
 import ddf.security.encryption.EncryptionService;
@@ -32,7 +32,7 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Provider;
 import javax.mail.Session;
 import javax.mail.Transport;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.platform.email.SmtpClient;
 import org.codice.ddf.platform.util.StandardThreadFactoryBuilder;
 import org.slf4j.Logger;

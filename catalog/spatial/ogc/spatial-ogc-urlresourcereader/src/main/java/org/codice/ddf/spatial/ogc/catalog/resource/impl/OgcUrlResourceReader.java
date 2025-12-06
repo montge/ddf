@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.activation.MimeType;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

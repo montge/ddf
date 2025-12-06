@@ -33,7 +33,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.catalog.resource.download.DownloadException;
 import org.codice.ddf.catalog.resource.download.internal.DownloadManager;
 import org.slf4j.Logger;

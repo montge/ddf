@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 import net.opengis.cat.csw.v_2_0_2.QueryType;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswException;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.transformer.TransformerManager;

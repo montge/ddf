@@ -22,7 +22,7 @@ import ddf.catalog.transformer.xml.adapter.MetacardTypeAdapter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.parser.Parser;
 import org.codice.ddf.parser.ParserConfigurator;
 import org.codice.ddf.parser.ParserException;

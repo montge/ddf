@@ -13,12 +13,11 @@
  */
 package ddf.security.samlp.impl;
 
-import static org.apache.commons.lang.CharEncoding.UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.opensaml.xmlsec.signature.support.SignatureConstants.ALGO_ID_SIGNATURE_DSA_SHA256;
 
 import ddf.security.samlp.SignatureException;
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -179,17 +178,12 @@ public class SimpleSign {
     PrivateKey privateKey = getSignaturePrivateKey();
     java.security.Signature signature = initSign(certificates[0], privateKey);
 
-    String requestToSign;
-    try {
-      requestToSign =
-          queryParams + "&" + SSOConstants.SIG_ALG + "=" + URLEncoder.encode(sigAlgo, UTF_8);
-    } catch (UnsupportedEncodingException e) {
-      throw new SignatureException(e);
-    }
+    String requestToSign =
+        queryParams + "&" + SSOConstants.SIG_ALG + "=" + URLEncoder.encode(sigAlgo, UTF_8);
 
     try {
       signature.update(requestToSign.getBytes(UTF_8));
-    } catch (java.security.SignatureException | UnsupportedEncodingException e) {
+    } catch (java.security.SignatureException e) {
       throw new SignatureException(e);
     }
 
@@ -200,14 +194,10 @@ public class SimpleSign {
       throw new SignatureException(e);
     }
 
-    try {
-      uriBuilder.queryParam(SSOConstants.SIG_ALG, URLEncoder.encode(sigAlgo, UTF_8));
-      uriBuilder.queryParam(
-          SSOConstants.SIGNATURE,
-          URLEncoder.encode(Base64.getEncoder().encodeToString(signatureBytes), UTF_8));
-    } catch (UnsupportedEncodingException e) {
-      throw new SignatureException(e);
-    }
+    uriBuilder.queryParam(SSOConstants.SIG_ALG, URLEncoder.encode(sigAlgo, UTF_8));
+    uriBuilder.queryParam(
+        SSOConstants.SIGNATURE,
+        URLEncoder.encode(Base64.getEncoder().encodeToString(signatureBytes), UTF_8));
   }
 
   private java.security.Signature initSign(X509Certificate certificate, PrivateKey privateKey)

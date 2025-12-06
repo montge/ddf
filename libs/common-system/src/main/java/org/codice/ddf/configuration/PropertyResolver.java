@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.text.StringSubstitutor;
 
 /**
  * Class holds a string potentially containing variables of the format ${system.prop} and handles
@@ -57,7 +57,7 @@ public class PropertyResolver {
    * @return
    */
   public static String resolveProperties(String str) {
-    return StrSubstitutor.replaceSystemProperties(str);
+    return StringSubstitutor.replaceSystemProperties(str);
   }
 
   /**
@@ -67,7 +67,7 @@ public class PropertyResolver {
    */
   public static List<String> resolveProperties(List<String> list) {
     for (final ListIterator<String> i = list.listIterator(); i.hasNext(); ) {
-      final String item = StrSubstitutor.replaceSystemProperties(i.next());
+      final String item = StringSubstitutor.replaceSystemProperties(i.next());
       i.set(item);
     }
     return list;

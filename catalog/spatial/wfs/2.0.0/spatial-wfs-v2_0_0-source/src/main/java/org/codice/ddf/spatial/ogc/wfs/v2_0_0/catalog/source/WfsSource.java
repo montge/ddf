@@ -79,7 +79,7 @@ import net.opengis.wfs.v_2_0_0.QueryType;
 import net.opengis.wfs.v_2_0_0.WFSCapabilitiesType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.codice.ddf.configuration.DictionaryMap;

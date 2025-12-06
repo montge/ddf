@@ -22,7 +22,7 @@ import ddf.catalog.data.impl.MetacardImpl;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsConstants;
 import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
 import org.slf4j.Logger;

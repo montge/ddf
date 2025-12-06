@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 import javax.xml.namespace.QName;
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.codice.ddf.spatial.ogc.catalog.common.converter.XmlNode;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.AttributeDescriptorComparator;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsConstants;

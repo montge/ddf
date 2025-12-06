@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 import java.util.function.Predicate;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.x500.X500Principal;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wss4j.common.principal.WSUsernameTokenPrincipalImpl;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.style.BCStyle;

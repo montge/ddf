@@ -15,7 +15,7 @@ package ddf.catalog.data.impl;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Default implementation of the {@link Result} interface, which is a {@link Metacard} catalog entry

@@ -13,13 +13,19 @@
  */
 package org.codice.ddf.spatial.geocoding.query;
 
+import static ddf.catalog.Constants.SUGGESTION_RESULT_KEY;
 import static org.codice.ddf.spatial.geocoding.GeoCodingConstants.GAZETTEER_METACARD_TAG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.CatalogFramework;
@@ -40,18 +46,25 @@ import ddf.catalog.operation.QueryResponse;
 import ddf.catalog.operation.impl.QueryResponseImpl;
 import ddf.catalog.source.SourceUnavailableException;
 import ddf.catalog.source.UnsupportedQueryException;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.codice.ddf.spatial.geocoding.GeoCodingConstants;
 import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.codice.ddf.spatial.geocoding.GeoEntryAttributes;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
+import org.codice.ddf.spatial.geocoding.Suggestion;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class GazetteerQueryCatalogTest {
 
   private static final int RADIUS_IN_KM = 100;
@@ -340,5 +353,243 @@ public class GazetteerQueryCatalogTest {
   private QueryResponse generateQueryResponseFromMetacard(Metacard metacard) {
     return new QueryResponseImpl(
         mock(QueryRequest.class), Collections.singletonList(new ResultImpl(metacard)), 1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testQueryByIdWithNullId() throws Exception {
+    queryCatalog.queryById(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testQueryByIdWithEmptyId() throws Exception {
+    queryCatalog.queryById("");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testQueryByIdWithBlankId() throws Exception {
+    queryCatalog.queryById("   ");
+  }
+
+  @Test
+  public void testQueryByIdNoResults() throws Exception {
+    QueryResponse queryResponse =
+        new QueryResponseImpl(mock(QueryRequest.class), Collections.emptyList(), 0);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(queryResponse);
+
+    GeoEntry geoEntry = queryCatalog.queryById("nonexistent");
+
+    assertThat(geoEntry, nullValue());
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = GeoEntryQueryException.class)
+  public void testQueryByIdUnsupportedQueryException() throws Exception {
+    when(catalogFramework.query(any(QueryRequest.class)))
+        .thenThrow(UnsupportedQueryException.class);
+    queryCatalog.queryById("testId");
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = GeoEntryQueryException.class)
+  public void testQueryByIdSourceUnavailableException() throws Exception {
+    when(catalogFramework.query(any(QueryRequest.class)))
+        .thenThrow(SourceUnavailableException.class);
+    queryCatalog.queryById("testId");
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = GeoEntryQueryException.class)
+  public void testQueryByIdFederationException() throws Exception {
+    when(catalogFramework.query(any(QueryRequest.class))).thenThrow(FederationException.class);
+    queryCatalog.queryById("testId");
+  }
+
+  @Test
+  public void testGetSuggestedNames() throws Exception {
+    List<Map.Entry<String, String>> suggestionList = new ArrayList<>();
+    suggestionList.add(new AbstractMap.SimpleEntry<>("1", "Boston"));
+    suggestionList.add(new AbstractMap.SimpleEntry<>("2", "Boston, MA"));
+    suggestionList.add(new AbstractMap.SimpleEntry<>("3", "Boston, UK"));
+
+    QueryResponse suggestionResponse = mock(QueryResponse.class);
+    doReturn(suggestionList).when(suggestionResponse).getPropertyValue(SUGGESTION_RESULT_KEY);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(suggestionResponse);
+
+    List<Suggestion> suggestions = queryCatalog.getSuggestedNames("Bos", 3);
+
+    assertThat(suggestions, is(notNullValue()));
+    assertThat(suggestions, hasSize(3));
+    assertThat(suggestions.get(0).getId(), is("1"));
+    assertThat(suggestions.get(0).getName(), is("Boston"));
+    assertThat(suggestions.get(1).getId(), is("2"));
+    assertThat(suggestions.get(1).getName(), is("Boston, MA"));
+    assertThat(suggestions.get(2).getId(), is("3"));
+    assertThat(suggestions.get(2).getName(), is("Boston, UK"));
+  }
+
+  @Test
+  public void testGetSuggestedNamesWithLimit() throws Exception {
+    List<Map.Entry<String, String>> suggestionList = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      suggestionList.add(new AbstractMap.SimpleEntry<>("City" + i, String.valueOf(i)));
+    }
+
+    QueryResponse suggestionResponse = mock(QueryResponse.class);
+    doReturn(suggestionList).when(suggestionResponse).getPropertyValue(SUGGESTION_RESULT_KEY);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(suggestionResponse);
+
+    List<Suggestion> suggestions = queryCatalog.getSuggestedNames("City", 5);
+
+    assertThat(suggestions, is(notNullValue()));
+    assertThat(suggestions, hasSize(5));
+  }
+
+  @Test
+  public void testGetSuggestedNamesNoResults() throws Exception {
+    QueryResponse suggestionResponse = mock(QueryResponse.class);
+    doReturn(Collections.emptyList())
+        .when(suggestionResponse)
+        .getPropertyValue(SUGGESTION_RESULT_KEY);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(suggestionResponse);
+
+    List<Suggestion> suggestions = queryCatalog.getSuggestedNames("NonExistent", 10);
+
+    assertThat(suggestions, is(notNullValue()));
+    assertThat(suggestions, is(empty()));
+  }
+
+  @Test
+  public void testGetSuggestedNamesNoSuggestionProperty() throws Exception {
+    QueryResponse suggestionResponse = mock(QueryResponse.class);
+    when(suggestionResponse.getPropertyValue(SUGGESTION_RESULT_KEY)).thenReturn(null);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(suggestionResponse);
+
+    List<Suggestion> suggestions = queryCatalog.getSuggestedNames("Test", 10);
+
+    assertThat(suggestions, is(notNullValue()));
+    assertThat(suggestions, is(empty()));
+  }
+
+  @Test
+  public void testGetSuggestedNamesInvalidPropertyType() throws Exception {
+    QueryResponse suggestionResponse = mock(QueryResponse.class);
+    when(suggestionResponse.getPropertyValue(SUGGESTION_RESULT_KEY)).thenReturn("not a list");
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(suggestionResponse);
+
+    List<Suggestion> suggestions = queryCatalog.getSuggestedNames("Test", 10);
+
+    assertThat(suggestions, is(notNullValue()));
+    assertThat(suggestions, is(empty()));
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = GeoEntryQueryException.class)
+  public void testGetSuggestedNamesSourceUnavailableException() throws Exception {
+    when(catalogFramework.query(any(QueryRequest.class)))
+        .thenThrow(SourceUnavailableException.class);
+    queryCatalog.getSuggestedNames("Test", 10);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = GeoEntryQueryException.class)
+  public void testGetSuggestedNamesFederationException() throws Exception {
+    when(catalogFramework.query(any(QueryRequest.class))).thenThrow(FederationException.class);
+    queryCatalog.getSuggestedNames("Test", 10);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Test(expected = GeoEntryQueryException.class)
+  public void testGetSuggestedNamesUnsupportedQueryException() throws Exception {
+    when(catalogFramework.query(any(QueryRequest.class)))
+        .thenThrow(UnsupportedQueryException.class);
+    queryCatalog.getSuggestedNames("Test", 10);
+  }
+
+  @Test
+  public void testQueryWithMultipleResults() throws Exception {
+    Metacard metacard1 = generateGeoNamesMetacard();
+    Metacard metacard2 = generateGeoNamesMetacard();
+    metacard2.setAttribute(new AttributeImpl(Core.TITLE, "Cambridge"));
+
+    QueryResponse queryResponse =
+        new QueryResponseImpl(
+            mock(QueryRequest.class),
+            Arrays.asList(new ResultImpl(metacard1), new ResultImpl(metacard2)),
+            2);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(queryResponse);
+
+    List<GeoEntry> geoEntryList = queryCatalog.query(QUERY_STRING, 10);
+
+    assertThat(geoEntryList.size(), is(2));
+    assertThat(geoEntryList.get(0).getName(), is(BOSTON));
+    assertThat(geoEntryList.get(1).getName(), is("Cambridge"));
+  }
+
+  @Test
+  public void testQueryWithGazetteerSortValue() throws Exception {
+    Metacard metacard = generateGeoNamesMetacard();
+    metacard.setAttribute(
+        new AttributeImpl(GeoEntryAttributes.GAZETTEER_SORT_VALUE, Integer.valueOf(100)));
+
+    QueryResponse queryResponse = generateQueryResponseFromMetacard(metacard);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(queryResponse);
+
+    List<GeoEntry> geoEntryList = queryCatalog.query(QUERY_STRING, 1);
+
+    assertThat(geoEntryList.size(), is(1));
+  }
+
+  @Test
+  public void testQueryWithNoGazetteerSortValue() throws Exception {
+    Metacard metacard = generateGeoNamesMetacard();
+
+    QueryResponse queryResponse = generateQueryResponseFromMetacard(metacard);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(queryResponse);
+
+    List<GeoEntry> geoEntryList = queryCatalog.query(QUERY_STRING, 1);
+
+    assertThat(geoEntryList.size(), is(1));
+  }
+
+  @Test
+  public void testGetCountryCodeWithNullCountryCode() throws Exception {
+    Metacard metacard = generateGeoNamesMetacard();
+    metacard.setAttribute(new AttributeImpl(Location.COUNTRY_CODE, (String) null));
+
+    QueryResponse queryResponse = generateQueryResponseFromMetacard(metacard);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(queryResponse);
+
+    Optional<String> countryCode = queryCatalog.getCountryCode(NEAR_BOSTON_WKT, RADIUS_IN_KM);
+
+    assertThat(countryCode.isPresent(), is(false));
+  }
+
+  @Test
+  public void testGetNearestCitiesWithMultipleResults() throws Exception {
+    Metacard metacard1 = generateGeoNamesMetacard();
+    Metacard metacard2 = generateGeoNamesMetacard();
+    metacard2.setAttribute(new AttributeImpl(Core.TITLE, "Cambridge"));
+    metacard2.setAttribute(new AttributeImpl(Core.LOCATION, "POINT(-71.1097 42.3736)"));
+
+    QueryResponse queryResponse =
+        new QueryResponseImpl(
+            mock(QueryRequest.class),
+            Arrays.asList(new ResultImpl(metacard1), new ResultImpl(metacard2)),
+            2);
+    when(catalogFramework.query(any(QueryRequest.class))).thenReturn(queryResponse);
+
+    List<NearbyLocation> nearbyLocations =
+        queryCatalog.getNearestCities(NEAR_BOSTON_WKT, RADIUS_IN_KM, MAX_RESULTS);
+
+    assertThat(nearbyLocations.size(), is(2));
+    assertThat(nearbyLocations.get(0).getName(), is(BOSTON));
+    assertThat(nearbyLocations.get(1).getName(), is("Cambridge"));
+  }
+
+  @Test
+  public void testQueryVerifiesCatalogFrameworkCalled() throws Exception {
+    queryCatalog.query(QUERY_STRING, 1);
+
+    verify(catalogFramework).query(any(QueryRequest.class));
   }
 }

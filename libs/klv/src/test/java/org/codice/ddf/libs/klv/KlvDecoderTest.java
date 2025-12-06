@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.codice.ddf.libs.klv.data.numerical.KlvByte;
 import org.codice.ddf.libs.klv.data.numerical.KlvDouble;
 import org.codice.ddf.libs.klv.data.numerical.KlvFloat;
