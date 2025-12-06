@@ -93,6 +93,139 @@ public class EncryptCommandTest {
     assertNull(encryptedValue);
   }
 
+  @Test
+  public void testExecuteWithEmptyString() {
+    final String plainTextValue = "";
+
+    final EncryptionServiceImpl encryptionService = new EncryptionServiceImpl();
+    final EncryptCommand encryptCommand = new EncryptCommand();
+    encryptCommand.setEncryptionService(encryptionService);
+    setPlainTextValueField(encryptCommand, plainTextValue);
+    LOGGER.debug("Plain text value: <empty>");
+
+    Object encryptedValue = null;
+
+    try {
+      encryptedValue = encryptCommand.execute();
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    LOGGER.debug("Encrypted Value: {}", encryptedValue);
+    assertNull(encryptedValue);
+  }
+
+  @Test
+  public void testExecuteWithWhitespace() {
+    final String plainTextValue = "   spaces   ";
+
+    final EncryptionServiceImpl encryptionService = new EncryptionServiceImpl();
+    final EncryptCommand encryptCommand = new EncryptCommand();
+    encryptCommand.setEncryptionService(encryptionService);
+    setPlainTextValueField(encryptCommand, plainTextValue);
+    LOGGER.debug("Plain text value: {}", plainTextValue);
+
+    Object encryptedValue = null;
+
+    try {
+      encryptedValue = encryptCommand.execute();
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    LOGGER.debug("Encrypted Value: {}", encryptedValue);
+    assertNull(encryptedValue);
+  }
+
+  @Test
+  public void testExecuteWithSpecialCharacters() {
+    final String plainTextValue = "p@$$w0rd!#$%^&*()";
+
+    final EncryptionServiceImpl encryptionService = new EncryptionServiceImpl();
+    final EncryptCommand encryptCommand = new EncryptCommand();
+    encryptCommand.setEncryptionService(encryptionService);
+    setPlainTextValueField(encryptCommand, plainTextValue);
+    LOGGER.debug("Plain text value: {}", plainTextValue);
+
+    Object encryptedValue = null;
+
+    try {
+      encryptedValue = encryptCommand.execute();
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    LOGGER.debug("Encrypted Value: {}", encryptedValue);
+    assertNull(encryptedValue);
+  }
+
+  @Test
+  public void testExecuteWithLongString() {
+    final StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 1000; i++) {
+      sb.append("LongPasswordPart").append(i);
+    }
+    final String plainTextValue = sb.toString();
+
+    final EncryptionServiceImpl encryptionService = new EncryptionServiceImpl();
+    final EncryptCommand encryptCommand = new EncryptCommand();
+    encryptCommand.setEncryptionService(encryptionService);
+    setPlainTextValueField(encryptCommand, plainTextValue);
+    LOGGER.debug("Plain text value: <very long>");
+
+    Object encryptedValue = null;
+
+    try {
+      encryptedValue = encryptCommand.execute();
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    LOGGER.debug("Encrypted Value: {}", encryptedValue);
+    assertNull(encryptedValue);
+  }
+
+  @Test
+  public void testExecuteWithUnicodeCharacters() {
+    final String plainTextValue = "密码 пароль パスワード";
+
+    final EncryptionServiceImpl encryptionService = new EncryptionServiceImpl();
+    final EncryptCommand encryptCommand = new EncryptCommand();
+    encryptCommand.setEncryptionService(encryptionService);
+    setPlainTextValueField(encryptCommand, plainTextValue);
+    LOGGER.debug("Plain text value: {}", plainTextValue);
+
+    Object encryptedValue = null;
+
+    try {
+      encryptedValue = encryptCommand.execute();
+    } catch (Exception e) {
+      fail(e.getMessage());
+    }
+
+    LOGGER.debug("Encrypted Value: {}", encryptedValue);
+    assertNull(encryptedValue);
+  }
+
+  @Test
+  public void testSetEncryptionService() {
+    final EncryptionServiceImpl encryptionService = new EncryptionServiceImpl();
+    final EncryptCommand encryptCommand = new EncryptCommand();
+
+    // Test setter
+    encryptCommand.setEncryptionService(encryptionService);
+
+    // Verify by executing a command
+    setPlainTextValueField(encryptCommand, "test");
+
+    try {
+      Object result = encryptCommand.execute();
+      assertNull(result); // Command always returns null
+    } catch (Exception e) {
+      fail("Should not throw exception after setting encryption service");
+    }
+  }
+
   private void setPlainTextValueField(EncryptCommand encryptCommand, String value) {
     final String plainTextValueField = "plainTextValue";
     final Class<? extends EncryptCommand> clazz = encryptCommand.getClass();

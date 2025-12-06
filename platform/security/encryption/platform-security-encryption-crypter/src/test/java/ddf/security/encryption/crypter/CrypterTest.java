@@ -212,4 +212,241 @@ public class CrypterTest {
     } catch (CrypterException expected) {
     }
   }
+
+  @Test(expected = CrypterException.class)
+  public void testEncryptNullBytes() {
+    final Crypter crypter = new Crypter();
+    final byte[] nullBytes = null;
+
+    crypter.encrypt(nullBytes);
+  }
+
+  @Test(expected = CrypterException.class)
+  public void testEncryptEmptyBytes() {
+    final Crypter crypter = new Crypter();
+    final byte[] emptyBytes = new byte[0];
+
+    crypter.encrypt(emptyBytes);
+  }
+
+  @Test(expected = CrypterException.class)
+  public void testDecryptNullBytes() {
+    final Crypter crypter = new Crypter();
+    final byte[] nullBytes = null;
+
+    crypter.decrypt(nullBytes);
+  }
+
+  @Test(expected = CrypterException.class)
+  public void testDecryptEmptyBytes() {
+    final Crypter crypter = new Crypter();
+    final byte[] emptyBytes = new byte[0];
+
+    crypter.decrypt(emptyBytes);
+  }
+
+  @Test(expected = CrypterException.class)
+  public void testDecryptBlank() {
+    final Crypter crypter = new Crypter();
+
+    crypter.decrypt(" ");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testDecryptInvalidBase64() {
+    final Crypter crypter = new Crypter();
+
+    // Invalid base64 string should cause decryption failure (IllegalArgumentException from Base64
+    // decoder)
+    crypter.decrypt("this-is-not-valid-base64!@#$%");
+  }
+
+  @Test
+  public void testEncryptDecryptLargeByteArray() throws Exception {
+    // Test with large byte array (1MB)
+    final byte[] plainBytes = new byte[1024 * 1024];
+    new SecureRandom().nextBytes(plainBytes);
+    final Crypter crypter = new Crypter();
+
+    final byte[] encryptedBytes = crypter.encrypt(plainBytes);
+    final byte[] decryptedBytes = crypter.decrypt(encryptedBytes);
+
+    assertArrayEquals(plainBytes, decryptedBytes);
+  }
+
+  @Test
+  public void testEncryptDecryptStreamLargerThanMultipleChunks() throws Exception {
+    // Test with data larger than 10 chunks
+    final byte[] plainBytes = new byte[CHUNK_SIZE * 10 + 123];
+    new SecureRandom().nextBytes(plainBytes);
+    final InputStream plainInputStream = new ByteArrayInputStream(plainBytes);
+    final Crypter crypter = new Crypter();
+
+    final InputStream encryptedInputStream = crypter.encrypt(plainInputStream);
+    final InputStream decryptedInputStream = crypter.decrypt(encryptedInputStream);
+
+    final byte[] decryptedBytes = ByteStreams.toByteArray(decryptedInputStream);
+
+    assertArrayEquals(plainBytes, decryptedBytes);
+  }
+
+  @Test
+  public void testEncryptDecryptStreamSmallerThanChunk() throws Exception {
+    // Test with data smaller than chunk size
+    final byte[] plainBytes = new byte[CHUNK_SIZE / 2];
+    new SecureRandom().nextBytes(plainBytes);
+    final InputStream plainInputStream = new ByteArrayInputStream(plainBytes);
+    final Crypter crypter = new Crypter();
+
+    final InputStream encryptedInputStream = crypter.encrypt(plainInputStream);
+    final InputStream decryptedInputStream = crypter.decrypt(encryptedInputStream);
+
+    final byte[] decryptedBytes = ByteStreams.toByteArray(decryptedInputStream);
+
+    assertArrayEquals(plainBytes, decryptedBytes);
+  }
+
+  @Test
+  public void testEncryptDecryptStreamExactlyChunkSize() throws Exception {
+    // Test with data exactly equal to chunk size
+    final byte[] plainBytes = new byte[CHUNK_SIZE];
+    new SecureRandom().nextBytes(plainBytes);
+    final InputStream plainInputStream = new ByteArrayInputStream(plainBytes);
+    final Crypter crypter = new Crypter();
+
+    final InputStream encryptedInputStream = crypter.encrypt(plainInputStream);
+    final InputStream decryptedInputStream = crypter.decrypt(encryptedInputStream);
+
+    final byte[] decryptedBytes = ByteStreams.toByteArray(decryptedInputStream);
+
+    assertArrayEquals(plainBytes, decryptedBytes);
+  }
+
+  @Test
+  public void testEncryptDecryptStreamOneByte() throws Exception {
+    // Test with minimal data
+    final byte[] plainBytes = new byte[1];
+    plainBytes[0] = 42;
+    final InputStream plainInputStream = new ByteArrayInputStream(plainBytes);
+    final Crypter crypter = new Crypter();
+
+    final InputStream encryptedInputStream = crypter.encrypt(plainInputStream);
+    final InputStream decryptedInputStream = crypter.decrypt(encryptedInputStream);
+
+    final byte[] decryptedBytes = ByteStreams.toByteArray(decryptedInputStream);
+
+    assertArrayEquals(plainBytes, decryptedBytes);
+  }
+
+  @Test
+  public void testEncryptDecryptStringWithSpecialCharacters() throws Exception {
+    final String plainPassword = "p@$$w0rd!#$%^&*()[]{}|\\:;\"'<>,.?/~`";
+    final Crypter crypter = new Crypter();
+
+    final String encryptedPassword = crypter.encrypt(plainPassword);
+    final String decryptedPassword = crypter.decrypt(encryptedPassword);
+
+    assertEquals(plainPassword, decryptedPassword);
+  }
+
+  @Test
+  public void testEncryptDecryptStringWithUnicode() throws Exception {
+    final String plainPassword = "密码 пароль パスワード 🔐🔑";
+    final Crypter crypter = new Crypter();
+
+    final String encryptedPassword = crypter.encrypt(plainPassword);
+    final String decryptedPassword = crypter.decrypt(encryptedPassword);
+
+    assertEquals(plainPassword, decryptedPassword);
+  }
+
+  @Test
+  public void testEncryptDecryptStringWithNewlines() throws Exception {
+    final String plainPassword = "line1\nline2\r\nline3\rline4";
+    final Crypter crypter = new Crypter();
+
+    final String encryptedPassword = crypter.encrypt(plainPassword);
+    final String decryptedPassword = crypter.decrypt(encryptedPassword);
+
+    assertEquals(plainPassword, decryptedPassword);
+  }
+
+  @Test
+  public void testEncryptDecryptLongString() throws Exception {
+    // Test with very long string
+    final StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < 10000; i++) {
+      sb.append("This is a long password with repeated content. ");
+    }
+    final String plainPassword = sb.toString();
+    final Crypter crypter = new Crypter();
+
+    final String encryptedPassword = crypter.encrypt(plainPassword);
+    final String decryptedPassword = crypter.decrypt(encryptedPassword);
+
+    assertEquals(plainPassword, decryptedPassword);
+  }
+
+  @Test
+  public void testEncryptProducesDifferentOutputForSameInput() throws Exception {
+    // Due to IV, encrypting same plaintext should produce different ciphertext
+    final String plainPassword = "protect";
+    final Crypter crypter = new Crypter();
+
+    final String encrypted1 = crypter.encrypt(plainPassword);
+    final String encrypted2 = crypter.encrypt(plainPassword);
+
+    // Ciphertext should be different
+    if (encrypted1.equals(encrypted2)) {
+      fail("Encryption should produce different ciphertext for same plaintext due to IV");
+    }
+
+    // But both should decrypt to same plaintext
+    assertEquals(plainPassword, crypter.decrypt(encrypted1));
+    assertEquals(plainPassword, crypter.decrypt(encrypted2));
+  }
+
+  @Test
+  public void testCrypterWithCustomKeysetFileName() throws Exception {
+    final String customKeysetName = "custom-keyset";
+    final Crypter crypter = new Crypter(customKeysetName);
+    final String plaintext = "test-custom-keyset";
+
+    final String encrypted = crypter.encrypt(plaintext);
+    final String decrypted = crypter.decrypt(encrypted);
+
+    assertEquals(plaintext, decrypted);
+  }
+
+  @Test
+  public void testMultipleCryptersWithSameCustomKeysetName() throws Exception {
+    final String customKeysetName = "shared-keyset";
+    final Crypter crypter1 = new Crypter(customKeysetName);
+    final Crypter crypter2 = new Crypter(customKeysetName);
+    final String plaintext = "shared-test";
+
+    final String encrypted = crypter1.encrypt(plaintext);
+    final String decrypted = crypter2.decrypt(encrypted);
+
+    assertEquals(plaintext, decrypted);
+  }
+
+  @Test
+  public void testByteArrayEncryptionProducesDifferentOutput() throws Exception {
+    final byte[] plainBytes = new byte[16];
+    new SecureRandom().nextBytes(plainBytes);
+    final Crypter crypter = new Crypter();
+
+    final byte[] encrypted1 = crypter.encrypt(plainBytes);
+    final byte[] encrypted2 = crypter.encrypt(plainBytes);
+
+    // Ciphertext should be different due to IV
+    if (new String(encrypted1).equals(new String(encrypted2))) {
+      fail("Byte encryption should produce different ciphertext for same plaintext due to IV");
+    }
+
+    // But both should decrypt to same plaintext
+    assertArrayEquals(plainBytes, crypter.decrypt(encrypted1));
+    assertArrayEquals(plainBytes, crypter.decrypt(encrypted2));
+  }
 }

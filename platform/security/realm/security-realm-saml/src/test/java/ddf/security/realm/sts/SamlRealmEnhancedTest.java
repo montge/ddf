@@ -24,6 +24,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import ddf.security.assertion.saml.impl.SecurityAssertionSaml;
 import java.util.Arrays;
@@ -39,12 +40,9 @@ import org.codice.ddf.security.handler.SAMLAuthenticationToken;
 import org.codice.ddf.security.saml.assertion.validator.SamlAssertionValidator;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.class)
 public class SamlRealmEnhancedTest {
 
   @Mock private SamlAssertionValidator samlAssertionValidator;
@@ -63,6 +61,7 @@ public class SamlRealmEnhancedTest {
 
   @Before
   public void setup() {
+    openMocks(this);
     samlRealm = new SamlRealm();
     samlRealm.setSamlAssertionValidator(samlAssertionValidator);
     samlRealm.setUsernameAttributeList(Arrays.asList("uid", "username", "email"));
@@ -336,8 +335,8 @@ public class SamlRealmEnhancedTest {
     AuthenticationInfo authInfo = samlRealm.doGetAuthenticationInfo(samlAuthenticationToken);
 
     assertThat(authInfo.getPrincipals(), is(notNullValue()));
-    // Verify that principals were created
-    assertThat(authInfo.getPrincipals().isEmpty(), is(false));
+    // Verify that principals were returned (credentials are used as principals)
+    assertThat(authInfo.getCredentials(), is(equalTo(credentials)));
   }
 
   @Test

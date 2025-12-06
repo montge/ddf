@@ -13,17 +13,23 @@
  */
 package org.codice.ddf.security.pki.realm;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
+import ddf.security.SubjectOperations;
 import ddf.security.assertion.Attribute;
 import ddf.security.assertion.AttributeStatement;
 import ddf.security.assertion.SecurityAssertion;
@@ -33,20 +39,29 @@ import ddf.security.claims.impl.ClaimImpl;
 import ddf.security.claims.impl.ClaimsCollectionImpl;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.security.auth.x500.X500Principal;
 import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
 import org.codice.ddf.security.handler.AuthenticationTokenType;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 public class PKIRealmTest {
 
-  PKIRealm pkiRealm = new PKIRealm();
+  private PKIRealm pkiRealm;
+
+  @Mock private SubjectOperations subjectOperations;
 
   @Before
   public void setup() {
+    openMocks(this);
+    pkiRealm = new PKIRealm();
+    pkiRealm.setSubjectOperations(subjectOperations);
+
     List<ClaimsHandler> claimsHandlers = new ArrayList<>();
     claimsHandlers.add(mock(ClaimsHandler.class));
     claimsHandlers.add(mock(ClaimsHandler.class));
@@ -124,5 +139,240 @@ public class PKIRealmTest {
     assertThat(attribute.getName(), is("email"));
     assertThat(attribute.getValues().size(), is(2));
     assertThat(attribute.getValues(), contains("tester@example.com", "test@example.com"));
+  }
+
+  @Test
+  public void testSupportsNullToken() {
+    boolean supports = pkiRealm.supports(null);
+    assertFalse(supports);
+  }
+
+  @Test
+  public void testSupportsNonBaseToken() {
+    AuthenticationToken authenticationToken =
+        new AuthenticationToken() {
+          @Override
+          public Object getPrincipal() {
+            return new X500Principal("cn=test");
+          }
+
+          @Override
+          public Object getCredentials() {
+            return new X509Certificate[1];
+          }
+        };
+    boolean supports = pkiRealm.supports(authenticationToken);
+    assertFalse(supports);
+  }
+
+  @Test
+  public void testSupportsWrongCredentialType() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    when(authenticationToken.getCredentials()).thenReturn("notacertificate");
+    when(authenticationToken.getPrincipal()).thenReturn(new X500Principal("cn=test"));
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    boolean supports = pkiRealm.supports(authenticationToken);
+    assertFalse(supports);
+  }
+
+  @Test
+  public void testSupportsWrongPrincipalType() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    when(authenticationToken.getCredentials()).thenReturn(new X509Certificate[1]);
+    when(authenticationToken.getPrincipal()).thenReturn("notanx500principal");
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    boolean supports = pkiRealm.supports(authenticationToken);
+    assertFalse(supports);
+  }
+
+  @Test
+  public void testSupportsWrongTokenType() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    when(authenticationToken.getCredentials()).thenReturn(new X509Certificate[1]);
+    when(authenticationToken.getPrincipal()).thenReturn(new X500Principal("cn=test"));
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.USERNAME);
+
+    boolean supports = pkiRealm.supports(authenticationToken);
+    assertFalse(supports);
+  }
+
+  @Test
+  public void testDoGetAuthenticationInfoWithSubjectOperations() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[1];
+    certificates[0] = mock(X509Certificate.class);
+    X500Principal x500Principal = new X500Principal("cn=test,emailAddress=test@example.com,c=US");
+
+    when(subjectOperations.getEmailAddress(any(X500Principal.class)))
+        .thenReturn("test@example.com");
+    when(subjectOperations.getCountry(any(X500Principal.class))).thenReturn("US");
+
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertNotNull(authenticationInfo);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+    assertNotNull(assertion);
+  }
+
+  @Test
+  public void testDoGetAuthenticationInfoSubjectOperationsException() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[1];
+    certificates[0] = mock(X509Certificate.class);
+    X500Principal x500Principal = new X500Principal("cn=test");
+
+    when(subjectOperations.getEmailAddress(any(X500Principal.class)))
+        .thenThrow(new RuntimeException("Error extracting email"));
+    when(subjectOperations.getCountry(any(X500Principal.class)))
+        .thenThrow(new RuntimeException("Error extracting country"));
+
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertNotNull(authenticationInfo);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+    assertNotNull(assertion);
+  }
+
+  @Test
+  public void testSecurityAssertionProperties() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[1];
+    certificates[0] = mock(X509Certificate.class);
+    X500Principal x500Principal = new X500Principal("cn=testuser");
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    assertThat(assertion.getIssuer(), is(equalTo("DDF")));
+    assertThat(assertion.getTokenType(), is(equalTo("pki")));
+    assertThat(assertion.getWeight(), is(equalTo(SecurityAssertion.LOCAL_AUTH_WEIGHT)));
+    assertNotNull(assertion.getNotBefore());
+    assertNotNull(assertion.getNotOnOrAfter());
+    assertTrue(
+        "NotOnOrAfter should be after NotBefore",
+        assertion.getNotOnOrAfter().after(assertion.getNotBefore()));
+  }
+
+  @Test
+  public void testClaimsHandlersEmpty() {
+    PKIRealm realmWithoutClaims = new PKIRealm();
+    realmWithoutClaims.setSubjectOperations(subjectOperations);
+    realmWithoutClaims.setClaimsHandlers(Collections.emptyList());
+
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[1];
+    certificates[0] = mock(X509Certificate.class);
+    X500Principal x500Principal = new X500Principal("cn=test");
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo =
+        realmWithoutClaims.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    assertNotNull(assertion);
+    assertThat(assertion.getAttributeStatements().get(0).getAttributes(), hasSize(0));
+  }
+
+  @Test
+  public void testMultipleCertificates() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[3];
+    certificates[0] = mock(X509Certificate.class);
+    certificates[1] = mock(X509Certificate.class);
+    certificates[2] = mock(X509Certificate.class);
+    X500Principal x500Principal = new X500Principal("cn=test");
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertArrayEquals(
+        "All certificates should be preserved in credentials",
+        certificates,
+        (X509Certificate[]) authenticationInfo.getCredentials());
+  }
+
+  @Test
+  public void testPrincipalCollectionStructure() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[1];
+    certificates[0] = mock(X509Certificate.class);
+    X500Principal x500Principal = new X500Principal("cn=myuser,ou=engineering,o=company");
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertThat(authenticationInfo.getPrincipals(), is(notNullValue()));
+    assertThat(authenticationInfo.getPrincipals().asList().size(), is(equalTo(1)));
+
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+    assertNotNull(assertion);
+    assertThat(assertion.getPrincipal(), is(equalTo(x500Principal)));
+  }
+
+  @Test
+  public void testClaimsMerging() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[1];
+    certificates[0] = mock(X509Certificate.class);
+    X500Principal x500Principal = new X500Principal("cn=test");
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+
+    AttributeStatement attributeStatement = assertion.getAttributeStatements().get(0);
+    Attribute emailAttribute = attributeStatement.getAttributes().get(0);
+
+    assertThat(emailAttribute.getName(), is("email"));
+    assertThat(emailAttribute.getValues(), hasSize(2));
+    assertThat(emailAttribute.getValues(), contains("tester@example.com", "test@example.com"));
+  }
+
+  @Test
+  public void testComplexX500Principal() {
+    BaseAuthenticationToken authenticationToken = mock(BaseAuthenticationToken.class);
+    X509Certificate[] certificates = new X509Certificate[1];
+    certificates[0] = mock(X509Certificate.class);
+    X500Principal x500Principal =
+        new X500Principal(
+            "cn=John Doe,ou=Engineering,ou=R&D,o=ACME Corporation,l=Springfield,st=Illinois,c=US");
+    when(authenticationToken.getCredentials()).thenReturn(certificates);
+    when(authenticationToken.getPrincipal()).thenReturn(x500Principal);
+    when(authenticationToken.getType()).thenReturn(AuthenticationTokenType.PKI);
+
+    AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
+
+    assertNotNull(authenticationInfo);
+    SecurityAssertion assertion =
+        authenticationInfo.getPrincipals().oneByType(SecurityAssertion.class);
+    assertNotNull(assertion);
+    assertThat(assertion.getPrincipal(), is(equalTo(x500Principal)));
   }
 }
