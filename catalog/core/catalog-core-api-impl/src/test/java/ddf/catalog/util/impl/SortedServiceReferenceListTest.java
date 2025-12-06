@@ -13,9 +13,9 @@
  */
 package ddf.catalog.util.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertThat;
 
 import java.util.Random;
 import org.junit.Test;

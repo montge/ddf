@@ -14,9 +14,9 @@
 package ddf.catalog.data.inject;
 
 import static ddf.catalog.data.impl.MetacardImpl.BASIC_METACARD;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

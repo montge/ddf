@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.transformer.xml.streaming.lib;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;

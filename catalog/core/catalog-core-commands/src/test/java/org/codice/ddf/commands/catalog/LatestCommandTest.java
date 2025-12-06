@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.commands.catalog;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import org.junit.Test;

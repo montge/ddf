@@ -15,9 +15,9 @@ package org.codice.ddf.rest.impl.action;
 
 import static org.codice.ddf.rest.api.CatalogService.CONTEXT_ROOT;
 import static org.codice.ddf.rest.api.CatalogService.SOURCES_PATH;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

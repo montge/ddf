@@ -13,9 +13,9 @@
  */
 package org.codice.gsonsupport;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -13,9 +13,9 @@
  */
 package ddf.platform.scheduler;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.codice.ddf.security.Security;

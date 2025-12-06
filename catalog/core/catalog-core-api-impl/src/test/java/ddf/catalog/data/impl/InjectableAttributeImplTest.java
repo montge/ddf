@@ -14,9 +14,9 @@
  */
 package ddf.catalog.data.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import com.google.common.collect.Sets;
 import ddf.catalog.data.InjectableAttribute;

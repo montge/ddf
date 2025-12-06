@@ -14,8 +14,8 @@
 package org.codice.ddf.catalog.plugin.clientinfo;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.Metacard;

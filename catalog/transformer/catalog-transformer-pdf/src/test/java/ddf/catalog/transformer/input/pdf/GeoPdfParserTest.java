@@ -15,7 +15,7 @@ package ddf.catalog.transformer.input.pdf;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Test;

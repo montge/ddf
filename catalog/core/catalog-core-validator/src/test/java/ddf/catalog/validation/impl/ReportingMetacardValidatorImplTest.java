@@ -14,12 +14,12 @@
 package ddf.catalog.validation.impl;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertThat;
 
 import com.google.common.collect.Sets;
 import ddf.catalog.data.Metacard;

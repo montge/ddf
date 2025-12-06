@@ -13,9 +13,9 @@
  */
 package org.codice.solr.factory.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;

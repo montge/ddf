@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.libs.klv;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 import java.io.UnsupportedEncodingException;
 import org.codice.ddf.libs.klv.data.Klv;

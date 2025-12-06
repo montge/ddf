@@ -13,8 +13,8 @@
  */
 package ddf.catalog.transformer.xlsx;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Metacard;

@@ -16,8 +16,8 @@ package ddf.catalog.data.defaultvalues;
 import static ddf.catalog.data.Metacard.POINT_OF_CONTACT;
 import static ddf.catalog.data.Metacard.TITLE;
 import static ddf.catalog.data.impl.MetacardImpl.BASIC_METACARD;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import ddf.catalog.data.DefaultAttributeValueRegistry;
 import java.io.Serializable;

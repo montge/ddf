@@ -20,8 +20,8 @@ import static ddf.measure.Distance.LinearUnit.METER;
 import static ddf.measure.Distance.LinearUnit.MILE;
 import static ddf.measure.Distance.LinearUnit.NAUTICAL_MILE;
 import static ddf.measure.Distance.LinearUnit.YARD;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.junit.runners.Parameterized.Parameter;
 import static org.junit.runners.Parameterized.Parameters;
 

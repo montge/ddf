@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.security.claims.certificate;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.SubjectOperations;

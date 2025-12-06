@@ -15,8 +15,8 @@ package org.codice.ddf.commands.catalog;
 
 import static java.util.stream.Collectors.toList;
 import static org.codice.ddf.commands.catalog.CommandSupport.ERROR_COLOR;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;

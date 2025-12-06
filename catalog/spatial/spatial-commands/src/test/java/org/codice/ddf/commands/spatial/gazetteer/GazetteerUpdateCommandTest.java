@@ -14,8 +14,8 @@
 package org.codice.ddf.commands.spatial.gazetteer;
 
 import static org.codice.ddf.spatial.geocoding.GeoEntryExtractor.ExtractionCallback;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;

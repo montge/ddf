@@ -13,8 +13,8 @@
  */
 package ddf.catalog.transformer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import ddf.catalog.data.impl.MetacardImpl;
 import java.io.IOException;

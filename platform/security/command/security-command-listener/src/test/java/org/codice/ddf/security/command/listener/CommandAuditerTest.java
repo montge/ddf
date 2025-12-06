@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.security.command.listener;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;

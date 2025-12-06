@@ -13,9 +13,9 @@
  */
 package ddf.catalog.content.data.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 import ddf.catalog.content.data.ContentItem;
 import org.junit.Test;

@@ -16,8 +16,8 @@ package org.codice.ddf.libs.klv;
 import static org.codice.ddf.libs.klv.data.Klv.KeyLength;
 import static org.codice.ddf.libs.klv.data.Klv.LengthEncoding;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasKey;
-import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
 import java.util.HashSet;
