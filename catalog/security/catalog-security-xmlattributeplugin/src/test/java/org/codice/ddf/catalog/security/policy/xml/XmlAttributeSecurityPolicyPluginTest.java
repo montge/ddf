@@ -165,26 +165,30 @@ public class XmlAttributeSecurityPolicyPluginTest {
     Result mockResult = mock(Result.class);
     when(mockResult.getMetacard()).thenReturn(metacard);
     PolicyResponse policyResponse = plugin.processPostQuery(mockResult, new HashMap<>());
-    org.junit.Assert.assertThat(policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
+    org.hamcrest.MatcherAssert.assertThat(
+        policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
   }
 
   @Test
   public void testProcessResource() throws StopProcessingException, PluginExecutionException {
     PolicyResponse policyResponse =
         plugin.processPostResource(mock(ResourceResponse.class), metacard);
-    org.junit.Assert.assertThat(policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
+    org.hamcrest.MatcherAssert.assertThat(
+        policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
   }
 
   @Test
   public void testProcessPreCreate() throws StopProcessingException {
     PolicyResponse policyResponse = plugin.processPreCreate(metacard, new HashMap<>());
-    org.junit.Assert.assertThat(policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
+    org.hamcrest.MatcherAssert.assertThat(
+        policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
   }
 
   @Test
   public void testProcessPreUpdate() throws StopProcessingException {
     PolicyResponse policyResponse = plugin.processPreUpdate(metacard, new HashMap<>());
-    org.junit.Assert.assertThat(policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
+    org.hamcrest.MatcherAssert.assertThat(
+        policyResponse.itemPolicy().entrySet().size(), Matchers.is(3));
   }
 
   @Test
@@ -193,15 +197,18 @@ public class XmlAttributeSecurityPolicyPluginTest {
     metacard1.setMetadata(TEST_METADATA_3);
     PolicyResponse policyResponse =
         plugin.processPreDelete(Arrays.asList(metacard, metacard1), new HashMap<>());
-    org.junit.Assert.assertThat(policyResponse.operationPolicy().entrySet().size(), Matchers.is(3));
+    org.hamcrest.MatcherAssert.assertThat(
+        policyResponse.operationPolicy().entrySet().size(), Matchers.is(3));
   }
 
   @Test
   public void testProcessUnusedMethods() throws StopProcessingException {
     PolicyResponse policyResponse =
         plugin.processPreQuery(new QueryImpl(Filter.INCLUDE), new HashMap<>());
-    org.junit.Assert.assertThat(policyResponse.itemPolicy().entrySet().size(), Matchers.is(0));
+    org.hamcrest.MatcherAssert.assertThat(
+        policyResponse.itemPolicy().entrySet().size(), Matchers.is(0));
     policyResponse = plugin.processPreResource(new ResourceRequestById(""));
-    org.junit.Assert.assertThat(policyResponse.itemPolicy().entrySet().size(), Matchers.is(0));
+    org.hamcrest.MatcherAssert.assertThat(
+        policyResponse.itemPolicy().entrySet().size(), Matchers.is(0));
   }
 }

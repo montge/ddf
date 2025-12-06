@@ -22,11 +22,11 @@
     <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
 
     <!--
-        Spring 5.3.x features for DDF
-        Karaf 4.4.8 only provides Spring 6.1.x which is incompatible with DDF's javax.* based code.
-        These features override Karaf's spring features to provide Spring 5.3.x until DDF migrates to Spring 6.x.
+        Spring 6.2.x features for DDF
+        These features override Karaf's default spring features to provide Spring 6.2.x,
+        which includes security fixes for CVE-2025-41249 and CVE-2025-41254.
     -->
-    <feature name="spring" description="Spring 5.3.x support" version="${spring.osgi.bundle.version}">
+    <feature name="spring" description="Spring 6.2.x support" version="${spring.osgi.bundle.version}">
         <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/1.0_6</bundle>
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-core/${spring.osgi.bundle.version}</bundle>
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-expression/${spring.osgi.bundle.version}</bundle>
@@ -36,17 +36,17 @@
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-context-support/${spring.osgi.bundle.version}</bundle>
     </feature>
 
-    <feature name="spring-tx" description="Spring 5.3.x Transaction (TX) support" version="${spring.osgi.bundle.version}">
+    <feature name="spring-tx" description="Spring 6.2.x Transaction (TX) support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring</feature>
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-tx/${spring.osgi.bundle.version}</bundle>
     </feature>
 
-    <feature name="spring-jdbc" description="Spring 5.3.x JDBC support" version="${spring.osgi.bundle.version}">
+    <feature name="spring-jdbc" description="Spring 6.2.x JDBC support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring-tx</feature>
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-jdbc/${spring.osgi.bundle.version}</bundle>
     </feature>
 
-    <feature name="spring-orm" description="Spring 5.3.x ORM support" version="${spring.osgi.bundle.version}">
+    <feature name="spring-orm" description="Spring 6.2.x ORM support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring-jdbc</feature>
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/${spring.osgi.bundle.version}</bundle>
     </feature>

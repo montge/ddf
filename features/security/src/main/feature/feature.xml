@@ -305,7 +305,7 @@
              description="LDAP features and bundles.">
         <feature>security-core-services</feature>
 
-        <bundle>wrap:mvn:org.springframework.ldap/spring-ldap-core/2.3.2.RELEASE</bundle>
+        <bundle>wrap:mvn:org.springframework.ldap/spring-ldap-core/3.3.4</bundle>
         <bundle>mvn:ddf.security.jaas/security-jaas-ldap/${project.version}</bundle>
         <bundle>mvn:org.apache.commons/commons-pool2/2.5.0</bundle>
 

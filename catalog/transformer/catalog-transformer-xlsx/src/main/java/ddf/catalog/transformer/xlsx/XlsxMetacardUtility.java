@@ -104,6 +104,12 @@ class XlsxMetacardUtility {
       workbook.write(byteArrayOutputStream);
     } catch (IOException e) {
       LOGGER.debug("There was a problem writing the XLSX file.", e);
+    } finally {
+      try {
+        workbook.close();
+      } catch (IOException e) {
+        LOGGER.debug("There was a problem closing the workbook.", e);
+      }
     }
 
     return new BinaryContentImpl(
