@@ -15,8 +15,6 @@ package org.codice.ddf.catalog.content.monitor;
 
 import static ddf.catalog.Constants.CDM_LOGGER_NAME;
 
-import com.hazelcast.core.MapLoader;
-import com.hazelcast.core.MapStore;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -40,15 +38,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hazelcast persistence provider implementation of @MapLoader and @MapStore to serialize and
- * persist Java objects stored in Hazelcast cache to disk.
+ * File system persistence provider implementation to serialize and persist Java objects to disk.
  *
  * <p>NOTE: The usage of object serialization/deserialization may trigger static analysis warnings.
  * This usage is acceptable as the read/write directory is not configurable and lives under
  * DDF_HOME.
  */
-public class FileSystemPersistenceProvider
-    implements MapLoader<String, Object>, MapStore<String, Object> {
+public class FileSystemPersistenceProvider implements PersistenceStore<String, Object> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CDM_LOGGER_NAME);
 

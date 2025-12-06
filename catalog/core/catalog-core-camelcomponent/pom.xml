@@ -86,10 +86,6 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ddf.platform.util</groupId>
             <artifactId>util-uuidgenerator-api</artifactId>
             <version>${project.version}</version>
@@ -130,7 +126,6 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>
                             catalog-core-api-impl,
-                            hazelcast,
                             handlebars,
                             antlr4-runtime
                         </Embed-Dependency>
@@ -156,7 +151,6 @@
                             org.osgi.framework; version="1.5.0",
                             org.slf4j*; version="1.6.0",
                             !org.abego.treelayout.*,
-                            com.hazelcast.client;resolution:=optional,
                             *
                         </Import-Package>
                     </instructions>

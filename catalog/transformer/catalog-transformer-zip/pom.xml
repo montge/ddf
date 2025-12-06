@@ -95,7 +95,6 @@
                             sun.tools.javac;resolution:=optional,
                             sun.tools.native2ascii;resolution:=optional,
                             weblogic;resolution:=optional,
-                            com.hazelcast.client;resolution:=optional,
                             *
                         </Import-Package>
                     </instructions>

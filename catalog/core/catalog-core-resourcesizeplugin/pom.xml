@@ -53,10 +53,6 @@
             <artifactId>activities</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-        </dependency>
-        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
@@ -73,7 +69,6 @@
                         <Embed-Dependency>
                             notifications,
                             activities,
-                            hazelcast;scope=runtime|compile,
                             catalog-core-api-impl
                         </Embed-Dependency>
                         <Private-Package>
@@ -84,7 +79,6 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Export-Package />
                         <Import-Package>
-                            com.hazelcast.client;resolution:=optional,
                             *
                         </Import-Package>
                     </instructions>

@@ -13,8 +13,6 @@
  */
 package ddf.camel.component.catalog.content;
 
-import com.hazelcast.core.MapLoader;
-import com.hazelcast.core.MapStore;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
@@ -27,11 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hazelcast persistence provider implementation of @MapLoader and @MapStore to serialize and
- * persist Java objects stored in Hazelcast cache to disk.
+ * File system persistence provider implementation to serialize and persist Java objects to disk.
  */
-public class FileSystemPersistenceProvider
-    implements MapLoader<String, Object>, MapStore<String, Object> {
+public class FileSystemPersistenceProvider implements PersistenceStore<String, Object> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemPersistenceProvider.class);
 

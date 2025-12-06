@@ -49,10 +49,6 @@
             <artifactId>activities</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ddf.lib</groupId>
             <artifactId>common-system</artifactId>
             <version>${project.version}</version>
@@ -70,7 +66,6 @@
                         <Embed-Dependency>
                             notifications,
                             activities,
-                            hazelcast;scope=runtime|compile,
                             catalog-core-api-impl;scope=!test
                         </Embed-Dependency>
                         <Private-Package>
@@ -81,7 +76,6 @@
                         <Embed-Transitive>true</Embed-Transitive>
                         <Export-Package />
                         <Import-Package>
-                            com.hazelcast.client;resolution:=optional,
                             *
                         </Import-Package>
                     </instructions>
