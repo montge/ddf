@@ -38,6 +38,13 @@ public class LogSanitizer {
       // Explicitly log the empty string for null or empty values coming out of toString
       return "";
     }
-    return StringEscapeUtils.escapeHtml4(objStr.replace('\n', '_').replace('\r', '_'));
+    // Replace newlines, carriage returns, and Unicode line/paragraph separators
+    // to prevent log injection attacks (CWE-117)
+    return StringEscapeUtils.escapeHtml4(
+        objStr
+            .replace('\n', '_')
+            .replace('\r', '_')
+            .replace('\u2028', ' ') // Unicode Line Separator
+            .replace('\u2029', ' ')); // Unicode Paragraph Separator
   }
 }

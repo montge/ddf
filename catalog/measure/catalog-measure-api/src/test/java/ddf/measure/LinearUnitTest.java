@@ -19,7 +19,9 @@ import org.junit.Test;
 
 public class LinearUnitTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  // Note: commons-lang3 Validate.notNull() throws NullPointerException, not
+  // IllegalArgumentException
+  @Test(expected = NullPointerException.class)
   public void testFromStringWithNull() {
     LinearUnit.fromString(null);
   }

@@ -174,7 +174,7 @@ public class LogSanitizerTest {
    * could potentially be used for log obfuscation or injection attacks. This test ensures:
    *
    * <ul>
-   *   <li>Unicode characters are escaped to HTML numeric entities
+   *   <li>Unicode characters are preserved (commons-text escapeHtml4 does NOT encode Unicode)
    *   <li>HTML escaping works correctly with multi-byte characters
    *   <li>Unicode control characters don't bypass sanitization
    * </ul>
@@ -182,28 +182,27 @@ public class LogSanitizerTest {
   @Test
   public void testSanitizeUnicodeCharacters() {
     // Test with Unicode: Japanese, emoji, and Unicode with HTML
-    // commons-lang StringEscapeUtils.escapeHtml() converts Unicode to HTML numeric entities
+    // Note: commons-text StringEscapeUtils.escapeHtml4() does NOT convert Unicode to HTML entities
+    // (unlike the old commons-lang 2.x escapeHtml() which did convert them)
     LogSanitizer logSanitizer = LogSanitizer.sanitize("Hello 世界 🌍 <test>");
-    assertThat(
-        logSanitizer.toString(),
-        is(equalTo("Hello &#19990;&#30028; &#55356;&#57101; &lt;test&gt;")));
+    assertThat(logSanitizer.toString(), is(equalTo("Hello 世界 🌍 &lt;test&gt;")));
   }
 
   /**
    * Verifies that Unicode line separators (U+2028) and paragraph separators (U+2029) are handled.
    *
    * <p><b>Security Rationale:</b> Unicode line/paragraph separators can be used to bypass simple \n
-   * and \r filtering. While the current implementation doesn't explicitly replace these with
-   * underscores, they ARE escaped to HTML numeric entities which prevents log injection.
+   * and \r filtering. The implementation replaces these with spaces to prevent log injection while
+   * maintaining readability. Note: commons-text escapeHtml4() does NOT convert Unicode to entities.
    */
   @Test
   public void testSanitizeUnicodeLineSeparators() {
     // U+2028 (line separator) and U+2029 (paragraph separator)
     String input = "Line1\u2028Line2\u2029Line3";
     LogSanitizer logSanitizer = LogSanitizer.sanitize(input);
-    // These Unicode separators are converted to HTML entities (not replaced like \n and \r)
-    // &#8232; = U+2028, &#8233; = U+2029
-    assertThat(logSanitizer.toString(), is(equalTo("Line1&#8232;Line2&#8233;Line3")));
+    // With commons-text escapeHtml4(), Unicode chars are NOT converted to entities.
+    // The implementation replaces these Unicode line separators with spaces for safety.
+    assertThat(logSanitizer.toString(), is(equalTo("Line1 Line2 Line3")));
   }
 
   /**
