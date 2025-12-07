@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
@@ -448,44 +449,63 @@ public class SortedFederationStrategyTest {
         containsInAnyOrder(processingDetailsForNullPointer, processingDetailsForUnsupportedQuery));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullQueryExecutorService() throws Exception {
-    strategy = new SortedFederationStrategy(null, Arrays.asList(preQueryPlugin), new ArrayList<>());
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            strategy =
+                new SortedFederationStrategy(
+                    null, Arrays.asList(preQueryPlugin), new ArrayList<>()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullPreQueryPlugin() throws Exception {
-    strategy = new SortedFederationStrategy(queryExecutor, null, new ArrayList<>());
+    assertThrows(
+        NullPointerException.class,
+        () -> strategy = new SortedFederationStrategy(queryExecutor, null, new ArrayList<>()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullPreQueryPluginListContents() throws Exception {
-    strategy = new SortedFederationStrategy(queryExecutor, Arrays.asList(null), new ArrayList<>());
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            strategy =
+                new SortedFederationStrategy(
+                    queryExecutor, Arrays.asList(null), new ArrayList<>()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullPostQueryPlugin() throws Exception {
-    strategy = new SortedFederationStrategy(queryExecutor, Arrays.asList(preQueryPlugin), null);
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            strategy =
+                new SortedFederationStrategy(queryExecutor, Arrays.asList(preQueryPlugin), null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullPostQueryPluginListContents() throws Exception {
-    strategy =
-        new SortedFederationStrategy(
-            queryExecutor, Arrays.asList(preQueryPlugin), Arrays.asList(null));
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            strategy =
+                new SortedFederationStrategy(
+                    queryExecutor, Arrays.asList(preQueryPlugin), Arrays.asList(null)));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testNullRequest() throws Exception {
-    strategy.federate(new ArrayList<>(), null);
+    assertThrows(NullPointerException.class, () -> strategy.federate(new ArrayList<>(), null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testValidCollectionWithNullSource() throws Exception {
     List<Source> sources = new ArrayList<>();
     sources.add(null);
     QueryRequest fedQueryRequest = mock(QueryRequest.class);
-    strategy.federate(sources, fedQueryRequest);
+    assertThrows(IllegalArgumentException.class, () -> strategy.federate(sources, fedQueryRequest));
   }
 
   private Source getMockSource() throws UnsupportedQueryException {

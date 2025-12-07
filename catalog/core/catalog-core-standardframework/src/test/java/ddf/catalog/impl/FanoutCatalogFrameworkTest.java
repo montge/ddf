@@ -15,6 +15,7 @@ package ddf.catalog.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -388,16 +389,16 @@ public class FanoutCatalogFrameworkTest {
     assertNotNull(framework.getSourceInfo(request));
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testBlacklistedTagCreateRequestFails() throws Exception {
     Metacard metacard = new MetacardImpl();
     metacard.setAttribute(new AttributeImpl(Metacard.TAGS, "blacklisted"));
     CreateRequest request = new CreateRequestImpl(metacard);
     framework.setFanoutTagBlacklist(Collections.singletonList("blacklisted"));
-    framework.create(request);
+    assertThrows(IngestException.class, () -> framework.create(request));
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testBlacklistedTagUpdateRequestFails() throws Exception {
     Metacard metacard = new MetacardImpl();
     metacard.setAttribute(new AttributeImpl(Metacard.ID, "metacardId"));
@@ -405,10 +406,10 @@ public class FanoutCatalogFrameworkTest {
 
     UpdateRequest request = new UpdateRequestImpl(metacard.getId(), metacard);
     framework.setFanoutTagBlacklist(Collections.singletonList("blacklisted"));
-    framework.update(request);
+    assertThrows(IngestException.class, () -> framework.update(request));
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testBlacklistedTagDeleteRequestFails() throws Exception {
     Metacard metacard = new MetacardImpl();
     metacard.setAttribute(new AttributeImpl(Metacard.ID, "metacardId"));
@@ -489,10 +490,10 @@ public class FanoutCatalogFrameworkTest {
     framework.setFanoutTagBlacklist(Collections.singletonList("blacklisted"));
 
     DeleteRequest request = new DeleteRequestImpl(metacard.getId());
-    framework.delete(request);
+    assertThrows(IngestException.class, () -> framework.delete(request));
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testBlacklistedTagCreateStorageRequestFails() throws Exception {
     Metacard metacard = new MetacardImpl();
     metacard.setAttribute(new AttributeImpl(Metacard.TAGS, "blacklisted"));
@@ -593,10 +594,10 @@ public class FanoutCatalogFrameworkTest {
     CreateStorageRequest request =
         new CreateStorageRequestImpl(Collections.singletonList(item), new HashMap<>());
 
-    framework.create(request);
+    assertThrows(IngestException.class, () -> framework.create(request));
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testBlacklistedTagUpdateStorageRequestFails() throws Exception {
     Metacard metacard = new MetacardImpl();
     metacard.setAttribute(new AttributeImpl(Metacard.ID, "metacardId"));
@@ -613,6 +614,6 @@ public class FanoutCatalogFrameworkTest {
     UpdateStorageRequest request =
         new UpdateStorageRequestImpl(Collections.singletonList(item), new HashMap<>());
     framework.setFanoutTagBlacklist(Collections.singletonList("blacklisted"));
-    framework.update(request);
+    assertThrows(IngestException.class, () -> framework.update(request));
   }
 }
