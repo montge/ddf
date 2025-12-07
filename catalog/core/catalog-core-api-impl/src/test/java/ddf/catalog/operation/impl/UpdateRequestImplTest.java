@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Metacard;
@@ -109,12 +110,12 @@ public class UpdateRequestImplTest {
    *
    * <p>Verifies validation of matching list sizes.
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorThrowsExceptionWhenSizesMismatch() {
     String[] ids = {ID_1, ID_2};
     List<Metacard> metacards = Arrays.asList(mockMetacard1);
 
-    new UpdateRequestImpl(ids, metacards);
+    assertThrows(IllegalArgumentException.class, () -> new UpdateRequestImpl(ids, metacards));
   }
 
   /**
@@ -161,12 +162,12 @@ public class UpdateRequestImplTest {
    *
    * <p>Verifies URI list size validation.
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUriConstructorThrowsExceptionWhenSizesMismatch() throws Exception {
     URI[] uris = {new URI("content:test")};
     List<Metacard> metacards = Arrays.asList(mockMetacard1, mockMetacard2);
 
-    new UpdateRequestImpl(uris, metacards);
+    assertThrows(IllegalArgumentException.class, () -> new UpdateRequestImpl(uris, metacards));
   }
 
   // ====================

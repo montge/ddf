@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -437,10 +438,10 @@ public class HistorianTest {
     verify(catalogProvider, times(0)).create(any());
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testTryCommitStorageException()
       throws StorageException, UnsupportedQueryException, SourceUnavailableException,
-          IngestException, URISyntaxException {
+          URISyntaxException {
     List<Metacard> metacards = getMetacardUpdatePair();
 
     // Mock out a bad storage provider
@@ -473,14 +474,14 @@ public class HistorianTest {
     updateMetacard(storageRequest, storageResponse, metacards.get(1));
 
     mockQuery(metacards.get(1));
-    historian.version(storageRequest, storageResponse, updateResponse);
-    verify(exceptionStorageProvider).rollback(any(StorageRequest.class));
+    assertThrows(
+        IngestException.class,
+        () -> historian.version(storageRequest, storageResponse, updateResponse));
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testRollbackFailed()
-      throws StorageException, UnsupportedQueryException, SourceUnavailableException,
-          IngestException {
+      throws StorageException, UnsupportedQueryException, SourceUnavailableException {
     List<Metacard> metacards = getMetacardUpdatePair();
 
     // Mock out a bad storage provider
@@ -514,7 +515,9 @@ public class HistorianTest {
     updateMetacard(storageRequest, storageResponse, metacards.get(1));
 
     mockQuery(metacards.get(1));
-    historian.version(storageRequest, storageResponse, updateResponse);
+    assertThrows(
+        IngestException.class,
+        () -> historian.version(storageRequest, storageResponse, updateResponse));
     verify(exceptionStorageProvider).rollback(any(StorageRequest.class));
   }
 

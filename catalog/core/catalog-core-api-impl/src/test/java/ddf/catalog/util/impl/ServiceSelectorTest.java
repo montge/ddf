@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -110,14 +111,17 @@ public class ServiceSelectorTest {
     verify(mockServiceSelectionStrategy, times(2)).selectService(any(SortedSet.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorNullComparator() {
-    new ServiceSelector<Calendar>((Comparator) null);
+    assertThrows(
+        IllegalArgumentException.class, () -> new ServiceSelector<Calendar>((Comparator) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testComparatorNullServiceSelectionStrategy() {
-    new ServiceSelector<Calendar>((ServiceSelectionStrategy) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new ServiceSelector<Calendar>((ServiceSelectionStrategy) null));
   }
 
   private ServiceReference buildMockServiceReference(Integer serviceRanking, Long serviceId) {

@@ -14,6 +14,7 @@
 package ddf.catalog.impl.filter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,19 +24,19 @@ import org.opengis.filter.expression.Expression;
 @Deprecated
 public class FuzzyFunctionTest {
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testVerifyFuzzyFunctionCannotBeCalledWithNull() {
     // When: I try to create a Fuzzy Function with null parameters
-    FuzzyFunction func = new FuzzyFunction(null, null);
+    assertThrows(NullPointerException.class, () -> new FuzzyFunction(null, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testVerifyFuzzyFunctionCannotBeCalledWithMoreThanOneParameter() {
     List<Expression> exprs = new ArrayList<Expression>();
     exprs.add(Expression.NIL);
     exprs.add(Expression.NIL);
     // When: I try to create a Fuzzy Function with null parameters
-    FuzzyFunction func = new FuzzyFunction(exprs, null);
+    assertThrows(IllegalArgumentException.class, () -> new FuzzyFunction(exprs, null));
   }
 
   @Test

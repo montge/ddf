@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,18 +49,21 @@ public class GeoToolsFunctionFactoryTest {
     assertThat(toTest.function("", null, null), nullValue());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testFunctionForValidNameWithNullExpressionList() {
-    toTest.function(FuzzyFunction.FUNCTION_NAME.getName(), null, null);
+    assertThrows(
+        NullPointerException.class,
+        () -> toTest.function(FuzzyFunction.FUNCTION_NAME.getName(), null, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testFunctionForValidNameWithTooManyExpressions() {
     List<Expression> expr = new ArrayList<>();
     expr.add(Expression.NIL);
     expr.add(Expression.NIL);
-    Function result = toTest.function(FuzzyFunction.FUNCTION_NAME.getName(), expr, null);
-    assertThat(result.getName(), is(FuzzyFunction.FUNCTION_NAME.getName()));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> toTest.function(FuzzyFunction.FUNCTION_NAME.getName(), expr, null));
   }
 
   @Test

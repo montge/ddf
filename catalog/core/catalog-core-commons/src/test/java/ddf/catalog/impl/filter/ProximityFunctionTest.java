@@ -15,6 +15,7 @@ package ddf.catalog.impl.filter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +24,17 @@ import org.opengis.filter.expression.Expression;
 
 public class ProximityFunctionTest {
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testVerifyProximityFunctionCannotBeCalledWithNull() {
-    new ProximityFunction(null, null);
+    assertThrows(NullPointerException.class, () -> new ProximityFunction(null, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testVerifyProximityFunctionCannotBeCalledWithMoreThanOneParameter() {
     List<Expression> exprs = new ArrayList<>();
     exprs.add(Expression.NIL);
     exprs.add(Expression.NIL);
-    new ProximityFunction(exprs, null);
+    assertThrows(IllegalArgumentException.class, () -> new ProximityFunction(exprs, null));
   }
 
   @Test
