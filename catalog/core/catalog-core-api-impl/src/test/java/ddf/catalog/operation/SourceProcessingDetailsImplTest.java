@@ -16,6 +16,7 @@ package ddf.catalog.operation;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.operation.impl.SourceProcessingDetailsImpl;
 import java.util.Collections;
@@ -72,13 +73,15 @@ public class SourceProcessingDetailsImplTest {
         not(unequalSourceProcessingDetails.hashCode()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorThrowsIllegalArgumentExceptionWhenGivenNull() {
-    new SourceProcessingDetailsImpl(null);
+    assertThrows(IllegalArgumentException.class, () -> new SourceProcessingDetailsImpl(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetWarningsThrowsIllegalArgumentExceptionWhenGivenNull() {
-    new SourceProcessingDetailsImpl(Collections.singletonList("")).setWarnings(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new SourceProcessingDetailsImpl(Collections.singletonList("")).setWarnings(null));
   }
 }

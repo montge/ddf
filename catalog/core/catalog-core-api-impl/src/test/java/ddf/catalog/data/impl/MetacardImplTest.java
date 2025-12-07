@@ -16,6 +16,7 @@ package ddf.catalog.data.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.AttributeDescriptor;
@@ -94,9 +95,9 @@ public class MetacardImplTest {
     mc.setPointOfContact("pointOfContact");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMetacardTypeAsNull() {
-    new MetacardImpl((MetacardType) null);
+    assertThrows(IllegalArgumentException.class, () -> new MetacardImpl((MetacardType) null));
   }
 
   /**

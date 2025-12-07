@@ -16,6 +16,7 @@ package ddf.catalog.operation;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.operation.impl.ProcessingDetailsImpl;
 import ddf.catalog.source.UnsupportedQueryException;
@@ -186,13 +187,21 @@ public class ProcessingDetailsImplTest {
         is(identicalProcessingDetails.hashCode()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testConstructorThrowsNullPointerExceptionWhenGivenNullWarning() {
-    new ProcessingDetailsImpl("test source", new UnsupportedQueryException(), (String) null);
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            new ProcessingDetailsImpl(
+                "test source", new UnsupportedQueryException(), (String) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorThrowsIllegalArgumentExceptionWhenGivenNullWarnings() {
-    new ProcessingDetailsImpl("test source", new UnsupportedQueryException(), (List<String>) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new ProcessingDetailsImpl(
+                "test source", new UnsupportedQueryException(), (List<String>) null));
   }
 }
