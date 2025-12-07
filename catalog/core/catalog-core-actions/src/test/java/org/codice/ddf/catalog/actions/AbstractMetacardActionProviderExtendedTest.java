@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import ddf.action.Action;
@@ -101,14 +102,18 @@ public class AbstractMetacardActionProviderExtendedTest {
     assertThat(provider.getId(), is(ACTION_ID));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithEmptyActionProviderId() {
-    new TestMetacardActionProvider("", TITLE, DESCRIPTION);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new TestMetacardActionProvider("", TITLE, DESCRIPTION));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithWhitespaceActionProviderId() {
-    new TestMetacardActionProvider("   ", TITLE, DESCRIPTION);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new TestMetacardActionProvider("   ", TITLE, DESCRIPTION));
   }
 
   @Test

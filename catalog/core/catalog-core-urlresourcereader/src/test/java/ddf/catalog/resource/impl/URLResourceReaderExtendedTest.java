@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -241,19 +242,21 @@ public class URLResourceReaderExtendedTest {
     assertThat(result.isEmpty(), is(true));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testRetrieveResourceWithNullURI() throws Exception {
+  @Test
+  public void testRetrieveResourceWithNullURI() {
     Map<String, Serializable> properties = new HashMap<>();
 
-    resourceReader.retrieveResource(null, properties);
+    assertThrows(
+        ResourceNotFoundException.class, () -> resourceReader.retrieveResource(null, properties));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testRetrieveResourceWithUnsupportedScheme() throws Exception {
     URI uri = new URI(INVALID_SCHEME + "://example.com/file.txt");
     Map<String, Serializable> properties = new HashMap<>();
 
-    resourceReader.retrieveResource(uri, properties);
+    assertThrows(
+        ResourceNotFoundException.class, () -> resourceReader.retrieveResource(uri, properties));
   }
 
   @Test
@@ -322,7 +325,7 @@ public class URLResourceReaderExtendedTest {
     verify(clientFactory).getClientForSubject(subject);
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testRetrieveHttpResourceWithNullEntity() throws Exception {
     URI uri = new URI(TEST_URL);
     Map<String, Serializable> properties = new HashMap<>();
@@ -330,10 +333,11 @@ public class URLResourceReaderExtendedTest {
     when(response.getEntity()).thenReturn(null);
     when(webClient.get()).thenReturn(response);
 
-    resourceReader.retrieveResource(uri, properties);
+    assertThrows(
+        ResourceNotFoundException.class, () -> resourceReader.retrieveResource(uri, properties));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testRetrieveHttpResourceWithErrorStatus() throws Exception {
     URI uri = new URI(TEST_URL);
     Map<String, Serializable> properties = new HashMap<>();
@@ -344,7 +348,8 @@ public class URLResourceReaderExtendedTest {
     when(response.getEntity()).thenReturn(new ByteArrayInputStream("Not found".getBytes()));
     when(webClient.get()).thenReturn(response);
 
-    resourceReader.retrieveResource(uri, properties);
+    assertThrows(
+        ResourceNotFoundException.class, () -> resourceReader.retrieveResource(uri, properties));
   }
 
   @Test

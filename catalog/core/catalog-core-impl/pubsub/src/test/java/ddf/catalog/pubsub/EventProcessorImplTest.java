@@ -15,6 +15,7 @@ package ddf.catalog.pubsub;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import ddf.catalog.data.impl.MetacardImpl;
@@ -93,13 +94,15 @@ public class EventProcessorImplTest {
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testDateTypeNullAttr() {
-    EventProcessorImpl.DateType.getDateType(null);
+    assertThrows(NullPointerException.class, () -> EventProcessorImpl.DateType.getDateType(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDateTypeInvalidAttr() {
-    EventProcessorImpl.DateType.getDateType("some obviously invalid attribute.");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> EventProcessorImpl.DateType.getDateType("some obviously invalid attribute."));
   }
 }

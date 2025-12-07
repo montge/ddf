@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -491,7 +492,7 @@ public class URLResourceReaderTest {
    *
    * @throws Exception
    */
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testServerSupportsPartialContentResponseTooMuchOffset() throws Exception {
     URI uri = new URI(HTTP_SCHEME_PLUS_SEP + HOST + "/src/test/resources/data/" + BAD_FILE_NAME);
 
@@ -510,8 +511,11 @@ public class URLResourceReaderTest {
     String bytesToSkip = "2";
 
     // this should throw an IOException since more bytes were skipped than requested
-    verifyFileFromURLResourceReader(
-        uri, JPEG_FILE_NAME_1, JPEG_MIME_TYPE, bytesToSkip, null, 2135, uri);
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            verifyFileFromURLResourceReader(
+                uri, JPEG_FILE_NAME_1, JPEG_MIME_TYPE, bytesToSkip, null, 2135, uri));
   }
 
   /**
@@ -589,26 +593,32 @@ public class URLResourceReaderTest {
     assert (qualifiers.size() == 3);
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testReadFileInvalidResourcePath() throws Exception {
+  @Test
+  public void testReadFileInvalidResourcePath() {
     String invalidFilePath = INVALID_PATH + JPEG_FILE_NAME_1;
-    verifyFile(
-        invalidFilePath,
-        JPEG_FILE_NAME_1,
-        JPEG_MIME_TYPE,
-        ABSOLUTE_PATH + TEST_PATH,
-        ABSOLUTE_PATH + TEST_PATH + "pdf");
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            verifyFile(
+                invalidFilePath,
+                JPEG_FILE_NAME_1,
+                JPEG_MIME_TYPE,
+                ABSOLUTE_PATH + TEST_PATH,
+                ABSOLUTE_PATH + TEST_PATH + "pdf"));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testReadFileInvalidResourcePathWithBackReferences() throws Exception {
+  @Test
+  public void testReadFileInvalidResourcePathWithBackReferences() {
     String invalidFilePath = ABSOLUTE_PATH + TEST_PATH + "../../../../../" + JPEG_FILE_NAME_1;
-    verifyFile(
-        invalidFilePath,
-        JPEG_FILE_NAME_1,
-        JPEG_MIME_TYPE,
-        ABSOLUTE_PATH + TEST_PATH,
-        ABSOLUTE_PATH + TEST_PATH + "pdf");
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            verifyFile(
+                invalidFilePath,
+                JPEG_FILE_NAME_1,
+                JPEG_MIME_TYPE,
+                ABSOLUTE_PATH + TEST_PATH,
+                ABSOLUTE_PATH + TEST_PATH + "pdf"));
   }
 
   @Test
