@@ -18,6 +18,7 @@ import static org.codice.ddf.libs.klv.data.Klv.LengthEncoding;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasKey;
+import static org.junit.Assert.assertThrows;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -61,28 +62,40 @@ public class KlvContextTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullKeyLength() {
-    new KlvContext(null, LengthEncoding.ONE_BYTE, new HashSet<>()).addDataElements(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new KlvContext(null, LengthEncoding.ONE_BYTE, new HashSet<>()).addDataElements(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullLengthEncoding() {
-    new KlvContext(KeyLength.ONE_BYTE, null, new HashSet<>()).addDataElements(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new KlvContext(KeyLength.ONE_BYTE, null, new HashSet<>()).addDataElements(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullDataElementCollection() {
-    new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE, null).addDataElements(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE, null)
+                .addDataElements(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testAddNullDataElement() {
-    new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE).addDataElements(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE).addDataElements(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testAddNullDataElementCollection() {
-    new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE).addDataElement(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE).addDataElement(null));
   }
 }

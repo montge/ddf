@@ -16,6 +16,7 @@ package org.codice.ddf.platform.util;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -76,14 +77,13 @@ public class XMLUtilsParameterizedTest {
       implClass = className;
     }
 
-    @Test(expected = org.xml.sax.SAXParseException.class)
-    public void testDocumentBuilderLimitEntityExpansion()
-        throws IOException, SAXException, ParserConfigurationException {
+    @Test
+    public void testDocumentBuilderLimitEntityExpansion() {
       InputStream is = new ByteArrayInputStream(XML_XXE_EXPANSION.getBytes(StandardCharsets.UTF_8));
 
       DocumentBuilderFactory dbf =
           XML_UTILS.getSecureDocumentBuilderFactory(implClass, XMLUtils.class.getClassLoader());
-      dbf.newDocumentBuilder().parse(is);
+      assertThrows(org.xml.sax.SAXParseException.class, () -> dbf.newDocumentBuilder().parse(is));
     }
 
     @Test
@@ -135,14 +135,16 @@ public class XMLUtilsParameterizedTest {
       implClass = className;
     }
 
-    @Test(expected = javax.xml.transform.TransformerException.class)
-    public void testXMLTransformerLimitsEntityExpansion() throws TransformerException {
+    @Test
+    public void testXMLTransformerLimitsEntityExpansion() {
       Source xmlSource = new StreamSource(new StringReader(XML_XXE_EXPANSION));
       StreamResult result = new StreamResult(new StringWriter());
 
       TransformerFactory tf =
           XML_UTILS.getSecureXmlTransformerFactory(implClass, XMLUtils.class.getClassLoader());
-      tf.newTransformer().transform(xmlSource, result);
+      assertThrows(
+          javax.xml.transform.TransformerException.class,
+          () -> tf.newTransformer().transform(xmlSource, result));
     }
 
     @Test
@@ -190,15 +192,17 @@ public class XMLUtilsParameterizedTest {
       implClass = className;
     }
 
-    @Test(expected = org.xml.sax.SAXParseException.class)
-    public void testSaxParserLimitsEntityExpansion()
-        throws ParserConfigurationException, SAXException, IOException {
+    @Test
+    public void testSaxParserLimitsEntityExpansion() {
       InputStream is = new ByteArrayInputStream(XML_XXE_EXPANSION.getBytes(StandardCharsets.UTF_8));
 
-      XML_UTILS
-          .getSecureSAXParserFactory(implClass, XMLUtils.class.getClassLoader())
-          .newSAXParser()
-          .parse(is, new DefaultHandler());
+      assertThrows(
+          org.xml.sax.SAXParseException.class,
+          () ->
+              XML_UTILS
+                  .getSecureSAXParserFactory(implClass, XMLUtils.class.getClassLoader())
+                  .newSAXParser()
+                  .parse(is, new DefaultHandler()));
     }
 
     @Test
@@ -243,11 +247,13 @@ public class XMLUtilsParameterizedTest {
       implClass = className;
     }
 
-    @Test(expected = org.xml.sax.SAXParseException.class)
-    public void testXMLReaderLimitsEntityExpansion() throws SAXException, IOException {
+    @Test
+    public void testXMLReaderLimitsEntityExpansion() {
       InputStream is = new ByteArrayInputStream(XML_XXE_EXPANSION.getBytes(StandardCharsets.UTF_8));
       InputSource ins = new InputSource(is);
-      XML_UTILS.getSecureXmlParser(implClass).parse(ins);
+      assertThrows(
+          org.xml.sax.SAXParseException.class,
+          () -> XML_UTILS.getSecureXmlParser(implClass).parse(ins));
     }
 
     @Test

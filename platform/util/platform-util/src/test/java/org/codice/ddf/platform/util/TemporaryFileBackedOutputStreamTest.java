@@ -15,6 +15,7 @@ package org.codice.ddf.platform.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.io.ByteSource;
 import java.io.IOException;
@@ -40,17 +41,12 @@ public class TemporaryFileBackedOutputStreamTest {
     temporaryFileBackedOutputStream.close();
   }
 
-  /**
-   * Make sure asByteSource() throws an IOException after close() is called.
-   *
-   * @throws IOException
-   */
-  @Test(expected = IOException.class)
+  /** Make sure asByteSource() throws an IOException after close() is called. */
+  @Test
   public void testAsByteSourceAfterClose() throws IOException {
-
     temporaryFileBackedOutputStream.close();
 
-    temporaryFileBackedOutputStream.asByteSource();
+    assertThrows(IOException.class, () -> temporaryFileBackedOutputStream.asByteSource());
   }
 
   @Test
@@ -83,24 +79,31 @@ public class TemporaryFileBackedOutputStreamTest {
     assertThat(byteSource.read(), is(TEST_BYTE_ARRAY));
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testWriteNullArray() throws IOException {
-    temporaryFileBackedOutputStream.write(null, 0, 0);
+  @Test
+  public void testWriteNullArray() {
+    assertThrows(
+        NullPointerException.class, () -> temporaryFileBackedOutputStream.write(null, 0, 0));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void testWriteNegativeOffset() throws IOException {
-    temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY, -1, 0);
+  @Test
+  public void testWriteNegativeOffset() {
+    assertThrows(
+        IndexOutOfBoundsException.class,
+        () -> temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY, -1, 0));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void testWriteNegativeLength() throws IOException {
-    temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY, 0, -1);
+  @Test
+  public void testWriteNegativeLength() {
+    assertThrows(
+        IndexOutOfBoundsException.class,
+        () -> temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY, 0, -1));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void testWriteBadOffsetLength() throws IOException {
-    temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY, 1, 1);
+  @Test
+  public void testWriteBadOffsetLength() {
+    assertThrows(
+        IndexOutOfBoundsException.class,
+        () -> temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY, 1, 1));
   }
 
   /** Make sure that flush doesn't throw an exception. */

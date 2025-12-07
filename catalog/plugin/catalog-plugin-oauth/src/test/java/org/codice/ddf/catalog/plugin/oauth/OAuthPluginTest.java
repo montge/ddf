@@ -20,6 +20,7 @@ import static org.codice.ddf.security.token.storage.api.TokenStorage.EXPIRES_AT;
 import static org.codice.ddf.security.token.storage.api.TokenStorage.SECRET;
 import static org.codice.ddf.security.token.storage.api.TokenStorage.SOURCE_ID;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -181,7 +182,7 @@ public class OAuthPluginTest {
         .create(anyString(), anyString(), anyString(), anyString(), anyString());
   }
 
-  @Test(expected = OAuthPluginException.class)
+  @Test
   public void testDifferentDiscoveryUrl() throws Exception {
     OAuthFederatedSource source = oauthPlugin.oauthSource;
     Subject subject = getSubject();
@@ -195,21 +196,19 @@ public class OAuthPluginTest {
     when(tokenStorage.read(SESSION, CSW_SOURCE)).thenReturn(tokenEntry);
     when(tokenStorage.getStateMap()).thenReturn(stateMap);
 
-    try {
-      oauthPlugin.process(source, input);
-    } catch (OAuthPluginException e) {
-      verify(tokenStorage, times(1)).delete(SESSION, CSW_SOURCE);
-      verify(tokenStorage, times(1)).getStateMap();
+    OAuthPluginException e =
+        assertThrows(OAuthPluginException.class, () -> oauthPlugin.process(source, input));
 
-      ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-      verify(stateMap, times(1)).put(anyString(), captor.capture());
+    verify(tokenStorage, times(1)).delete(SESSION, CSW_SOURCE);
+    verify(tokenStorage, times(1)).getStateMap();
 
-      assertUrl(e, captor.getValue());
-      throw e;
-    }
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(stateMap, times(1)).put(anyString(), captor.capture());
+
+    assertUrl(e, captor.getValue());
   }
 
-  @Test(expected = OAuthPluginException.class)
+  @Test
   public void testNoStoredTokensButExistingUnderDifferentSource() throws Exception {
     OAuthFederatedSource source = oauthPlugin.oauthSource;
     Subject subject = getSubject();
@@ -230,23 +229,21 @@ public class OAuthPluginTest {
     when(tokenStorage.read(SESSION, SOURCE_ID)).thenReturn(null);
     when(tokenStorage.read(SESSION)).thenReturn(tokenInformation);
 
-    try {
-      oauthPlugin.process(source, input);
-    } catch (OAuthPluginException e) {
-      assertEquals(e.getSourceId(), CSW_SOURCE);
-      assertEquals(e.getErrorType().getStatusCode(), 412);
+    OAuthPluginException e =
+        assertThrows(OAuthPluginException.class, () -> oauthPlugin.process(source, input));
 
-      String url = e.getUrl();
-      Map<String, String> urlParams =
-          URLEncodedUtils.parse(new URI(url), StandardCharsets.UTF_8).stream()
-              .collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
-      assertEquals(urlParams.get(SOURCE_ID), CSW_SOURCE);
-      assertEquals(urlParams.get(DISCOVERY_URL), METADATA_ENDPOINT);
-      throw e;
-    }
+    assertEquals(e.getSourceId(), CSW_SOURCE);
+    assertEquals(e.getErrorType().getStatusCode(), 412);
+
+    String url = e.getUrl();
+    Map<String, String> urlParams =
+        URLEncodedUtils.parse(new URI(url), StandardCharsets.UTF_8).stream()
+            .collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
+    assertEquals(urlParams.get(SOURCE_ID), CSW_SOURCE);
+    assertEquals(urlParams.get(DISCOVERY_URL), METADATA_ENDPOINT);
   }
 
-  @Test(expected = OAuthPluginException.class)
+  @Test
   public void testNoStoredTokensExistingTokenUnderDifferentSourceExpiredTokens() throws Exception {
     OAuthFederatedSource source = oauthPlugin.oauthSource;
     Subject subject = getSubject();
@@ -272,21 +269,20 @@ public class OAuthPluginTest {
     when(tokenStorage.getStateMap()).thenReturn(stateMap);
     when(tokenStorage.read(SESSION, SOURCE_ID)).thenReturn(null);
     when(tokenStorage.read(SESSION)).thenReturn(tokenInformation);
-    try {
-      oauthPlugin.process(source, input);
-    } catch (OAuthPluginException e) {
-      assertEquals(e.getSourceId(), CSW_SOURCE);
-      assertEquals(e.getErrorType().getStatusCode(), 401);
 
-      ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-      verify(stateMap, times(1)).put(anyString(), captor.capture());
+    OAuthPluginException e =
+        assertThrows(OAuthPluginException.class, () -> oauthPlugin.process(source, input));
 
-      assertUrl(e, captor.getValue());
-      throw e;
-    }
+    assertEquals(e.getSourceId(), CSW_SOURCE);
+    assertEquals(e.getErrorType().getStatusCode(), 401);
+
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(stateMap, times(1)).put(anyString(), captor.capture());
+
+    assertUrl(e, captor.getValue());
   }
 
-  @Test(expected = OAuthPluginException.class)
+  @Test
   public void testInvalidRefreshError() throws Exception {
     OAuthFederatedSource source = oauthPlugin.oauthSource;
     Subject subject = getSubject();
@@ -309,19 +305,17 @@ public class OAuthPluginTest {
     when(response.getEntity()).thenReturn(new ByteArrayInputStream("".getBytes()));
     when(oauthPlugin.webClient.form(any(Form.class))).thenReturn(response);
 
-    try {
-      oauthPlugin.process(source, input);
-    } catch (OAuthPluginException e) {
-      ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-      verify(stateMap, times(1)).put(anyString(), captor.capture());
-      verify(tokenStorage, times(1)).getStateMap();
+    OAuthPluginException e =
+        assertThrows(OAuthPluginException.class, () -> oauthPlugin.process(source, input));
 
-      assertUrl(e, captor.getValue());
-      throw e;
-    }
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(stateMap, times(1)).put(anyString(), captor.capture());
+    verify(tokenStorage, times(1)).getStateMap();
+
+    assertUrl(e, captor.getValue());
   }
 
-  @Test(expected = OAuthPluginException.class)
+  @Test
   public void testInvalidRefreshedAccessToken() throws Exception {
     OAuthFederatedSource source = oauthPlugin.oauthSource;
     Subject subject = getSubject();
@@ -345,18 +339,16 @@ public class OAuthPluginTest {
     when(response.getEntity()).thenReturn(getResponse(invalidAccessToken));
     when(oauthPlugin.webClient.form(any(Form.class))).thenReturn(response);
 
-    try {
-      oauthPlugin.process(source, input);
-    } catch (OAuthPluginException e) {
-      ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
-      verify(stateMap, times(1)).put(anyString(), captor.capture());
-      verify(tokenStorage, times(0))
-          .create(anyString(), anyString(), anyString(), anyString(), anyString());
-      verify(tokenStorage, times(1)).getStateMap();
+    OAuthPluginException e =
+        assertThrows(OAuthPluginException.class, () -> oauthPlugin.process(source, input));
 
-      assertUrl(e, captor.getValue());
-      throw e;
-    }
+    ArgumentCaptor<Map<String, Object>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(stateMap, times(1)).put(anyString(), captor.capture());
+    verify(tokenStorage, times(0))
+        .create(anyString(), anyString(), anyString(), anyString(), anyString());
+    verify(tokenStorage, times(1)).getStateMap();
+
+    assertUrl(e, captor.getValue());
   }
 
   private InputStream getResponse(String accessToken) {
