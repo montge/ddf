@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.AttributeDescriptor;
@@ -184,9 +185,10 @@ public class MetacardTypeRegistryTest {
     assertOnExpectedMetacardTypeFields(qmtResult);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testLookupMetacardTypeNullNamespace() {
-    mtr.lookup(null, QUALIFIED_METACARD_TYPE_NAME_3);
+    assertThrows(
+        IllegalArgumentException.class, () -> mtr.lookup(null, QUALIFIED_METACARD_TYPE_NAME_3));
   }
 
   @Test
@@ -199,14 +201,17 @@ public class MetacardTypeRegistryTest {
     assertOnExpectedMetacardTypeFields(qmtResult);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testLookupMetacardTypeNullName() {
-    mtr.lookup(QUALIFIED_METACARD_TYPE_NAMESPACE_1, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> mtr.lookup(QUALIFIED_METACARD_TYPE_NAMESPACE_1, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testLookupMetacardTypeEmptyName() {
-    mtr.lookup(QUALIFIED_METACARD_TYPE_NAMESPACE_1, "");
+    assertThrows(
+        IllegalArgumentException.class, () -> mtr.lookup(QUALIFIED_METACARD_TYPE_NAMESPACE_1, ""));
   }
 
   @Test
@@ -244,14 +249,14 @@ public class MetacardTypeRegistryTest {
     assertNull(qmt);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNoNamespaceLookupEmptyName() {
-    mtr.lookup("");
+    assertThrows(IllegalArgumentException.class, () -> mtr.lookup(""));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNoNamespaceLookupNullName() {
-    mtr.lookup(null);
+    assertThrows(IllegalArgumentException.class, () -> mtr.lookup(null));
   }
 
   @Test
@@ -315,24 +320,23 @@ public class MetacardTypeRegistryTest {
     mtr.unregister(qmt);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void registerMetacardTypeNull() {
-    mtr.register(null);
+    assertThrows(IllegalArgumentException.class, () -> mtr.register(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void registerMetacardTypeNullName() {
     QualifiedMetacardType qmt =
         new QualifiedMetacardTypeImpl(QUALIFIED_METACARD_TYPE_NAMESPACE_1, null, qmtAttributes);
-    mtr.register(qmt);
+    assertThrows(IllegalArgumentException.class, () -> mtr.register(qmt));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void registerMetacardTypeEmptyName() {
-
     QualifiedMetacardType qmt =
         new QualifiedMetacardTypeImpl(QUALIFIED_METACARD_TYPE_NAMESPACE_1, "", qmtAttributes);
-    mtr.register(qmt);
+    assertThrows(IllegalArgumentException.class, () -> mtr.register(qmt));
   }
 
   @Test

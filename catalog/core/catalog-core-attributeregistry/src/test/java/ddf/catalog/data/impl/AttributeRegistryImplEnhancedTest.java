@@ -15,6 +15,7 @@ package ddf.catalog.data.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.AttributeDescriptor;
@@ -81,33 +82,33 @@ public class AttributeRegistryImplEnhancedTest {
     assertThat(result.isPresent(), is(false));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterNullDescriptor() {
-    registry.register(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.register(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterDescriptorWithNullName() {
     AttributeDescriptor descriptor =
         new AttributeDescriptorImpl(null, true, true, false, false, BasicTypes.STRING_TYPE);
-    registry.register(descriptor);
+    assertThrows(IllegalArgumentException.class, () -> registry.register(descriptor));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDeregisterNullDescriptor() {
-    registry.deregister(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.deregister(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDeregisterDescriptorWithNullName() {
     AttributeDescriptor descriptor =
         new AttributeDescriptorImpl(null, true, true, false, false, BasicTypes.STRING_TYPE);
-    registry.deregister(descriptor);
+    assertThrows(IllegalArgumentException.class, () -> registry.deregister(descriptor));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testLookupWithNullName() {
-    registry.lookup(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.lookup(null));
   }
 
   @Test
