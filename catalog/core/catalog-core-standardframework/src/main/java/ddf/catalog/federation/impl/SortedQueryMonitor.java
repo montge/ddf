@@ -38,7 +38,6 @@ import ddf.catalog.util.impl.RelevanceResultComparator;
 import ddf.catalog.util.impl.TemporalResultComparator;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -106,7 +105,7 @@ class SortedQueryMonitor implements Runnable {
     if (sortBySer instanceof SortBy[]) {
       SortBy[] extSortBys = (SortBy[]) sortBySer;
       if (extSortBys.length > 0) {
-        sortBys.addAll(Arrays.asList(extSortBys));
+        sortBys.addAll(List.of(extSortBys));
       }
     }
 

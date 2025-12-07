@@ -17,7 +17,6 @@ import ddf.mime.MimeTypeMapper;
 import ddf.mime.MimeTypeResolutionException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +40,7 @@ public class AttachmentParserImpl implements AttachmentParser {
    * file extension of the filename specified in the create request.
    */
   private static final List<String> REFINEABLE_MIME_TYPES =
-      Arrays.asList(DEFAULT_MIME_TYPE, "text/plain");
+      List.of(DEFAULT_MIME_TYPE, "text/plain");
 
   private final MimeTypeMapper mimeTypeMapper;
 

@@ -13,8 +13,6 @@
  */
 package ddf.catalog.impl.filter;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.geotools.feature.NameImpl;
 import org.geotools.filter.FunctionFactory;
@@ -30,11 +28,10 @@ public class GeoToolsFunctionFactory implements FunctionFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(GeoToolsFunctionFactory.class);
 
   private static final List<FunctionName> FUNCTION_NAMES =
-      Collections.unmodifiableList(
-          Arrays.asList(
-              FuzzyFunction.FUNCTION_NAME,
-              ProximityFunction.FUNCTION_NAME,
-              DivisibleByFunction.FUNCTION_NAME));
+      List.of(
+          FuzzyFunction.FUNCTION_NAME,
+          ProximityFunction.FUNCTION_NAME,
+          DivisibleByFunction.FUNCTION_NAME);
 
   @Override
   public List<FunctionName> getFunctionNames() {

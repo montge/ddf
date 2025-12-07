@@ -27,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,7 +212,7 @@ public class ClaimsHandlerManager {
     List<String> urls = new ArrayList<>();
     Object urlProperty = props.get(key);
     if (urlProperty instanceof String[]) {
-      urls.addAll(Arrays.asList((String[]) urlProperty));
+      urls.addAll(List.of((String[]) urlProperty));
     } else {
       urls.add(urlProperty.toString());
     }
@@ -257,10 +256,10 @@ public class ClaimsHandlerManager {
     lo.set(LDAPConnectionFactory.SSL_USE_STARTTLS, useTls);
     lo.set(
         LDAPConnectionFactory.SSL_ENABLED_CIPHER_SUITES,
-        Arrays.asList(System.getProperty("https.cipherSuites").split(",")));
+        List.of(System.getProperty("https.cipherSuites").split(",")));
     lo.set(
         LDAPConnectionFactory.SSL_ENABLED_PROTOCOLS,
-        Arrays.asList(System.getProperty("https.protocols").split(",")));
+        List.of(System.getProperty("https.protocols").split(",")));
     lo.set(
         LDAPConnectionFactory.TRANSPORT_PROVIDER_CLASS_LOADER,
         ClaimsHandlerManager.class.getClassLoader());

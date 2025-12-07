@@ -15,8 +15,8 @@ package ddf.security.audit.impl;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import org.codice.ddf.system.alerts.NoticePriority;
 import org.codice.ddf.system.alerts.SystemNotice;
 import org.joda.time.DateTime;
@@ -33,7 +33,7 @@ public final class LogFailoverAlertAppender implements PaxAppender {
 
   private HashSet<String> details =
       new HashSet<>(
-          Arrays.asList(
+          List.of(
               "Writing to the backup audit log has failed. This could occur if there are insufficient permissions to write to the log directory, a full disk, or the primary or backup log configurations are incorrect."));
 
   public LogFailoverAlertAppender(EventAdmin eventAdmin) {

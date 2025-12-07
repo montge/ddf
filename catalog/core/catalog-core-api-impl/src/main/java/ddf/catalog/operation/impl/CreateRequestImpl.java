@@ -16,7 +16,6 @@ package ddf.catalog.operation.impl;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.operation.CreateRequest;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,7 @@ public class CreateRequestImpl extends OperationImpl implements CreateRequest {
    * @param metacard the metacard
    */
   public CreateRequestImpl(Metacard metacard) {
-    this(Arrays.asList(metacard), null);
+    this(List.of(metacard), null);
   }
 
   /**

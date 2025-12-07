@@ -17,7 +17,6 @@ import ddf.catalog.filter.ArgumentBuilder;
 import ddf.catalog.filter.AttributeBuilder;
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.XPathBuilder;
-import java.util.Arrays;
 import java.util.List;
 import org.geotools.filter.FilterFactoryImpl;
 import org.opengis.filter.And;
@@ -42,12 +41,12 @@ public class GeotoolsFilterBuilder implements FilterBuilder {
 
   @Override
   public And allOf(Filter... filters) {
-    return allOf(Arrays.asList(filters));
+    return allOf(List.of(filters));
   }
 
   @Override
   public Or anyOf(Filter... filters) {
-    return anyOf(Arrays.asList(filters));
+    return anyOf(List.of(filters));
   }
 
   @Override

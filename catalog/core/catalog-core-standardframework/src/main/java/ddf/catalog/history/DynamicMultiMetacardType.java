@@ -15,7 +15,6 @@ package ddf.catalog.history;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.MetacardType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,7 +42,7 @@ public class DynamicMultiMetacardType implements MetacardType {
     Validate.notNull(dynamicMetacardTypes, "The list of Dynamic Metacard Types Cannot be null.");
     this.name = name;
     this.metacardTypes = dynamicMetacardTypes;
-    this.extraTypes = Arrays.asList(extraTypes);
+    this.extraTypes = List.of(extraTypes);
 
     REGISTERED_DMMTS.add(name);
   }

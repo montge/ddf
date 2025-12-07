@@ -15,7 +15,6 @@ package ddf.catalog.filter.proxy.builder;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.impl.filter.FuzzyFunction;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -238,7 +237,7 @@ class GeotoolsBuilder {
         expression = factory.property(attribute);
         filter =
             factory.like(
-                new FuzzyFunction(Arrays.asList(expression), factory.literal(Metacard.ANY_TEXT)),
+                new FuzzyFunction(List.of(expression), factory.literal(Metacard.ANY_TEXT)),
                 getValue(String.class),
                 "*",
                 "%",

@@ -33,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -321,7 +320,7 @@ public abstract class DuplicateCommands extends CqlCommands {
     List<Metacard> createdMetacards = new ArrayList<>();
     LOGGER.debug("Preparing to ingest {} records one at time.", metacards.size());
     for (Metacard metacard : metacards) {
-      CreateRequest createRequest = new CreateRequestImpl(Arrays.asList(metacard));
+      CreateRequest createRequest = new CreateRequestImpl(List.of(metacard));
 
       CreateResponse createResponse;
       try {

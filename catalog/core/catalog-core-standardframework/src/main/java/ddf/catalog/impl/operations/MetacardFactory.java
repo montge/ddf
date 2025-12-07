@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -74,7 +73,7 @@ public class MetacardFactory {
           com.google.common.io.Files.asByteSource(tmpContentPath.toFile()).openStream()) {
         generatedMetacard = candidate.transform(transformerStream);
       } catch (RuntimeException | CatalogTransformerException | IOException e) {
-        List<String> stackTraces = Arrays.asList(ExceptionUtils.getRootCauseStackTrace(e));
+        List<String> stackTraces = List.of(ExceptionUtils.getRootCauseStackTrace(e));
         stackTraceList.add(String.format("Transformer [%s] could not create metacard.", candidate));
         stackTraceList.addAll(stackTraces);
         LOGGER.debug("Transformer [{}] could not create metacard.", candidate, e);

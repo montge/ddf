@@ -21,7 +21,6 @@ import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -214,7 +213,7 @@ public class PolicyManager implements ContextPolicyManager {
     String[] whiteList = (String[]) properties.get(WHITE_LIST);
 
     if (whiteList != null) {
-      setWhiteListContexts(Arrays.asList(whiteList));
+      setWhiteListContexts(List.of(whiteList));
     }
 
     if (webAuthTypes != null && endpointAuthTypes != null && attrContexts != null) {
@@ -253,8 +252,8 @@ public class PolicyManager implements ContextPolicyManager {
       this.contextToAttr = contextToAttr;
       if (contextToAuthFile == null) {
         Map<String, List<String>> contextToAuthMap = new HashMap<>();
-        contextToAuthMap.put(ROOT_CONTEXT, Arrays.asList(webAuthTypes.split("\\|")));
-        contextToAuthMap.put(SERVICES_CONTEXT, Arrays.asList(endpointAuthTypes.split("\\|")));
+        contextToAuthMap.put(ROOT_CONTEXT, List.of(webAuthTypes.split("\\|")));
+        contextToAuthMap.put(SERVICES_CONTEXT, List.of(endpointAuthTypes.split("\\|")));
 
         contextToAuthConfig = contextToAuthMap;
         setPolicyStore(contextToAuthMap, contextToAttr);

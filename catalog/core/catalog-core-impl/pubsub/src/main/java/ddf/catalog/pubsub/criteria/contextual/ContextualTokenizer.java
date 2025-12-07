@@ -14,7 +14,6 @@
 package ddf.catalog.pubsub.criteria.contextual;
 
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +27,7 @@ public class ContextualTokenizer extends CharTokenizer {
 
   static {
     final List<Character> specialChars =
-        Arrays.asList(
+        List.of(
             '-', '_', '+', '&', '|', '!', '(', ')', '{', '}', '[', ']', '~', '?', ':', '*', '\\',
             '^');
     final HashSet<Character> specialCharsSet = new HashSet<>(specialChars);

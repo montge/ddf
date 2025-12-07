@@ -44,7 +44,6 @@ import java.security.SecurityPermission;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.net.ssl.KeyManager;
@@ -519,7 +518,7 @@ public class SecureCxfClientFactoryImpl<T> implements SecureCxfClientFactory<T> 
     tlsParams.setUseHttpsURLConnectionDefaultHostnameVerifier(!disableCnCheck);
     String cipherSuites = System.getProperty("https.cipherSuites");
     if (cipherSuites != null) {
-      tlsParams.setCipherSuites(Arrays.asList(cipherSuites.split(",")));
+      tlsParams.setCipherSuites(List.of(cipherSuites.split(",")));
     }
 
     KeyStore keyStore = null;

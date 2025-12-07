@@ -17,7 +17,6 @@ import ddf.security.Subject;
 import ddf.security.service.SecurityManager;
 import ddf.security.service.SecurityServiceException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Map;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
@@ -87,7 +86,7 @@ public class SubjectRetrievalInterceptor extends AbstractPhaseInterceptor<Messag
     @Override
     public void handleMessage(Message message) throws Fault {
       ((Map) message.getExchange().getInMessage().get(Message.PROTOCOL_HEADERS))
-          .put(Subject.class.toString(), Arrays.asList(new Subject[] {message.get(Subject.class)}));
+          .put(Subject.class.toString(), List.of(new Subject[] {message.get(Subject.class)}));
     }
   }
 

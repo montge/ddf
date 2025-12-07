@@ -93,9 +93,7 @@ public class RemoveCommand extends CqlCommands {
         while (idsToDelete.length > 0) {
           if (CollectionUtils.isNotEmpty(ids)) {
             idsToDelete =
-                Arrays.asList(idsToDelete).stream()
-                    .filter(id -> ids.contains(id))
-                    .toArray(String[]::new);
+                Arrays.stream(idsToDelete).filter(id -> ids.contains(id)).toArray(String[]::new);
           }
           DeleteRequestImpl deleteRequest = new DeleteRequestImpl(idsToDelete);
           LOGGER.debug(

@@ -13,9 +13,9 @@
  */
 package ddf.catalog.filter.proxy;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import org.geotools.feature.type.FeatureTypeFactoryImpl;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FunctionExpression;
@@ -65,13 +65,13 @@ public class GeotoolsPluginLoader {
                   Collections.singletonList(new DefaultFunctionFactory()).iterator();
             } else if (PropertyAccessorFactory.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
-                  Arrays.asList(
+                  List.of(
                       new org.geotools.filter.expression.SimpleFeaturePropertyAccessorFactory(),
                       new org.geotools.filter.expression.ThisPropertyAccessorFactory(),
                       new org.geotools.filter.expression.DirectPropertyAccessorFactory());
             } else if (ConverterFactory.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
-                  Arrays.asList(
+                  List.of(
                       new org.geotools.data.util.CommonsConverterFactory(),
                       new org.geotools.data.util.NumericConverterFactory(),
                       new org.geotools.data.util.PercentageConverterFactory(),
@@ -95,7 +95,7 @@ public class GeotoolsPluginLoader {
                       new org.geotools.data.util.LobConverterFactory());
             } else if (FeatureFactory.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
-                  Arrays.asList(
+                  List.of(
                       new org.geotools.feature.LenientFeatureFactoryImpl(),
                       new org.geotools.feature.ValidatingFeatureFactoryImpl());
             } else if (FilterFactory.class.isAssignableFrom(aClass)) {
@@ -105,7 +105,7 @@ public class GeotoolsPluginLoader {
                   Collections.singletonList(new FeatureTypeFactoryImpl()).iterator();
             } else if (Function.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
-                  Arrays.asList(
+                  List.of(
                       new org.geotools.filter.AreaFunction(),
                       new org.geotools.filter.LengthFunction(),
                       new org.geotools.filter.function.AttributeCountFunction(),
@@ -318,7 +318,7 @@ public class GeotoolsPluginLoader {
                   Collections.singletonList(new ClasspathGridShiftLocator()).iterator();
             } else if (MathTransformProvider.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
-                  Arrays.asList(
+                  List.of(
                           new org.geotools.referencing.operation.transform.LogarithmicTransform1D
                               .Provider(),
                           new org.geotools.referencing.operation.transform.ExponentialTransform1D
@@ -438,7 +438,7 @@ public class GeotoolsPluginLoader {
                       .iterator();
             } else if (CRSAuthorityFactory.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
-                  Arrays.asList(
+                  List.of(
                       new org.geotools.referencing.factory.epsg.FactoryUsingWKT(),
                       new org.geotools.referencing.factory.epsg.LongitudeFirstFactory(),
                       new org.geotools.referencing.factory.epsg.CartesianAuthorityFactory(),

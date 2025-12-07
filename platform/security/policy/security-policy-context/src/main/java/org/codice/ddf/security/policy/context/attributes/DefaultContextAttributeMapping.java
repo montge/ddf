@@ -15,7 +15,7 @@ package org.codice.ddf.security.policy.context.attributes;
 
 import ddf.security.permission.KeyValuePermission;
 import ddf.security.permission.impl.KeyValuePermissionImpl;
-import java.util.Arrays;
+import java.util.List;
 
 /** Default implementation of ContextAttributeMapping */
 public class DefaultContextAttributeMapping implements ContextAttributeMapping {
@@ -48,7 +48,7 @@ public class DefaultContextAttributeMapping implements ContextAttributeMapping {
   @Override
   public KeyValuePermission getAttributePermission() {
     if (keyValuePermission == null) {
-      keyValuePermission = new KeyValuePermissionImpl(attributeName, Arrays.asList(attributeValue));
+      keyValuePermission = new KeyValuePermissionImpl(attributeName, List.of(attributeValue));
     }
     return keyValuePermission;
   }

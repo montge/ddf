@@ -20,7 +20,6 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -142,7 +141,7 @@ public class CsrfFilter implements SecurityFilter {
             (PrivilegedAction<String>) () -> System.getProperty(CSRF_TRUSTED_AUTHORITIES, ""));
 
     return StringUtils.isNotEmpty(administratorTrustedAuthorities)
-        ? Arrays.asList(administratorTrustedAuthorities.split(","))
+        ? List.of(administratorTrustedAuthorities.split(","))
         : Collections.emptyList();
   }
 

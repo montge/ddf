@@ -19,7 +19,6 @@ import ddf.security.SubjectOperations;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AccessController;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
@@ -177,7 +176,7 @@ public final class SecurityLoggerImpl implements ddf.security.audit.SecurityLogg
       subject = ThreadContext.getSubject();
     }
 
-    List<String> attributeList = Arrays.asList(attributes.split(","));
+    List<String> attributeList = List.of(attributes.split(","));
     for (String attribute : attributeList) {
       List<String> attributeValueList = subjectOperations.getAttribute(subject, attribute);
       if (CollectionUtils.isNotEmpty(attributeValueList)) {

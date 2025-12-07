@@ -28,7 +28,6 @@ import java.net.InetAddress;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -138,7 +137,7 @@ public class LdapLoginConfig {
       List<String> urls = new ArrayList<>();
       Object urlsObj = props.get(LDAP_URL);
       if (urlsObj instanceof String[]) {
-        urls.addAll(Arrays.asList((String[]) urlsObj));
+        urls.addAll(List.of((String[]) urlsObj));
       } else {
         urls.add(urlsObj.toString());
       }
@@ -223,12 +222,11 @@ public class LdapLoginConfig {
 
     String cipherSuites = System.getProperty(SecurityConstants.HTTPS_CIPHER_SUITES);
     if (cipherSuites != null) {
-      lo.set(
-          LDAPConnectionFactory.SSL_ENABLED_CIPHER_SUITES, Arrays.asList(cipherSuites.split(",")));
+      lo.set(LDAPConnectionFactory.SSL_ENABLED_CIPHER_SUITES, List.of(cipherSuites.split(",")));
     }
     String protocols = System.getProperty(HTTPS_PROTOCOLS);
     if (protocols != null) {
-      lo.set(LDAPConnectionFactory.SSL_ENABLED_PROTOCOLS, Arrays.asList(protocols.split(",")));
+      lo.set(LDAPConnectionFactory.SSL_ENABLED_PROTOCOLS, List.of(protocols.split(",")));
     }
     lo.set(
         LDAPConnectionFactory.TRANSPORT_PROVIDER_CLASS_LOADER,

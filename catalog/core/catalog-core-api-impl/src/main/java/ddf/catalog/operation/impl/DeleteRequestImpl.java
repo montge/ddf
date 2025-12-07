@@ -16,7 +16,6 @@ package ddf.catalog.operation.impl;
 import ddf.catalog.operation.DeleteRequest;
 import java.io.Serializable;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class DeleteRequestImpl extends OperationImpl implements DeleteRequest {
    * @param id1 - the id to be used for the delete operation
    */
   public DeleteRequestImpl(String[] ids) {
-    this(Arrays.asList((Serializable[]) ids), DeleteRequest.DELETE_BY_ID, null);
+    this(List.of((Serializable[]) ids), DeleteRequest.DELETE_BY_ID, null);
   }
 
   /**
@@ -63,7 +62,7 @@ public class DeleteRequestImpl extends OperationImpl implements DeleteRequest {
    * @param properties - the properties associated with the operation
    */
   public DeleteRequestImpl(String[] ids, Map<String, Serializable> properties) {
-    this(Arrays.asList((Serializable[]) ids), DeleteRequest.DELETE_BY_ID, properties);
+    this(List.of((Serializable[]) ids), DeleteRequest.DELETE_BY_ID, properties);
   }
 
   /**
@@ -81,7 +80,7 @@ public class DeleteRequestImpl extends OperationImpl implements DeleteRequest {
    * @param uris - the list of {@link URI} to be used for the delete operation
    */
   public DeleteRequestImpl(URI[] uris) {
-    this(Arrays.asList((Serializable[]) uris), DeleteRequest.DELETE_BY_PRODUCT_URI, null);
+    this(List.of((Serializable[]) uris), DeleteRequest.DELETE_BY_PRODUCT_URI, null);
   }
 
   /**
@@ -91,7 +90,7 @@ public class DeleteRequestImpl extends OperationImpl implements DeleteRequest {
    * @param properties - the properties associated with the delete operation
    */
   public DeleteRequestImpl(URI[] uris, Map<String, Serializable> properties) {
-    this(Arrays.asList((Serializable[]) uris), DeleteRequest.DELETE_BY_PRODUCT_URI, properties);
+    this(List.of((Serializable[]) uris), DeleteRequest.DELETE_BY_PRODUCT_URI, properties);
   }
 
   /**
