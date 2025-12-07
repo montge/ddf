@@ -15,6 +15,7 @@ package org.codice.ddf.catalog.content.monitor.watcher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,14 +30,14 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class FileWatcherTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullWatchedFileThrowsException() {
-    new FileWatcher(null, mock(Consumer.class));
+    assertThrows(IllegalArgumentException.class, () -> new FileWatcher(null, mock(Consumer.class)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullFileCallbackThrowsException() {
-    new FileWatcher(mock(File.class), null);
+    assertThrows(IllegalArgumentException.class, () -> new FileWatcher(mock(File.class), null));
   }
 
   @Test

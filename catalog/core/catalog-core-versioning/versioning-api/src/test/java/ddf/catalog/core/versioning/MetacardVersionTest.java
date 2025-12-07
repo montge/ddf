@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -197,7 +198,7 @@ public class MetacardVersionTest {
     assertThat(action, is(MetacardVersion.Action.DELETED));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testOfMetacardWithNonVersionThrowsException() {
     Metacard metacard = mock(Metacard.class);
     MetacardType metacardType = mock(MetacardType.class);
@@ -205,10 +206,10 @@ public class MetacardVersionTest {
     when(metacardType.getName()).thenReturn("regular.metacard");
     when(metacard.getId()).thenReturn("test-id");
 
-    MetacardVersion.Action.ofMetacard(metacard);
+    assertThrows(IllegalArgumentException.class, () -> MetacardVersion.Action.ofMetacard(metacard));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testOfMetacardWithNonStringActionThrowsException() {
     Metacard metacard = mock(Metacard.class);
     MetacardType metacardType = mock(MetacardType.class);
@@ -219,7 +220,7 @@ public class MetacardVersionTest {
     when(metacard.getAttribute(MetacardVersion.ACTION)).thenReturn(actionAttribute);
     when(actionAttribute.getValue()).thenReturn(123); // Non-string value
 
-    MetacardVersion.Action.ofMetacard(metacard);
+    assertThrows(IllegalArgumentException.class, () -> MetacardVersion.Action.ofMetacard(metacard));
   }
 
   @Test

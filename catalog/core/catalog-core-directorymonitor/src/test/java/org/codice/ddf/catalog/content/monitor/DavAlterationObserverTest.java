@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.catalog.content.monitor;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -90,9 +91,9 @@ public class DavAlterationObserverTest {
     observer.addListener(mockListener);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullRoot() {
-    new DavAlterationObserver(null);
+    assertThrows(IllegalArgumentException.class, () -> new DavAlterationObserver(null));
   }
 
   @Test

@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -169,7 +170,7 @@ public class FileSystemStorageProviderTest {
     assertReadRequest(uriString, NITF_MIME_TYPE);
   }
 
-  @Test(expected = StorageException.class)
+  @Test
   public void testReadDeletedReference() throws Exception {
     Path tempFile = Files.createTempFile("test", "nitf");
     Files.write(tempFile, TEST_INPUT_CONTENTS.getBytes());
@@ -186,10 +187,12 @@ public class FileSystemStorageProviderTest {
         provider.read(new ReadStorageRequestImpl(uri, Collections.emptyMap()));
     assertThat(read.getContentItem(), notNullValue());
     Files.delete(tempFile);
-    provider.read(new ReadStorageRequestImpl(uri, Collections.emptyMap()));
+    assertThrows(
+        StorageException.class,
+        () -> provider.read(new ReadStorageRequestImpl(uri, Collections.emptyMap())));
   }
 
-  @Test(expected = StorageException.class)
+  @Test
   public void testReadDeletedRemoteReference() throws Exception {
     CreateStorageResponse createResponse =
         assertContentItem(
@@ -200,7 +203,9 @@ public class FileSystemStorageProviderTest {
                 Constants.STORE_REFERENCE_KEY, "http://testHostName:12345/test.txt"));
 
     URI uri = new URI(createResponse.getCreatedContentItems().get(0).getUri());
-    provider.read(new ReadStorageRequestImpl(uri, Collections.emptyMap()));
+    assertThrows(
+        StorageException.class,
+        () -> provider.read(new ReadStorageRequestImpl(uri, Collections.emptyMap())));
   }
 
   @Test
@@ -494,7 +499,7 @@ public class FileSystemStorageProviderTest {
     }
   }
 
-  @Test(expected = StorageException.class)
+  @Test
   public void testRollback() throws Exception {
     String id = UUID.randomUUID().toString().replaceAll("-", "");
     ByteSource byteSource =
@@ -522,7 +527,7 @@ public class FileSystemStorageProviderTest {
 
     ReadStorageRequest readStorageRequest =
         new ReadStorageRequestImpl(new URI("content:" + id), null);
-    ReadStorageResponse read = provider.read(readStorageRequest);
+    assertThrows(StorageException.class, () -> provider.read(readStorageRequest));
   }
 
   @Test
