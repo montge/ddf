@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -119,9 +120,11 @@ public class ProcessingDetailsImplTest {
    *
    * <p>Verifies that null warnings are not accepted in the single-warning constructor.
    */
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testConstructorWithNullWarningThrowsException() {
-    new ProcessingDetailsImpl(TEST_SOURCE_ID, testException, (String) null);
+    assertThrows(
+        NullPointerException.class,
+        () -> new ProcessingDetailsImpl(TEST_SOURCE_ID, testException, (String) null));
   }
 
   /**

@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.operation.SourceProcessingDetails;
 import java.util.Arrays;
@@ -116,9 +117,9 @@ public class SourceProcessingDetailsImplTest {
    *
    * <p>Verifies that null warnings are not accepted.
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithNullWarningsThrowsException() {
-    new SourceProcessingDetailsImpl(null);
+    assertThrows(IllegalArgumentException.class, () -> new SourceProcessingDetailsImpl(null));
   }
 
   /**
@@ -201,9 +202,9 @@ public class SourceProcessingDetailsImplTest {
    *
    * <p>Verifies that null warnings are not accepted in setter.
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetWarningsToNullThrowsException() {
-    details.setWarnings(null);
+    assertThrows(IllegalArgumentException.class, () -> details.setWarnings(null));
   }
 
   /**

@@ -14,6 +14,7 @@
 package ddf.catalog.operation;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.operation.impl.QueryImpl;
@@ -70,11 +71,11 @@ public class QueryImplTest {
     assertEquals(filter1, qi.getFilter());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testQueryImpleFilterWithNullFilter() {
     Filter filter = null;
 
-    QueryImpl qi = new QueryImpl(filter);
+    assertThrows(IllegalArgumentException.class, () -> new QueryImpl(filter));
   }
 
   /**
@@ -92,7 +93,7 @@ public class QueryImplTest {
     assertEquals(filter2, qi.getFilter());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetFilterWithNullFilter() {
     FilterFactory filterFactory = new FilterFactoryImpl();
 
@@ -112,6 +113,6 @@ public class QueryImplTest {
 
     assertEquals(filter1, qi.getFilter());
 
-    qi.setFilter(filter2);
+    assertThrows(IllegalArgumentException.class, () -> qi.setFilter(filter2));
   }
 }

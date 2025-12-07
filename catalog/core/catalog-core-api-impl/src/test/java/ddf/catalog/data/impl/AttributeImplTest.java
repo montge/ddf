@@ -16,6 +16,7 @@ package ddf.catalog.data.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.Attribute;
 import java.io.FileNotFoundException;
@@ -87,19 +88,13 @@ public class AttributeImplTest {
    * been serialized. The expected outcome is that it will be detected that the object is corrupt.
    * The original serialized object's name field was "id", it was manually changed, then saved
    * again.
-   *
-   * @throws IOException
-   * @throws ClassNotFoundException
    */
-  @Test(expected = StreamCorruptedException.class)
-  public void testDeserializationCorruption() throws IOException, ClassNotFoundException {
-
+  @Test
+  public void testDeserializationCorruption() {
     String fileLocation = "src/test/resources/tamperedAttributeImpl.ser";
 
     Serializer<Attribute> serializer = new Serializer<Attribute>();
 
-    Attribute readAttribute1 = serializer.deserialize(fileLocation);
-
-    readAttribute1.getName();
+    assertThrows(StreamCorruptedException.class, () -> serializer.deserialize(fileLocation));
   }
 }
