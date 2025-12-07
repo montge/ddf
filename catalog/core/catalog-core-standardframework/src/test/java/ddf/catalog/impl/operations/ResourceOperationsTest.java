@@ -15,6 +15,7 @@ package ddf.catalog.impl.operations;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -202,7 +203,7 @@ public class ResourceOperationsTest {
     resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testValidateFixGetResourceReturnsResourceResponseThrowsResourceNotFoundException()
       throws Exception {
 
@@ -219,14 +220,14 @@ public class ResourceOperationsTest {
 
     frameworkProperties.setReliableResourceDownloadManager(reliableResourceDownloadManagerMock);
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verify(queryResponseMock).getResults();
-    verify(reliableResourceDownloadManagerMock)
-        .download(any(ResourceRequest.class), any(MetacardImpl.class), isNull());
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testValidateFixGetResourceThrowsResourceNotFoundException() throws Exception {
 
     ArrayList<Result> mockResultList = new ArrayList<>();
@@ -243,14 +244,14 @@ public class ResourceOperationsTest {
 
     frameworkProperties.setReliableResourceDownloadManager(reliableResourceDownloadManagerMock);
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verify(queryResponseMock).getResults();
-    verify(reliableResourceDownloadManagerMock)
-        .download(any(ResourceRequest.class), any(MetacardImpl.class), isNull());
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceThrowsDownloadException() throws Exception {
 
     ArrayList<Result> mockResultList = new ArrayList<>();
@@ -270,36 +271,40 @@ public class ResourceOperationsTest {
 
     frameworkProperties.setReliableResourceDownloadManager(reliableResourceDownloadManagerMock);
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verify(queryResponseMock).getResults();
-    verify(reliableResourceDownloadManagerMock)
-        .download(any(ResourceRequest.class), any(MetacardImpl.class), isNull());
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = DataUsageLimitExceededException.class)
+  @Test
   public void testGetResourceCatchesDataUsageLimitExceededException() throws Exception {
 
     when(resourceRequestMock.getProperties()).thenThrow(DataUsageLimitExceededException.class);
     getResourceRequestAttributeUris();
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verifyResourceRequestAttributes();
+    assertThrows(
+        DataUsageLimitExceededException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceCatchesRuntimeException() throws Exception {
 
     when(resourceRequestMock.getProperties()).thenThrow(RuntimeException.class);
     getResourceRequestAttributeUris();
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verifyResourceRequestAttributes();
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotSupportedException.class)
+  @Test
   public void testGetResourceCatchesStopProcessingException() throws Exception {
 
     when(resourceRequestMock.getProperties())
@@ -309,12 +314,14 @@ public class ResourceOperationsTest {
             });
     getResourceRequestAttributeUris();
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verifyResourceRequestAttributes();
+    assertThrows(
+        ResourceNotSupportedException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceNullSourceNameNotEnterpriseThrowsResourceNotFoundException()
       throws Exception {
 
@@ -322,32 +329,36 @@ public class ResourceOperationsTest {
     boolean fanoutEnabled = false;
     String resourceName = null;
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verifyGetResourceMocks();
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotSupportedException.class)
+  @Test
   public void testGetResourceInfoThrowsResourceNotSupportedException() throws Exception {
 
     when(resourceRequestMock.getAttributeValue()).thenReturn("bob");
     when(resourceRequestMock.getAttributeName()).thenReturn("bob");
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verify(resourceRequestMock).getAttributeValue();
-    verify(resourceRequestMock).getAttributeName();
+    assertThrows(
+        ResourceNotSupportedException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceInfoUriNotBlank() throws Exception {
 
     getResourceRequestAttributeUris();
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verify(resourceRequestMock).getAttributeValue();
-    verify(resourceRequestMock).getAttributeName();
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
   @Test
@@ -429,7 +440,7 @@ public class ResourceOperationsTest {
     assertThat(resourceInfo.getResourceUri(), equalTo(testUri));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testAnyTagIsNotEnterpriseNorSiteId() throws Exception {
     boolean isEnterprise = false;
     boolean fanoutEnabled = false;
@@ -437,18 +448,26 @@ public class ResourceOperationsTest {
 
     setGetResourceMocks();
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
-
-    verifyGetResourceMocks();
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testAnyTagReturnsQuery() throws Exception {
     boolean isEnterprise = true;
     boolean fanoutEnabled = false;
     String resourceName = "";
 
-    helperGetResource();
+    setGetResourceMocks();
+
+    assertThrows(
+        ResourceNotFoundException.class,
+        () ->
+            resourceOperations.getResource(
+                resourceRequestMock, isEnterprise, resourceName, fanoutEnabled));
   }
 
   private void helperGetResource()
