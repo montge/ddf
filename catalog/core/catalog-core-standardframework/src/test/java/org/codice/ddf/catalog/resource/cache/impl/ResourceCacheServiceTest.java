@@ -15,6 +15,7 @@ package org.codice.ddf.catalog.resource.cache.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -158,7 +159,7 @@ public class ResourceCacheServiceTest {
         .registerMBean(any(StandardMBean.class), eq(resourceCacheServiceObjectName));
   }
 
-  @Test(expected = MBeanRegistrationException.class)
+  @Test
   public void testInitMBeanMBeanRegistrationFails() throws Exception {
     // Setup
     setupMockMBeanServer(false, true);
@@ -166,7 +167,7 @@ public class ResourceCacheServiceTest {
         (ResourceCacheService) createResourceCacheServiceMBean();
 
     // Perform Test
-    resourceCacheService.init();
+    assertThrows(MBeanRegistrationException.class, () -> resourceCacheService.init());
   }
 
   @Test
@@ -195,7 +196,7 @@ public class ResourceCacheServiceTest {
     verify(mockMBeanServer, never()).unregisterMBean(eq(resourceCacheServiceObjectName));
   }
 
-  @Test(expected = MBeanRegistrationException.class)
+  @Test
   public void testDestroyMBeanUnregistrationFails() throws Exception {
     // Setup
     setupMockMBeanServer(true, true);
@@ -203,7 +204,7 @@ public class ResourceCacheServiceTest {
         (ResourceCacheService) createResourceCacheServiceMBean();
 
     // Perform Test
-    resourceCacheService.destroy();
+    assertThrows(MBeanRegistrationException.class, () -> resourceCacheService.destroy());
   }
 
   @Test

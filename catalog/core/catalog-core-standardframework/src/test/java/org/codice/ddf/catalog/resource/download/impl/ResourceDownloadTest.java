@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.catalog.resource.download.impl;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -64,7 +65,7 @@ public class ResourceDownloadTest {
     resourceDownloadObjectName = new ObjectName(ResourceDownloadMBean.OBJECT_NAME);
   }
 
-  @Test(expected = MBeanException.class)
+  @Test
   public void testCopyToLocalSiteWhenNullResourceResponse() throws Exception {
     // Setup
     setupMockResourceCacheServiceMBean(true);
@@ -72,20 +73,22 @@ public class ResourceDownloadTest {
     ResourceDownloadMBean resourceDownloadMBean = createResourceDownloadMBean();
 
     // Perform Test
-    resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID);
+    assertThrows(
+        MBeanException.class, () -> resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID));
   }
 
-  @Test(expected = MBeanException.class)
+  @Test
   public void testCopyToLocalSiteWhenCacheDisabled() throws Exception {
     // Setup
     setupMockResourceCacheServiceMBean(false);
     ResourceDownloadMBean resourceDownloadMBean = createResourceDownloadMBean();
 
     // Perform Test
-    resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID);
+    assertThrows(
+        MBeanException.class, () -> resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID));
   }
 
-  @Test(expected = MBeanException.class)
+  @Test
   public void testCopyToLocalSiteWhenCatalogFrameworkThrowsIOException() throws Exception {
     // Setup
     setupMockResourceCacheServiceMBean(true);
@@ -93,10 +96,11 @@ public class ResourceDownloadTest {
     ResourceDownloadMBean resourceDownloadMBean = createResourceDownloadMBean();
 
     // Perform Test
-    resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID);
+    assertThrows(
+        MBeanException.class, () -> resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID));
   }
 
-  @Test(expected = MBeanException.class)
+  @Test
   public void testCopyToLocalSiteWhenCatalogFrameworkThrowsResourceNotSupportedException()
       throws Exception {
     // Setup
@@ -105,10 +109,11 @@ public class ResourceDownloadTest {
     ResourceDownloadMBean resourceDownloadMBean = createResourceDownloadMBean();
 
     // Perform Test
-    resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID);
+    assertThrows(
+        MBeanException.class, () -> resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID));
   }
 
-  @Test(expected = MBeanException.class)
+  @Test
   public void testCopyToLocalSiteWhenCatalogFrameworkThrowsResourceNotFoundException()
       throws Exception {
     // Setup
@@ -117,7 +122,8 @@ public class ResourceDownloadTest {
     ResourceDownloadMBean resourceDownloadMBean = createResourceDownloadMBean();
 
     // Perform Test
-    resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID);
+    assertThrows(
+        MBeanException.class, () -> resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID));
   }
 
   @Test
@@ -156,14 +162,14 @@ public class ResourceDownloadTest {
         .registerMBean(any(StandardMBean.class), eq(resourceDownloadObjectName));
   }
 
-  @Test(expected = MBeanRegistrationException.class)
+  @Test
   public void testInitMBeanMBeanRegistrationFails() throws Exception {
     // Setup
     setupMockMBeanServer(false, true);
     ResourceDownload resourceDownloadMBean = (ResourceDownload) createResourceDownloadMBean();
 
     // Perform Test
-    resourceDownloadMBean.init();
+    assertThrows(MBeanRegistrationException.class, () -> resourceDownloadMBean.init());
   }
 
   @Test
@@ -190,14 +196,14 @@ public class ResourceDownloadTest {
     verify(mockMBeanServer, never()).unregisterMBean(eq(resourceDownloadObjectName));
   }
 
-  @Test(expected = MBeanRegistrationException.class)
+  @Test
   public void testDestroyMBeanUnregistrationFails() throws Exception {
     // Setup
     setupMockMBeanServer(true, true);
     ResourceDownload resourceDownloadMBean = (ResourceDownload) createResourceDownloadMBean();
 
     // Perform Test
-    resourceDownloadMBean.destroy();
+    assertThrows(MBeanRegistrationException.class, () -> resourceDownloadMBean.destroy());
   }
 
   private ResourceDownloadMBean createResourceDownloadMBean() throws MalformedObjectNameException {
