@@ -13,6 +13,7 @@
  */
 package ddf.catalog.impl.operations;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
@@ -122,32 +123,32 @@ public class ResourceOperationsOptionsTest {
     helperGetEnterpriseResourceOptions();
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetEnterpriseResourceOptionsEmptyResults() throws Exception {
 
     whenQueried().thenReturn(queryResponseMock);
-    helperGetEnterpriseResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetEnterpriseResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetEnterpriseResourceOptionsCatchesUnsupportedQueryException() throws Exception {
 
     whenQueried().thenThrow(UnsupportedQueryException.class);
-    helperGetEnterpriseResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetEnterpriseResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetEnterpriseResourceOptionsCatchesFederationException() throws Exception {
 
     whenQueried().thenThrow(FederationException.class);
-    helperGetEnterpriseResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetEnterpriseResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetEnterpriseResourceOptionsCatchesIllegalArgumentException() throws Exception {
 
     whenQueried().thenThrow(IllegalArgumentException.class);
-    helperGetEnterpriseResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetEnterpriseResourceOptions());
   }
 
   @Test
@@ -158,32 +159,32 @@ public class ResourceOperationsOptionsTest {
     helperGetResourceOptions();
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceOptionsEmptyResults() throws Exception {
 
     whenQueried().thenReturn(queryResponseMock);
-    helperGetResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceOptionsCatchesUnsupportedQueryException() throws Exception {
 
     whenQueried().thenThrow(UnsupportedQueryException.class);
-    helperGetResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceOptionsCatchesFederationException() throws Exception {
 
     whenQueried().thenThrow(FederationException.class);
-    helperGetResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetResourceOptionsCatchesIllegalArgumentException() throws Exception {
 
     whenQueried().thenThrow(IllegalArgumentException.class);
-    helperGetResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetResourceOptions());
   }
 
   @Test
@@ -194,14 +195,14 @@ public class ResourceOperationsOptionsTest {
     helperGetLocalResourceOptions();
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetLocalResourceOptionsEmptyResults() throws Exception {
 
     whenQueried().thenReturn(queryResponseMock);
-    helperGetLocalResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetLocalResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetLocalResourceOptionsCatchesUnsupportedQueryException() throws Exception {
 
     whenQueried()
@@ -209,21 +210,21 @@ public class ResourceOperationsOptionsTest {
             invocation -> {
               throw new ResourceNotFoundException();
             });
-    helperGetLocalResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetLocalResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetLocalResourceOptionsCatchesFederationException() throws Exception {
 
     whenQueried().thenThrow(FederationException.class);
-    helperGetLocalResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetLocalResourceOptions());
   }
 
-  @Test(expected = ResourceNotFoundException.class)
+  @Test
   public void testGetLocalResourceOptionsCatchesIllegalArgumentException() throws Exception {
 
     whenQueried().thenThrow(IllegalArgumentException.class);
-    helperGetLocalResourceOptions();
+    assertThrows(ResourceNotFoundException.class, () -> helperGetLocalResourceOptions());
   }
 
   protected void helperGetLocalResourceOptions()

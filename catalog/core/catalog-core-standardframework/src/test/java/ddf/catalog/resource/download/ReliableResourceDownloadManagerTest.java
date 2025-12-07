@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -173,67 +174,73 @@ public class ReliableResourceDownloadManagerTest {
             getDownloaderConfig(), downloadStatusInfo, Executors.newSingleThreadExecutor());
   }
 
-  @Test(expected = DownloadException.class)
+  @Test
   public void testDownloadWithNullMetacard() throws Exception {
     resourceRequest = mock(ResourceRequest.class);
     ResourceRetriever retriever = mock(ResourceRetriever.class);
 
-    downloadMgr.download(resourceRequest, null, retriever);
+    assertThrows(
+        DownloadException.class, () -> downloadMgr.download(resourceRequest, null, retriever));
   }
 
-  @Test(expected = DownloadException.class)
+  @Test
   public void testDownloadWithEmptyMetacardId() throws Exception {
     Metacard metacard = getMockMetacard("", EXPECTED_METACARD_SOURCE_ID);
     resourceRequest = mock(ResourceRequest.class);
     ResourceRetriever retriever = mock(ResourceRetriever.class);
 
-    downloadMgr.download(resourceRequest, metacard, retriever);
+    assertThrows(
+        DownloadException.class, () -> downloadMgr.download(resourceRequest, metacard, retriever));
   }
 
-  @Test(expected = DownloadException.class)
+  @Test
   public void testDownloadWithNullResourceRetriever() throws Exception {
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
     resourceRequest = mock(ResourceRequest.class);
 
-    downloadMgr.download(resourceRequest, metacard, null);
+    assertThrows(
+        DownloadException.class, () -> downloadMgr.download(resourceRequest, metacard, null));
   }
 
-  @Test(expected = DownloadException.class)
+  @Test
   public void testDownloadWithNullResourceRequest() throws Exception {
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
     ResourceRetriever retriever = mock(ResourceRetriever.class);
 
-    downloadMgr.download(null, metacard, retriever);
+    assertThrows(DownloadException.class, () -> downloadMgr.download(null, metacard, retriever));
   }
 
-  @Test(expected = DownloadException.class)
+  @Test
   public void testDownloadResourceNotFound() throws Exception {
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
     resourceRequest = mock(ResourceRequest.class);
     ResourceRetriever retriever = mock(ResourceRetriever.class);
     when(retriever.retrieveResource()).thenThrow(new ResourceNotFoundException());
 
-    downloadMgr.download(resourceRequest, metacard, retriever);
+    assertThrows(
+        DownloadException.class, () -> downloadMgr.download(resourceRequest, metacard, retriever));
   }
 
-  @Test(expected = DownloadException.class)
+  @Test
   public void testDownloadResourceNotSupported() throws Exception {
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
     resourceRequest = mock(ResourceRequest.class);
     ResourceRetriever retriever = mock(ResourceRetriever.class);
     when(retriever.retrieveResource()).thenThrow(new ResourceNotSupportedException());
 
-    downloadMgr.download(resourceRequest, metacard, retriever);
+    assertThrows(
+        DownloadException.class, () -> downloadMgr.download(resourceRequest, metacard, retriever));
   }
 
-  @Test(expected = DownloadException.class)
+  @Test
   public void testDownloadIOException() throws Exception {
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
     resourceRequest = mock(ResourceRequest.class);
     ResourceRetriever retriever = mock(ResourceRetriever.class);
     when(retriever.retrieveResource()).thenThrow(new IOException());
 
-    downloadMgr.download(resourceRequest, metacard, retriever);
+    assertThrows(
+        DownloadException.class, () -> downloadMgr.download(resourceRequest, metacard, retriever));
   }
 
   @Test
