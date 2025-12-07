@@ -16,6 +16,7 @@ package org.codice.ddf.persistence.internal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -30,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrRequest.METHOD;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -83,11 +83,11 @@ public class PersistentStoreImplTest {
     assertThat(docs.size(), equalTo(1));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testAddNoType() throws Exception {
+  @Test
+  public void testAddNoType() {
     PersistentItem props = new PersistentItem();
     props.addProperty("property", "value");
-    persistentStore.add(null, props);
+    assertThrows(PersistenceException.class, () -> persistentStore.add(null, props));
   }
 
   @Test
@@ -136,21 +136,21 @@ public class PersistentStoreImplTest {
     assertThat(items.get(0).get("id_txt"), equalTo("idvalue1"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testGetWithInvalidStartIndex() throws Exception {
-    persistentStore.get("testcore", "", -1, 1);
+  @Test
+  public void testGetWithInvalidStartIndex() {
+    assertThrows(IllegalArgumentException.class, () -> persistentStore.get("testcore", "", -1, 1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testGetWithInvalidPageSize() throws Exception {
-    persistentStore.get("testcore", "", 0, 5000);
+  @Test
+  public void testGetWithInvalidPageSize() {
+    assertThrows(
+        IllegalArgumentException.class, () -> persistentStore.get("testcore", "", 0, 5000));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testGetInvalidQuery() throws Exception {
-    List<Map<String, Object>> items = persistentStore.get("testcore", "property LIKE 'value'");
-    assertThat(items.size(), equalTo(1));
-    verify(solrClient, never()).query(any(), eq(SolrRequest.METHOD.POST));
+  @Test
+  public void testGetInvalidQuery() {
+    assertThrows(
+        PersistenceException.class, () -> persistentStore.get("testcore", "property LIKE 'value'"));
   }
 
   @Test
@@ -209,7 +209,7 @@ public class PersistentStoreImplTest {
     verify(solrClient, never()).deleteById(any(List.class));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testDeleteSolrServerException() throws Exception {
     QueryResponse response = mock(QueryResponse.class);
     SolrDocumentList docList = getSolrDocuments(1);
@@ -218,10 +218,10 @@ public class PersistentStoreImplTest {
     when(solrClient.query(any(), eq(METHOD.POST))).thenReturn(response);
     when(solrClient.deleteById(any(List.class))).thenThrow(new SolrServerException("Test"));
 
-    persistentStore.delete("testcore", "");
+    assertThrows(PersistenceException.class, () -> persistentStore.delete("testcore", ""));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testDeleteIOException() throws Exception {
     QueryResponse response = mock(QueryResponse.class);
     SolrDocumentList docList = getSolrDocuments(1);
@@ -230,10 +230,10 @@ public class PersistentStoreImplTest {
     when(solrClient.query(any(), eq(METHOD.POST))).thenReturn(response);
     when(solrClient.deleteById(any(List.class))).thenThrow(new IOException("Test"));
 
-    persistentStore.delete("testcore", "");
+    assertThrows(PersistenceException.class, () -> persistentStore.delete("testcore", ""));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testDeleteRuntimeException() throws Exception {
     QueryResponse response = mock(QueryResponse.class);
     SolrDocumentList docList = getSolrDocuments(1);
@@ -242,36 +242,36 @@ public class PersistentStoreImplTest {
     when(solrClient.query(any(), eq(METHOD.POST))).thenReturn(response);
     when(solrClient.deleteById(any(List.class))).thenThrow(new RuntimeException("Test exception"));
 
-    persistentStore.delete("testcore", "");
+    assertThrows(PersistenceException.class, () -> persistentStore.delete("testcore", ""));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testAddSolrServerException() throws Exception {
     PersistentItem props = new PersistentItem();
     props.addProperty("property", "value");
     when(solrClient.add(any(List.class), any(Integer.class)))
         .thenThrow(new SolrServerException("Test"));
 
-    persistentStore.add("testcore", props);
+    assertThrows(PersistenceException.class, () -> persistentStore.add("testcore", props));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testAddIOException() throws Exception {
     PersistentItem props = new PersistentItem();
     props.addProperty("property", "value");
     when(solrClient.add(any(List.class), any(Integer.class))).thenThrow(new IOException("Test"));
 
-    persistentStore.add("testcore", props);
+    assertThrows(PersistenceException.class, () -> persistentStore.add("testcore", props));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testAddRuntimeException() throws Exception {
     PersistentItem props = new PersistentItem();
     props.addProperty("property", "value");
     when(solrClient.add(any(List.class), any(Integer.class)))
         .thenThrow(new RuntimeException("Test exception"));
 
-    persistentStore.add("testcore", props);
+    assertThrows(PersistenceException.class, () -> persistentStore.add("testcore", props));
   }
 
   @Test
@@ -300,29 +300,30 @@ public class PersistentStoreImplTest {
     verify(solrClient, never()).add(any(List.class), any(Integer.class));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testGetBlankType() throws Exception {
-    persistentStore.get("", "");
+  @Test
+  public void testGetBlankType() {
+    assertThrows(PersistenceException.class, () -> persistentStore.get("", ""));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testGetNullType() throws Exception {
-    persistentStore.get(null, "");
+  @Test
+  public void testGetNullType() {
+    assertThrows(PersistenceException.class, () -> persistentStore.get(null, ""));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testGetWithZeroPageSize() throws Exception {
-    persistentStore.get("testcore", "", 0, 0);
+  @Test
+  public void testGetWithZeroPageSize() {
+    assertThrows(IllegalArgumentException.class, () -> persistentStore.get("testcore", "", 0, 0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testGetWithNegativePageSize() throws Exception {
-    persistentStore.get("testcore", "", 0, -1);
+  @Test
+  public void testGetWithNegativePageSize() {
+    assertThrows(IllegalArgumentException.class, () -> persistentStore.get("testcore", "", 0, -1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testGetWithPageSizeExceedsMax() throws Exception {
-    persistentStore.get("testcore", "", 0, 1001);
+  @Test
+  public void testGetWithPageSizeExceedsMax() {
+    assertThrows(
+        IllegalArgumentException.class, () -> persistentStore.get("testcore", "", 0, 1001));
   }
 
   @Test
@@ -340,21 +341,21 @@ public class PersistentStoreImplTest {
     assertThat(solrParams.get("rows"), is("1000"));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testGetSolrServerException() throws Exception {
     when(solrClient.query(any(), eq(METHOD.POST))).thenThrow(new SolrServerException("Test"));
-    persistentStore.get("testcore");
+    assertThrows(PersistenceException.class, () -> persistentStore.get("testcore"));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testGetIOException() throws Exception {
     when(solrClient.query(any(), eq(METHOD.POST))).thenThrow(new IOException("Test"));
-    persistentStore.get("testcore");
+    assertThrows(PersistenceException.class, () -> persistentStore.get("testcore"));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testGetCQLException() throws Exception {
-    persistentStore.get("testcore", "INVALID CQL");
+  @Test
+  public void testGetCQLException() {
+    assertThrows(PersistenceException.class, () -> persistentStore.get("testcore", "INVALID CQL"));
   }
 
   @Test
