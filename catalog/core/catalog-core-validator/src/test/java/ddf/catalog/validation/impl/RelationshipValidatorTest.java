@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import ddf.catalog.data.impl.AttributeImpl;
@@ -263,14 +264,18 @@ public class RelationshipValidatorTest {
     assertThat(report.isPresent(), is(false));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidRelationshipType() {
-    new RelationshipValidator("format", "digital", "invalidRelationship", "encoding");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new RelationshipValidator("format", "digital", "invalidRelationship", "encoding"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCanOnlyHaveWithoutTargetValues() {
-    new RelationshipValidator("format", "digital", "canOnlyHave", "encoding");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new RelationshipValidator("format", "digital", "canOnlyHave", "encoding"));
   }
 
   @Test

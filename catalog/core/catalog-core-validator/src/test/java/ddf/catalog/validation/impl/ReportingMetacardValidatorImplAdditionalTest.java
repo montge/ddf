@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -62,14 +63,14 @@ public class ReportingMetacardValidatorImplAdditionalTest {
     validator = new ReportingMetacardValidatorImpl(mockRegistry);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testValidateMetacardWithNull() {
-    validator.validateMetacard(null);
+    assertThrows(IllegalArgumentException.class, () -> validator.validateMetacard(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testValidateWithNull() throws ValidationException {
-    validator.validate(null);
+  @Test
+  public void testValidateWithNull() {
+    assertThrows(IllegalArgumentException.class, () -> validator.validate(null));
   }
 
   @Test

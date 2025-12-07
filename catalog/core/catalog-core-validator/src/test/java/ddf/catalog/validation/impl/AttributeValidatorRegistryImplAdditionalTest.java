@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.Sets;
 import ddf.catalog.validation.AttributeValidator;
@@ -64,14 +65,14 @@ public class AttributeValidatorRegistryImplAdditionalTest {
     assertThat(validators, empty());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetValidatorsWithNullAttributeName() {
-    registry.getValidators(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.getValidators(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDeregisterValidatorsWithNullAttributeName() {
-    registry.deregisterValidators(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.deregisterValidators(null));
   }
 
   @Test
@@ -208,9 +209,9 @@ public class AttributeValidatorRegistryImplAdditionalTest {
     assertThat(registry.getValidators(""), hasSize(1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterValidatorsWithNullValidators() {
-    registry.registerValidators("title", null);
+    assertThrows(IllegalArgumentException.class, () -> registry.registerValidators("title", null));
   }
 
   @Test
