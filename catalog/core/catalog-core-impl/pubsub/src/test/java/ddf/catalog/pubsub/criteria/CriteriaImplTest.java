@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.pubsub.criteria.contenttype.ContentTypeEvaluationCriteriaImpl;
 import ddf.catalog.pubsub.criteria.entry.DadEvaluationCriteriaImpl;
@@ -64,16 +65,18 @@ public class CriteriaImplTest {
     assertThat(criteria.getInput(), is(notNullValue()));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testTemporalEvaluationCriteriaImplWithNullStart() {
     Date input = new Date();
-    new TemporalEvaluationCriteriaImpl(null, null, input);
+    assertThrows(
+        NullPointerException.class, () -> new TemporalEvaluationCriteriaImpl(null, null, input));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testTemporalEvaluationCriteriaImplWithNullInput() {
     Date start = new Date();
-    new TemporalEvaluationCriteriaImpl(null, start, null);
+    assertThrows(
+        NullPointerException.class, () -> new TemporalEvaluationCriteriaImpl(null, start, null));
   }
 
   @Test

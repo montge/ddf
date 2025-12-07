@@ -15,6 +15,7 @@ package org.codice.ddf.spatial.ogc.wfs.catalog.converter.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -55,9 +56,9 @@ public class GmlGeometryConverterTest {
     assertThat(converter.canConvert(String.class), is(false));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testCannotConvertNull() {
-    converter.canConvert(null);
+    assertThrows(NullPointerException.class, () -> converter.canConvert(null));
   }
 
   @Test

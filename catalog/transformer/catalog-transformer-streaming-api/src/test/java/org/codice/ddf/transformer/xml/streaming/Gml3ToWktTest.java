@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.validation.ValidationException;
 import ddf.catalog.validation.impl.ValidationExceptionImpl;
@@ -61,15 +62,15 @@ public class Gml3ToWktTest {
     assertThat(wkt, is(notNullValue()));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testConvertStringWithNullThrowsException() throws ValidationException {
-    converter.convert((String) null);
+  @Test
+  public void testConvertStringWithNullThrowsException() {
+    assertThrows(ValidationException.class, () -> converter.convert((String) null));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testConvertStringWithInvalidXmlThrowsException() throws ValidationException {
+  @Test
+  public void testConvertStringWithInvalidXmlThrowsException() {
     String invalidXml = "<invalid><unclosed>";
-    converter.convert(invalidXml);
+    assertThrows(ValidationException.class, () -> converter.convert(invalidXml));
   }
 
   @Test
@@ -99,16 +100,16 @@ public class Gml3ToWktTest {
     assertThat(wkt, is(notNullValue()));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testConvertInputStreamWithNullThrowsException() throws ValidationException {
-    converter.convert((InputStream) null);
+  @Test
+  public void testConvertInputStreamWithNullThrowsException() {
+    assertThrows(ValidationException.class, () -> converter.convert((InputStream) null));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testConvertInputStreamWithInvalidXmlThrowsException() throws ValidationException {
+  @Test
+  public void testConvertInputStreamWithInvalidXmlThrowsException() {
     String invalidXml = "<invalid><unclosed>";
     InputStream inputStream = new ByteArrayInputStream(invalidXml.getBytes(StandardCharsets.UTF_8));
-    converter.convert(inputStream);
+    assertThrows(ValidationException.class, () -> converter.convert(inputStream));
   }
 
   @Test
@@ -137,16 +138,16 @@ public class Gml3ToWktTest {
     assertThat(result, is(notNullValue()));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testParseXmlWithNullThrowsException() throws ValidationException {
-    converter.parseXml(null);
+  @Test
+  public void testParseXmlWithNullThrowsException() {
+    assertThrows(ValidationException.class, () -> converter.parseXml(null));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testParseXmlWithInvalidXmlThrowsException() throws ValidationException {
+  @Test
+  public void testParseXmlWithInvalidXmlThrowsException() {
     String invalidXml = "<invalid><unclosed>";
     InputStream inputStream = new ByteArrayInputStream(invalidXml.getBytes(StandardCharsets.UTF_8));
-    converter.parseXml(inputStream);
+    assertThrows(ValidationException.class, () -> converter.parseXml(inputStream));
   }
 
   @Test
