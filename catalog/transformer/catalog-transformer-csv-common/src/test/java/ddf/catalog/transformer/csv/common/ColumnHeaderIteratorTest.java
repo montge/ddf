@@ -16,6 +16,7 @@ package ddf.catalog.transformer.csv.common;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -67,7 +68,7 @@ public class ColumnHeaderIteratorTest {
     assertThat(iterator.hasNext(), is(false));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testHasNext() {
     Iterator<String> iterator = new ColumnHeaderIterator(attributeDescriptorList, aliasMap);
 
@@ -75,7 +76,7 @@ public class ColumnHeaderIteratorTest {
       iterator.next();
     }
 
-    iterator.next();
+    assertThrows(NoSuchElementException.class, () -> iterator.next());
   }
 
   private AttributeDescriptor buildAttribute(String name) {

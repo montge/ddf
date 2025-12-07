@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -56,9 +57,10 @@ public class CsvMetacardTransformerTest {
 
   private static final String METACARD_TYPE_NAME = "test-type";
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformerWithNullMetacard() throws CatalogTransformerException {
-    transformer.transform(null, new HashMap<>());
+  @Test
+  public void testTransformerWithNullMetacard() {
+    assertThrows(
+        CatalogTransformerException.class, () -> transformer.transform(null, new HashMap<>()));
   }
 
   @Test

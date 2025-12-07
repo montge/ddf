@@ -29,6 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -373,8 +374,8 @@ public class CsvTransformerSupportTest {
     assertThat(csv, containsString("tag3"));
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testTransformWithNullArguments() throws CatalogTransformerException, IOException {
+  @Test
+  public void testTransformWithNullArguments() {
     Metacard metacard =
         buildMetacard(
             Sets.newHashSet(buildAttributeDescriptor("title", STRING_TYPE)),
@@ -382,7 +383,9 @@ public class CsvTransformerSupportTest {
 
     List<Metacard> metacards = singletonList(metacard);
     // Should throw NullPointerException when arguments is null
-    CsvTransformerSupport.transformWithArguments(metacards, null);
+    assertThrows(
+        NullPointerException.class,
+        () -> CsvTransformerSupport.transformWithArguments(metacards, null));
   }
 
   @Test

@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Result;
@@ -435,9 +436,10 @@ public class CsvTransformerSecurityTest {
     assertThat(result, notNullValue());
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullMetacard() throws Exception {
-    metacardTransformer.transform(null, null);
+  @Test
+  public void testTransformNullMetacard() {
+    assertThrows(
+        CatalogTransformerException.class, () -> metacardTransformer.transform(null, null));
   }
 
   @Test
