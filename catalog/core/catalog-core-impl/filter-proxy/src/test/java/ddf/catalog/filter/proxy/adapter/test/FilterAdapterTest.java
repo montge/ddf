@@ -15,6 +15,7 @@ package ddf.catalog.filter.proxy.adapter.test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -333,20 +334,26 @@ public class FilterAdapterTest {
             TEST_PROPERTY, FF.literal(Arrays.asList(1, 2, 3)), FF.literal(Arrays.asList(2, 3, 4))));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testBbox() throws UnsupportedQueryException {
-    new GeotoolsFilterAdapterImpl()
-        .adapt(FF.bbox(TEST_PROPERTY.toString(), 1.0, 1.0, 2.0, 2.0, null), null);
+    assertThrows(
+        UnsupportedQueryException.class,
+        () ->
+            new GeotoolsFilterAdapterImpl()
+                .adapt(FF.bbox(TEST_PROPERTY.toString(), 1.0, 1.0, 2.0, 2.0, null), null));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testPropertyIsNil() throws UnsupportedQueryException {
-    new GeotoolsFilterAdapterImpl().adapt(FF.isNil(null, null), null);
+    assertThrows(
+        UnsupportedQueryException.class,
+        () -> new GeotoolsFilterAdapterImpl().adapt(FF.isNil(null, null), null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBboxNull() throws UnsupportedQueryException {
-    new GeotoolsFilterAdapterImpl().adapt(null, null);
+    assertThrows(
+        IllegalArgumentException.class, () -> new GeotoolsFilterAdapterImpl().adapt(null, null));
   }
 
   @Test
@@ -648,9 +655,11 @@ public class FilterAdapterTest {
     assertThat(period, is(PeriodParser.parse("RELATIVE(P.1Y8.2MT6H)", RELATIVE_TEMPORAL_REGEX)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPeriodParserWithBadFormat() {
-    PeriodParser.parse("invalid.Text", RELATIVE_TEMPORAL_REGEX);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> PeriodParser.parse("invalid.Text", RELATIVE_TEMPORAL_REGEX));
   }
 
   @Test

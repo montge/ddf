@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.inOrder;
@@ -219,28 +220,36 @@ public class FilterBuilderComparisonTest {
     inOrder.verify(visitor, times(1)).visit(isA(PropertyIsLessThanOrEqualTo.class), any());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testGreaterThanWithNullNumber() {
-    builder.attribute(TEST_ATTRIBUTE).greaterThan().number((Integer) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.attribute(TEST_ATTRIBUTE).greaterThan().number((Integer) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testGreaterThanOrEqualToWithNullNumber() {
-    builder.attribute(TEST_ATTRIBUTE).greaterThanOrEqualTo().number((Integer) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.attribute(TEST_ATTRIBUTE).greaterThanOrEqualTo().number((Integer) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testLessThanWithNullNumber() {
-    builder.attribute(TEST_ATTRIBUTE).lessThan().number((Integer) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.attribute(TEST_ATTRIBUTE).lessThan().number((Integer) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testLessThanOrEqualToWithNullNumber() {
-    builder.attribute(TEST_ATTRIBUTE).lessThanOrEqualTo().number((Integer) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.attribute(TEST_ATTRIBUTE).lessThanOrEqualTo().number((Integer) null));
   }
 
   @Test

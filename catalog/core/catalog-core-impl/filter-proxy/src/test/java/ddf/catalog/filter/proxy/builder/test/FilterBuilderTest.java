@@ -14,6 +14,7 @@
 package ddf.catalog.filter.proxy.builder.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.inOrder;
@@ -399,68 +400,70 @@ public class FilterBuilderTest {
     inOrder.verify(visitor, times(1)).visit(isA(PropertyIsLike.class), any());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void likeXPathNull() {
-    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.xpath("//foo").is().like().text(null);
-    filter.accept(visitor, null);
-
-    InOrder inOrder = inOrder(visitor);
-    inOrder.verify(visitor, times(1)).visit(isA(PropertyIsLike.class), any());
-
-    filter = builder.xpath(null).is().like().text(null);
+    assertThrows(
+        IllegalArgumentException.class, () -> builder.xpath("//foo").is().like().text(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void operatorBeforeNull() {
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.attribute("something").before().date(null);
+    assertThrows(
+        IllegalArgumentException.class, () -> builder.attribute("something").before().date(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void operatorAfterNull() {
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.attribute("something").after().date(null);
+    assertThrows(
+        IllegalArgumentException.class, () -> builder.attribute("something").after().date(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void operatorDuringNull() {
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.attribute("something").during().dates(null, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.attribute("something").during().dates(null, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void operatorBeyondNull() {
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.attribute("something").beyond().wkt(null);
+    assertThrows(
+        IllegalArgumentException.class, () -> builder.attribute("something").beyond().wkt(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void operatorWithinNull() {
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.attribute("something").within().wkt(null);
+    assertThrows(
+        IllegalArgumentException.class, () -> builder.attribute("something").within().wkt(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void operatorWithinBufferNull() {
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.attribute("something").withinBuffer().wkt(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.attribute("something").withinBuffer().wkt(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void likeXPathInvalid() {
-    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
     FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    Filter filter = builder.xpath("foo").is().like().text("bar");
+    assertThrows(
+        IllegalArgumentException.class, () -> builder.xpath("foo").is().like().text("bar"));
   }
 
   @Test
