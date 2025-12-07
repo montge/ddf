@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.impl.AttributeImpl;
 import ddf.catalog.validation.impl.validator.PatternValidator;
@@ -51,19 +52,19 @@ public class PatternValidatorTest {
     assertThat(reportOptional.get().getAttributeValidationViolations(), hasSize(expectedErrors));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullRegex() {
-    new PatternValidator(null);
+    assertThrows(IllegalArgumentException.class, () -> new PatternValidator(null));
   }
 
-  @Test(expected = PatternSyntaxException.class)
+  @Test
   public void testInvalidRegex() {
-    new PatternValidator("[");
+    assertThrows(PatternSyntaxException.class, () -> new PatternValidator("["));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullAttribute() {
-    VALIDATOR.validate(null);
+    assertThrows(IllegalArgumentException.class, () -> VALIDATOR.validate(null));
   }
 
   @Test

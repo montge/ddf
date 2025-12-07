@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,19 +34,20 @@ import org.junit.Test;
 /** Tests that keys are unique and proper for use with a Cache implementation */
 public class CacheKeyTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMetacardValidResourceRequest() {
-    new CacheKey(null, mock(ResourceRequest.class));
+    assertThrows(
+        IllegalArgumentException.class, () -> new CacheKey(null, mock(ResourceRequest.class)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullResourceRequest() {
-    new CacheKey(mock(Metacard.class), null);
+    assertThrows(IllegalArgumentException.class, () -> new CacheKey(mock(Metacard.class), null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMetacard() {
-    new CacheKey(null);
+    assertThrows(IllegalArgumentException.class, () -> new CacheKey(null));
   }
 
   @Test

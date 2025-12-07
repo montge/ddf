@@ -17,6 +17,7 @@ package ddf.catalog.data.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.Sets;
 import ddf.catalog.data.InjectableAttribute;
@@ -25,9 +26,11 @@ import java.util.Set;
 import org.junit.Test;
 
 public class InjectableAttributeImplTest {
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullAttributeName() {
-    new InjectableAttributeImpl(null, Collections.emptySet());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new InjectableAttributeImpl(null, Collections.emptySet()));
   }
 
   @Test

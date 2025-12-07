@@ -17,6 +17,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.impl.AttributeImpl;
 import ddf.catalog.validation.impl.validator.PastDateValidator;
@@ -53,8 +54,8 @@ public class PastDateValidatorTest {
     assertThat(reportOptional.get().getAttributeValidationViolations(), hasSize(expectedErrors));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullAttribute() {
-    VALIDATOR.validate(null);
+    assertThrows(IllegalArgumentException.class, () -> VALIDATOR.validate(null));
   }
 }

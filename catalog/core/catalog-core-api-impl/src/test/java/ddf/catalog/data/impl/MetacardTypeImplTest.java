@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.MetacardType;
@@ -244,19 +245,24 @@ public class MetacardTypeImplTest {
     assertThat(extended.getAttributeDescriptors(), is(expectedDescriptors));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExtendingNullMetacardTypeThrowsException() {
-    new MetacardTypeImpl(NAME, null, BASIC_METACARD.getAttributeDescriptors());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new MetacardTypeImpl(NAME, null, BASIC_METACARD.getAttributeDescriptors()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExtendingMetacardTypeWithNullAdditionalDescriptorsThrowsException() {
-    new MetacardTypeImpl(NAME, BASIC_METACARD, null);
+    assertThrows(
+        IllegalArgumentException.class, () -> new MetacardTypeImpl(NAME, BASIC_METACARD, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExtendingMetacardTypeWithEmptyAdditionalDescriptorsThrowsException() {
-    new MetacardTypeImpl(NAME, BASIC_METACARD, Collections.emptySet());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new MetacardTypeImpl(NAME, BASIC_METACARD, Collections.emptySet()));
   }
 
   @Test
