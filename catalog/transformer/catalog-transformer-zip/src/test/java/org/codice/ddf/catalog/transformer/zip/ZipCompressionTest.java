@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.transformer.zip;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -132,41 +133,51 @@ public class ZipCompressionTest {
         binaryContent, Collections.singletonList("metacards" + File.separator + "metacardId"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testCompressionNullSourceResponse() throws Exception {
-    zipCompression.transform(null, Collections.emptyMap());
+  @Test
+  public void testCompressionNullSourceResponse() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipCompression.transform(null, Collections.emptyMap()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testCompressionEmptySourceResponse() throws Exception {
-    zipCompression.transform(EMPTY_SOURCE_RESPONSE, null);
+  @Test
+  public void testCompressionEmptySourceResponse() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipCompression.transform(EMPTY_SOURCE_RESPONSE, null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testCompressNullTransformerId() throws Exception {
+  @Test
+  public void testCompressNullTransformerId() {
     Map<String, Serializable> arguments = Collections.singletonMap("transformerId", null);
 
-    zipCompression.transform(SINGLE_RESULT_SOURCE_RESPONSE, arguments);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipCompression.transform(SINGLE_RESULT_SOURCE_RESPONSE, arguments));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testCompressEmptyTransformerId() throws Exception {
+  @Test
+  public void testCompressEmptyTransformerId() {
     Map<String, Serializable> arguments =
         new ImmutableMap.Builder<String, Serializable>().put("transformerId", "").build();
 
-    zipCompression.transform(SINGLE_RESULT_SOURCE_RESPONSE, arguments);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipCompression.transform(SINGLE_RESULT_SOURCE_RESPONSE, arguments));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testCompressBlankTransformerId() throws Exception {
+  @Test
+  public void testCompressBlankTransformerId() {
     Map<String, Serializable> arguments =
         new ImmutableMap.Builder<String, Serializable>().put("transformerId", " ").build();
 
-    zipCompression.transform(SINGLE_RESULT_SOURCE_RESPONSE, arguments);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipCompression.transform(SINGLE_RESULT_SOURCE_RESPONSE, arguments));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testCompressionWithSpecifiedTransformerNotFound() throws Exception {
+  @Test
+  public void testCompressionWithSpecifiedTransformerNotFound() {
     MetacardImpl metacard = new MetacardImpl();
     List<Result> results = Collections.singletonList(new ResultImpl(metacard));
     SourceResponse sourceResponse = new SourceResponseImpl(null, results);
@@ -174,7 +185,9 @@ public class ZipCompressionTest {
     Map<String, Serializable> arguments =
         new ImmutableMap.Builder<String, Serializable>().put("transformerId", "foobar").build();
 
-    zipCompression.transform(sourceResponse, arguments);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipCompression.transform(sourceResponse, arguments));
   }
 
   @Test

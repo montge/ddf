@@ -15,6 +15,7 @@ package org.codice.ddf.catalog.transformer.zip;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ddf.security.SecurityConstants;
 import java.util.Properties;
@@ -90,10 +91,10 @@ public class ZipValidatorTest {
         is(zipValidator.getSignaturePropertiesPath()));
   }
 
-  @Test(expected = ZipValidationException.class)
-  public void testValidateUnsignedZip() throws Exception {
-    boolean result = zipValidator.validateZipFile(UNSIGNED_ZIP_PATH);
-    assertThat(result, is(false));
+  @Test
+  public void testValidateUnsignedZip() {
+    assertThrows(
+        ZipValidationException.class, () -> zipValidator.validateZipFile(UNSIGNED_ZIP_PATH));
   }
 
   @Test
@@ -102,33 +103,33 @@ public class ZipValidatorTest {
     assertThat(result, is(true));
   }
 
-  @Test(expected = ZipValidationException.class)
-  public void testNoCertZip() throws Exception {
-    boolean result = zipValidator.validateZipFile(NO_CERT_ZIP_PATH);
-    assertThat(result, is(false));
+  @Test
+  public void testNoCertZip() {
+    assertThrows(
+        ZipValidationException.class, () -> zipValidator.validateZipFile(NO_CERT_ZIP_PATH));
   }
 
-  @Test(expected = ZipValidationException.class)
-  public void testBadCertZip() throws Exception {
-    boolean result = zipValidator.validateZipFile(BAD_CERT_ZIP_PATH);
-    assertThat(result, is(false));
+  @Test
+  public void testBadCertZip() {
+    assertThrows(
+        ZipValidationException.class, () -> zipValidator.validateZipFile(BAD_CERT_ZIP_PATH));
   }
 
-  @Test(expected = SecurityException.class)
-  public void testZipWithAddedFile() throws Exception {
-    boolean result = zipValidator.validateZipFile(ALTERED_ZIP_PATH);
-    assertThat(result, is(false));
+  @Test
+  public void testZipWithAddedFile() {
+    assertThrows(SecurityException.class, () -> zipValidator.validateZipFile(ALTERED_ZIP_PATH));
   }
 
-  @Test(expected = SecurityException.class)
-  public void testZipWithModifiedManifest() throws Exception {
-    boolean result = zipValidator.validateZipFile(MODIFIED_MANIFEST_ZIP_PATH);
-    assertThat(result, is(false));
+  @Test
+  public void testZipWithModifiedManifest() {
+    assertThrows(
+        SecurityException.class, () -> zipValidator.validateZipFile(MODIFIED_MANIFEST_ZIP_PATH));
   }
 
-  @Test(expected = SecurityException.class)
-  public void testZipWithModifiedExistingFile() throws Exception {
-    boolean result = zipValidator.validateZipFile(MODIFIED_EXISTING_FILE_ZIP_PATH);
-    assertThat(result, is(false));
+  @Test
+  public void testZipWithModifiedExistingFile() {
+    assertThrows(
+        SecurityException.class,
+        () -> zipValidator.validateZipFile(MODIFIED_EXISTING_FILE_ZIP_PATH));
   }
 }

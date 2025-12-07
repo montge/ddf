@@ -16,8 +16,8 @@ package org.codice.ddf.catalog.transformer.zip;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.transform.CatalogTransformerException;
@@ -51,38 +51,41 @@ public class ZipDecompressionTest {
     arguments.put(ZipDecompression.FILE_NAME, ZIP_FILE_NAME);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testDecompressionWithNullArguments() throws Exception {
-    List<Metacard> result = zipDecompression.transform(zipInputStream, null);
-    assertThat(result, nullValue());
+  @Test
+  public void testDecompressionWithNullArguments() {
+    assertThrows(
+        CatalogTransformerException.class, () -> zipDecompression.transform(zipInputStream, null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testDecompressionWithEmptyArguments() throws Exception {
-    List<Metacard> result = zipDecompression.transform(zipInputStream, new HashMap<>());
-    assertThat(result, nullValue());
+  @Test
+  public void testDecompressionWithEmptyArguments() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipDecompression.transform(zipInputStream, new HashMap<>()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testDecompressionWithNoValidArguments() throws Exception {
+  @Test
+  public void testDecompressionWithNoValidArguments() {
     Map<String, Serializable> badMap = new HashMap<>();
     badMap.put("bad", "arg");
-    List<Metacard> result = zipDecompression.transform(zipInputStream, badMap);
-    assertThat(result, nullValue());
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipDecompression.transform(zipInputStream, badMap));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testDecompressionWithNoFileNameArgument() throws Exception {
+  @Test
+  public void testDecompressionWithNoFileNameArgument() {
     Map<String, Serializable> badMap = new HashMap<>();
     badMap.put(ZipDecompression.FILE_PATH, "arg");
-    List<Metacard> result = zipDecompression.transform(zipInputStream, badMap);
-    assertThat(result, nullValue());
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipDecompression.transform(zipInputStream, badMap));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testDecompressionWithNullStream() throws Exception {
-    List<Metacard> result = zipDecompression.transform(null, arguments);
-    assertThat(result, nullValue());
+  @Test
+  public void testDecompressionWithNullStream() {
+    assertThrows(
+        CatalogTransformerException.class, () -> zipDecompression.transform(null, arguments));
   }
 
   @Test
