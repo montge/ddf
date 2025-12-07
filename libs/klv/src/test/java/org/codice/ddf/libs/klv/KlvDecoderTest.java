@@ -24,6 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.number.IsCloseTo.closeTo;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -756,10 +757,10 @@ public class KlvDecoderTest {
     assertThat(decoder.getCurrentDepth(), is(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidMaxRecursionDepth() {
     final KlvContext context = new KlvContext(KeyLength.ONE_BYTE, LengthEncoding.ONE_BYTE);
-    new KlvDecoder(context, 0);
+    assertThrows(IllegalArgumentException.class, () -> new KlvDecoder(context, 0));
   }
 
   @Test

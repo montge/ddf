@@ -13,6 +13,7 @@
  */
 package org.codice.felix.cm.file;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -92,8 +93,8 @@ public class WrappedPersistenceManagerTest {
     verifyNoMoreInteractions(mockPersistenceManager);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testConstructWithNullDelegate() throws Exception {
-    persistenceManager = new WrappedPersistenceManager(null);
+  @Test
+  public void testConstructWithNullDelegate() {
+    assertThrows(IllegalArgumentException.class, () -> new WrappedPersistenceManager(null));
   }
 }

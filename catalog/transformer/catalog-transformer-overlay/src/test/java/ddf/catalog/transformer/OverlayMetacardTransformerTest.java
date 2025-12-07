@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Metacard;
@@ -94,12 +95,12 @@ public class OverlayMetacardTransformerTest {
     assertThat(overlayImage.getHeight(), greaterThan(originalImage.getHeight()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testNoImageFromSupplier() throws Exception {
     final BiFunction<Metacard, Map<String, Serializable>, Optional<BufferedImage>> imageSupplier =
         (metacard, arguments) -> Optional.empty();
     transformer = new OverlayMetacardTransformer(imageSupplier);
-    transform(getMetacard(), null);
+    assertThrows(CatalogTransformerException.class, () -> transform(getMetacard(), null));
   }
 
   private BufferedImage getImage(byte[] imageBytes) throws IOException {
@@ -135,11 +136,11 @@ public class OverlayMetacardTransformerTest {
     assertThat(imageBytes[7], is((byte) 0x0A));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testNoLocation() throws Exception {
     final MetacardImpl metacard = getMetacard();
     metacard.setLocation(null);
-    transform(metacard, null);
+    assertThrows(CatalogTransformerException.class, () -> transform(metacard, null));
   }
 
   @Test
@@ -152,15 +153,15 @@ public class OverlayMetacardTransformerTest {
     transform(metacard, null);
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testCannotHandleGeometry() throws Exception {
     final MetacardImpl metacard = getMetacard();
     metacard.setLocation("LINESTRING (30 10, 10 30, 40 40)");
-    transform(metacard, null);
+    assertThrows(CatalogTransformerException.class, () -> transform(metacard, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullImageSupplier() {
-    new OverlayMetacardTransformer(null);
+    assertThrows(IllegalArgumentException.class, () -> new OverlayMetacardTransformer(null));
   }
 }

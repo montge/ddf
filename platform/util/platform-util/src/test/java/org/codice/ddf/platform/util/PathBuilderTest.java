@@ -16,6 +16,7 @@ package org.codice.ddf.platform.util;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,16 +62,16 @@ public class PathBuilderTest {
         is(equalTo(Paths.get(pathTokens.get(0), subElemsArr))));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void pathWithNullRoot() {
-    new PathBuilder(null).build();
+    assertThrows(IllegalArgumentException.class, () -> new PathBuilder(null).build());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void pathWithNullRootAndSubElements() {
     String[] subElems =
         pathTokens.subList(1, pathTokens.size()).toArray(new String[pathTokens.size() - 1]);
 
-    new PathBuilder(null, subElems).build();
+    assertThrows(IllegalArgumentException.class, () -> new PathBuilder(null, subElems).build());
   }
 }

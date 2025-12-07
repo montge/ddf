@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import ddf.action.Action;
 import ddf.catalog.data.impl.MetacardImpl;
@@ -96,18 +97,22 @@ public class OverlayActionProviderTest {
     assertThat(actionProvider.getId(), is("catalog.data.metacard.map.overlay.thumbnail"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullOverlayPredicate() {
-    new OverlayActionProvider(null, TRANSFORMER_ID);
+    assertThrows(
+        IllegalArgumentException.class, () -> new OverlayActionProvider(null, TRANSFORMER_ID));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullTransformerId() {
-    new OverlayActionProvider(metacard -> true, null);
+    assertThrows(
+        IllegalArgumentException.class, () -> new OverlayActionProvider(metacard -> true, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidTransformerId() {
-    new OverlayActionProvider(metacard -> true, "invalid");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new OverlayActionProvider(metacard -> true, "invalid"));
   }
 }

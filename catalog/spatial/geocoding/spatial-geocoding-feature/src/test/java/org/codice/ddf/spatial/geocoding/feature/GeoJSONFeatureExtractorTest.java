@@ -16,6 +16,7 @@ package org.codice.ddf.spatial.geocoding.feature;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -69,9 +70,10 @@ public class GeoJSONFeatureExtractorTest {
     assertThat(countryCodes, hasItems("USA", "CAN", "MEX"));
   }
 
-  @Test(expected = FeatureExtractionException.class)
-  public void testExtractEmptyGeoJson() throws Exception {
-    loadFeaturesFromPath(EMPTY_GEOJSON_PATH, false).get(0);
+  @Test
+  public void testExtractEmptyGeoJson() {
+    assertThrows(
+        FeatureExtractionException.class, () -> loadFeaturesFromPath(EMPTY_GEOJSON_PATH, false));
   }
 
   @Test
@@ -80,9 +82,9 @@ public class GeoJSONFeatureExtractorTest {
     assertThat(simpleFeatureList.size(), is(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testExtractNullPath() throws Exception {
-    loadFeaturesFromPath(null, false).get(0);
+  @Test
+  public void testExtractNullPath() {
+    assertThrows(IllegalArgumentException.class, () -> loadFeaturesFromPath(null, false));
   }
 
   private List<SimpleFeature> loadFeaturesFromPath(String path, boolean assertSuccessfulExtraction)

@@ -15,6 +15,7 @@ package org.codice.ddf.opensearch.endpoint;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
@@ -129,17 +130,17 @@ public class KeywordFilterGeneratorTest {
     assertThat(filter, notNullValue());
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testGetFilterFromNullNode() {
-    filterGenerator.getFilterFromASTNode(null);
+    assertThrows(IllegalStateException.class, () -> filterGenerator.getFilterFromASTNode(null));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testGetFilterWithNullFilterBuilder() {
     KeywordFilterGenerator badGenerator = new KeywordFilterGenerator(null);
     ASTNode keywordNode = new KeywordASTNode("term");
 
-    badGenerator.getFilterFromASTNode(keywordNode);
+    assertThrows(IllegalStateException.class, () -> badGenerator.getFilterFromASTNode(keywordNode));
   }
 
   @Test

@@ -16,6 +16,7 @@ package org.codice.ddf.libs.klv;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
@@ -45,13 +46,21 @@ public class KlvDecodingExceptionTest {
     assertThat(exception instanceof Exception, is(true));
   }
 
-  @Test(expected = KlvDecodingException.class)
-  public void testCanBeThrown() throws KlvDecodingException {
-    throw new KlvDecodingException("Test exception");
+  @Test
+  public void testCanBeThrown() {
+    assertThrows(
+        KlvDecodingException.class,
+        () -> {
+          throw new KlvDecodingException("Test exception");
+        });
   }
 
-  @Test(expected = KlvDecodingException.class)
-  public void testCanBeThrownWithCause() throws KlvDecodingException {
-    throw new KlvDecodingException("Test exception", new RuntimeException("cause"));
+  @Test
+  public void testCanBeThrownWithCause() {
+    assertThrows(
+        KlvDecodingException.class,
+        () -> {
+          throw new KlvDecodingException("Test exception", new RuntimeException("cause"));
+        });
   }
 }

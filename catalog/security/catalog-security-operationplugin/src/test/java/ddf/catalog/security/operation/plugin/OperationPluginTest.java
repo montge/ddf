@@ -13,6 +13,7 @@
  */
 package ddf.catalog.security.operation.plugin;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -117,13 +118,13 @@ public class OperationPluginTest {
     testPluginWithRole("A");
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void rejectedRequestTest() throws Exception {
-    testPluginWithRole("Z");
+  @Test
+  public void rejectedRequestTest() {
+    assertThrows(StopProcessingException.class, () -> testPluginWithRole("Z"));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void noSubjectRequestTest() throws Exception {
+  @Test
+  public void noSubjectRequestTest() {
     Map<String, Serializable> properties = new HashMap<>();
 
     HashMap<String, Set<String>> perms = new HashMap<>();
@@ -133,7 +134,7 @@ public class OperationPluginTest {
     properties.put(PolicyPlugin.OPERATION_SECURITY, perms);
     CreateRequestImpl request = new CreateRequestImpl(new ArrayList<>(), properties);
 
-    plugin.processPreCreate(request);
+    assertThrows(StopProcessingException.class, () -> plugin.processPreCreate(request));
   }
 
   @Test

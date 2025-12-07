@@ -16,6 +16,7 @@ package org.codice.solr.query;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
@@ -110,17 +111,17 @@ public class SolrQueryFilterVisitorTest {
         solrQuery.getQuery().trim(), equalTo("( property_txt:\"val\" OR otherProp_txt:\"val2\" )"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testOrNoChildren() throws Exception {
+  @Test
+  public void testOrNoChildren() {
     Or or = mock(Or.class);
     when(or.getChildren()).thenReturn(Collections.emptyList());
-    solrVisitor.visit(or, null);
+    assertThrows(UnsupportedOperationException.class, () -> solrVisitor.visit(or, null));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testOrWithInvalidQuery() throws Exception {
     Filter filter = ECQL.toFilter("property = 'val' OR otherProp LIKE 'val2'");
-    filter.accept(solrVisitor, null);
+    assertThrows(UnsupportedOperationException.class, () -> filter.accept(solrVisitor, null));
   }
 
   @Test
