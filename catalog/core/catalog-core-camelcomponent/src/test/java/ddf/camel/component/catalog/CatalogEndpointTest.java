@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import ddf.camel.component.catalog.framework.FrameworkProducer;
 import ddf.camel.component.catalog.ingest.PostIngestConsumer;
@@ -222,7 +223,7 @@ public class CatalogEndpointTest {
     assertThat(producer, instanceOf(MetacardTransformerProducer.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCreateProducerWithInvalidContextPath() {
     CatalogEndpoint endpoint =
         new CatalogEndpoint(
@@ -234,7 +235,7 @@ public class CatalogEndpointTest {
             mockCatalogFramework,
             mockMimeTypeMapper);
 
-    endpoint.createProducer();
+    assertThrows(IllegalArgumentException.class, () -> endpoint.createProducer());
   }
 
   @Test
@@ -291,7 +292,7 @@ public class CatalogEndpointTest {
     assertThat(consumer, instanceOf(PostIngestConsumer.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCreateConsumerWithInvalidContextPath() {
     CatalogEndpoint endpoint =
         new CatalogEndpoint(
@@ -303,7 +304,7 @@ public class CatalogEndpointTest {
             mockCatalogFramework,
             mockMimeTypeMapper);
 
-    endpoint.createConsumer(mockProcessor);
+    assertThrows(IllegalArgumentException.class, () -> endpoint.createConsumer(mockProcessor));
   }
 
   @Test

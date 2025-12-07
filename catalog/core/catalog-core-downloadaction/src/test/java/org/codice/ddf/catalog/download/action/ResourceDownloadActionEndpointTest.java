@@ -15,6 +15,7 @@ package org.codice.ddf.catalog.download.action;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,7 +72,7 @@ public class ResourceDownloadActionEndpointTest {
     verify(mockResourceDownloadMBeanProxy).copyToLocalSite(SOURCE_ID, METACARD_ID);
   }
 
-  @Test(expected = DownloadToLocalSiteException.class)
+  @Test
   public void testDownloadToLocalSiteNullSourceId() throws Exception {
     // Setup
     setupMockTemplate(null, SUCCESS_MESSAGE);
@@ -80,10 +81,12 @@ public class ResourceDownloadActionEndpointTest {
         createResourceDownloadActionEndpoint();
 
     // Perform Test
-    resourceDownloadEndpoint.copyToLocalSite(null, METACARD_ID);
+    assertThrows(
+        DownloadToLocalSiteException.class,
+        () -> resourceDownloadEndpoint.copyToLocalSite(null, METACARD_ID));
   }
 
-  @Test(expected = DownloadToLocalSiteException.class)
+  @Test
   public void testDownloadToLocalSiteNullMetacardId() throws Exception {
     // Setup
     setupMockTemplate(null, SUCCESS_MESSAGE);
@@ -92,7 +95,9 @@ public class ResourceDownloadActionEndpointTest {
         createResourceDownloadActionEndpoint();
 
     // Perform Test
-    resourceDownloadEndpoint.copyToLocalSite(SOURCE_ID, null);
+    assertThrows(
+        DownloadToLocalSiteException.class,
+        () -> resourceDownloadEndpoint.copyToLocalSite(SOURCE_ID, null));
   }
 
   @Test
@@ -129,7 +134,7 @@ public class ResourceDownloadActionEndpointTest {
     verify(mockResourceDownloadMBeanProxy).copyToLocalSite(SOURCE_ID, METACARD_ID);
   }
 
-  @Test(expected = DownloadToLocalSiteException.class)
+  @Test
   public void testDownloadToLocalSiteFailsToGenerateHtmlPage() throws Exception {
     // Setup
     setupMockTemplate(IOException.class, SUCCESS_MESSAGE);
@@ -138,19 +143,18 @@ public class ResourceDownloadActionEndpointTest {
         createResourceDownloadActionEndpoint();
 
     // Perform Test
-    Response response = resourceDownloadEndpoint.copyToLocalSite(SOURCE_ID, METACARD_ID);
-
-    verify(mockResourceDownloadMBeanProxy).copyToLocalSite(SOURCE_ID, METACARD_ID);
+    assertThrows(
+        DownloadToLocalSiteException.class,
+        () -> resourceDownloadEndpoint.copyToLocalSite(SOURCE_ID, METACARD_ID));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testResourceDownloadActionEndpointCreationFails() throws Exception {
     // Setup
     setupMockTemplate(null, SUCCESS_MESSAGE);
     setupMockHandlebars(IOException.class);
 
-    ResourceDownloadActionEndpoint resourceDownloadEndpoint =
-        createResourceDownloadActionEndpoint();
+    assertThrows(RuntimeException.class, () -> createResourceDownloadActionEndpoint());
   }
 
   private ResourceDownloadActionEndpoint createResourceDownloadActionEndpoint() {

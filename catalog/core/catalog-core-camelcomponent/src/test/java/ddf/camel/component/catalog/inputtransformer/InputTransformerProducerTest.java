@@ -16,6 +16,7 @@ package ddf.camel.component.catalog.inputtransformer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -76,20 +77,26 @@ public class InputTransformerProducerTest {
         .thenReturn(this.getClass().getClassLoader().getResourceAsStream("file.txt"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMessageBodyThrowsException() throws Exception {
+  @Test
+  public void testNullMessageBodyThrowsException() {
     when(message.getBody(InputStream.class)).thenReturn(null);
-    inputTransformerProducer.transform(
-        message, "doesnt matter", "doesnt matter", mimeTypeToTransformerMapper);
+    assertThrows(
+        CatalogTransformerException.class,
+        () ->
+            inputTransformerProducer.transform(
+                message, "doesnt matter", "doesnt matter", mimeTypeToTransformerMapper));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testErrorReadingInputStreamThrowsException() throws Exception {
     InputStream is = mock(InputStream.class);
     when(is.read(any())).thenThrow(IOException.class);
     when(message.getBody(InputStream.class)).thenReturn(is);
-    inputTransformerProducer.transform(
-        message, "doesnt matter", "doesnt matter", mimeTypeToTransformerMapper);
+    assertThrows(
+        CatalogTransformerException.class,
+        () ->
+            inputTransformerProducer.transform(
+                message, "doesnt matter", "doesnt matter", mimeTypeToTransformerMapper));
   }
 
   @Test

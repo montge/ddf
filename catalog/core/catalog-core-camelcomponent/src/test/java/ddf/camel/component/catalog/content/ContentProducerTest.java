@@ -16,6 +16,7 @@ package ddf.camel.component.catalog.content;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -228,7 +229,7 @@ public class ContentProducerTest {
     verifyNoInteractions(mockContentProducerDao);
   }
 
-  @Test(expected = SourceUnavailableException.class)
+  @Test
   public void testProcessThrowsSourceUnavailableException() throws Exception {
     File testFile = testDir.newFile("test.txt");
 
@@ -249,10 +250,10 @@ public class ContentProducerTest {
     doReturn(ExchangePattern.InOnly).when(mockExchange).getPattern();
     doReturn(mockMessage).when(mockExchange).getIn();
 
-    contentProducer.process(mockExchange);
+    assertThrows(SourceUnavailableException.class, () -> contentProducer.process(mockExchange));
   }
 
-  @Test(expected = IngestException.class)
+  @Test
   public void testProcessThrowsIngestException() throws Exception {
     File testFile = testDir.newFile("test.txt");
 
@@ -273,10 +274,10 @@ public class ContentProducerTest {
     doReturn(ExchangePattern.InOnly).when(mockExchange).getPattern();
     doReturn(mockMessage).when(mockExchange).getIn();
 
-    contentProducer.process(mockExchange);
+    assertThrows(IngestException.class, () -> contentProducer.process(mockExchange));
   }
 
-  @Test(expected = ContentComponentException.class)
+  @Test
   public void testProcessThrowsContentComponentException() throws Exception {
     File testFile = testDir.newFile("test.txt");
 
@@ -296,7 +297,7 @@ public class ContentProducerTest {
     doReturn(ExchangePattern.InOnly).when(mockExchange).getPattern();
     doReturn(mockMessage).when(mockExchange).getIn();
 
-    contentProducer.process(mockExchange);
+    assertThrows(ContentComponentException.class, () -> contentProducer.process(mockExchange));
   }
 
   @Test
