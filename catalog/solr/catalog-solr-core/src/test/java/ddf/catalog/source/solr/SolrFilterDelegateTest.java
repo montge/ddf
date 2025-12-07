@@ -16,6 +16,7 @@ package ddf.catalog.source.solr;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,23 +43,21 @@ public class SolrFilterDelegateTest {
 
   private SolrFilterDelegate toTest = new SolrFilterDelegate(mockResolver, Collections.emptyMap());
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void intersectsWithNullWkt() {
     // given null WKT and a valid property name
     when(mockResolver.getField(
             "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
         .thenReturn("testProperty_geohash_index");
-    // when the delegate intersects
-    toTest.intersects("testProperty", null);
-    // then the operation is unsupported
+    // when the delegate intersects, then the operation is unsupported
+    assertThrows(
+        UnsupportedOperationException.class, () -> toTest.intersects("testProperty", null));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void intersectsWithNullPropertyName() {
-    // given null property name
-    // when the delegate intersects
-    toTest.intersects(null, "wkt");
-    // then the operation is unsupported
+    // given null property name, when the delegate intersects, then the operation is unsupported
+    assertThrows(UnsupportedOperationException.class, () -> toTest.intersects(null, "wkt"));
   }
 
   @Test
@@ -258,11 +257,12 @@ public class SolrFilterDelegateTest {
       assertThat(equalToQuery.getQuery(), is(expectedQuery));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testPropertyIsEqualTo_AnyText_CaseInsensitive() {
       String searchPhrase = "mySearchPhrase";
       boolean isCaseSensitive = false;
-      toTest.propertyIsEqualTo(Metacard.ANY_TEXT, searchPhrase, isCaseSensitive);
+      assertThrows(UnsupportedOperationException.class,
+          () -> toTest.propertyIsEqualTo(Metacard.ANY_TEXT, searchPhrase, isCaseSensitive));
   }
 
   @Test
@@ -414,7 +414,7 @@ public class SolrFilterDelegateTest {
     assertThat(isEqualTo.getQuery().trim(), is(expectedQuery));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testPropertyIsEqualToNull() {
     when(mockResolver.getField("title", AttributeFormat.STRING, true, Collections.emptyMap()))
         .thenReturn("title_txt");
@@ -422,7 +422,9 @@ public class SolrFilterDelegateTest {
     String searchPhrase = null;
     boolean isCaseSensitive = true;
 
-    toTest.propertyIsEqualTo("title", searchPhrase, isCaseSensitive);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.propertyIsEqualTo("title", searchPhrase, isCaseSensitive));
   }
 
   @Test
@@ -469,7 +471,7 @@ public class SolrFilterDelegateTest {
     assertThat(isLikeQuery.getQuery(), is(expectedQuery));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testPropertyIsNull() {
     when(mockResolver.getField("title", AttributeFormat.STRING, false, Collections.emptyMap()))
         .thenReturn("title_txt");
@@ -477,7 +479,9 @@ public class SolrFilterDelegateTest {
     String searchPhrase = null;
     boolean isCaseSensitive = false;
 
-    toTest.propertyIsLike("title", searchPhrase, isCaseSensitive);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.propertyIsLike("title", searchPhrase, isCaseSensitive));
   }
 
   @Test
@@ -674,14 +678,12 @@ public class SolrFilterDelegateTest {
     assertThat(numberQuery.getQuery(), is(expectedQuery));
   }
 
-  @Test(expected = java.lang.IllegalArgumentException.class)
+  @Test
   public void testBetweenCastException() {
-
     String nonNumber = "Not A Number";
-    SolrQuery notANumberQuery =
-        toTest.propertyIsBetween("altitude", (Object) nonNumber, (Object) nonNumber);
-
-    notANumberQuery.getQuery();
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> toTest.propertyIsBetween("altitude", (Object) nonNumber, (Object) nonNumber));
   }
 
   @Test

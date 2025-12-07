@@ -17,6 +17,7 @@ import ddf.security.Subject;
 import ddf.security.service.SecurityManager;
 import ddf.security.service.SecurityServiceException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Map;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;

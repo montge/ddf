@@ -16,6 +16,7 @@ package org.codice.ddf.platform.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
@@ -112,9 +113,9 @@ public class SortedServiceListTest {
     assertThat(subList.isEmpty(), is(true));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void testGetWhenEmpty() {
-    sortedServiceList.get(0);
+    assertThrows(IndexOutOfBoundsException.class, () -> sortedServiceList.get(0));
   }
 
   @Test
@@ -129,54 +130,62 @@ public class SortedServiceListTest {
     assertThat(sortedServiceList.containsAll(emptyList), is(true));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testAddThrowsException() {
-    sortedServiceList.add("test");
+    assertThrows(UnsupportedOperationException.class, () -> sortedServiceList.add("test"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testAddWithIndexThrowsException() {
-    sortedServiceList.add(0, "test");
+    assertThrows(UnsupportedOperationException.class, () -> sortedServiceList.add(0, "test"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testAddAllThrowsException() {
-    sortedServiceList.addAll(Arrays.asList("test1", "test2"));
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> sortedServiceList.addAll(Arrays.asList("test1", "test2")));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testAddAllWithIndexThrowsException() {
-    sortedServiceList.addAll(0, Arrays.asList("test1", "test2"));
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> sortedServiceList.addAll(0, Arrays.asList("test1", "test2")));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testClearThrowsException() {
-    sortedServiceList.clear();
+    assertThrows(UnsupportedOperationException.class, () -> sortedServiceList.clear());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testRemoveObjectThrowsException() {
-    sortedServiceList.remove("test");
+    assertThrows(UnsupportedOperationException.class, () -> sortedServiceList.remove("test"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testRemoveIndexThrowsException() {
-    sortedServiceList.remove(0);
+    assertThrows(UnsupportedOperationException.class, () -> sortedServiceList.remove(0));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testRemoveAllThrowsException() {
-    sortedServiceList.removeAll(Arrays.asList("test1", "test2"));
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> sortedServiceList.removeAll(Arrays.asList("test1", "test2")));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testRetainAllThrowsException() {
-    sortedServiceList.retainAll(Arrays.asList("test1", "test2"));
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> sortedServiceList.retainAll(Arrays.asList("test1", "test2")));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testSetThrowsException() {
-    sortedServiceList.set(0, "test");
+    assertThrows(UnsupportedOperationException.class, () -> sortedServiceList.set(0, "test"));
   }
 
   @Test

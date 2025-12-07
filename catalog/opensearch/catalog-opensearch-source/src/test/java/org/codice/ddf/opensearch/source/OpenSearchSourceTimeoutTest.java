@@ -17,6 +17,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -119,28 +120,28 @@ public class OpenSearchSourceTimeoutTest {
     source.init();
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testQueryTimeout() throws Exception {
+  @Test
+  public void testQueryTimeout() {
     when(webClient.get()).thenThrow(new ProcessingException(new SocketTimeoutException("timeout")));
 
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    source.query(queryRequest);
+    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testQueryProcessingException() throws Exception {
+  @Test
+  public void testQueryProcessingException() {
     when(webClient.get()).thenThrow(new ProcessingException("Connection refused"));
 
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    source.query(queryRequest);
+    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testQuery404NotFound() throws Exception {
+  @Test
+  public void testQuery404NotFound() {
     when(webClient.get()).thenReturn(response);
     when(response.getStatus()).thenReturn(Response.Status.NOT_FOUND.getStatusCode());
     when(response.getEntity()).thenReturn(new ByteArrayInputStream("Not Found".getBytes(UTF_8)));
@@ -148,11 +149,11 @@ public class OpenSearchSourceTimeoutTest {
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    source.query(queryRequest);
+    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testQuery500InternalServerError() throws Exception {
+  @Test
+  public void testQuery500InternalServerError() {
     when(webClient.get()).thenReturn(response);
     when(response.getStatus()).thenReturn(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
     when(response.getEntity())
@@ -161,11 +162,11 @@ public class OpenSearchSourceTimeoutTest {
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    source.query(queryRequest);
+    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testQuery401Unauthorized() throws Exception {
+  @Test
+  public void testQuery401Unauthorized() {
     when(webClient.get()).thenReturn(response);
     when(response.getStatus()).thenReturn(Response.Status.UNAUTHORIZED.getStatusCode());
     when(response.getEntity()).thenReturn(new ByteArrayInputStream("Unauthorized".getBytes(UTF_8)));
@@ -173,11 +174,11 @@ public class OpenSearchSourceTimeoutTest {
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    source.query(queryRequest);
+    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testQueryNullEntity() throws Exception {
+  @Test
+  public void testQueryNullEntity() {
     when(webClient.get()).thenReturn(response);
     when(response.getStatus()).thenReturn(Response.Status.OK.getStatusCode());
     when(response.getEntity()).thenReturn(null);
@@ -185,7 +186,7 @@ public class OpenSearchSourceTimeoutTest {
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    source.query(queryRequest);
+    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
   }
 
   @Test

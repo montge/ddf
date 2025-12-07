@@ -16,7 +16,7 @@ package ddf.catalog.security.filter.plugin.test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -235,9 +235,11 @@ public class FilterPluginTest {
     plugin.processPostResource(resourceResponse, getExactRolesMetacard());
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testPluginFilterResourceBad() throws StopProcessingException {
-    plugin.processPostResource(resourceResponse, getMoreRolesMetacard());
+  @Test
+  public void testPluginFilterResourceBad() {
+    assertThrows(
+        StopProcessingException.class,
+        () -> plugin.processPostResource(resourceResponse, getMoreRolesMetacard()));
   }
 
   @Test
@@ -246,9 +248,10 @@ public class FilterPluginTest {
     assertThat(response.getDeletedMetacards().size(), is(0));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testPluginFilterDeleteNoRequest() throws StopProcessingException {
-    plugin.processPostDelete(mock(DeleteResponse.class));
+  @Test
+  public void testPluginFilterDeleteNoRequest() {
+    assertThrows(
+        StopProcessingException.class, () -> plugin.processPostDelete(mock(DeleteResponse.class)));
   }
 
   @Test
@@ -256,55 +259,61 @@ public class FilterPluginTest {
     plugin.processPostDelete(deleteResponse);
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testPluginFilterResourceNoStrategiesBad() throws StopProcessingException {
+  @Test
+  public void testPluginFilterResourceNoStrategiesBad() {
     plugin = new FilterPlugin(new Security());
     plugin.setPermissions(new PermissionsImpl());
-    plugin.processPostResource(resourceResponse, getMoreRolesMetacard());
+    assertThrows(
+        StopProcessingException.class,
+        () -> plugin.processPostResource(resourceResponse, getMoreRolesMetacard()));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testNoSubject() throws Exception {
+  @Test
+  public void testNoSubject() {
     QueryResponseImpl response = new QueryResponseImpl(getSampleRequest());
-    plugin.processPostQuery(response);
-    fail("Plugin should have thrown exception when no subject was sent in.");
+    assertThrows(StopProcessingException.class, () -> plugin.processPostQuery(response));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testNoSubjectResource() throws Exception {
+  @Test
+  public void testNoSubjectResource() {
     ResourceResponseImpl response = new ResourceResponseImpl(mock(Resource.class));
-    plugin.processPostResource(response, mock(Metacard.class));
-    fail("Plugin should have thrown exception when no subject was sent in.");
+    assertThrows(
+        StopProcessingException.class,
+        () -> plugin.processPostResource(response, mock(Metacard.class)));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testNoRequestSubject() throws Exception {
+  @Test
+  public void testNoRequestSubject() {
     QueryResponseImpl response = new QueryResponseImpl(null);
-    plugin.processPostQuery(response);
-    fail("Plugin should have thrown exception when no subject was sent in.");
+    assertThrows(StopProcessingException.class, () -> plugin.processPostQuery(response));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testNoRequestSubjectNoStrategies() throws Exception {
+  @Test
+  public void testNoRequestSubjectNoStrategies() {
     QueryResponseImpl response = new QueryResponseImpl(null);
     plugin = new FilterPlugin(new Security());
-    plugin.processPostQuery(response);
-    fail("Plugin should have thrown exception when no subject was sent in.");
+    assertThrows(StopProcessingException.class, () -> plugin.processPostQuery(response));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testPreCreateNoSubject() throws Exception {
-    plugin.processPreCreate(new CreateRequestImpl(mock(Metacard.class)));
+  @Test
+  public void testPreCreateNoSubject() {
+    assertThrows(
+        StopProcessingException.class,
+        () -> plugin.processPreCreate(new CreateRequestImpl(mock(Metacard.class))));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testPreCreateBadWithSubject() throws Exception {
-    plugin.processPreCreate(badCreateRequest);
+  @Test
+  public void testPreCreateBadWithSubject() {
+    assertThrows(StopProcessingException.class, () -> plugin.processPreCreate(badCreateRequest));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testPreUpdateNoSubject() throws Exception {
-    plugin.processPreUpdate(new UpdateRequestImpl("", mock(Metacard.class)), new HashMap<>());
+  @Test
+  public void testPreUpdateNoSubject() {
+    assertThrows(
+        StopProcessingException.class,
+        () ->
+            plugin.processPreUpdate(
+                new UpdateRequestImpl("", mock(Metacard.class)), new HashMap<>()));
   }
 
   @Test

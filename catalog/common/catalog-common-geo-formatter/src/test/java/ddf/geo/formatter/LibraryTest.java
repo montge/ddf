@@ -13,6 +13,8 @@
  */
 package ddf.geo.formatter;
 
+import static org.junit.Assert.assertThrows;
+
 import java.io.StringReader;
 import org.junit.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -20,56 +22,61 @@ import org.locationtech.jts.io.ParseException;
 
 public class LibraryTest extends AbstractTestCompositeGeometry {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullPointArgument() {
-    new Point(null);
+    assertThrows(IllegalArgumentException.class, () -> new Point(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMultiPointArgument() {
-    new MultiPoint(null);
+    assertThrows(IllegalArgumentException.class, () -> new MultiPoint(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullLineStringArgument() {
-    new LineString(null);
+    assertThrows(IllegalArgumentException.class, () -> new LineString(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotAGeometryCollection() throws ParseException {
-    new GeometryCollection(getSamplePolygon());
+    Geometry polygon = getSamplePolygon();
+    assertThrows(IllegalArgumentException.class, () -> new GeometryCollection(polygon));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotALineString() throws ParseException {
-    new LineString(getSamplePolygon());
+    Geometry polygon = getSamplePolygon();
+    assertThrows(IllegalArgumentException.class, () -> new LineString(polygon));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotAMultiLineString() throws ParseException {
-    new MultiLineString(getSamplePolygon());
+    Geometry polygon = getSamplePolygon();
+    assertThrows(IllegalArgumentException.class, () -> new MultiLineString(polygon));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotAMultiPoint() throws ParseException {
-    new MultiPoint(getSamplePolygon());
+    Geometry polygon = getSamplePolygon();
+    assertThrows(IllegalArgumentException.class, () -> new MultiPoint(polygon));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotAMultiPolygon() throws ParseException {
-    new MultiPolygon(getSamplePolygon());
+    Geometry polygon = getSamplePolygon();
+    assertThrows(IllegalArgumentException.class, () -> new MultiPolygon(polygon));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotAPoint() throws ParseException {
-
-    new Point(getSamplePolygon());
+    Geometry polygon = getSamplePolygon();
+    assertThrows(IllegalArgumentException.class, () -> new Point(polygon));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotAPolygon() throws ParseException {
-
-    new Polygon(reader.read(new StringReader("POINT (1 0)")));
+    Geometry point = reader.read(new StringReader("POINT (1 0)"));
+    assertThrows(IllegalArgumentException.class, () -> new Polygon(point));
   }
 
   protected Geometry getSamplePolygon() throws ParseException {

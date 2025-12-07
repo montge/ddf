@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,67 +122,67 @@ public class BBoxSpatialFilterTest {
     assertThat(wkt, containsString("POLYGON((1.0 2.0,1.0 4.0,3.0 4.0,3.0 2.0,1.0 2.0))"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxTooFewValues() {
     String bbox = "10.0,20.0,30.0";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxTooManyValues() {
     String bbox = "10.0,20.0,30.0,40.0,50.0";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxNonNumeric() {
     String bbox = "a,b,c,d";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxMixedValidInvalid() {
     String bbox = "10.0,20.0,abc,40.0";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void testInvalidBBoxEmpty() {
     String bbox = "";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(Exception.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxOnlyCommas() {
     String bbox = ",,,";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxSpaces() {
     String bbox = "10.0 20.0 30.0 40.0";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxMissingValue() {
     String bbox = "10.0,20.0,,40.0";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidBBoxExtraComma() {
     String bbox = "10.0,20.0,30.0,40.0,";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
   @Test
@@ -204,12 +205,12 @@ public class BBoxSpatialFilterTest {
     assertThat(filter.getGeometryWkt(), containsString("POLYGON"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBBoxWithScientificNotation() {
     // Scientific notation is not supported by the pattern
     String bbox = "1.0e2,2.0e2,3.0e2,4.0e2";
 
-    new BBoxSpatialFilter(bbox);
+    assertThrows(IllegalArgumentException.class, () -> new BBoxSpatialFilter(bbox));
   }
 
   @Test

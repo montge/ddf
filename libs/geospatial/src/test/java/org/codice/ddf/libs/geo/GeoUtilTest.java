@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import org.codice.ddf.libs.geo.util.GeospatialUtil;
 import org.geotools.geometry.jts.JTS;
@@ -84,16 +85,20 @@ public class GeoUtilTest {
     assertThat(degLon, closeTo(-100.376, .00001));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void invalidLatHemisphere() throws GeoFormatException {
+  @Test
+  public void invalidLatHemisphere() {
     String invalidLat = "100:22:33.6W";
-    GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void invalidLonHemisphere() throws GeoFormatException {
+  @Test
+  public void invalidLonHemisphere() {
     String invalidLon = "60:33:22.5N";
-    GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon));
   }
 
   @Test
@@ -172,19 +177,22 @@ public class GeoUtilTest {
     assertThat(lonLatGeom.getCoordinates()[0].y, closeTo(lat, .00001));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testTransformEpsg4326EpsgNullGeom()
-      throws FactoryException, TransformException, GeoFormatException {
+  @Test
+  public void testTransformEpsg4326EpsgNullGeom() throws FactoryException {
     CoordinateReferenceSystem sourceCRS = CRS.decode(GeospatialUtil.EPSG_4326);
-    GeospatialUtil.transformToEPSG4326LonLatFormat(null, sourceCRS);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.transformToEPSG4326LonLatFormat(null, sourceCRS));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testTransformEpsg4326LonLatBadSrs() throws GeoFormatException {
+  @Test
+  public void testTransformEpsg4326LonLatBadSrs() {
     GeometryFactory gf = new GeometryFactory();
     Coordinate coord = new Coordinate(25.22, 33.45);
     Point point = gf.createPoint(coord);
-    GeospatialUtil.transformToEPSG4326LonLatFormat(point, "ESPG:Bad");
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.transformToEPSG4326LonLatFormat(point, "ESPG:Bad"));
   }
 
   @Test
@@ -196,69 +204,91 @@ public class GeoUtilTest {
     assertThat(geom, is(point));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testTransformEpsg4326LonLatNullGeom() throws GeoFormatException {
-    GeospatialUtil.transformToEPSG4326LonLatFormat(null, "EPSG:4326");
+  @Test
+  public void testTransformEpsg4326LonLatNullGeom() {
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.transformToEPSG4326LonLatFormat(null, "EPSG:4326"));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLatDegreeExcept() throws GeoFormatException {
+  @Test
+  public void testLatDegreeExcept() {
     String invalidLat = "AB:CD:EF.GN";
-    GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLatMinuteExcept() throws GeoFormatException {
+  @Test
+  public void testLatMinuteExcept() {
     String invalidLat = "12:CD:EF.GN";
-    GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLatSecondExcept() throws GeoFormatException {
+  @Test
+  public void testLatSecondExcept() {
     String invalidLat = "12:34:EF.GN";
-    GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLatRangeInvalidMin() throws GeoFormatException {
+  @Test
+  public void testLatRangeInvalidMin() {
     String invalidLat = "100:00:00.0S";
-    GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLatRangeInvalidMax() throws GeoFormatException {
+  @Test
+  public void testLatRangeInvalidMax() {
     String invalidLat = "100:00:00.0N";
-    GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLonDegreeExcept() throws GeoFormatException {
+  @Test
+  public void testLonDegreeExcept() {
     String invalidLon = "AB:CD:EF.GW";
-    GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLonMinuteExcept() throws GeoFormatException {
+  @Test
+  public void testLonMinuteExcept() {
     String invalidLon = "12:CD:EF.GW";
-    GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLonSecondExcept() throws GeoFormatException {
+  @Test
+  public void testLonSecondExcept() {
     String invalidLon = "12:34:EF.GW";
-    GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLonRangeInvalidMin() throws GeoFormatException {
+  @Test
+  public void testLonRangeInvalidMin() {
     String invalidLon = "181:00:00.0E";
-    GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testLonRangeInvalidMax() throws GeoFormatException {
+  @Test
+  public void testLonRangeInvalidMax() {
     String invalidLon = "181:00:00.0W";
-    GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon));
   }
 
   @Test
