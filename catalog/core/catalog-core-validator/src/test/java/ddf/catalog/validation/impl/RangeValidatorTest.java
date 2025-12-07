@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.impl.AttributeImpl;
@@ -119,29 +120,34 @@ public class RangeValidatorTest {
     assertThat(reportOptional.get().getAttributeValidationViolations(), hasSize(expectedErrors));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMin() {
-    new RangeValidator(null, BigDecimal.ONE);
+    assertThrows(IllegalArgumentException.class, () -> new RangeValidator(null, BigDecimal.ONE));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMax() {
-    new RangeValidator(BigDecimal.ONE, null);
+    assertThrows(IllegalArgumentException.class, () -> new RangeValidator(BigDecimal.ONE, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullEpsilon() {
-    new RangeValidator(BigDecimal.ONE, BigDecimal.TEN, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new RangeValidator(BigDecimal.ONE, BigDecimal.TEN, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testInvalidRange() {
-    new RangeValidator(BigDecimal.TEN, BigDecimal.ONE);
+    assertThrows(
+        IllegalArgumentException.class, () -> new RangeValidator(BigDecimal.TEN, BigDecimal.ONE));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNegativeEpsilon() {
-    new RangeValidator(BigDecimal.ONE, BigDecimal.TEN, BigDecimal.valueOf(-1));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new RangeValidator(BigDecimal.ONE, BigDecimal.TEN, BigDecimal.valueOf(-1)));
   }
 
   @Test

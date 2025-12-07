@@ -16,6 +16,7 @@ package ddf.catalog.validation.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.Sets;
 import ddf.catalog.data.Metacard;
@@ -70,24 +71,33 @@ public class RequiredAttributesMetacardValidatorTest {
     return validator.validateMetacard(metacard);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMetacardTypeName() {
-    new RequiredAttributesMetacardValidator(null, Sets.newHashSet("title"));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new RequiredAttributesMetacardValidator(null, Sets.newHashSet("title")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullRequiredAttributes() {
-    new RequiredAttributesMetacardValidator("test", null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new RequiredAttributesMetacardValidator("test", null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testEmptyRequiredAttributes() {
-    new RequiredAttributesMetacardValidator("test", new HashSet<>());
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new RequiredAttributesMetacardValidator("test", new HashSet<>()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMetacard() {
-    new RequiredAttributesMetacardValidator("test", Sets.newHashSet("title"))
-        .validateMetacard(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new RequiredAttributesMetacardValidator("test", Sets.newHashSet("title"))
+                .validateMetacard(null));
   }
 }

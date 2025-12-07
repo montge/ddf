@@ -18,6 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.Sets;
 import ddf.catalog.data.Attribute;
@@ -81,19 +82,22 @@ public class EnumerationValidatorTest {
     assertThat(reportOptional.get().getAttributeValidationViolations(), hasSize(expectedErrors));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullAttribute() {
-    new EnumerationValidator(Sets.newHashSet("first"), false).validate(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new EnumerationValidator(Sets.newHashSet("first"), false).validate(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullEnumerationValues() {
-    new EnumerationValidator(null, false);
+    assertThrows(IllegalArgumentException.class, () -> new EnumerationValidator(null, false));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testEmptyEnumerationValues() {
-    new EnumerationValidator(new HashSet<>(), false);
+    assertThrows(
+        IllegalArgumentException.class, () -> new EnumerationValidator(new HashSet<>(), false));
   }
 
   @Test
