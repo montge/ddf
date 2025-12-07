@@ -16,6 +16,7 @@ package org.codice.ddf.configuration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -69,8 +70,12 @@ public class PropertyResolverTest {
         properties.getProperty("unresolvedProperty"), equalTo("${nonExistentSystemProperty}"));
   }
 
-  @Test(expected = IOException.class)
-  public void testResolvePropertiesFromLocationNonExistentFile() throws Exception {
-    PropertyResolver.resolvePropertiesFromLocation("/non/existent/path/non-existent-file.txt");
+  @Test
+  public void testResolvePropertiesFromLocationNonExistentFile() {
+    assertThrows(
+        IOException.class,
+        () ->
+            PropertyResolver.resolvePropertiesFromLocation(
+                "/non/existent/path/non-existent-file.txt"));
   }
 }

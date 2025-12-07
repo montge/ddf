@@ -16,6 +16,7 @@ package org.codice.solr.factory.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.junit.Test;
@@ -28,10 +29,10 @@ public class SolrClientFactoryImplTest {
 
   @Mock private SolrClient mockClient;
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newClientWithNullCoreName() {
     SolrClientFactoryImpl factory = new SolrClientFactoryImpl();
-    factory.newClient(null);
+    assertThrows(IllegalArgumentException.class, () -> factory.newClient(null));
   }
 
   @Test

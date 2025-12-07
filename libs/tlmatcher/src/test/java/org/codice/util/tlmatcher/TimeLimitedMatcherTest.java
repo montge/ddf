@@ -16,6 +16,7 @@ package org.codice.util.tlmatcher;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThrows;
 
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
@@ -45,8 +46,12 @@ public class TimeLimitedMatcherTest {
     assertThat(matcher.matches(), is(equalTo(false)));
   }
 
-  @Test(expected = TimeoutException.class)
-  public void questionableMatchFails() throws Exception {
-    TimeLimitedMatcher.create(Pattern.compile("(a+)+"), StringUtils.repeat("a", 100000) + "!");
+  @Test
+  public void questionableMatchFails() {
+    assertThrows(
+        TimeoutException.class,
+        () ->
+            TimeLimitedMatcher.create(
+                Pattern.compile("(a+)+"), StringUtils.repeat("a", 100000) + "!"));
   }
 }

@@ -15,6 +15,7 @@ package ddf.platform.resource.bundle.locator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -73,8 +74,9 @@ public class ResourceBundleLocatorImplTest {
     assertThat(resourceBundle.getObject("foo"), is("bar"));
   }
 
-  @Test(expected = MissingResourceException.class)
-  public void testGetResourceBundleNonExistentBaseName() throws IOException {
-    resourceBundleLocator.getBundle("FooBarBundle");
+  @Test
+  public void testGetResourceBundleNonExistentBaseName() {
+    assertThrows(
+        MissingResourceException.class, () -> resourceBundleLocator.getBundle("FooBarBundle"));
   }
 }

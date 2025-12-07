@@ -15,6 +15,7 @@ package org.codice.solr.query;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,12 +33,12 @@ public class ExpressionValueVisitorTest {
     assertThat(visitor.visit(literal, null), equalTo("value"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testLiteralEmptyExpression() {
     ExpressionValueVisitor visitor = new ExpressionValueVisitor();
     Literal literal = mock(Literal.class);
     when(literal.getValue()).thenReturn(null);
-    visitor.visit(literal, null);
+    assertThrows(UnsupportedOperationException.class, () -> visitor.visit(literal, null));
   }
 
   @Test
@@ -48,11 +49,11 @@ public class ExpressionValueVisitorTest {
     assertThat(visitor.visit(prop, null), equalTo("name"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testPropertyNameEmptyExpression() {
     ExpressionValueVisitor visitor = new ExpressionValueVisitor();
     PropertyName prop = mock(PropertyName.class);
     when(prop.getPropertyName()).thenReturn("");
-    visitor.visit(prop, null);
+    assertThrows(UnsupportedOperationException.class, () -> visitor.visit(prop, null));
   }
 }

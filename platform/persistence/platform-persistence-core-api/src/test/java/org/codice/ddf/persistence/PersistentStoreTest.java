@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import org.codice.ddf.persistence.PersistentStore.PersistenceType;
@@ -156,14 +157,14 @@ public class PersistentStoreTest {
     assertThat(PersistenceType.valueOf("RESULTS_TYPE"), is(PersistenceType.RESULTS_TYPE));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPersistenceTypeValueOfInvalidName() {
-    PersistenceType.valueOf("INVALID_TYPE");
+    assertThrows(IllegalArgumentException.class, () -> PersistenceType.valueOf("INVALID_TYPE"));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testPersistenceTypeValueOfNull() {
-    PersistenceType.valueOf(null);
+    assertThrows(NullPointerException.class, () -> PersistenceType.valueOf(null));
   }
 
   @Test

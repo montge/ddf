@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
@@ -42,9 +43,13 @@ public class CatalogServiceExceptionTest {
     assertThat(exception instanceof Exception, is(true));
   }
 
-  @Test(expected = CatalogServiceException.class)
-  public void testCanBeThrown() throws CatalogServiceException {
-    throw new CatalogServiceException("Test exception");
+  @Test
+  public void testCanBeThrown() {
+    assertThrows(
+        CatalogServiceException.class,
+        () -> {
+          throw new CatalogServiceException("Test exception");
+        });
   }
 
   @Test

@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import java.lang.reflect.Field;
 import org.junit.Test;
@@ -67,8 +68,12 @@ public class GeoFormatExceptionTest {
     assertThat(field, is(notNullValue()));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testCanBeThrown() throws GeoFormatException {
-    throw new GeoFormatException("Test exception");
+  @Test
+  public void testCanBeThrown() {
+    assertThrows(
+        GeoFormatException.class,
+        () -> {
+          throw new GeoFormatException("Test exception");
+        });
   }
 }
