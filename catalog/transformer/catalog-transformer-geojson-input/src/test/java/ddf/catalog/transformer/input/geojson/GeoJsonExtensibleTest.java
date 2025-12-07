@@ -14,11 +14,13 @@
 package ddf.catalog.transformer.input.geojson;
 
 import static ddf.catalog.data.impl.BasicTypes.DOUBLE_TYPE;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.AttributeDescriptor;
@@ -40,9 +42,7 @@ import java.util.List;
 import java.util.Set;
 import org.codice.ddf.platform.util.SortedServiceList;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -456,12 +456,11 @@ public class GeoJsonExtensibleTest {
     assertNull(metacard.getAttribute("angle"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testExtensibleGeoJsonUnregisteredMetacardType()
-      throws IOException, CatalogTransformerException {
+  @Test
+  public void testExtensibleGeoJsonUnregisteredMetacardType() {
     ByteArrayInputStream geoJsonInput =
         new ByteArrayInputStream(sampleJsonExtensibleAUnregisteredMetacardType().getBytes());
-    transformer.transform(geoJsonInput);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(geoJsonInput));
   }
 
   @Test
@@ -536,25 +535,28 @@ public class GeoJsonExtensibleTest {
     assertThat(metacard2, is(metacard1));
   }
 
-  @Rule public ExpectedException thrown = ExpectedException.none();
-
   @Test
-  public void testInvalidMetacardType() throws IOException, CatalogTransformerException {
-    thrown.expect(CatalogTransformerException.class);
-    thrown.expectMessage(
-        "MetacardType specified in input has not been registered with the system. Cannot parse input. MetacardType name:");
-
+  public void testInvalidMetacardType() {
     MetacardType invalidMetacardType = new MetacardTypeImpl("invalid", new HashSet<>());
     transformer.setMetacardTypes(Collections.singletonList(invalidMetacardType));
-    transformer.transform(new ByteArrayInputStream(sampleBasicMetacard().getBytes()), DEFAULT_ID);
+
+    CatalogTransformerException exception =
+        assertThrows(
+            CatalogTransformerException.class,
+            () ->
+                transformer.transform(
+                    new ByteArrayInputStream(sampleBasicMetacard().getBytes()), DEFAULT_ID));
+    assertThat(
+        exception.getMessage(),
+        containsString(
+            "MetacardType specified in input has not been registered with the system. Cannot parse input. MetacardType name:"));
   }
 
   @Test
-  public void testTransformNullInput() throws IOException, CatalogTransformerException {
-    thrown.expect(CatalogTransformerException.class);
-    thrown.expectMessage("Cannot transform null input.");
-
-    transformer.transform(null);
+  public void testTransformNullInput() {
+    CatalogTransformerException exception =
+        assertThrows(CatalogTransformerException.class, () -> transformer.transform(null));
+    assertThat(exception.getMessage(), containsString("Cannot transform null input."));
   }
 
   private List<MetacardType> prepareMetacardTypes() {

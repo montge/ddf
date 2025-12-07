@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.BinaryContent;
@@ -326,9 +327,10 @@ public class GeoJsonMetacardTransformerEnhancedTest {
     assertThat(json.get("properties"), is(notNullValue()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testConvertToJSONWithNullMetacard() throws CatalogTransformerException {
-    GeoJsonMetacardTransformer.convertToJSON(null);
+  @Test
+  public void testConvertToJSONWithNullMetacard() {
+    assertThrows(
+        CatalogTransformerException.class, () -> GeoJsonMetacardTransformer.convertToJSON(null));
   }
 
   @Test
@@ -381,13 +383,13 @@ public class GeoJsonMetacardTransformerEnhancedTest {
     assertThat(properties.get(MetacardType.METACARD_TYPE), is("custom-type"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformWithInvalidGeometry() throws Exception {
+  @Test
+  public void testTransformWithInvalidGeometry() {
     MetacardImpl metacard = new MetacardImpl();
     metacard.setLocation("INVALID WKT");
     metacard.setTitle("Test");
 
-    transformer.transform(metacard, null);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
   }
 
   @Test

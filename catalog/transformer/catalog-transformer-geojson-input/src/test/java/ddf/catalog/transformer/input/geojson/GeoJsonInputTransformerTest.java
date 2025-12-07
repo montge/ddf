@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -240,30 +241,41 @@ public class GeoJsonInputTransformerTest {
     transformer = new GeoJsonInputTransformer();
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullInput() throws IOException, CatalogTransformerException {
-    transformer.transform(null);
+  @Test
+  public void testNullInput() {
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testBadInput() throws IOException, CatalogTransformerException {
-    transformer.transform(new ByteArrayInputStream("{key=".getBytes()));
+  @Test
+  public void testBadInput() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> transformer.transform(new ByteArrayInputStream("{key=".getBytes())));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testFeatureCollectionType() throws IOException, CatalogTransformerException {
-    transformer.transform(new ByteArrayInputStream(sampleFeatureCollectionJsonText().getBytes()));
+  @Test
+  public void testFeatureCollectionType() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () ->
+            transformer.transform(
+                new ByteArrayInputStream(sampleFeatureCollectionJsonText().getBytes())));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNoType() throws IOException, CatalogTransformerException {
-    transformer.transform(new ByteArrayInputStream(noTypeJsonText().getBytes()));
+  @Test
+  public void testNoType() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> transformer.transform(new ByteArrayInputStream(noTypeJsonText().getBytes())));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNoProperties() throws IOException, CatalogTransformerException {
-    transformer.transform(
-        new ByteArrayInputStream("{ \"type\": \"FeatureCollection\"}".getBytes()));
+  @Test
+  public void testNoProperties() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () ->
+            transformer.transform(
+                new ByteArrayInputStream("{ \"type\": \"FeatureCollection\"}".getBytes())));
   }
 
   @Test()

@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Metacard;
@@ -211,21 +212,22 @@ public class GeoJsonInputTransformerEnhancedTest {
     assertThat(result.getAttribute(Metacard.DESCRIPTION).getValue(), is("Complete test"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformInvalidJson() throws Exception {
+  @Test
+  public void testTransformInvalidJson() {
     String invalidJson = "{invalid json structure";
 
-    transformer.transform(toInputStream(invalidJson));
+    assertThrows(
+        CatalogTransformerException.class, () -> transformer.transform(toInputStream(invalidJson)));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformEmptyString() throws Exception {
-    transformer.transform(toInputStream(""));
+  @Test
+  public void testTransformEmptyString() {
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(toInputStream("")));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullInput() throws Exception {
-    transformer.transform(null);
+  @Test
+  public void testTransformNullInput() {
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(null));
   }
 
   @Test

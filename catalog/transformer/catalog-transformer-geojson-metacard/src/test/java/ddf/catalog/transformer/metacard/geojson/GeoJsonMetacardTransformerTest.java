@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.BinaryContent;
@@ -76,9 +77,11 @@ public class GeoJsonMetacardTransformerTest {
 
   private static final String SOURCE_ID_PROPERTY = "source-id";
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacard() throws CatalogTransformerException {
-    new GeoJsonMetacardTransformer().transform(null, null);
+  @Test
+  public void testNullMetacard() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> new GeoJsonMetacardTransformer().transform(null, null));
   }
 
   /**
@@ -114,15 +117,9 @@ public class GeoJsonMetacardTransformerTest {
     verifyBasicMetacardJson(now, obj2);
   }
 
-  /**
-   * Tests that improper WKT throws an exception
-   *
-   * @throws CatalogTransformerException
-   * @throws IOException
-   * @throws ParseException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testwithBadGeo() throws CatalogTransformerException, IOException, ParseException {
+  /** Tests that improper WKT throws an exception */
+  @Test
+  public void testwithBadGeo() {
 
     Date now = new Date();
 
@@ -135,7 +132,7 @@ public class GeoJsonMetacardTransformerTest {
 
     GeoJsonMetacardTransformer transformer = new GeoJsonMetacardTransformer();
 
-    transformer.transform(metacard, null);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
   }
 
   /**
