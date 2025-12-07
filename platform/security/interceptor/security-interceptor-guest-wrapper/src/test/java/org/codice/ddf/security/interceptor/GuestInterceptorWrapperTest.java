@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -171,7 +172,7 @@ public class GuestInterceptorWrapperTest {
     verify(guestInterceptor, never()).handleMessage(any());
   }
 
-  @Test(expected = Fault.class)
+  @Test
   public void testHandleMessageWithGuestInterceptorThrowingFault() throws InvalidSyntaxException {
     Collection<ServiceReference<PhaseInterceptor>> references = new ArrayList<>();
     references.add(serviceReference);
@@ -183,7 +184,7 @@ public class GuestInterceptorWrapperTest {
         .when(guestInterceptor)
         .handleMessage(soapMessage);
 
-    wrapper.handleMessage(soapMessage);
+    assertThrows(Fault.class, () -> wrapper.handleMessage(soapMessage));
   }
 
   @Test

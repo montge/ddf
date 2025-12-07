@@ -16,6 +16,7 @@ package ddf.security.realm.sts;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -114,21 +115,21 @@ public class SamlRealmAuthenticationTest {
     verify(samlAssertionValidator, times(1)).validate(samlToken);
   }
 
-  @Test(expected = AuthenticationException.class)
-  public void testAuthenticationWithNullCredentials() throws AuthenticationFailureException {
+  @Test
+  public void testAuthenticationWithNullCredentials() {
     when(samlToken.getCredentials()).thenReturn(null);
 
-    realm.doGetAuthenticationInfo(samlToken);
+    assertThrows(AuthenticationException.class, () -> realm.doGetAuthenticationInfo(samlToken));
   }
 
-  @Test(expected = AuthenticationException.class)
+  @Test
   public void testAuthenticationValidationFailure() throws AuthenticationFailureException {
     when(samlToken.getCredentials()).thenReturn("credentials");
     doThrow(new AuthenticationFailureException("Validation failed"))
         .when(samlAssertionValidator)
         .validate(samlToken);
 
-    realm.doGetAuthenticationInfo(samlToken);
+    assertThrows(AuthenticationException.class, () -> realm.doGetAuthenticationInfo(samlToken));
   }
 
   @Test
@@ -203,12 +204,12 @@ public class SamlRealmAuthenticationTest {
     assertThat(realm.supports(tokenWithPrincipalCollection), is(true));
   }
 
-  @Test(expected = AuthenticationException.class)
-  public void testNonSamlTokenAuthentication() throws AuthenticationFailureException {
+  @Test
+  public void testNonSamlTokenAuthentication() {
     AuthenticationToken nonSamlToken = mock(BaseAuthenticationToken.class);
     when(nonSamlToken.getCredentials()).thenReturn("credentials");
 
-    realm.doGetAuthenticationInfo(nonSamlToken);
+    assertThrows(AuthenticationException.class, () -> realm.doGetAuthenticationInfo(nonSamlToken));
   }
 
   @Test

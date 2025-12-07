@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -53,18 +54,18 @@ public class SamlAssertionValidatorTest {
     assertThat(validator, is(notNullValue()));
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testValidateWithInvalidToken() throws AuthenticationFailureException {
+  @Test
+  public void testValidateWithInvalidToken() {
     SamlAssertionValidator failingValidator = new FailingSamlAssertionValidator();
 
-    failingValidator.validate(mockToken);
+    assertThrows(AuthenticationFailureException.class, () -> failingValidator.validate(mockToken));
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testValidateWithNullToken() throws AuthenticationFailureException {
+  @Test
+  public void testValidateWithNullToken() {
     SamlAssertionValidator nullCheckingValidator = new NullCheckingSamlAssertionValidator();
 
-    nullCheckingValidator.validate(null);
+    assertThrows(AuthenticationFailureException.class, () -> nullCheckingValidator.validate(null));
   }
 
   @Test
@@ -173,11 +174,12 @@ public class SamlAssertionValidatorTest {
     assertThat(validator, is(notNullValue()));
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testValidateThrowsAuthenticationFailureException()
-      throws AuthenticationFailureException {
+  @Test
+  public void testValidateThrowsAuthenticationFailureException() {
     // Use the actual implementation that throws
-    new FailingSamlAssertionValidator().validate(mockToken);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> new FailingSamlAssertionValidator().validate(mockToken));
   }
 
   @Test

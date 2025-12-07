@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -226,12 +227,13 @@ public class OcspCheckerTest {
         equalTo(certificate.getSerialNumber().getValue()));
   }
 
-  @Test(expected = OcspCheckerException.class)
-  public void testGeneratingOcspRequestNonResolvableIssuer() throws Exception {
+  @Test
+  public void testGeneratingOcspRequestNonResolvableIssuer() {
     OcspChecker ocspChecker = new OcspChecker(factory, eventAdmin);
     ocspChecker.setSecurityLogger(mock(SecurityLogger.class));
 
-    ocspChecker.generateOcspRequest(notTrustedCertBc);
+    assertThrows(
+        OcspCheckerException.class, () -> ocspChecker.generateOcspRequest(notTrustedCertBc));
   }
 
   @Test
