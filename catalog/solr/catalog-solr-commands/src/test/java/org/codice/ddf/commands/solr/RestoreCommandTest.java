@@ -17,6 +17,7 @@ import static org.codice.ddf.commands.solr.SolrCommands.collectionExists;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.any;
@@ -87,10 +88,10 @@ public class RestoreCommandTest extends SolrCommandTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testSystemPropertiesNotSet() throws Exception {
+  @Test
+  public void testSystemPropertiesNotSet() {
     RestoreCommand restoreCommand = new RestoreCommand();
-    restoreCommand.execute();
+    assertThrows(IllegalArgumentException.class, () -> restoreCommand.execute());
   }
 
   @Test
@@ -109,18 +110,18 @@ public class RestoreCommandTest extends SolrCommandTest {
     assertThat(consoleOutput.getOutput(), containsString("Restore complete."));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPerformSolrCloudSynchronousRestoreNoOptions() throws Exception {
     RestoreCommand restoreCommand =
         getSynchronousRestoreCommand(null, null, miniSolrCloud.getSolrClient());
-    restoreCommand.execute();
+    assertThrows(IllegalArgumentException.class, () -> restoreCommand.execute());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPerformSolrCloudSynchronousRestoreNoBackupLocation() throws Exception {
     RestoreCommand restoreCommand =
         getSynchronousRestoreCommand(null, DEFAULT_CORE_NAME, miniSolrCloud.getSolrClient());
-    restoreCommand.execute();
+    assertThrows(IllegalArgumentException.class, () -> restoreCommand.execute());
   }
 
   @Test
@@ -138,7 +139,7 @@ public class RestoreCommandTest extends SolrCommandTest {
     assertThat(consoleOutput.getOutput(), containsString("Restore complete."));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPerformSolrCloudAsynchronousRestoreWithAsyncStatusOptionsSupplied()
       throws Exception {
     RestoreCommand restoreCommand =
@@ -149,7 +150,7 @@ public class RestoreCommandTest extends SolrCommandTest {
             true,
             "myRequestId1",
             miniSolrCloud.getSolrClient());
-    restoreCommand.execute();
+    assertThrows(IllegalArgumentException.class, () -> restoreCommand.execute());
   }
 
   @Test
@@ -169,18 +170,18 @@ public class RestoreCommandTest extends SolrCommandTest {
     assertThat(status, is(RequestStatusState.COMPLETED.getKey()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetSolrCloudAsynchronousRestoreStatusNoRequestId() throws Exception {
     RestoreCommand statusRestoreCommand =
         getStatusRestoreCommand(null, miniSolrCloud.getSolrClient());
-    statusRestoreCommand.execute();
+    assertThrows(IllegalArgumentException.class, () -> statusRestoreCommand.execute());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetSolrCloudAsynchronousRestoreStatusNoStatusOption() throws Exception {
     RestoreCommand invalidRestoreStatusCommand =
         getRestoreCommand(null, null, false, false, "myRequestId0", miniSolrCloud.getSolrClient());
-    invalidRestoreStatusCommand.execute();
+    assertThrows(IllegalArgumentException.class, () -> invalidRestoreStatusCommand.execute());
   }
 
   /**

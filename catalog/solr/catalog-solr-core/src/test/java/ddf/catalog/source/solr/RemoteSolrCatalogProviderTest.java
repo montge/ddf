@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,31 +35,40 @@ import org.junit.Test;
 
 public class RemoteSolrCatalogProviderTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullFilterAdapator() {
-    new RemoteSolrCatalogProvider(
-        null,
-        mock(SolrClient.class),
-        mock(SolrFilterDelegateFactory.class),
-        mock(DynamicSchemaResolver.class)) {};
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new RemoteSolrCatalogProvider(
+                null,
+                mock(SolrClient.class),
+                mock(SolrFilterDelegateFactory.class),
+                mock(DynamicSchemaResolver.class)) {});
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullSolrClient() {
-    new RemoteSolrCatalogProvider(
-        mock(FilterAdapter.class),
-        null,
-        mock(SolrFilterDelegateFactory.class),
-        mock(DynamicSchemaResolver.class)) {};
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new RemoteSolrCatalogProvider(
+                mock(FilterAdapter.class),
+                null,
+                mock(SolrFilterDelegateFactory.class),
+                mock(DynamicSchemaResolver.class)) {});
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullSolrFilterDelegateFactory() {
-    new RemoteSolrCatalogProvider(
-        mock(FilterAdapter.class),
-        mock(SolrClient.class),
-        null,
-        mock(DynamicSchemaResolver.class)) {};
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new RemoteSolrCatalogProvider(
+                mock(FilterAdapter.class),
+                mock(SolrClient.class),
+                null,
+                mock(DynamicSchemaResolver.class)) {});
   }
 
   @Test

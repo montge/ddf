@@ -15,6 +15,7 @@ package org.codice.ddf.checksum;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,11 +82,9 @@ public class Adler32ChecksumProviderTest {
     Assert.assertThat(checksumValue, is(checksumCompareHash));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCalculateChecksumWithNullInputStream()
-      throws IOException, NoSuchAlgorithmException {
-
-    checksumProvider.calculateChecksum(null);
+  @Test
+  public void testCalculateChecksumWithNullInputStream() {
+    assertThrows(IllegalArgumentException.class, () -> checksumProvider.calculateChecksum(null));
   }
 
   @Test
