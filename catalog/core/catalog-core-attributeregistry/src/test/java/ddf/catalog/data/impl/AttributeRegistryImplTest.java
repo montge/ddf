@@ -15,6 +15,7 @@ package ddf.catalog.data.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.MetacardType;
@@ -184,16 +185,16 @@ public class AttributeRegistryImplTest {
     assertThat(descriptorOptional.get(), is(descriptor2));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullAttributeDescriptor() {
-    registry.register(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.register(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullAttributeDescriptorName() {
     final AttributeDescriptor descriptor =
         new AttributeDescriptorImpl(null, true, false, true, false, BasicTypes.STRING_TYPE);
-    registry.register(descriptor);
+    assertThrows(IllegalArgumentException.class, () -> registry.register(descriptor));
   }
 
   private static MetacardType generateMetacardType() {

@@ -18,6 +18,7 @@ import static ddf.catalog.data.Metacard.TITLE;
 import static ddf.catalog.data.impl.MetacardImpl.BASIC_METACARD;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.DefaultAttributeValueRegistry;
 import java.io.Serializable;
@@ -148,58 +149,66 @@ public class DefaultAttributeValueRegistryImplTest {
     assertThat(defaultValueOptional.isPresent(), is(false));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterGlobalDefaultNullAttribute() {
-    registry.setDefaultValue(null, DEFAULT_1);
+    assertThrows(IllegalArgumentException.class, () -> registry.setDefaultValue(null, DEFAULT_1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterGlobalDefaultNullValue() {
-    registry.setDefaultValue(TITLE, null);
+    assertThrows(IllegalArgumentException.class, () -> registry.setDefaultValue(TITLE, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterMetacardDefaultNullMetacardType() {
-    registry.setDefaultValue(null, TITLE, DEFAULT_1);
+    assertThrows(
+        IllegalArgumentException.class, () -> registry.setDefaultValue(null, TITLE, DEFAULT_1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterMetacardDefaultNullAttribute() {
-    registry.setDefaultValue(BASIC_METACARD_NAME, null, DEFAULT_1);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> registry.setDefaultValue(BASIC_METACARD_NAME, null, DEFAULT_1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRegisterMetacardDefaultNullValue() {
-    registry.setDefaultValue(BASIC_METACARD_NAME, TITLE, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> registry.setDefaultValue(BASIC_METACARD_NAME, TITLE, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetDefaultValueNullMetacardType() {
-    registry.getDefaultValue(null, TITLE);
+    assertThrows(IllegalArgumentException.class, () -> registry.getDefaultValue(null, TITLE));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetDefaultValueNullAttribute() {
-    registry.getDefaultValue(BASIC_METACARD_NAME, null);
+    assertThrows(
+        IllegalArgumentException.class, () -> registry.getDefaultValue(BASIC_METACARD_NAME, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRemoveGlobalDefaultValueNullAttribute() {
-    registry.removeDefaultValue(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.removeDefaultValue(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRemoveMetacardDefaultNullMetacardType() {
-    registry.removeDefaultValue(null, TITLE);
+    assertThrows(IllegalArgumentException.class, () -> registry.removeDefaultValue(null, TITLE));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRemoveMetacardDefaultNullAttribute() {
-    registry.removeDefaultValue(BASIC_METACARD_NAME, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> registry.removeDefaultValue(BASIC_METACARD_NAME, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRemoveAllMetacardDefaultsNullMetacardType() {
-    registry.removeDefaultValues(null);
+    assertThrows(IllegalArgumentException.class, () -> registry.removeDefaultValues(null));
   }
 }

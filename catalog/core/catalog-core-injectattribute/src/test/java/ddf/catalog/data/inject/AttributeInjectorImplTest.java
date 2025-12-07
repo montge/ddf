@@ -17,6 +17,7 @@ import static ddf.catalog.data.impl.MetacardImpl.BASIC_METACARD;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -149,13 +150,16 @@ public class AttributeInjectorImplTest {
     assertThat(injected, is(sameInstance(original)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMetacardType() {
-    attributeInjector.injectAttributes((MetacardType) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> attributeInjector.injectAttributes((MetacardType) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullMetacard() {
-    attributeInjector.injectAttributes((Metacard) null);
+    assertThrows(
+        IllegalArgumentException.class, () -> attributeInjector.injectAttributes((Metacard) null));
   }
 }
