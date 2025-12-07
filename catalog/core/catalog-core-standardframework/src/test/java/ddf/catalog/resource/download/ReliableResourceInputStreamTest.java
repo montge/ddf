@@ -16,6 +16,7 @@ package ddf.catalog.resource.download;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -185,33 +186,33 @@ public class ReliableResourceInputStreamTest {
     is.close();
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testReadByteBufferWithNullBuffer() throws Exception {
     ReliableResourceInputStream is =
         new ReliableResourceInputStream(
             fbos, countingFbos, downloadState, downloadIdentifier, resourceResponse);
     is.setCallableAndItsFuture(reliableResourceCallable, downloadFuture);
-    is.read(null, 0, 50);
+    assertThrows(NullPointerException.class, () -> is.read(null, 0, 50));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void testReadByteBufferWithInvalidOffset() throws Exception {
     ReliableResourceInputStream is =
         new ReliableResourceInputStream(
             fbos, countingFbos, downloadState, downloadIdentifier, resourceResponse);
     is.setCallableAndItsFuture(reliableResourceCallable, downloadFuture);
     byte[] buffer = new byte[50];
-    is.read(buffer, -1, 50);
+    assertThrows(IndexOutOfBoundsException.class, () -> is.read(buffer, -1, 50));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void testReadByteBufferWithInvalidLength() throws Exception {
     ReliableResourceInputStream is =
         new ReliableResourceInputStream(
             fbos, countingFbos, downloadState, downloadIdentifier, resourceResponse);
     is.setCallableAndItsFuture(reliableResourceCallable, downloadFuture);
     byte[] buffer = new byte[50];
-    is.read(buffer, 0, buffer.length + 1);
+    assertThrows(IndexOutOfBoundsException.class, () -> is.read(buffer, 0, buffer.length + 1));
   }
 
   @Test

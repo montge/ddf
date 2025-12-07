@@ -13,6 +13,7 @@
  */
 package ddf.camel.component.catalog.framework;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -72,11 +73,11 @@ public class FrameworkProducerTest {
     when(mockExchange.getIn()).thenReturn(mockMessage);
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testProcessWithNoOperationHeader() throws Exception {
     when(mockMessage.getHeader(OPERATION_HEADER)).thenReturn(null);
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
   @Test
@@ -199,7 +200,7 @@ public class FrameworkProducerTest {
     verify(mockMessage).setBody(createdMetacards);
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testCreateWithSourceUnavailableException() throws Exception {
     MetacardImpl metacard = new MetacardImpl();
     metacard.setId("test-id");
@@ -210,10 +211,10 @@ public class FrameworkProducerTest {
     when(mockCatalogFramework.create(any(CreateRequest.class)))
         .thenThrow(new SourceUnavailableException("Test exception"));
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testCreateWithIngestException() throws Exception {
     MetacardImpl metacard = new MetacardImpl();
     metacard.setId("test-id");
@@ -224,7 +225,7 @@ public class FrameworkProducerTest {
     when(mockCatalogFramework.create(any(CreateRequest.class)))
         .thenThrow(new IngestException("Test exception"));
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
   @Test
@@ -297,7 +298,7 @@ public class FrameworkProducerTest {
     verify(mockMessage).setBody(any(ArrayList.class));
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testUpdateWithSourceUnavailableException() throws Exception {
     MetacardImpl metacard = new MetacardImpl();
     metacard.setId("test-id");
@@ -308,7 +309,7 @@ public class FrameworkProducerTest {
     when(mockCatalogFramework.update(any(UpdateRequest.class)))
         .thenThrow(new SourceUnavailableException("Test exception"));
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
   @Test
@@ -395,7 +396,7 @@ public class FrameworkProducerTest {
     verify(mockMessage).setBody(any(ArrayList.class));
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testDeleteWithSourceUnavailableException() throws Exception {
     String metacardId = "test-id";
 
@@ -405,7 +406,7 @@ public class FrameworkProducerTest {
     when(mockCatalogFramework.delete(any(DeleteRequest.class)))
         .thenThrow(new SourceUnavailableException("Test exception"));
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
   @Test
@@ -488,7 +489,7 @@ public class FrameworkProducerTest {
     verify(mockMessage).setBody(any(ArrayList.class));
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testCreateWithInvalidListType() throws Exception {
     List<String> invalidList = Arrays.asList("not", "metacards");
 
@@ -496,10 +497,10 @@ public class FrameworkProducerTest {
     when(mockMessage.getBody(Metacard.class)).thenReturn(null);
     when(mockMessage.getBody(List.class)).thenReturn(invalidList);
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testUpdateWithInvalidListType() throws Exception {
     List<String> invalidList = Arrays.asList("not", "metacards");
 
@@ -507,10 +508,10 @@ public class FrameworkProducerTest {
     when(mockMessage.getBody(Metacard.class)).thenReturn(null);
     when(mockMessage.getBody(List.class)).thenReturn(invalidList);
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
-  @Test(expected = FrameworkProducerException.class)
+  @Test
   public void testDeleteWithInvalidListType() throws Exception {
     List<MetacardImpl> invalidList = new ArrayList<>();
     invalidList.add(new MetacardImpl());
@@ -519,7 +520,7 @@ public class FrameworkProducerTest {
     when(mockMessage.getBody(List.class)).thenReturn(invalidList);
     when(mockMessage.getBody(String.class)).thenReturn(null);
 
-    producer.process(mockExchange);
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
   }
 
   @Test

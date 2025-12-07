@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.resource.download.DownloadManagerState.DownloadState;
 import java.util.HashMap;
@@ -73,45 +74,45 @@ public class DownloadInfoTest {
     assertThat(downloadInfo.getUsers(), containsInAnyOrder(ADMIN_USER));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testDownloadInfoParseWithNullMap() {
-    new DownloadInfo(null);
+    assertThrows(NullPointerException.class, () -> new DownloadInfo(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testDownloadInfoParseWithMissingDownloadId() {
     downloadStatusMap.remove(DOWNLOAD_ID_KEY);
-    new DownloadInfo(downloadStatusMap);
+    assertThrows(NullPointerException.class, () -> new DownloadInfo(downloadStatusMap));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDownloadInfoParseWithEmptyDownloadId() {
     downloadStatusMap.put(DOWNLOAD_ID_KEY, "");
-    new DownloadInfo(downloadStatusMap);
+    assertThrows(IllegalArgumentException.class, () -> new DownloadInfo(downloadStatusMap));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testDownloadInfoParseWithMissingFileName() {
     downloadStatusMap.remove(FILE_NAME_KEY);
-    new DownloadInfo(downloadStatusMap);
+    assertThrows(NullPointerException.class, () -> new DownloadInfo(downloadStatusMap));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDownloadInfoParseWithEmptyFileName() {
     downloadStatusMap.put(FILE_NAME_KEY, "");
-    new DownloadInfo(downloadStatusMap);
+    assertThrows(IllegalArgumentException.class, () -> new DownloadInfo(downloadStatusMap));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testDownloadInfoParseWithMissingStatus() {
     downloadStatusMap.remove(STATUS_KEY);
-    new DownloadInfo(downloadStatusMap);
+    assertThrows(NullPointerException.class, () -> new DownloadInfo(downloadStatusMap));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDownloadInfoParseWithEmptyStatus() {
     downloadStatusMap.put(STATUS_KEY, "");
-    new DownloadInfo(downloadStatusMap);
+    assertThrows(IllegalArgumentException.class, () -> new DownloadInfo(downloadStatusMap));
   }
 
   @Test
@@ -156,10 +157,10 @@ public class DownloadInfoTest {
     assertThat(downloadInfo.getUsers(), is(empty()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDownloadInfoParseWithBytesDownloadedUnparseable() {
     downloadStatusMap.put(BYTES_DOWNLOADED_KEY, "abc");
 
-    new DownloadInfo(downloadStatusMap);
+    assertThrows(IllegalArgumentException.class, () -> new DownloadInfo(downloadStatusMap));
   }
 }

@@ -13,6 +13,7 @@
  */
 package ddf.camel.component.catalog;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -423,7 +424,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
     mockVerifierEndpoint.assertIsSatisfied();
   }
 
-  @Test(expected = CamelExecutionException.class)
+  @Test
   /** Operation: CREATE Body contains: Metacard */
   public void testCreateWithIngestException() throws Exception {
     resetMocks();
@@ -439,7 +440,9 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
     when(catalogFramework.create(any(CreateRequest.class))).thenThrow(new IngestException());
 
     // Exercise the route with a CREATE operation
-    template.sendBodyAndHeader("direct:sampleInput", metacard1, "Operation", "CREATE");
+    assertThrows(
+        CamelExecutionException.class,
+        () -> template.sendBodyAndHeader("direct:sampleInput", metacard1, "Operation", "CREATE"));
   }
 
   @Test
@@ -580,7 +583,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
     mockVerifierEndpoint.assertIsSatisfied();
   }
 
-  @Test(expected = CamelExecutionException.class)
+  @Test
   /** Operation: UPDATE Body contains: Metacard */
   public void testUpdateWithIngestException() throws Exception {
     resetMocks();
@@ -607,7 +610,9 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
     when(catalogFramework.update(any(UpdateRequest.class))).thenThrow(new IngestException());
 
     // Exercise the route with a UPDATE operation
-    template.sendBodyAndHeader("direct:sampleInput", metacards, "Operation", "UPDATE");
+    assertThrows(
+        CamelExecutionException.class,
+        () -> template.sendBodyAndHeader("direct:sampleInput", metacards, "Operation", "UPDATE"));
   }
 
   @Test
@@ -682,7 +687,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
     mockVerifierEndpoint.assertIsSatisfied();
   }
 
-  @Test(expected = CamelExecutionException.class)
+  @Test
   /** Operation: DELETE Body contains: 12345678900987654321abcdeffedcba */
   public void testDeleteWithIngestException() throws Exception {
     resetMocks();
@@ -705,7 +710,9 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
     when(catalogFramework.delete(any(DeleteRequest.class))).thenThrow(new IngestException());
 
     // Exercise the route with a DELETE operation
-    template.sendBodyAndHeader("direct:sampleInput", metacardIds, "Operation", "DELETE");
+    assertThrows(
+        CamelExecutionException.class,
+        () -> template.sendBodyAndHeader("direct:sampleInput", metacardIds, "Operation", "DELETE"));
   }
 
   @Test
