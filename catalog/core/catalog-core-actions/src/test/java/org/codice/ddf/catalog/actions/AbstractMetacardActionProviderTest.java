@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.actions;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -94,24 +95,28 @@ public class AbstractMetacardActionProviderTest {
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorWithNullActionProviderId() {
-    new MetacardActionProvider(null, TITLE, DESCRIPTION);
+    assertThrows(
+        NullPointerException.class, () -> new MetacardActionProvider(null, TITLE, DESCRIPTION));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructorWithBlankActionProviderId() {
-    new MetacardActionProvider("  ", TITLE, DESCRIPTION);
+    assertThrows(
+        IllegalArgumentException.class, () -> new MetacardActionProvider("  ", TITLE, DESCRIPTION));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorWithNullTitle() {
-    new MetacardActionProvider(ACTION_ID, null, DESCRIPTION);
+    assertThrows(
+        NullPointerException.class, () -> new MetacardActionProvider(ACTION_ID, null, DESCRIPTION));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void constructorWithNullDescription() {
-    new MetacardActionProvider(ACTION_ID, TITLE, null);
+    assertThrows(
+        NullPointerException.class, () -> new MetacardActionProvider(ACTION_ID, TITLE, null));
   }
 
   @Test

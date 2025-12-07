@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.download.action;
 import static org.codice.ddf.catalog.download.action.ResourceDownloadActionEndpoint.CONTEXT_PATH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import ddf.action.Action;
@@ -101,13 +102,15 @@ public class ResourceDownloadActionProviderTest {
     assertThat(url, is(getUrl(metacardId)));
   }
 
-  @Test(expected = URISyntaxException.class)
-  public void getMetacardActionUrlWhenUrlIsMalformed() throws Exception {
+  @Test
+  public void getMetacardActionUrlWhenUrlIsMalformed() {
     String invalidHost = "23^&*#";
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, invalidHost);
 
     setupMockBasicMetacard(DEFAULT_METACARD_ID);
-    actionProvider.getMetacardActionUrl(REMOTE_SITE_NAME, mockMetacard);
+    assertThrows(
+        URISyntaxException.class,
+        () -> actionProvider.getMetacardActionUrl(REMOTE_SITE_NAME, mockMetacard));
   }
 
   private URL getUrl(String metacardId) throws MalformedURLException {
