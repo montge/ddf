@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,24 +49,22 @@ public class PptxInputTransformerTest {
     return PptxInputTransformerTest.class.getResourceAsStream(resourceName);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testBadCopy() throws IOException, CatalogTransformerException {
+  @Test
+  public void testBadCopy() throws IOException {
     IOException ioe = new IOException();
-    try {
-      PptxInputTransformer t = new PptxInputTransformer(inputTransformer);
-      InputStream is = mock(InputStream.class);
-      when(is.read(any())).thenThrow(ioe);
-      t.transform(is);
-    } catch (CatalogTransformerException e) {
-      assertThat(e.getCause(), is(ioe));
-      throw e;
-    }
+    PptxInputTransformer t = new PptxInputTransformer(inputTransformer);
+    InputStream is = mock(InputStream.class);
+    when(is.read(any())).thenThrow(ioe);
+
+    CatalogTransformerException e =
+        assertThrows(CatalogTransformerException.class, () -> t.transform(is));
+    assertThat(e.getCause(), is(ioe));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullInput() throws IOException, CatalogTransformerException {
+  @Test
+  public void testTransformNullInput() {
     PptxInputTransformer t = new PptxInputTransformer(inputTransformer);
-    t.transform(null);
+    assertThrows(CatalogTransformerException.class, () -> t.transform(null));
   }
 
   @Test

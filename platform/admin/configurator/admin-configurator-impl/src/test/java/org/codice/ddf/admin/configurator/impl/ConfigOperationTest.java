@@ -16,6 +16,7 @@ package org.codice.ddf.admin.configurator.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -76,29 +77,30 @@ public class ConfigOperationTest {
     assertThat(result, is(notNullValue()));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testDeleteWithNullPath() throws Exception {
-    actions.delete(null);
+  @Test
+  public void testDeleteWithNullPath() {
+    assertThrows(ConfiguratorException.class, () -> actions.delete(null));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testDeleteWithInvalidPath() throws Exception {
-    actions.delete(Paths.get(""));
+  @Test
+  public void testDeleteWithInvalidPath() {
+    assertThrows(ConfiguratorException.class, () -> actions.delete(Paths.get("")));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testCreateNotSupported() throws Exception {
-    actions.create(testFilePath, null);
+  @Test
+  public void testCreateNotSupported() {
+    assertThrows(UnsupportedOperationException.class, () -> actions.create(testFilePath, null));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testUpdateNotSupported() throws Exception {
-    actions.update(testFilePath, null, false);
+  @Test
+  public void testUpdateNotSupported() {
+    assertThrows(
+        UnsupportedOperationException.class, () -> actions.update(testFilePath, null, false));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testGetPropertiesNotSupported() throws Exception {
-    actions.getProperties(testFilePath);
+  @Test
+  public void testGetPropertiesNotSupported() {
+    assertThrows(UnsupportedOperationException.class, () -> actions.getProperties(testFilePath));
   }
 
   @Test

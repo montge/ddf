@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -56,19 +57,20 @@ public class PptxInputTransformerEnhancedTest {
     pptxInputTransformer = new PptxInputTransformer(mockInputTransformer);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testConstructorWithNullTransformer() {
-    new PptxInputTransformer(null);
+    assertThrows(NullPointerException.class, () -> new PptxInputTransformer(null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullInputStream() throws IOException, CatalogTransformerException {
-    pptxInputTransformer.transform(null);
+  @Test
+  public void testTransformNullInputStream() {
+    assertThrows(CatalogTransformerException.class, () -> pptxInputTransformer.transform(null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullInputStreamWithId() throws IOException, CatalogTransformerException {
-    pptxInputTransformer.transform(null, "test-id");
+  @Test
+  public void testTransformNullInputStreamWithId() {
+    assertThrows(
+        CatalogTransformerException.class, () -> pptxInputTransformer.transform(null, "test-id"));
   }
 
   @Test
@@ -324,9 +326,8 @@ public class PptxInputTransformerEnhancedTest {
     assertThat(result.getThumbnail(), notNullValue());
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformWhenInnerTransformerThrowsException()
-      throws IOException, CatalogTransformerException {
+  @Test
+  public void testTransformWhenInnerTransformerThrowsException() throws IOException {
     XMLSlideShow slideShow = new XMLSlideShow();
     slideShow.createSlide();
 
@@ -339,17 +340,17 @@ public class PptxInputTransformerEnhancedTest {
 
     InputStream is = new ByteArrayInputStream(baos.toByteArray());
 
-    pptxInputTransformer.transform(is);
+    assertThrows(CatalogTransformerException.class, () -> pptxInputTransformer.transform(is));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testTransformCorruptedPptxStream() throws IOException, CatalogTransformerException {
     byte[] corruptedData = new byte[] {0x50, 0x4B, 0x03, 0x04, 0x00, 0x00};
     InputStream is = new ByteArrayInputStream(corruptedData);
 
     when(mockInputTransformer.transform(any(InputStream.class))).thenReturn(new MetacardImpl());
 
-    pptxInputTransformer.transform(is);
+    assertThrows(CatalogTransformerException.class, () -> pptxInputTransformer.transform(is));
   }
 
   @Test

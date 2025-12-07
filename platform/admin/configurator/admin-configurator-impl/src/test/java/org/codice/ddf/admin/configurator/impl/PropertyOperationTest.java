@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -205,54 +206,55 @@ public class PropertyOperationTest {
     assertThat(props, hasEntry("key2", "value2"));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testCreateWithNullPath() throws Exception {
+  @Test
+  public void testCreateWithNullPath() {
     Map<String, String> configs = new HashMap<>();
     configs.put("key", "value");
-    actions.create(null, configs);
+    assertThrows(ConfiguratorException.class, () -> actions.create(null, configs));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testCreateWithEmptyConfigs() throws Exception {
-    actions.create(testPropertiesPath, new HashMap<>());
+  @Test
+  public void testCreateWithEmptyConfigs() {
+    assertThrows(
+        ConfiguratorException.class, () -> actions.create(testPropertiesPath, new HashMap<>()));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testCreateWithNullConfigs() throws Exception {
-    actions.create(testPropertiesPath, null);
+  @Test
+  public void testCreateWithNullConfigs() {
+    assertThrows(ConfiguratorException.class, () -> actions.create(testPropertiesPath, null));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testUpdateWithNullPath() throws Exception {
+  @Test
+  public void testUpdateWithNullPath() {
     Map<String, String> configs = new HashMap<>();
     configs.put("key", "value");
-    actions.update(null, configs, true);
+    assertThrows(ConfiguratorException.class, () -> actions.update(null, configs, true));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testUpdateWithNullConfigs() throws Exception {
-    actions.update(testPropertiesPath, null, true);
+  @Test
+  public void testUpdateWithNullConfigs() {
+    assertThrows(ConfiguratorException.class, () -> actions.update(testPropertiesPath, null, true));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testDeleteWithNullPath() throws Exception {
-    actions.delete(null);
+  @Test
+  public void testDeleteWithNullPath() {
+    assertThrows(ConfiguratorException.class, () -> actions.delete(null));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testGetPropertiesWithNullPath() throws Exception {
-    actions.getProperties(null);
+  @Test
+  public void testGetPropertiesWithNullPath() {
+    assertThrows(ConfiguratorException.class, () -> actions.getProperties(null));
   }
 
-  @Test(expected = ConfiguratorException.class)
-  public void testUpdateWithNonExistentFile() throws Exception {
+  @Test
+  public void testUpdateWithNonExistentFile() {
     Path nonExistentPath =
         Paths.get(tempFolder.getRoot().getAbsolutePath(), "nonexistent.properties");
 
     Map<String, String> configs = new HashMap<>();
     configs.put("key", "value");
 
-    actions.update(nonExistentPath, configs, true);
+    assertThrows(ConfiguratorException.class, () -> actions.update(nonExistentPath, configs, true));
   }
 
   @Test
