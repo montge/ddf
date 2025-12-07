@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.commands.catalog;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -125,13 +126,13 @@ public class ValidateCommandTest {
   }
 
   // test invalid file
-  @Test(expected = FileNotFoundException.class)
-  public void testInvalidFile() throws Exception {
+  @Test
+  public void testInvalidFile() {
     validateCommand.path = testFolder.getRoot().getAbsolutePath() + "aFileThatDoesntExist.xml";
     validateCommand.validators = new ArrayList<>();
     validateCommand.validators.add(goodValidator);
 
-    validateCommand.executeWithSubject();
+    assertThrows(FileNotFoundException.class, () -> validateCommand.executeWithSubject());
   }
 
   // test a single valid file

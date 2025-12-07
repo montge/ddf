@@ -18,6 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
@@ -84,10 +85,12 @@ public class CatalogBackupPluginTest {
     assertFilesExist(METACARD_IDS, subDirLevels);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateResponseSubdirectoryLevelsIsNegative() throws Exception {
+  @Test
+  public void testCreateResponseSubdirectoryLevelsIsNegative() {
     // Setup
-    getPlugin(-1).process(getCreateResponse(METACARD_IDS));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> getPlugin(-1).process(getCreateResponse(METACARD_IDS)));
   }
 
   /**

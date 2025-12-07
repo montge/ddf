@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -258,13 +259,13 @@ public class AsyncFileEntryTest {
     assertThat(child.getParent().isPresent(), is(true));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testInitializeWithNullFile() {
     AsyncFileEntry entry = new AsyncFileEntry(testFile);
     AsyncFileEntry childWithNullFile = new AsyncFileEntry(entry, null);
     entry.addChild(childWithNullFile);
 
-    entry.initialize();
+    assertThrows(IllegalStateException.class, () -> entry.initialize());
   }
 
   @Test

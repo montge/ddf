@@ -16,6 +16,7 @@ package org.codice.ddf.commands.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -83,14 +84,18 @@ public class DigitalSignatureTest {
     assertThat(verified, is(false));
   }
 
-  @Test(expected = CatalogCommandRuntimeException.class)
-  public void testCreateDigitalSignaturePrivateKeyNotInKeyStore() throws Exception {
-    digitalSignature.createDigitalSignature(null, "hello", "world");
+  @Test
+  public void testCreateDigitalSignaturePrivateKeyNotInKeyStore() {
+    assertThrows(
+        CatalogCommandRuntimeException.class,
+        () -> digitalSignature.createDigitalSignature(null, "hello", "world"));
   }
 
-  @Test(expected = CatalogCommandRuntimeException.class)
-  public void testVerifyDigitalSignatureCertificateNotInKeyStore() throws Exception {
+  @Test
+  public void testVerifyDigitalSignatureCertificateNotInKeyStore() {
     InputStream inputStream = new ByteArrayInputStream(new byte[0]);
-    digitalSignature.verifyDigitalSignature(null, inputStream, "hello");
+    assertThrows(
+        CatalogCommandRuntimeException.class,
+        () -> digitalSignature.verifyDigitalSignature(null, inputStream, "hello"));
   }
 }
