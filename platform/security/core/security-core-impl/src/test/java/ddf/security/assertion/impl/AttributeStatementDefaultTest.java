@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import ddf.security.assertion.Attribute;
 import java.util.List;
@@ -81,13 +82,13 @@ public class AttributeStatementDefaultTest {
     assertThat(attributes.get(2), is(attribute3));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testGetAttributesReturnsUnmodifiableList() {
     Attribute attribute = new AttributeDefault();
     attributeStatement.addAttribute(attribute);
 
     List<Attribute> attributes = attributeStatement.getAttributes();
-    attributes.add(new AttributeDefault());
+    assertThrows(UnsupportedOperationException.class, () -> attributes.add(new AttributeDefault()));
   }
 
   @Test

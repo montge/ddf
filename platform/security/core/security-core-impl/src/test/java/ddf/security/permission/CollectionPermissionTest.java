@@ -15,8 +15,8 @@ package ddf.security.permission;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import ddf.security.permission.impl.CollectionPermissionImpl;
 import ddf.security.permission.impl.KeyValuePermissionImpl;
@@ -126,15 +126,14 @@ public class CollectionPermissionTest {
   }
 
   /** Tests that the permission list that comes back cannot be modified. */
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testModifyPermissionList() {
     ArrayList<KeyValuePermission> permissionList = new ArrayList<KeyValuePermission>();
     permissionList.add(new KeyValuePermissionImpl("key1", Arrays.asList("val1")));
     permissionList.add(new KeyValuePermissionImpl("key2", Arrays.asList("val2")));
     CollectionPermission collection = new CollectionPermissionImpl("", permissionList);
 
-    collection.getPermissionList().clear();
-    fail("Returned list should not be able to modify.");
+    assertThrows(UnsupportedOperationException.class, () -> collection.getPermissionList().clear());
   }
 
   /** Tests that the collection was properly cleared out after calling clear. */

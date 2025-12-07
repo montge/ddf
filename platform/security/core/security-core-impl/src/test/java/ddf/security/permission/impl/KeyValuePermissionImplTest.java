@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -64,21 +65,21 @@ public class KeyValuePermissionImplTest {
     assertThat(permission.getValues(), hasSize(2));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithNullKey() {
-    new KeyValuePermissionImpl(null);
+    assertThrows(IllegalArgumentException.class, () -> new KeyValuePermissionImpl(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithNullKeyAndList() {
     List<String> values = Arrays.asList("value1");
-    new KeyValuePermissionImpl(null, values);
+    assertThrows(IllegalArgumentException.class, () -> new KeyValuePermissionImpl(null, values));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithNullKeyAndSet() {
     Set<String> values = new HashSet<>(Arrays.asList("value1"));
-    new KeyValuePermissionImpl(null, values);
+    assertThrows(IllegalArgumentException.class, () -> new KeyValuePermissionImpl(null, values));
   }
 
   @Test

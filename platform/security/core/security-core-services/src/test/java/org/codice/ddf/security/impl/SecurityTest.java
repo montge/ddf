@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -179,18 +180,22 @@ public class SecurityTest {
     verifyNoInteractions(shiroSubject);
   }
 
-  @Test(expected = SecurityServiceException.class)
+  @Test
   public void testRunWithSubjectOrElevateWhenSystemSubjectDoesNotHaveAdminRole() throws Exception {
     doReturn(null).when(security).getShiroSubject();
     when(systemSubject.execute(callable)).thenReturn("Success!");
     configureMocksForBundleContext("server");
 
-    try {
-      security.runWithSubjectOrElevate(callable);
-    } catch (SecurityServiceException e) {
-      verify(security).auditInsufficientPermissions();
-      throw e;
-    }
+    assertThrows(
+        SecurityServiceException.class,
+        () -> {
+          try {
+            security.runWithSubjectOrElevate(callable);
+          } catch (SecurityServiceException e) {
+            verify(security).auditInsufficientPermissions();
+            throw e;
+          }
+        });
   }
 
   @Test
@@ -259,9 +264,9 @@ public class SecurityTest {
     assertThat(exception.getCause(), is(instanceOf(UnsupportedOperationException.class)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRunWithSubjectOrElevateWhenCallableIsNull() throws Exception {
-    security.runWithSubjectOrElevate(null);
+    assertThrows(IllegalArgumentException.class, () -> security.runWithSubjectOrElevate(null));
   }
 
   private void configureMockForSecurityManager(SecurityManager sm) {

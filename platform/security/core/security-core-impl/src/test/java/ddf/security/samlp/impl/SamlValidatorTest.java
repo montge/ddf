@@ -16,6 +16,7 @@ package ddf.security.samlp.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -99,25 +100,30 @@ public class SamlValidatorTest {
     assertThat(validator, is(notNullValue()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuilderWithNullBinding() throws Exception {
     setupValidLogoutRequest();
 
-    builder.build(TEST_DESTINATION, null, logoutRequest);
+    assertThrows(
+        IllegalArgumentException.class, () -> builder.build(TEST_DESTINATION, null, logoutRequest));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuilderWithNullDestination() throws Exception {
     setupValidLogoutRequest();
 
-    builder.build(null, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.build(null, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBuilderWithBlankDestination() throws Exception {
     setupValidLogoutRequest();
 
-    builder.build("", SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> builder.build("", SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test
@@ -133,44 +139,52 @@ public class SamlValidatorTest {
     assertThat(validator, is(notNullValue()));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testBuilderWithRedirectBindingMissingSignature() throws Exception {
     setupValidLogoutRequest();
 
     builder.setRedirectParams(
         TEST_RELAY_STATE, null, TEST_SIG_ALGO, TEST_SAML_STRING, TEST_SIGNING_CERT);
 
-    builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testBuilderWithRedirectBindingMissingSigAlgo() throws Exception {
     setupValidLogoutRequest();
 
     builder.setRedirectParams(
         TEST_RELAY_STATE, TEST_SIGNATURE, null, TEST_SAML_STRING, TEST_SIGNING_CERT);
 
-    builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testBuilderWithRedirectBindingMissingSamlString() throws Exception {
     setupValidLogoutRequest();
 
     builder.setRedirectParams(
         TEST_RELAY_STATE, TEST_SIGNATURE, TEST_SIG_ALGO, null, TEST_SIGNING_CERT);
 
-    builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testBuilderWithRedirectBindingMissingSigningCertificate() throws Exception {
     setupValidLogoutRequest();
 
     builder.setRedirectParams(
         TEST_RELAY_STATE, TEST_SIGNATURE, TEST_SIG_ALGO, TEST_SAML_STRING, null);
 
-    builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> builder.build(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest));
   }
 
   @Test
@@ -181,9 +195,9 @@ public class SamlValidatorTest {
     assertThat(builder.timeout, is(timeout));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetTimeoutWithNull() {
-    builder.setTimeout(null);
+    assertThrows(IllegalArgumentException.class, () -> builder.setTimeout(null));
   }
 
   @Test
@@ -194,9 +208,9 @@ public class SamlValidatorTest {
     assertThat(builder.clockSkew, is(clockSkew));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetClockSkewWithNull() {
-    builder.setClockSkew(null);
+    assertThrows(IllegalArgumentException.class, () -> builder.setClockSkew(null));
   }
 
   @Test
@@ -206,14 +220,14 @@ public class SamlValidatorTest {
     assertThat(builder.requestId, is(TEST_REQUEST_ID));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetRequestIdWithNull() {
-    builder.setRequestId(null);
+    assertThrows(IllegalArgumentException.class, () -> builder.setRequestId(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetRequestIdWithBlank() {
-    builder.setRequestId("");
+    assertThrows(IllegalArgumentException.class, () -> builder.setRequestId(""));
   }
 
   @Test
@@ -223,62 +237,90 @@ public class SamlValidatorTest {
     builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithNullIssueInstant() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getIssueInstant()).thenReturn(null);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithFutureIssueInstant() throws Exception {
     setupValidLogoutRequest();
     DateTime futureTime = DateTime.now().plusHours(1);
     when(logoutRequest.getIssueInstant()).thenReturn(futureTime);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithExpiredIssueInstant() throws Exception {
     setupValidLogoutRequest();
     DateTime pastTime = DateTime.now().minusHours(1);
     when(logoutRequest.getIssueInstant()).thenReturn(pastTime);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithNullSamlVersion() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getVersion()).thenReturn(null);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithInvalidSamlVersion() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getVersion()).thenReturn(SAMLVersion.VERSION_10);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithBlankId() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getID()).thenReturn("");
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithNullId() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getID()).thenReturn(null);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test
@@ -289,20 +331,28 @@ public class SamlValidatorTest {
     builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithInvalidDestination() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getDestination()).thenReturn("https://wrong-destination.example.com");
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithMalformedDestinationUrl() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getDestination()).thenReturn("not-a-valid-url");
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test
@@ -314,13 +364,17 @@ public class SamlValidatorTest {
     builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutResponse);
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateLogoutResponseWithMismatchedRequestId() throws Exception {
     setupValidLogoutResponse();
     when(logoutResponse.getInResponseTo()).thenReturn("different-request-id");
 
     builder.setRequestId(TEST_REQUEST_ID);
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutResponse);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutResponse));
   }
 
   @Test
@@ -335,7 +389,7 @@ public class SamlValidatorTest {
     verify(simpleSign).validateSignature(any(Signature.class), any(Document.class));
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateWithInvalidSignature() throws Exception {
     setupValidLogoutRequest();
     when(logoutRequest.getSignature()).thenReturn(signature);
@@ -346,7 +400,11 @@ public class SamlValidatorTest {
         .when(simpleSign)
         .validateSignature(any(Signature.class), any(Document.class));
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test
@@ -363,7 +421,7 @@ public class SamlValidatorTest {
     verify(simpleSign).validateSignature(anyString(), anyString(), anyString(), anyString());
   }
 
-  @Test(expected = ValidationException.class)
+  @Test
   public void testValidateRedirectRequestWithInvalidSignature() throws Exception {
     setupValidLogoutRequest();
     when(simpleSign.validateSignature(anyString(), anyString(), anyString(), anyString()))
@@ -372,7 +430,11 @@ public class SamlValidatorTest {
     builder.setRedirectParams(
         TEST_RELAY_STATE, TEST_SIGNATURE, TEST_SIG_ALGO, TEST_SAML_STRING, TEST_SIGNING_CERT);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest);
+    assertThrows(
+        ValidationException.class,
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_REDIRECT, logoutRequest));
   }
 
   @Test

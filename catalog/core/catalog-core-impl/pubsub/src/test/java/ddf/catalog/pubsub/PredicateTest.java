@@ -1155,7 +1155,7 @@ public class PredicateTest {
     for (String term : Arrays.asList(LEADING_TERM, TRAILING_TERM, EMBEDDED_TERM)) {
       for (Character specialChar : ContextualTokenizer.SPECIAL_CHARACTERS_SET) {
         String phrase = String.format(term, specialChar);
-        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml(phrase));
+        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml11(phrase));
         Predicate predicate = getPredicate("\"" + phrase + "\"");
         Event testEvent = getEvent(metadata);
         assertThat(phrase + " not matched", predicate.matches(testEvent), is(equalTo(true)));
@@ -1173,7 +1173,7 @@ public class PredicateTest {
             String metadata =
                 String.format(
                     METADATA_FORMAT,
-                    StringEscapeUtils.escapeXml(String.format(term, differentSpecialChar)));
+                    StringEscapeUtils.escapeXml11(String.format(term, differentSpecialChar)));
             Predicate predicate = getPredicate("\"" + phrase + "\"");
             Event testEvent = getEvent(metadata);
             assertThat(phrase + " matched", predicate.matches(testEvent), is(equalTo(false)));
@@ -1189,7 +1189,7 @@ public class PredicateTest {
     for (String term : Arrays.asList(LEADING_TERM, TRAILING_TERM, EMBEDDED_TERM)) {
       for (Character specialChar : ContextualTokenizer.SPECIAL_CHARACTERS_SET) {
         String phrase = String.format(term, specialChar);
-        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml(phrase));
+        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml11(phrase));
         Event testEvent = getEvent(metadata);
         assertThat(phrase + " not matched", predicate.matches(testEvent), is(equalTo(true)));
       }
@@ -1202,7 +1202,7 @@ public class PredicateTest {
     for (String term : Arrays.asList(LEADING_TERM, EMBEDDED_TERM_REVERSED)) {
       for (Character specialChar : ContextualTokenizer.SPECIAL_CHARACTERS_SET) {
         String phrase = String.format(term, specialChar);
-        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml(phrase));
+        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml11(phrase));
         Event testEvent = getEvent(metadata);
         assertThat(phrase + " not matched", predicate.matches(testEvent), is(equalTo(true)));
       }
@@ -1210,7 +1210,7 @@ public class PredicateTest {
     for (String term : Arrays.asList(TRAILING_TERM, EMBEDDED_TERM)) {
       for (Character specialChar : ContextualTokenizer.SPECIAL_CHARACTERS_SET) {
         String phrase = String.format(term, specialChar);
-        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml(phrase));
+        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml11(phrase));
         Event testEvent = getEvent(metadata);
         assertThat(phrase + " matched", predicate.matches(testEvent), is(equalTo(false)));
       }
@@ -1223,7 +1223,7 @@ public class PredicateTest {
     for (String term : Arrays.asList(TRAILING_TERM, EMBEDDED_TERM)) {
       for (Character specialChar : ContextualTokenizer.SPECIAL_CHARACTERS_SET) {
         String phrase = String.format(term, specialChar);
-        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml(phrase));
+        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml11(phrase));
         Event testEvent = getEvent(metadata);
         assertThat(phrase + " not matched", predicate.matches(testEvent), is(equalTo(true)));
       }
@@ -1231,7 +1231,7 @@ public class PredicateTest {
     for (String term : Arrays.asList(LEADING_TERM, EMBEDDED_TERM_REVERSED)) {
       for (Character specialChar : ContextualTokenizer.SPECIAL_CHARACTERS_SET) {
         String phrase = String.format(term, specialChar);
-        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml(phrase));
+        String metadata = String.format(METADATA_FORMAT, StringEscapeUtils.escapeXml11(phrase));
         Event testEvent = getEvent(metadata);
         assertThat(phrase + " matched", predicate.matches(testEvent), is(equalTo(false)));
       }

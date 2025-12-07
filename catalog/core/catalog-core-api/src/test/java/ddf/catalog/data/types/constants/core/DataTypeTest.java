@@ -15,6 +15,7 @@ package ddf.catalog.data.types.constants.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
@@ -78,27 +79,29 @@ public class DataTypeTest {
   /**
    * Validates that DataType.fromValue() throws IllegalArgumentException for invalid string values
    */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDataTypeFromValueInvalid() {
-    DataType.fromValue("Invalid Type");
+    assertThrows(IllegalArgumentException.class, () -> DataType.fromValue("Invalid Type"));
   }
 
   /** Validates that DataType.fromValue() throws IllegalArgumentException for null values */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDataTypeFromValueNull() {
-    DataType.fromValue(null);
+    assertThrows(IllegalArgumentException.class, () -> DataType.fromValue(null));
   }
 
   /** Validates that DataType.fromValue() throws IllegalArgumentException for empty strings */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDataTypeFromValueEmptyString() {
-    DataType.fromValue("");
+    assertThrows(IllegalArgumentException.class, () -> DataType.fromValue(""));
   }
 
   /** Validates that DataType.fromValue() is case-sensitive */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDataTypeFromValueCaseSensitive() {
-    DataType.fromValue("collection"); // lowercase should fail
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> DataType.fromValue("collection")); // lowercase should fail
   }
 
   /** Validates that DataType.valueOf() works correctly for enum constant names */

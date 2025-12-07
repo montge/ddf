@@ -16,6 +16,7 @@ package ddf.security.assertion.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -79,12 +80,12 @@ public class SecurityAssertionPrincipalDefaultTest {
     assertThat(principal.getName(), is("anotheruser"));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testGetNameWithNullPrincipal() {
     SecurityAssertion assertion = mock(SecurityAssertion.class);
     when(assertion.getPrincipal()).thenReturn(null);
 
     SecurityAssertionPrincipalDefault principal = new SecurityAssertionPrincipalDefault(assertion);
-    principal.getName();
+    assertThrows(NullPointerException.class, () -> principal.getName());
   }
 }
