@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Metacard;
@@ -84,17 +85,21 @@ public class GeoJsonQueryResponseTransformerTest {
         new GeoJsonQueryResponseTransformer(new GeoJsonMetacardTransformer());
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacardTransformer() throws CatalogTransformerException {
+  @Test
+  public void testNullMetacardTransformer() {
     GeoJsonQueryResponseTransformer geoJsonQueryResponseTransformer =
         new GeoJsonQueryResponseTransformer(null);
     SourceResponse sourceResponse = setupResponse(2, 2L);
-    geoJsonQueryResponseTransformer.transform(sourceResponse, null);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> geoJsonQueryResponseTransformer.transform(sourceResponse, null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullResponse() throws CatalogTransformerException {
-    geoJsonQueryResponseTransformer.transform(null, null);
+  @Test
+  public void testNullResponse() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> geoJsonQueryResponseTransformer.transform(null, null));
   }
 
   @Test
@@ -104,19 +109,21 @@ public class GeoJsonQueryResponseTransformerTest {
     verifyResponse(obj, 0, 0);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullResult() throws CatalogTransformerException {
+  @Test
+  public void testNullResult() {
 
     List<Result> results = new LinkedList<Result>();
     results.add(null);
     results.add(null);
 
     SourceResponse sourceResponse = new SourceResponseImpl(null, results, 2L);
-    geoJsonQueryResponseTransformer.transform(sourceResponse, null);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> geoJsonQueryResponseTransformer.transform(sourceResponse, null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacard() throws CatalogTransformerException {
+  @Test
+  public void testNullMetacard() {
 
     List<Result> results = new LinkedList<Result>();
     Result result = new ResultImpl(null);
@@ -124,7 +131,9 @@ public class GeoJsonQueryResponseTransformerTest {
     results.add(result);
 
     SourceResponse sourceResponse = new SourceResponseImpl(null, results, 1L);
-    geoJsonQueryResponseTransformer.transform(sourceResponse, null);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> geoJsonQueryResponseTransformer.transform(sourceResponse, null));
   }
 
   @Test

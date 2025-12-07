@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -59,9 +60,10 @@ public class PreviewMetacardTransformerTest {
 
   private PreviewMetacardTransformer previewMetacardTransformer = new PreviewMetacardTransformer();
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacardThrowsCatalogTransformerException() throws Exception {
-    previewMetacardTransformer.transform(null, null);
+  @Test
+  public void testNullMetacardThrowsCatalogTransformerException() {
+    assertThrows(
+        CatalogTransformerException.class, () -> previewMetacardTransformer.transform(null, null));
   }
 
   @Test

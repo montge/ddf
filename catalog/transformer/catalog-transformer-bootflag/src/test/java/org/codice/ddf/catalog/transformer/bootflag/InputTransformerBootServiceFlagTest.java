@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.catalog.transformer.bootflag;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -76,7 +77,7 @@ public class InputTransformerBootServiceFlagTest {
         .registerService(isA(Class.class), isA(Object.class), isA(Dictionary.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testWaitForInputTransformersTimesOut() {
     InputTransformerIds inputTransformerIds = mock(InputTransformerIds.class);
     when(inputTransformerIds.getIds()).thenReturn(ImmutableSet.of("id1", "id2", "id3"));
@@ -84,11 +85,11 @@ public class InputTransformerBootServiceFlagTest {
     List<ServiceReference<InputTransformer>> inputTransformerReferences =
         mockServiceReferences("id1", "id2");
 
-    new InputTransformerBootServiceFlag(
-        inputTransformerIds, inputTransformerReferences, bundle, 1, 5);
-
-    verify(bundleContext, times(0))
-        .registerService(isA(Class.class), isA(Object.class), isA(Dictionary.class));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new InputTransformerBootServiceFlag(
+                inputTransformerIds, inputTransformerReferences, bundle, 1, 5));
   }
 
   private List<ServiceReference<InputTransformer>> mockServiceReferences(String... propertyValues) {

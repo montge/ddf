@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.transformer.bootflag;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
+import static org.junit.Assert.assertThrows;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -48,8 +49,9 @@ public class InputTransformerIdsTest {
     assertThat(transformerIds, hasItems("id1", "id2", "id3"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testInvalidInputTransformerFile() {
-    new InputTransformerIds(testInvalidTransformerPath).getIds();
+    InputTransformerIds ids = new InputTransformerIds(testInvalidTransformerPath);
+    assertThrows(IllegalStateException.class, () -> ids.getIds());
   }
 }

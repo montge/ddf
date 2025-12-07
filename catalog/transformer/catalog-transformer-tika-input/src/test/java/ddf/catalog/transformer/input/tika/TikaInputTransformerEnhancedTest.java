@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Metacard;
@@ -43,16 +44,15 @@ public class TikaInputTransformerEnhancedTest {
     tikaInputTransformer.setUseResourceTitleAsTitle(true);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullInputStreamThrowsException()
-      throws IOException, CatalogTransformerException {
-    tikaInputTransformer.transform(null);
+  @Test
+  public void testTransformNullInputStreamThrowsException() {
+    assertThrows(CatalogTransformerException.class, () -> tikaInputTransformer.transform(null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullInputStreamWithIdThrowsException()
-      throws IOException, CatalogTransformerException {
-    tikaInputTransformer.transform(null, "test-id");
+  @Test
+  public void testTransformNullInputStreamWithIdThrowsException() {
+    assertThrows(
+        CatalogTransformerException.class, () -> tikaInputTransformer.transform(null, "test-id"));
   }
 
   @Test

@@ -16,6 +16,7 @@ package ddf.catalog.transformer.common.tika;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
 import org.apache.tika.exception.TikaException;
@@ -34,10 +35,11 @@ public class TikaMetadataExtractorTest {
     stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.txt");
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testNullInputStream() throws Exception {
+  @Test
+  public void testNullInputStream() {
     InputStream stream = null;
-    tikaMetadataExtractor = new TikaMetadataExtractor(stream, 1000, 1000);
+    assertThrows(
+        IllegalArgumentException.class, () -> new TikaMetadataExtractor(stream, 1000, 1000));
   }
 
   @Test
@@ -58,10 +60,10 @@ public class TikaMetadataExtractorTest {
     assertNotNull(tikaMetadataExtractor.getMetadataXml());
   }
 
-  @Test(expected = TikaException.class)
+  @Test
   public void testClosedStream() throws Exception {
     stream.close();
-    tikaMetadataExtractor = new TikaMetadataExtractor(stream, 1, 1000);
+    assertThrows(TikaException.class, () -> new TikaMetadataExtractor(stream, 1, 1000));
   }
 
   @Test

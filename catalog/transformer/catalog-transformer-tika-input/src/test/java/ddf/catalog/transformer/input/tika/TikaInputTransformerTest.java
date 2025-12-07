@@ -25,6 +25,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -226,9 +227,9 @@ public class TikaInputTransformerTest {
     verify(cme, never()).getMetacardAttributes();
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullInputStream() throws Exception {
-    transform(null);
+  @Test
+  public void testNullInputStream() {
+    assertThrows(CatalogTransformerException.class, () -> transform(null));
   }
 
   @Test
