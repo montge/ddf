@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.Metacard;
@@ -116,9 +117,10 @@ public class ResourceCacheImplTest {
     assertNull("cache should be noop", resourceCache.getValid(CACHED_RESOURCE_KEY, metacard));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetValidWhenNullKey() {
-    resourceCache.getValid(null, new MetacardImpl());
+    assertThrows(
+        IllegalArgumentException.class, () -> resourceCache.getValid(null, new MetacardImpl()));
   }
 
   @Test
@@ -148,21 +150,26 @@ public class ResourceCacheImplTest {
         "cache should be noop", resourceCache.validateCacheEntry(cachedResource, metacard1));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testValidationNullResource() throws URISyntaxException {
-    resourceCache.validateCacheEntry(null, generateMetacard());
+  @Test
+  public void testValidationNullResource() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> resourceCache.validateCacheEntry(null, generateMetacard()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testValidationNullMetacard() throws URISyntaxException {
     MetacardImpl metacard = generateMetacard();
     ReliableResource cachedResource = new ReliableResource("key", "", null, null, metacard);
-    resourceCache.validateCacheEntry(cachedResource, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> resourceCache.validateCacheEntry(cachedResource, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testValidationNullParams() throws URISyntaxException {
-    resourceCache.validateCacheEntry(null, null);
+  @Test
+  public void testValidationNullParams() {
+    assertThrows(
+        IllegalArgumentException.class, () -> resourceCache.validateCacheEntry(null, null));
   }
 
   @Test
@@ -239,34 +246,39 @@ public class ResourceCacheImplTest {
     assertFalse(resourceCache.containsValid(cacheKey, latestMetacard));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getDefaultResourceWithNullMetacard() {
-    newResourceCache.get(null);
+    assertThrows(IllegalArgumentException.class, () -> newResourceCache.get(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getSpecificResourceWithNullMetacard() {
-    newResourceCache.get(null, new ResourceRequestById(METACARD_ID));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> newResourceCache.get(null, new ResourceRequestById(METACARD_ID)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getSpecificResourceWithNullResourceRequest() {
-    newResourceCache.get(cachedMetacard, null);
+    assertThrows(IllegalArgumentException.class, () -> newResourceCache.get(cachedMetacard, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void containsDefaultResourceWithNullMetacard() {
-    newResourceCache.contains(null);
+    assertThrows(IllegalArgumentException.class, () -> newResourceCache.contains(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void containsSpecificResourceWithNullMetacard() {
-    newResourceCache.contains(null, new ResourceRequestById(METACARD_ID));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> newResourceCache.contains(null, new ResourceRequestById(METACARD_ID)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void containsSpecificResourceWithNullResourceRequest() {
-    newResourceCache.contains(cachedMetacard, null);
+    assertThrows(
+        IllegalArgumentException.class, () -> newResourceCache.contains(cachedMetacard, null));
   }
 
   @Test

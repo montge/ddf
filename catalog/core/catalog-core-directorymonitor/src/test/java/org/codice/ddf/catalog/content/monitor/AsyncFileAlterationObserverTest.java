@@ -15,6 +15,7 @@ package org.codice.ddf.catalog.content.monitor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atMost;
@@ -162,9 +163,9 @@ public class AsyncFileAlterationObserverTest {
     return null;
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullRoot() {
-    observer = new AsyncFileAlterationObserver(null, null);
+    assertThrows(IllegalArgumentException.class, () -> new AsyncFileAlterationObserver(null, null));
   }
 
   @Test
@@ -1200,9 +1201,11 @@ public class AsyncFileAlterationObserverTest {
     verify(fileListener, times(3)).onFileCreate(any(File.class), any(Synchronization.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testloadNull() {
-    AsyncFileAlterationObserver.load(new File("File"), null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> AsyncFileAlterationObserver.load(new File("File"), null));
   }
 
   private void initNestedDirectory(int child, int grand, int topLevel, int gSibling)

@@ -15,6 +15,7 @@ package org.codice.ddf.catalog.content.monitor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -112,9 +113,9 @@ public class DavEntryTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullLocation() {
-    new DavEntry(null);
+    assertThrows(IllegalArgumentException.class, () -> new DavEntry(null));
   }
 
   @Test

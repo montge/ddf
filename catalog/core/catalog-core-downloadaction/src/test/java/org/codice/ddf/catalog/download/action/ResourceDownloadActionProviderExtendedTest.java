@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import ddf.action.Action;
@@ -385,19 +386,20 @@ public class ResourceDownloadActionProviderExtendedTest {
     assertThat(canHandle, is(true));
   }
 
-  @Test(expected = ResourceDownloadActionException.class)
+  @Test
   public void testCreateResourceCacheMBeanProxyWithInvalidObjectName() {
-    ResourceDownloadActionProvider provider =
-        new ResourceDownloadActionProvider(ACTION_PROVIDER_ID) {
-          @Override
-          ResourceCacheServiceMBean createResourceCacheMBeanProxy() {
-            // Call the actual implementation which may throw exception
-            return super.createResourceCacheMBeanProxy();
-          }
-        };
-
-    // This should work in normal circumstances, but we're testing the exception path
-    // The exception would occur if the MBean is not available
+    assertThrows(
+        ResourceDownloadActionException.class,
+        () -> {
+          ResourceDownloadActionProvider provider =
+              new ResourceDownloadActionProvider(ACTION_PROVIDER_ID) {
+                @Override
+                ResourceCacheServiceMBean createResourceCacheMBeanProxy() {
+                  // Call the actual implementation which may throw exception
+                  return super.createResourceCacheMBeanProxy();
+                }
+              };
+        });
   }
 
   @Test
