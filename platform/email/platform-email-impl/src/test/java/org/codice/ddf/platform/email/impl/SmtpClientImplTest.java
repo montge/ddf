@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -97,14 +98,14 @@ public class SmtpClientImplTest {
     assertThat(props.getProperty("mail.smtp.host"), is(TEST_HOST));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetHostNameWithEmptyString() {
-    smtpClient.setHostName("");
+    assertThrows(IllegalArgumentException.class, () -> smtpClient.setHostName(""));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetHostNameWithNull() {
-    smtpClient.setHostName(null);
+    assertThrows(IllegalArgumentException.class, () -> smtpClient.setHostName(null));
   }
 
   @Test
@@ -118,19 +119,19 @@ public class SmtpClientImplTest {
     assertThat(props.getProperty("mail.smtp.port"), is(TEST_PORT.toString()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetPortNumberWithNull() {
-    smtpClient.setPortNumber(null);
+    assertThrows(IllegalArgumentException.class, () -> smtpClient.setPortNumber(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetPortNumberWithZero() {
-    smtpClient.setPortNumber(0);
+    assertThrows(IllegalArgumentException.class, () -> smtpClient.setPortNumber(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetPortNumberWithNegative() {
-    smtpClient.setPortNumber(-1);
+    assertThrows(IllegalArgumentException.class, () -> smtpClient.setPortNumber(-1));
   }
 
   @Test
@@ -186,10 +187,10 @@ public class SmtpClientImplTest {
     // Should not throw exception
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCreateSessionWithNullHostname() {
     smtpClient.setPortNumber(TEST_PORT);
-    smtpClient.createSession();
+    assertThrows(IllegalArgumentException.class, () -> smtpClient.createSession());
   }
 
   @Test
@@ -266,9 +267,9 @@ public class SmtpClientImplTest {
     assertThat(passwordAuth.getPassword(), is(TEST_PASSWORD));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSendWithNullMessage() {
-    smtpClient.send(null);
+    assertThrows(IllegalArgumentException.class, () -> smtpClient.send(null));
   }
 
   @Test

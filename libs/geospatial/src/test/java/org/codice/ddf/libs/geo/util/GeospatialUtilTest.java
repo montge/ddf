@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
+import static org.junit.Assert.assertThrows;
 
 import org.codice.ddf.libs.geo.GeoFormatException;
 import org.geotools.geometry.jts.JTS;
@@ -86,10 +87,12 @@ public class GeospatialUtilTest {
     assertThat(degLat, nullValue()); // Returns null when no colon is found
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testParseDMSLatitudeInvalidHemisphereLowercase() throws GeoFormatException {
+  @Test
+  public void testParseDMSLatitudeInvalidHemisphereLowercase() {
     String invalidLat = "45:30:15.5E"; // E is for longitude
-    GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLatitudeWithDecimalSeconds(invalidLat));
   }
 
   @Test
@@ -141,10 +144,12 @@ public class GeospatialUtilTest {
     assertThat(degLon, closeTo(-120.75847222, 0.000001));
   }
 
-  @Test(expected = GeoFormatException.class)
-  public void testParseDMSLongitudeInvalidHemisphere() throws GeoFormatException {
+  @Test
+  public void testParseDMSLongitudeInvalidHemisphere() {
     String invalidLon = "120:45:30.5N"; // N is for latitude
-    GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon);
+    assertThrows(
+        GeoFormatException.class,
+        () -> GeospatialUtil.parseDMSLongitudeWithDecimalSeconds(invalidLon));
   }
 
   @Test

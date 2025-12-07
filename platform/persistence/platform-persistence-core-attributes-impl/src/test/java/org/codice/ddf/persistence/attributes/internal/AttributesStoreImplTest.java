@@ -15,6 +15,7 @@ package org.codice.ddf.persistence.attributes.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
@@ -134,20 +135,20 @@ public class AttributesStoreImplTest {
     verify(persistentStore, never()).add(anyString(), anyMap());
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testSetDataUsageNullUsername() throws PersistenceException {
-
-    attributesStore.setDataUsage(null, LONG_5);
+  @Test
+  public void testSetDataUsageNullUsername() {
+    assertThrows(PersistenceException.class, () -> attributesStore.setDataUsage(null, LONG_5));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testUpdateDataUsageNullUsername() throws PersistenceException {
-    attributesStore.updateUserDataUsage(null, LONG_5);
+  @Test
+  public void testUpdateDataUsageNullUsername() {
+    assertThrows(
+        PersistenceException.class, () -> attributesStore.updateUserDataUsage(null, LONG_5));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testGetDataUsageNullUsername() throws PersistenceException {
-    attributesStore.getCurrentDataUsageByUser(null);
+  @Test
+  public void testGetDataUsageNullUsername() {
+    assertThrows(PersistenceException.class, () -> attributesStore.getCurrentDataUsageByUser(null));
   }
 
   @Test
@@ -162,11 +163,12 @@ public class AttributesStoreImplTest {
     assertThat(attributesStore.getCurrentDataUsageByUser(USER), is(0L));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testPersistenceStoreThrowsExceptionOnGet() throws PersistenceException {
     when(persistentStore.get(anyString(), anyString())).thenThrow(new PersistenceException());
 
-    attributesStore.updateUserDataUsage(USER, LONG_5);
+    assertThrows(
+        PersistenceException.class, () -> attributesStore.updateUserDataUsage(USER, LONG_5));
   }
 
   @Test
@@ -175,10 +177,10 @@ public class AttributesStoreImplTest {
     assertThat(mapList.isEmpty(), is(true));
   }
 
-  @Test(expected = PersistenceException.class)
+  @Test
   public void testGetAllUsersThrowsException() throws PersistenceException {
     when(persistentStore.get(anyString())).thenThrow(new PersistenceException());
-    attributesStore.getAllUsers();
+    assertThrows(PersistenceException.class, () -> attributesStore.getAllUsers());
   }
 
   @Test
@@ -214,14 +216,14 @@ public class AttributesStoreImplTest {
         itemArg.getValue().getLongProperty(AttributesStore.DATA_USAGE_LIMIT_KEY), is(DATA_LIMIT));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testSetDataLimitNullUsername() throws PersistenceException {
-    attributesStore.setDataLimit(null, LONG_5);
+  @Test
+  public void testSetDataLimitNullUsername() {
+    assertThrows(PersistenceException.class, () -> attributesStore.setDataLimit(null, LONG_5));
   }
 
-  @Test(expected = PersistenceException.class)
-  public void testGetDataLimitNullUsername() throws PersistenceException {
-    attributesStore.getDataLimitByUser(null);
+  @Test
+  public void testGetDataLimitNullUsername() {
+    assertThrows(PersistenceException.class, () -> attributesStore.getDataLimitByUser(null));
   }
 
   @Test

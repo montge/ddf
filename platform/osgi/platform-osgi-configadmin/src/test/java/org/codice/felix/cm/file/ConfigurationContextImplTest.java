@@ -22,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.osgi.framework.Constants.SERVICE_PID;
 import static org.osgi.service.cm.ConfigurationAdmin.SERVICE_BUNDLELOCATION;
@@ -78,15 +79,15 @@ public class ConfigurationContextImplTest {
     when(mockConfig.getProperties()).thenReturn(testProps);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testCreateContextWhenConfigNull() {
-    context = new ConfigurationContextImpl(null);
+    assertThrows(NullPointerException.class, () -> new ConfigurationContextImpl(null));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testCreateContextWhenPropMapNull() {
     when(mockConfig.getProperties()).thenReturn(null);
-    context = new ConfigurationContextImpl(mockConfig);
+    assertThrows(NullPointerException.class, () -> new ConfigurationContextImpl(mockConfig));
   }
 
   @Test
@@ -181,10 +182,10 @@ public class ConfigurationContextImplTest {
         is(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetPropertyBadParams() {
     context = new ConfigurationContextImpl(TEST_PID, new Hashtable<>());
-    context.setProperty(null, null);
+    assertThrows(IllegalArgumentException.class, () -> context.setProperty(null, null));
   }
 
   @Test

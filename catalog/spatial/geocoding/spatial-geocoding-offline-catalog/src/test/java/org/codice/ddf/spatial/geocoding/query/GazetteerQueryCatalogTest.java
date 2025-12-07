@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -197,26 +198,26 @@ public class GazetteerQueryCatalogTest {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testQueryUnsupportedQueryException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(UnsupportedQueryException.class);
-    queryCatalog.query(QUERY_STRING, 1);
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.query(QUERY_STRING, 1));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testQuerySourceUnavailableException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(SourceUnavailableException.class);
-    queryCatalog.query(QUERY_STRING, 1);
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.query(QUERY_STRING, 1));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testQueryFederationException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class))).thenThrow(FederationException.class);
-    queryCatalog.query(QUERY_STRING, 1);
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.query(QUERY_STRING, 1));
   }
 
   @Test
@@ -264,26 +265,32 @@ public class GazetteerQueryCatalogTest {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetNearestCitiesSourceUnavailableException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(SourceUnavailableException.class);
-    queryCatalog.getNearestCities(NEAR_BOSTON_WKT, RADIUS_IN_KM, MAX_RESULTS);
+    assertThrows(
+        GeoEntryQueryException.class,
+        () -> queryCatalog.getNearestCities(NEAR_BOSTON_WKT, RADIUS_IN_KM, MAX_RESULTS));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetNearestCitiesUnsupportedQueryException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(UnsupportedQueryException.class);
-    queryCatalog.getNearestCities(NEAR_BOSTON_WKT, RADIUS_IN_KM, MAX_RESULTS);
+    assertThrows(
+        GeoEntryQueryException.class,
+        () -> queryCatalog.getNearestCities(NEAR_BOSTON_WKT, RADIUS_IN_KM, MAX_RESULTS));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetNearestCitiesFederationException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class))).thenThrow(FederationException.class);
-    queryCatalog.getNearestCities(NEAR_BOSTON_WKT, RADIUS_IN_KM, MAX_RESULTS);
+    assertThrows(
+        GeoEntryQueryException.class,
+        () -> queryCatalog.getNearestCities(NEAR_BOSTON_WKT, RADIUS_IN_KM, MAX_RESULTS));
   }
 
   @Test
@@ -309,26 +316,32 @@ public class GazetteerQueryCatalogTest {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetCountryCodeFederationException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class))).thenThrow(FederationException.class);
-    queryCatalog.getCountryCode(NEAR_BOSTON_WKT, RADIUS_IN_KM);
+    assertThrows(
+        GeoEntryQueryException.class,
+        () -> queryCatalog.getCountryCode(NEAR_BOSTON_WKT, RADIUS_IN_KM));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetCountryCodeUnsupportedQueryException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(UnsupportedQueryException.class);
-    queryCatalog.getCountryCode(NEAR_BOSTON_WKT, RADIUS_IN_KM);
+    assertThrows(
+        GeoEntryQueryException.class,
+        () -> queryCatalog.getCountryCode(NEAR_BOSTON_WKT, RADIUS_IN_KM));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetCountryCodeSourceUnavailableException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(SourceUnavailableException.class);
-    queryCatalog.getCountryCode(NEAR_BOSTON_WKT, RADIUS_IN_KM);
+    assertThrows(
+        GeoEntryQueryException.class,
+        () -> queryCatalog.getCountryCode(NEAR_BOSTON_WKT, RADIUS_IN_KM));
   }
 
   private Metacard generateEmptyMetacard() {
@@ -355,19 +368,19 @@ public class GazetteerQueryCatalogTest {
         mock(QueryRequest.class), Collections.singletonList(new ResultImpl(metacard)), 1);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testQueryByIdWithNullId() throws Exception {
-    queryCatalog.queryById(null);
+  @Test
+  public void testQueryByIdWithNullId() {
+    assertThrows(IllegalArgumentException.class, () -> queryCatalog.queryById(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testQueryByIdWithEmptyId() throws Exception {
-    queryCatalog.queryById("");
+  @Test
+  public void testQueryByIdWithEmptyId() {
+    assertThrows(IllegalArgumentException.class, () -> queryCatalog.queryById(""));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testQueryByIdWithBlankId() throws Exception {
-    queryCatalog.queryById("   ");
+  @Test
+  public void testQueryByIdWithBlankId() {
+    assertThrows(IllegalArgumentException.class, () -> queryCatalog.queryById("   "));
   }
 
   @Test
@@ -382,26 +395,26 @@ public class GazetteerQueryCatalogTest {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testQueryByIdUnsupportedQueryException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(UnsupportedQueryException.class);
-    queryCatalog.queryById("testId");
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.queryById("testId"));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testQueryByIdSourceUnavailableException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(SourceUnavailableException.class);
-    queryCatalog.queryById("testId");
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.queryById("testId"));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testQueryByIdFederationException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class))).thenThrow(FederationException.class);
-    queryCatalog.queryById("testId");
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.queryById("testId"));
   }
 
   @Test
@@ -483,26 +496,26 @@ public class GazetteerQueryCatalogTest {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetSuggestedNamesSourceUnavailableException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(SourceUnavailableException.class);
-    queryCatalog.getSuggestedNames("Test", 10);
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.getSuggestedNames("Test", 10));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetSuggestedNamesFederationException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class))).thenThrow(FederationException.class);
-    queryCatalog.getSuggestedNames("Test", 10);
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.getSuggestedNames("Test", 10));
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = GeoEntryQueryException.class)
+  @Test
   public void testGetSuggestedNamesUnsupportedQueryException() throws Exception {
     when(catalogFramework.query(any(QueryRequest.class)))
         .thenThrow(UnsupportedQueryException.class);
-    queryCatalog.getSuggestedNames("Test", 10);
+    assertThrows(GeoEntryQueryException.class, () -> queryCatalog.getSuggestedNames("Test", 10));
   }
 
   @Test

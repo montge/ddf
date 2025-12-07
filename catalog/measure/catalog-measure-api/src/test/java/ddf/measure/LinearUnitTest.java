@@ -14,6 +14,7 @@
 package ddf.measure;
 
 import static ddf.measure.Distance.LinearUnit;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 
@@ -21,18 +22,18 @@ public class LinearUnitTest {
 
   // Note: commons-lang3 Validate.notNull() throws NullPointerException, not
   // IllegalArgumentException
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testFromStringWithNull() {
-    LinearUnit.fromString(null);
+    assertThrows(NullPointerException.class, () -> LinearUnit.fromString(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testFromStringWithEmptyString() {
-    LinearUnit.fromString("");
+    assertThrows(IllegalArgumentException.class, () -> LinearUnit.fromString(""));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testFromStringWithInvalidValue() {
-    LinearUnit.fromString("abc");
+    assertThrows(IllegalArgumentException.class, () -> LinearUnit.fromString("abc"));
   }
 }

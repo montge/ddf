@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.mock;
@@ -149,31 +150,37 @@ public class SynchronizedInstallerImplTest {
     // No exception means success
   }
 
-  @Test(expected = SynchronizedInstallerException.class)
-  public void testWaitThrowsWhenConditionNotMetWithinTimeout() throws Exception {
+  @Test
+  public void testWaitThrowsWhenConditionNotMetWithinTimeout() {
     Callable<Boolean> alwaysFalse = () -> false;
 
-    installer.wait(alwaysFalse, 100, 10, "Condition not met");
+    assertThrows(
+        SynchronizedInstallerException.class,
+        () -> installer.wait(alwaysFalse, 100, 10, "Condition not met"));
   }
 
-  @Test(expected = InterruptedException.class)
-  public void testWaitRethrowsInterruptedException() throws Exception {
+  @Test
+  public void testWaitRethrowsInterruptedException() {
     Callable<Boolean> throwsInterrupt =
         () -> {
           throw new InterruptedException("test");
         };
 
-    installer.wait(throwsInterrupt, 1000, 100, "Should throw");
+    assertThrows(
+        InterruptedException.class,
+        () -> installer.wait(throwsInterrupt, 1000, 100, "Should throw"));
   }
 
-  @Test(expected = SynchronizedInstallerException.class)
-  public void testWaitWrapsGenericException() throws Exception {
+  @Test
+  public void testWaitWrapsGenericException() {
     Callable<Boolean> throwsGeneric =
         () -> {
           throw new RuntimeException("test");
         };
 
-    installer.wait(throwsGeneric, 1000, 100, "Should wrap exception");
+    assertThrows(
+        SynchronizedInstallerException.class,
+        () -> installer.wait(throwsGeneric, 1000, 100, "Should wrap exception"));
   }
 
   // stopBundles tests
@@ -292,8 +299,8 @@ public class SynchronizedInstallerImplTest {
     installer.waitForBundles(100, TEST_BUNDLE);
   }
 
-  @Test(expected = SynchronizedInstallerException.class)
-  public void testWaitForBundlesThrowsWhenBundleFailed() throws Exception {
+  @Test
+  public void testWaitForBundlesThrowsWhenBundleFailed() {
     java.util.Dictionary<String, String> headers = new java.util.Hashtable<>();
     headers.put(org.osgi.framework.Constants.BUNDLE_NAME, TEST_BUNDLE);
     when(bundle.getSymbolicName()).thenReturn(TEST_BUNDLE);
@@ -303,7 +310,8 @@ public class SynchronizedInstallerImplTest {
     when(bundleInfo.getState()).thenReturn(BundleState.Failure);
     when(bundleService.getDiag(bundle)).thenReturn("Test diagnostic");
 
-    installer.waitForBundles(100, TEST_BUNDLE);
+    assertThrows(
+        SynchronizedInstallerException.class, () -> installer.waitForBundles(100, TEST_BUNDLE));
   }
 
   // getServiceTracker tests

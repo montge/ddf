@@ -16,6 +16,7 @@ package org.codice.ddf.metrics.servlet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -143,49 +144,49 @@ public class ServletMetricsEnhancedTest {
     assertThat(meterRegistry.summary(LATENCY_METRIC, tags).max(), greaterThanOrEqualTo(50.0));
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testSyncRequestWithIOException() throws IOException, ServletException {
     doThrow(new IOException("Test IO exception"))
         .when(mockFilterChain)
         .doFilter(mockRequest, mockResponse);
 
-    try {
-      servletMetrics.doFilter(mockRequest, mockResponse, mockFilterChain);
-    } finally {
-      // Exception should result in status 500
-      Iterable<Tag> tags = getTags("GET", 500);
-      assertThat(meterRegistry.summary(LATENCY_METRIC, tags).count(), is(1L));
-    }
+    assertThrows(
+        IOException.class,
+        () -> servletMetrics.doFilter(mockRequest, mockResponse, mockFilterChain));
+
+    // Exception should result in status 500
+    Iterable<Tag> tags = getTags("GET", 500);
+    assertThat(meterRegistry.summary(LATENCY_METRIC, tags).count(), is(1L));
   }
 
-  @Test(expected = ServletException.class)
+  @Test
   public void testSyncRequestWithServletException() throws IOException, ServletException {
     doThrow(new ServletException("Test servlet exception"))
         .when(mockFilterChain)
         .doFilter(mockRequest, mockResponse);
 
-    try {
-      servletMetrics.doFilter(mockRequest, mockResponse, mockFilterChain);
-    } finally {
-      // Exception should result in status 500
-      Iterable<Tag> tags = getTags("GET", 500);
-      assertThat(meterRegistry.summary(LATENCY_METRIC, tags).count(), is(1L));
-    }
+    assertThrows(
+        ServletException.class,
+        () -> servletMetrics.doFilter(mockRequest, mockResponse, mockFilterChain));
+
+    // Exception should result in status 500
+    Iterable<Tag> tags = getTags("GET", 500);
+    assertThat(meterRegistry.summary(LATENCY_METRIC, tags).count(), is(1L));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testSyncRequestWithRuntimeException() throws IOException, ServletException {
     doThrow(new RuntimeException("Test runtime exception"))
         .when(mockFilterChain)
         .doFilter(mockRequest, mockResponse);
 
-    try {
-      servletMetrics.doFilter(mockRequest, mockResponse, mockFilterChain);
-    } finally {
-      // Exception should result in status 500
-      Iterable<Tag> tags = getTags("GET", 500);
-      assertThat(meterRegistry.summary(LATENCY_METRIC, tags).count(), is(1L));
-    }
+    assertThrows(
+        RuntimeException.class,
+        () -> servletMetrics.doFilter(mockRequest, mockResponse, mockFilterChain));
+
+    // Exception should result in status 500
+    Iterable<Tag> tags = getTags("GET", 500);
+    assertThat(meterRegistry.summary(LATENCY_METRIC, tags).count(), is(1L));
   }
 
   @Test

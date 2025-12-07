@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -64,33 +65,25 @@ public class SecurityFilterChainTest {
   /**
    * Tests that an exception is thrown if a new filter is attempted to be added after the filter has
    * been run.
-   *
-   * @throws IOException
-   * @throws ServletException
    */
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testAddFilterAfterDo() throws IOException, AuthenticationException {
     SecurityFilterChain proxyChain = new SecurityFilterChain();
     SecurityFilter filter1 = mock(SecurityFilter.class);
     proxyChain.doFilter(mock(ServletRequest.class), mock(ServletResponse.class));
-    proxyChain.addSecurityFilter(filter1);
+    assertThrows(IllegalStateException.class, () -> proxyChain.addSecurityFilter(filter1));
   }
 
   /**
    * Tests that an exception is thrown if more filters are attempted to be added after the filter
    * has been run.
-   *
-   * @throws IOException
-   * @throws ServletException
    */
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testAddFiltersAfterDo() throws IOException, AuthenticationException {
     SecurityFilterChain proxyChain = new SecurityFilterChain();
     SecurityFilter filter2 = mock(SecurityFilter.class);
-    SecurityFilter filter3 = mock(SecurityFilter.class);
     proxyChain.doFilter(mock(ServletRequest.class), mock(ServletResponse.class));
-    proxyChain.addSecurityFilter(filter2);
-    proxyChain.addSecurityFilter(filter3);
+    assertThrows(IllegalStateException.class, () -> proxyChain.addSecurityFilter(filter2));
   }
 
   private SecurityFilter createMockSecurityFilter(final String name)

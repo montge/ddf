@@ -15,6 +15,7 @@ package org.codice.felix.cm.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -103,20 +104,20 @@ public class ConfigurationPersistencePluginTest {
     // Should complete successfully without exception
   }
 
-  @Test(expected = IOException.class)
-  public void testHandleStoreThrowsIOException() throws IOException {
+  @Test
+  public void testHandleStoreThrowsIOException() {
     TestConfigurationPersistencePlugin throwingPlugin =
         new TestConfigurationPersistencePlugin(true, false);
 
-    throwingPlugin.handleStore(mockContext);
+    assertThrows(IOException.class, () -> throwingPlugin.handleStore(mockContext));
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void testHandleStoreThrowsIllegalStateException() throws IOException {
+  @Test
+  public void testHandleStoreThrowsIllegalStateException() {
     TestConfigurationPersistencePlugin throwingPlugin =
         new TestConfigurationPersistencePlugin(false, true);
 
-    throwingPlugin.handleStore(mockContext);
+    assertThrows(IllegalStateException.class, () -> throwingPlugin.handleStore(mockContext));
   }
 
   @Test
@@ -142,12 +143,12 @@ public class ConfigurationPersistencePluginTest {
     // Should complete successfully - implementation should handle empty string gracefully
   }
 
-  @Test(expected = IOException.class)
-  public void testHandleDeleteThrowsIOException() throws IOException {
+  @Test
+  public void testHandleDeleteThrowsIOException() {
     TestConfigurationPersistencePlugin throwingPlugin =
         new TestConfigurationPersistencePlugin(true, false);
 
-    throwingPlugin.handleDelete("test.pid");
+    assertThrows(IOException.class, () -> throwingPlugin.handleDelete("test.pid"));
   }
 
   @Test
