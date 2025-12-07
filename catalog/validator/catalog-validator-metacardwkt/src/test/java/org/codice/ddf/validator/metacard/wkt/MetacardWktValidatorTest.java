@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -57,12 +58,12 @@ public class MetacardWktValidatorTest {
     metacardWktValidator.validate(metacard);
   }
 
-  @Test(expected = ValidationException.class)
-  public void testMetacardWithInvalidLocation() throws Exception {
+  @Test
+  public void testMetacardWithInvalidLocation() {
     Metacard metacard = getMetacard();
     String wktLoc = "POINT(250  250)";
     metacard.setAttribute(new AttributeImpl(TEST_ATTRIBUTE, wktLoc));
-    metacardWktValidator.validate(metacard);
+    assertThrows(ValidationException.class, () -> metacardWktValidator.validate(metacard));
   }
 
   @Test
@@ -249,13 +250,13 @@ public class MetacardWktValidatorTest {
     assertThat(report.isPresent(), is(false));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateMetacardWithMalformedWkt() throws Exception {
+  @Test
+  public void testValidateMetacardWithMalformedWkt() {
     Metacard metacard = getMetacard();
     String wkt = "POINT(30)";
     metacard.setAttribute(new AttributeImpl(TEST_ATTRIBUTE, wkt));
 
-    metacardWktValidator.validate(metacard);
+    assertThrows(ValidationException.class, () -> metacardWktValidator.validate(metacard));
   }
 
   @Test

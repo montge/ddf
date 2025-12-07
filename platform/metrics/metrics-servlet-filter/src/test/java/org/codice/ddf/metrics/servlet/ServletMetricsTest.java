@@ -17,6 +17,7 @@ import static java.lang.Thread.sleep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -163,35 +164,33 @@ public class ServletMetricsTest {
     assertThat(meterRegistry.summary(LATENCY, getTags(DEFAULT_METHOD, 500)).count(), is(1L));
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void syncException() throws Exception {
     doThrow(Exception.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
     when(mockRequest.getMethod()).thenReturn("POST");
     when(mockResponse.getStatus()).thenReturn(500);
 
-    try {
-      underTest.doFilter(mockRequest, mockResponse, mockFilterChain);
-    } finally {
-      tags = getTags("POST", 500);
-      assertThat(meterRegistry.summary(LATENCY, tags).count(), is(1L));
-    }
+    assertThrows(
+        Exception.class, () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
+
+    tags = getTags("POST", 500);
+    assertThat(meterRegistry.summary(LATENCY, tags).count(), is(1L));
   }
 
-  @Test(expected = Exception.class)
+  @Test
   public void syncExceptionWithConflictingStatusCode() throws Exception {
     doThrow(Exception.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
     when(mockRequest.getMethod()).thenReturn("POST");
     when(mockResponse.getStatus()).thenReturn(200);
 
-    try {
-      underTest.doFilter(mockRequest, mockResponse, mockFilterChain);
-    } finally {
-      tags = getTags("POST", 500);
-      assertThat(meterRegistry.summary(LATENCY, tags).count(), is(1L));
+    assertThrows(
+        Exception.class, () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
 
-      tags = getTags("POST", 200);
-      assertThat(meterRegistry.summary(LATENCY, tags).count(), is(0L));
-    }
+    tags = getTags("POST", 500);
+    assertThat(meterRegistry.summary(LATENCY, tags).count(), is(1L));
+
+    tags = getTags("POST", 200);
+    assertThat(meterRegistry.summary(LATENCY, tags).count(), is(0L));
   }
 
   private static Iterable<Tag> getTags(String method, int status) {

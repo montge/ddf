@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -93,14 +94,14 @@ public class GeoCoderTest {
     assertThat(result, is(notNullValue()));
   }
 
-  @Test(expected = GeoEntryQueryException.class)
-  public void testGetNearbyCityWithInvalidWKT() throws GeoEntryQueryException {
-    geoCoder.getNearbyCity("INVALID WKT");
+  @Test
+  public void testGetNearbyCityWithInvalidWKT() {
+    assertThrows(GeoEntryQueryException.class, () -> geoCoder.getNearbyCity("INVALID WKT"));
   }
 
-  @Test(expected = GeoEntryQueryException.class)
-  public void testGetNearbyCityWithNullWKT() throws GeoEntryQueryException {
-    geoCoder.getNearbyCity(null);
+  @Test
+  public void testGetNearbyCityWithNullWKT() {
+    assertThrows(GeoEntryQueryException.class, () -> geoCoder.getNearbyCity(null));
   }
 
   @Test

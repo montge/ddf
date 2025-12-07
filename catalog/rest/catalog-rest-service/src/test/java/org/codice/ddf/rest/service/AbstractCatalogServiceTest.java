@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -143,9 +144,9 @@ public class AbstractCatalogServiceTest {
     assertThat(result.get("url"), is(notNullValue()));
   }
 
-  @Test(expected = CatalogServiceException.class)
-  public void testDeleteDocumentWithNullId() throws CatalogServiceException {
-    catalogService.deleteDocument(null);
+  @Test
+  public void testDeleteDocumentWithNullId() {
+    assertThrows(CatalogServiceException.class, () -> catalogService.deleteDocument(null));
   }
 
   @Test

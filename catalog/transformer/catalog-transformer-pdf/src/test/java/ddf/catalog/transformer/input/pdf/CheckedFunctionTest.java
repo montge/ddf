@@ -15,6 +15,7 @@ package ddf.catalog.transformer.input.pdf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,14 +43,14 @@ public class CheckedFunctionTest {
     assertThat(result, is(65)); // ASCII 'A'
   }
 
-  @Test(expected = IOException.class)
-  public void testCheckedFunctionThrowsIOException() throws IOException {
+  @Test
+  public void testCheckedFunctionThrowsIOException() {
     CheckedFunction<String, String> throwingFunction =
         s -> {
           throw new IOException("Test exception");
         };
 
-    throwingFunction.apply("test");
+    assertThrows(IOException.class, () -> throwingFunction.apply("test"));
   }
 
   @Test

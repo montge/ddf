@@ -16,6 +16,7 @@ package org.codice.ddf.admin.core.impl;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.lang.management.ManagementFactory;
 import javax.management.InstanceNotFoundException;
@@ -97,14 +98,14 @@ public class BasicMBeanTest {
     }
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testDestroyThrowsRuntimeException() throws Exception {
     testMBean = new TestMBeanImpl(TEST_OBJECT_NAME);
     testMBean.init();
     testMBean.destroy();
 
     // Second destroy should fail with InstanceNotFoundException wrapped in RuntimeException
-    testMBean.destroy();
+    assertThrows(RuntimeException.class, () -> testMBean.destroy());
   }
 
   @Test
@@ -143,7 +144,7 @@ public class BasicMBeanTest {
     assertThat(result, is("test result"));
   }
 
-  @Test(expected = InstanceNotFoundException.class)
+  @Test
   public void testMBeanInvocationAfterDestroy() throws Exception {
     testMBean = new TestMBeanImpl(TEST_OBJECT_NAME);
     testMBean.init();
@@ -154,7 +155,9 @@ public class BasicMBeanTest {
     testMBean.destroy();
 
     // This should throw InstanceNotFoundException
-    mbeanServer.invoke(objectName, "testMethod", null, null);
+    assertThrows(
+        InstanceNotFoundException.class,
+        () -> mbeanServer.invoke(objectName, "testMethod", null, null));
   }
 
   // Test MBean interface

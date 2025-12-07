@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.Metacard;
@@ -65,9 +66,10 @@ public class SubscriptionFilterVisitorTest {
     SubscriptionFilterVisitor.notNull("test", "testParam");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNotNullValidationThrowsException() {
-    SubscriptionFilterVisitor.notNull(null, "testParam");
+    assertThrows(
+        IllegalArgumentException.class, () -> SubscriptionFilterVisitor.notNull(null, "testParam"));
   }
 
   @Test

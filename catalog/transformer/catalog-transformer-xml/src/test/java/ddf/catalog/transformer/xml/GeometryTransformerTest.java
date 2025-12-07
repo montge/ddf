@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -83,7 +84,7 @@ public class GeometryTransformerTest {
     assertThat(new String(resultBytes), containsString("gml:Point"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testTransformWithParserException() throws Exception {
     Attribute attribute = new AttributeImpl("location", "POINT (1 2)");
 
@@ -91,13 +92,13 @@ public class GeometryTransformerTest {
         .when(parser)
         .marshal(eq(parserConfigurator), any(), any(OutputStream.class));
 
-    transformer.transform(attribute);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(attribute));
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testTransformWithNullAttribute() throws Exception {
+  @Test
+  public void testTransformWithNullAttribute() {
     // Transform should throw NullPointerException when given null attribute
-    transformer.transform(null);
+    assertThrows(NullPointerException.class, () -> transformer.transform(null));
   }
 
   @Test
