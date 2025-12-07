@@ -73,11 +73,11 @@ public class EnumerationValidator implements AttributeValidator {
       String value = String.valueOf(rawValue);
       if (!values.contains(value)) {
         final AttributeValidationReportImpl report = new AttributeValidationReportImpl();
-        // TODO (jrnorth) - escape the value.
+        String escapedValue = value.replace("\\", "\\\\").replace("\"", "\\\"");
         report.addViolation(
             new ValidationViolationImpl(
                 Collections.singleton(name),
-                name + " has an invalid value: [" + value + "]",
+                name + " has an invalid value: [" + escapedValue + "]",
                 Severity.ERROR));
         values.forEach(report::addSuggestedValue);
         return Optional.of(report);

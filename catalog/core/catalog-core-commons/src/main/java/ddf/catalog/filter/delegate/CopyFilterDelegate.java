@@ -200,7 +200,6 @@ public class CopyFilterDelegate extends FilterDelegate<Filter> {
 
   @Override
   public Filter propertyIsNotEqualTo(String propertyName, long literal) {
-    // TODO: is it ok to convert long to int here? alternatives?
     return filterBuilder.attribute(propertyName).notEqualTo().number(literal);
   }
 
@@ -226,7 +225,6 @@ public class CopyFilterDelegate extends FilterDelegate<Filter> {
 
   @Override
   public Filter propertyIsNotEqualTo(String propertyName, Object literal) {
-    // TODO
     throw new UnsupportedOperationException(
         "propertyIsNotEqualTo(String,Object) not supported by CopyFilterDelegate.");
   }

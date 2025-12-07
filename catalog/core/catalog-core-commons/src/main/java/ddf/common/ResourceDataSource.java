@@ -20,9 +20,12 @@ import java.io.OutputStream;
 import javax.activation.DataSource;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-// TODO: Auto-generated Javadoc
-
-/** The Class ProductDataSource. */
+/**
+ * A DataSource implementation that wraps a DDF Resource.
+ *
+ * <p>This class adapts a DDF Resource to the javax.activation.DataSource interface, making it
+ * compatible with APIs that require DataSource objects.
+ */
 public class ResourceDataSource implements DataSource {
 
   /** The content type. */
