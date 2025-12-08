@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.emptyCollectionOf;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -103,14 +104,22 @@ public class CertificateSigningRequestTest {
             new GeneralName(GeneralName.registeredID, "0.2.1.4")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testAddSubjectAlternativeNamesWithNullList() {
-    csr.addSubjectAlternativeNames((String[]) null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          csr.addSubjectAlternativeNames((String[]) null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testAddSubjectAlternativeNamesWithNullEntry() {
-    csr.addSubjectAlternativeNames(null, "IP:1.2.3.4");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          csr.addSubjectAlternativeNames(null, "IP:1.2.3.4");
+        });
   }
 
   @Test
@@ -122,14 +131,22 @@ public class CertificateSigningRequestTest {
         equalTo(true));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void badNotBeforeDate() {
-    csr.setNotBefore(csr.getNotAfter().plusDays(1));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          csr.setNotBefore(csr.getNotAfter().plusDays(1));
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void badNotAfterDate() {
-    csr.setNotAfter(csr.getNotBefore().minusDays(1));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          csr.setNotAfter(csr.getNotBefore().minusDays(1));
+        });
   }
 
   @Test
@@ -175,9 +192,13 @@ public class CertificateSigningRequestTest {
         "Subject name should contain 'o=police box'", subjectName, containsString("o=police box"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void badSerialNumber() {
-    csr.setSerialNumber(-1);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          csr.setSerialNumber(-1);
+        });
   }
 
   @Test

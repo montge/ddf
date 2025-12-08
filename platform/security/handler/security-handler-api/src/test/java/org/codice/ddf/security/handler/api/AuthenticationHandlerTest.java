@@ -16,8 +16,10 @@ package org.codice.ddf.security.handler.api;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -107,12 +109,17 @@ public class AuthenticationHandlerTest {
     assertThat(result.getStatus(), is(HandlerResult.Status.REDIRECTED));
   }
 
-  @Test(expected = AuthenticationException.class)
+  @Test
   public void testGetNormalizedTokenThrowsAuthenticationException() throws AuthenticationException {
-    when(mockHandler.getNormalizedToken(any(), any(), any(), anyBoolean()))
-        .thenThrow(new AuthenticationException("Authentication failed"));
+    doThrow(new AuthenticationException("Authentication failed"))
+        .when(mockHandler)
+        .getNormalizedToken(any(), any(), any(), anyBoolean());
 
-    mockHandler.getNormalizedToken(mockRequest, mockResponse, mockFilterChain, true);
+    assertThrows(
+        AuthenticationException.class,
+        () -> {
+          mockHandler.getNormalizedToken(mockRequest, mockResponse, mockFilterChain, true);
+        });
   }
 
   @Test
@@ -126,12 +133,17 @@ public class AuthenticationHandlerTest {
     assertThat(result.getStatus(), is(HandlerResult.Status.REDIRECTED));
   }
 
-  @Test(expected = AuthenticationException.class)
+  @Test
   public void testHandleErrorThrowsAuthenticationException() throws AuthenticationException {
-    when(mockHandler.handleError(any(), any(), any()))
-        .thenThrow(new AuthenticationException("Error handling failed"));
+    doThrow(new AuthenticationException("Error handling failed"))
+        .when(mockHandler)
+        .handleError(any(), any(), any());
 
-    mockHandler.handleError(mockRequest, mockResponse, mockFilterChain);
+    assertThrows(
+        AuthenticationException.class,
+        () -> {
+          mockHandler.handleError(mockRequest, mockResponse, mockFilterChain);
+        });
   }
 
   @Test

@@ -15,6 +15,7 @@ package org.codice.ddf.security.handler.oidc;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -53,20 +54,33 @@ public class OidcCallbackEndpointTest {
     callbackEndpoint.setRedirectUri("/logout");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void logoutWithNullRequest() {
-    response = callbackEndpoint.logout(null, mockResponse);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          response = callbackEndpoint.logout(null, mockResponse);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void logoutWithNullResponse() {
-    response = callbackEndpoint.logout(mockRequest, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          response = callbackEndpoint.logout(mockRequest, null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void logoutWitNullSession() {
     when(mockRequest.getSession(any(Boolean.class))).thenReturn(null);
-    response = callbackEndpoint.logout(mockRequest, mockResponse);
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          response = callbackEndpoint.logout(mockRequest, mockResponse);
+        });
   }
 
   @Test

@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.saml.assertion.validator.impl;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -187,7 +188,7 @@ public class SamlAssertionValidatorImplTest {
     samlAssertionValidator.validate(samlAuthenticationToken);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testValidateUnsignedAssertion() throws Exception {
     Assertion assertion = createAssertion(false, true, ISSUER, new DateTime().plusDays(3));
 
@@ -199,10 +200,14 @@ public class SamlAssertionValidatorImplTest {
         new SAMLAuthenticationToken(
             simplePrincipalCollection, simplePrincipalCollection, "127.0.0.1");
 
-    samlAssertionValidator.validate(samlAuthenticationToken);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          samlAssertionValidator.validate(samlAuthenticationToken);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testValidateIncorrectSamlVersion() throws Exception {
     org.opensaml.saml.saml1.core.Assertion assertion =
         new org.opensaml.saml.saml1.core.impl.AssertionBuilder().buildObject();
@@ -215,10 +220,14 @@ public class SamlAssertionValidatorImplTest {
         new SAMLAuthenticationToken(
             simplePrincipalCollection, simplePrincipalCollection, "127.0.0.1");
 
-    samlAssertionValidator.validate(samlAuthenticationToken);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          samlAssertionValidator.validate(samlAuthenticationToken);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testValidateExpiredAssertion() throws Exception {
     Assertion assertion = createAssertion(false, true, ISSUER, new DateTime().minusSeconds(10));
 
@@ -230,10 +239,14 @@ public class SamlAssertionValidatorImplTest {
         new SAMLAuthenticationToken(
             simplePrincipalCollection, simplePrincipalCollection, "127.0.0.1");
 
-    samlAssertionValidator.validate(samlAuthenticationToken);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          samlAssertionValidator.validate(samlAuthenticationToken);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testValidateInvalidIssuer() throws Exception {
     Assertion assertion = createAssertion(false, true, "WRONG", new DateTime().minusSeconds(10));
 
@@ -245,10 +258,14 @@ public class SamlAssertionValidatorImplTest {
         new SAMLAuthenticationToken(
             simplePrincipalCollection, simplePrincipalCollection, "127.0.0.1");
 
-    samlAssertionValidator.validate(samlAuthenticationToken);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          samlAssertionValidator.validate(samlAuthenticationToken);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testValidateInvalidSignature() throws Exception {
     Assertion assertion = createAssertion(false, false, "WRONG", new DateTime().minusSeconds(10));
 
@@ -260,7 +277,11 @@ public class SamlAssertionValidatorImplTest {
         new SAMLAuthenticationToken(
             simplePrincipalCollection, simplePrincipalCollection, "127.0.0.1");
 
-    samlAssertionValidator.validate(samlAuthenticationToken);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          samlAssertionValidator.validate(samlAuthenticationToken);
+        });
   }
 
   private Assertion createAssertion(

@@ -17,6 +17,7 @@ import static com.github.scribejava.core.model.OAuthConstants.ACCESS_TOKEN;
 import static junit.framework.TestCase.assertNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.google.common.io.CharStreams;
@@ -71,9 +72,13 @@ public class CustomOAuthCredentialsExtractorTest {
     extractor = new CustomOAuthCredentialsExtractor();
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void extractNullWebContext() {
-    extractor.getOauthCredentialsAsOidcCredentials(null);
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          extractor.getOauthCredentialsAsOidcCredentials(null);
+        });
   }
 
   @Test

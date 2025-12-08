@@ -15,6 +15,7 @@ package org.codice.ddf.security.idp.client;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -96,12 +97,16 @@ public class AuthnResponseValidatorTest {
     verify(simpleSign, never()).validateSignature(any(), any());
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateInvalidXmlObject() throws Exception {
+  @Test
+  public void testValidateInvalidXmlObject() {
     XMLObject invalidObject = mock(XMLObject.class);
     validator = new AuthnResponseValidator(simpleSign, false);
 
-    validator.validate(invalidObject);
+    assertThrows(
+        ValidationException.class,
+        () -> {
+          validator.validate(invalidObject);
+        });
   }
 
   @Test
@@ -117,12 +122,16 @@ public class AuthnResponseValidatorTest {
     }
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateUnsuccessfulStatus() throws Exception {
+  @Test
+  public void testValidateUnsuccessfulStatus() {
     when(statusCode.getValue()).thenReturn(StatusCode.AUTHN_FAILED);
-
     validator = new AuthnResponseValidator(simpleSign, false);
-    validator.validate(response);
+
+    assertThrows(
+        ValidationException.class,
+        () -> {
+          validator.validate(response);
+        });
   }
 
   @Test
@@ -140,13 +149,17 @@ public class AuthnResponseValidatorTest {
     }
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateMissingAssertion() throws Exception {
+  @Test
+  public void testValidateMissingAssertion() {
     when(statusCode.getValue()).thenReturn(StatusCode.SUCCESS);
     when(response.getAssertions()).thenReturn(new ArrayList<>());
-
     validator = new AuthnResponseValidator(simpleSign, false);
-    validator.validate(response);
+
+    assertThrows(
+        ValidationException.class,
+        () -> {
+          validator.validate(response);
+        });
   }
 
   @Test
@@ -179,16 +192,20 @@ public class AuthnResponseValidatorTest {
     validator.validate(response);
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateRedirectSignedNullDestination() throws Exception {
+  @Test
+  public void testValidateRedirectSignedNullDestination() {
     when(statusCode.getValue()).thenReturn(StatusCode.SUCCESS);
     List<Assertion> assertions = new ArrayList<>();
     assertions.add(assertion);
     when(response.getAssertions()).thenReturn(assertions);
     when(response.getDestination()).thenReturn(null);
-
     validator = new AuthnResponseValidator(simpleSign, true);
-    validator.validate(response);
+
+    assertThrows(
+        ValidationException.class,
+        () -> {
+          validator.validate(response);
+        });
   }
 
   @Test
@@ -210,16 +227,20 @@ public class AuthnResponseValidatorTest {
     }
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateRedirectSignedInvalidDestination() throws Exception {
+  @Test
+  public void testValidateRedirectSignedInvalidDestination() {
     when(statusCode.getValue()).thenReturn(StatusCode.SUCCESS);
     List<Assertion> assertions = new ArrayList<>();
     assertions.add(assertion);
     when(response.getAssertions()).thenReturn(assertions);
     when(response.getDestination()).thenReturn("https://wrong.destination.com/sso");
-
     validator = new AuthnResponseValidator(simpleSign, true);
-    validator.validate(response);
+
+    assertThrows(
+        ValidationException.class,
+        () -> {
+          validator.validate(response);
+        });
   }
 
   @Test
@@ -257,8 +278,8 @@ public class AuthnResponseValidatorTest {
     verify(simpleSign).validateSignature(signature, document);
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateWithInvalidSignature() throws Exception {
+  @Test
+  public void testValidateWithInvalidSignature() {
     when(statusCode.getValue()).thenReturn(StatusCode.SUCCESS);
     List<Assertion> assertions = new ArrayList<>();
     assertions.add(assertion);
@@ -269,9 +290,13 @@ public class AuthnResponseValidatorTest {
     doThrow(new SignatureException("Invalid signature"))
         .when(simpleSign)
         .validateSignature(any(), any());
-
     validator = new AuthnResponseValidator(simpleSign, false);
-    validator.validate(response);
+
+    assertThrows(
+        ValidationException.class,
+        () -> {
+          validator.validate(response);
+        });
   }
 
   @Test

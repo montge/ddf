@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 import ddf.security.SecurityConstants;
 import java.io.File;
@@ -219,18 +220,32 @@ public class CertificateCommandTest {
     validateKeyStore(CN_FROM_DN, true);
   }
 
-  @Test(expected = RuntimeException.class)
-  public void testMainWithTooFewArguments() throws Exception {
-    CertificateCommand.main(new String[] {"something"});
+  @Test
+  public void testMainWithTooFewArguments() {
+    assertThrows(
+        RuntimeException.class,
+        () -> {
+          CertificateCommand.main(new String[] {"something"});
+        });
   }
 
-  @Test(expected = RuntimeException.class)
-  public void testMainWithTooFewArgumentsWithSan() throws Exception {
-    CertificateCommand.main(new String[] {"-san", CertificateCommandTest.SANS_ARG, "something"});
+  @Test
+  public void testMainWithTooFewArgumentsWithSan() {
+    assertThrows(
+        RuntimeException.class,
+        () -> {
+          CertificateCommand.main(
+              new String[] {"-san", CertificateCommandTest.SANS_ARG, "something"});
+        });
   }
 
-  @Test(expected = RuntimeException.class)
-  public void testMainWithTooManyArguments() throws Exception {
-    CertificateCommand.main(new String[] {"something", "wicked", "is", "coming", "to", "town"});
+  @Test
+  public void testMainWithTooManyArguments() {
+    assertThrows(
+        RuntimeException.class,
+        () -> {
+          CertificateCommand.main(
+              new String[] {"something", "wicked", "is", "coming", "to", "town"});
+        });
   }
 }

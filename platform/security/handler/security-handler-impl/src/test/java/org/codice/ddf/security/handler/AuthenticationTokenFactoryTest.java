@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,22 +66,30 @@ public class AuthenticationTokenFactoryTest {
         credentials.contains(Base64.getEncoder().encodeToString(password.getBytes())), is(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testFromUsernamePasswordWithNullUsername() {
     String password = "password";
     String ip = "127.0.0.1";
 
     // Should throw NullPointerException
-    factory.fromUsernamePassword(null, password, ip);
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          factory.fromUsernamePassword(null, password, ip);
+        });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testFromUsernamePasswordWithNullPassword() {
     String username = "admin";
     String ip = "127.0.0.1";
 
     // Should throw NullPointerException
-    factory.fromUsernamePassword(username, null, ip);
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          factory.fromUsernamePassword(username, null, ip);
+        });
   }
 
   @Test

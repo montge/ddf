@@ -16,6 +16,7 @@ package org.codice.ddf.security.certificate.generator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -85,7 +86,7 @@ public class CertificateAuthorityTest {
         instanceOf(KeyStore.PrivateKeyEntry.class));
   }
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void testSignWithCertificateException() throws Exception {
     DemoCertificateAuthority demoCa =
         new DemoCertificateAuthority() {
@@ -101,10 +102,10 @@ public class CertificateAuthorityTest {
               throw new CertificateException();
             });
 
-    demoCa.sign(csr);
+    assertThrows(CertificateGeneratorException.class, () -> demoCa.sign(csr));
   }
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void testSignWithCertIOException() throws Exception {
     DemoCertificateAuthority demoCa =
         new DemoCertificateAuthority() {
@@ -120,7 +121,7 @@ public class CertificateAuthorityTest {
               throw new CertIOException("test");
             });
 
-    demoCa.sign(csr);
+    assertThrows(CertificateGeneratorException.class, () -> demoCa.sign(csr));
   }
 
   @Test
@@ -128,14 +129,22 @@ public class CertificateAuthorityTest {
     assertNotNull(new CertificateAuthority(mockCert, mockPrivateKey));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructNull1() {
-    new CertificateAuthority(null, mockPrivateKey);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new CertificateAuthority(null, mockPrivateKey);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructNull2() {
-    new CertificateAuthority(mockCert, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new CertificateAuthority(mockCert, null);
+        });
   }
 
   @Test

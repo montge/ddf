@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -82,40 +83,61 @@ public class KeyStoreFileTest {
   }
 
   // Test constructor. Null path to keyStore file.
-  @Test(expected = IllegalArgumentException.class)
-  public void constructorNullPath() throws Exception {
-    KeyStoreFile.openFile(null, null);
+  @Test
+  public void constructorNullPath() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          KeyStoreFile.openFile(null, null);
+        });
   }
 
   // Test constructor. Invalid path to keyStore file.
-  @Test(expected = CertificateGeneratorException.class)
-  public void constructorInvalidPath() throws Exception {
-    KeyStoreFile.openFile("", null);
+  @Test
+  public void constructorInvalidPath() {
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          KeyStoreFile.openFile("", null);
+        });
   }
 
   // Test Constructor. Path is a directory, not a file.
-  @Test(expected = CertificateGeneratorException.class)
-  public void constructorPathIsDirectory() throws Exception {
+  @Test
+  public void constructorPathIsDirectory() {
     String anyDirectory = getPathTo("");
-    KeyStoreFile.openFile(anyDirectory, null);
+    assertThrows(
+        CertificateGeneratorException.class, () -> KeyStoreFile.openFile(anyDirectory, null));
   }
 
   // Test Constructor. File is not keyStore.
-  @Test(expected = CertificateGeneratorException.class)
-  public void constructorFileNotKeyStore() throws Exception {
-    KeyStoreFile.openFile(getPathTo(BOGUS_FILENAME), null);
+  @Test
+  public void constructorFileNotKeyStore() {
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          KeyStoreFile.openFile(getPathTo(BOGUS_FILENAME), null);
+        });
   }
 
   // Test Constructor. Password is null.
-  @Test(expected = CertificateGeneratorException.class)
-  public void constructorNullPassword() throws Exception {
-    KeyStoreFile.openFile(getPathTo(KEYSTORE_COPY), null);
+  @Test
+  public void constructorNullPassword() {
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          KeyStoreFile.openFile(getPathTo(KEYSTORE_COPY), null);
+        });
   }
 
   // Test Constructor. Password is wrong.
-  @Test(expected = CertificateGeneratorException.class)
-  public void constructorWrongPassword() throws Exception {
-    KeyStoreFile.openFile(getPathTo(KEYSTORE_COPY), BOGUS_PASSWORD);
+  @Test
+  public void constructorWrongPassword() {
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          KeyStoreFile.openFile(getPathTo(KEYSTORE_COPY), BOGUS_PASSWORD);
+        });
   }
 
   // Test Constructor. Valid file, valid password.

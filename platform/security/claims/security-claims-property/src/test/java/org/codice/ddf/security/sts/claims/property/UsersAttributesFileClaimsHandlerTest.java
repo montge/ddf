@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -237,7 +238,7 @@ public class UsersAttributesFileClaimsHandlerTest {
     assertThat(usersAttributesFileClaimsHandler.getValues("reg"), is(empty()));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testCantFindSystemHighUserInUsersDotAttributesFile() throws IOException {
     // given
     System.setProperty(SystemBaseUrl.INTERNAL_HOST, "someUserThatIsntInTheUsersDotAttributesFile");
@@ -246,18 +247,26 @@ public class UsersAttributesFileClaimsHandlerTest {
         new UsersAttributesFileClaimsHandler();
 
     // when
-    usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
-        getPathForValidTestAttributesFile());
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
+              getPathForValidTestAttributesFile());
+        });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testSetNullAttributeFileLocation() {
     final UsersAttributesFileClaimsHandler usersAttributesFileClaimsHandler =
         new UsersAttributesFileClaimsHandler();
-    usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(null);
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(null);
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testNoUsersDotAttributesFile() {
     // given
     System.setProperty(SystemBaseUrl.INTERNAL_HOST, "testHostname");
@@ -266,10 +275,14 @@ public class UsersAttributesFileClaimsHandlerTest {
         new UsersAttributesFileClaimsHandler();
 
     // when
-    usersAttributesFileClaimsHandler.setUsersAttributesFileLocation("noFileHere");
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          usersAttributesFileClaimsHandler.setUsersAttributesFileLocation("noFileHere");
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testUnexpectedFormatInUsersDotAttributesFile() throws IOException {
     // given
     System.setProperty(SystemBaseUrl.INTERNAL_HOST, "testHostname");
@@ -278,11 +291,15 @@ public class UsersAttributesFileClaimsHandlerTest {
         new UsersAttributesFileClaimsHandler();
 
     // when
-    usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
-        createAttributeFilePathFromResourceFileName("users.attributes-unexpectedFormat"));
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
+              createAttributeFilePathFromResourceFileName("users.attributes-unexpectedFormat"));
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testEmptyListValueInUsersDotAttributesFile() throws IOException {
     // given
     System.setProperty(SystemBaseUrl.INTERNAL_HOST, "testHostname");
@@ -291,11 +308,15 @@ public class UsersAttributesFileClaimsHandlerTest {
         new UsersAttributesFileClaimsHandler();
 
     // when
-    usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
-        createAttributeFilePathFromResourceFileName("users.attributes-emptyListValue"));
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
+              createAttributeFilePathFromResourceFileName("users.attributes-emptyListValue"));
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testNonStringValueInUsersDotAttributesFile() throws IOException {
     // given
     System.setProperty(SystemBaseUrl.INTERNAL_HOST, "testHostname");
@@ -304,11 +325,15 @@ public class UsersAttributesFileClaimsHandlerTest {
         new UsersAttributesFileClaimsHandler();
 
     // when
-    usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
-        createAttributeFilePathFromResourceFileName("users.attributes-nonStringValue"));
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
+              createAttributeFilePathFromResourceFileName("users.attributes-nonStringValue"));
+        });
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testNonStringListValueInUsersDotAttributesFile() throws IOException {
     // given
     System.setProperty(SystemBaseUrl.INTERNAL_HOST, "testHostname");
@@ -317,8 +342,12 @@ public class UsersAttributesFileClaimsHandlerTest {
         new UsersAttributesFileClaimsHandler();
 
     // when
-    usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
-        createAttributeFilePathFromResourceFileName("users.attributes-nonStringListValue"));
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          usersAttributesFileClaimsHandler.setUsersAttributesFileLocation(
+              createAttributeFilePathFromResourceFileName("users.attributes-nonStringListValue"));
+        });
   }
 
   @Test

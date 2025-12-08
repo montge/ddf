@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -161,20 +162,28 @@ public class AttributeQueryClientTest {
     assertThat(attributeQueryClient.query(USERNAME), is(nullValue()));
   }
 
-  @Test(expected = AttributeQueryException.class)
+  @Test
   public void testRetrieveResponseMalformedResponse() {
     setResponse("<test>test<test/", false);
 
-    attributeQueryClient.query(USERNAME);
+    assertThrows(
+        AttributeQueryException.class,
+        () -> {
+          attributeQueryClient.query(USERNAME);
+        });
   }
 
-  @Test(expected = AttributeQueryException.class)
+  @Test
   public void testRetrieveResponseSimpleSignSignatureException() throws SignatureException {
     doThrow(new SignatureException())
         .when(spySimpleSign)
         .signSamlObject(any(SignableSAMLObject.class));
 
-    attributeQueryClient.query(USERNAME);
+    assertThrows(
+        AttributeQueryException.class,
+        () -> {
+          attributeQueryClient.query(USERNAME);
+        });
   }
 
   private void setResponse(String response, boolean throwException) {
