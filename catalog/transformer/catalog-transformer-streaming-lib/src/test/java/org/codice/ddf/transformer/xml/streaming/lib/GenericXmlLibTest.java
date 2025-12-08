@@ -16,6 +16,7 @@ package org.codice.ddf.transformer.xml.streaming.lib;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -68,8 +69,8 @@ public class GenericXmlLibTest {
     assertThat(metacard.getAttribute(Metacard.ID).getValue(), is("test"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testBadInputTransform() throws FileNotFoundException, CatalogTransformerException {
+  @Test
+  public void testBadInputTransform() throws FileNotFoundException {
 
     InputStream inputStream = new FileInputStream("src/test/resources/metacard3InvalidXml.xml");
     SaxEventHandlerFactory saxEventHandlerFactory = mock(SaxEventHandlerFactory.class);
@@ -80,15 +81,13 @@ public class GenericXmlLibTest {
     xmlInputTransformer.setSaxEventHandlerConfiguration(Collections.singletonList("test"));
     xmlInputTransformer.setSaxEventHandlerFactories(
         Collections.singletonList(saxEventHandlerFactory));
-    try {
-      xmlInputTransformer.transform(inputStream, "test");
-    } catch (IOException e) {
-      fail();
-    }
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> xmlInputTransformer.transform(inputStream, "test"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullInputTransform() throws FileNotFoundException, CatalogTransformerException {
+  @Test
+  public void testNullInputTransform() {
     SaxEventHandlerFactory saxEventHandlerFactory = mock(SaxEventHandlerFactory.class);
     when(saxEventHandlerFactory.getId()).thenReturn("test");
     SaxEventHandler handler = getNewHandler();
@@ -97,11 +96,8 @@ public class GenericXmlLibTest {
     xmlInputTransformer.setSaxEventHandlerConfiguration(Collections.singletonList("test"));
     xmlInputTransformer.setSaxEventHandlerFactories(
         Collections.singletonList(saxEventHandlerFactory));
-    try {
-      xmlInputTransformer.transform(null, "test");
-    } catch (IOException e) {
-      fail();
-    }
+    assertThrows(
+        CatalogTransformerException.class, () -> xmlInputTransformer.transform(null, "test"));
   }
 
   @Test

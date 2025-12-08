@@ -19,6 +19,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -148,23 +149,15 @@ public class XmlResponseQueueTransformerTest {
     assertXpathEvaluatesTo("", "/mc:metacards", output);
   }
 
-  /**
-   * Should throw exception when given {@code null} input
-   *
-   * @throws CatalogTransformerException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullSourceResponse() throws CatalogTransformerException {
+  /** Should throw exception when given {@code null} input */
+  @Test
+  public void testNullSourceResponse() {
 
     // given
     transformer.setThreshold(2);
 
-    // when
-    transformer.transform(null, null);
-
-    // then
-    // failure should occur
-
+    // when/then
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(null, null));
   }
 
   /**
@@ -459,10 +452,8 @@ public class XmlResponseQueueTransformerTest {
         "/mc:metacards/mc:metacard/mc:dateTime[@name='expiration']/mc:value", outputXml);
   }
 
-  @Test(expected = ExceptionInInitializerError.class)
-  public void testMimeTypeInitException()
-      throws IOException, CatalogTransformerException, XmlPullParserException,
-          MimeTypeParseException {
+  @Test
+  public void testMimeTypeInitException() throws MimeTypeParseException {
     SourceResponse response = givenSourceResponse(new MetacardStub("source1", "id1"));
 
     PrintWriterProvider pwp = new PrintWriterProviderImpl();
@@ -476,15 +467,12 @@ public class XmlResponseQueueTransformerTest {
         new XmlResponseQueueTransformer(parser, pwp, mockMetacardMarshaller, mockMimeType);
     xrqt.setThreshold(2);
 
-    xrqt.transform(response, null);
-
-    // then exception
+    assertThrows(ExceptionInInitializerError.class, () -> xrqt.transform(response, null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testMetacardMarshallThrowsXmlPullParserException()
-      throws IOException, CatalogTransformerException, XmlPullParserException,
-          MimeTypeParseException {
+      throws XmlPullParserException, MimeTypeParseException {
     SourceResponse response = givenSourceResponse(new MetacardStub("source1", "id1"));
 
     PrintWriterProvider pwp = new PrintWriterProviderImpl();
@@ -497,9 +485,7 @@ public class XmlResponseQueueTransformerTest {
         new XmlResponseQueueTransformer(parser, pwp, mockMetacardMarshaller, getMimeType());
     xrqt.setThreshold(2);
 
-    xrqt.transform(response, null);
-
-    // then exception
+    assertThrows(CatalogTransformerException.class, () -> xrqt.transform(response, null));
   }
 
   /** @return */

@@ -15,6 +15,7 @@ package ddf.catalog.transform.xml;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,14 +51,15 @@ public class XmlValidationEventHandlerTest {
     assertThat(xmlValidationEventHandler.handleEvent(validationEvent), is(false));
   }
 
-  @Test(expected = AssertionError.class)
-  public void testHandleDefaultEvent() throws Exception {
+  @Test
+  public void testHandleDefaultEvent() {
     when(validationEvent.getSeverity()).thenReturn(5);
-    xmlValidationEventHandler.handleEvent(validationEvent);
+    assertThrows(
+        AssertionError.class, () -> xmlValidationEventHandler.handleEvent(validationEvent));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullEvent() {
-    xmlValidationEventHandler.handleEvent(null);
+    assertThrows(IllegalArgumentException.class, () -> xmlValidationEventHandler.handleEvent(null));
   }
 }
