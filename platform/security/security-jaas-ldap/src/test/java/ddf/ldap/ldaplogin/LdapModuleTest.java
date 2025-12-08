@@ -31,6 +31,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -173,10 +174,10 @@ public class LdapModuleTest {
         .assertThatPrincipals(server.emptyPrincipals());
   }
 
-  @Test(expected = LoginException.class)
-  public void testInvalidPassword() throws LoginException {
+  @Test
+  public void testInvalidPassword() {
     server.startListening();
-    module.setUsernameAndPassword("<>", "").login();
+    assertThrows(LoginException.class, () -> module.setUsernameAndPassword("<>", "").login());
   }
 
   @Test

@@ -15,6 +15,7 @@ package ddf.security.pep.interceptor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -217,7 +218,7 @@ public class PepInterceptorActionsTest {
     interceptor.handleMessage(messageWithAction);
   }
 
-  @Test(expected = AccessDeniedException.class)
+  @Test
   public void testMessageWithNoAction() throws SecurityServiceException {
     SecurityManager mockSecurityManager = mock(SecurityManager.class);
     interceptor.setSecurityManager(mockSecurityManager);
@@ -242,6 +243,7 @@ public class PepInterceptorActionsTest {
     when(mockSubject.isPermitted(isA(CollectionPermission.class))).thenReturn(false);
 
     // This should throw an exception.
-    interceptor.handleMessage(messageWithoutAction);
+    assertThrows(
+        AccessDeniedException.class, () -> interceptor.handleMessage(messageWithoutAction));
   }
 }

@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -150,25 +151,25 @@ public class GuestInterceptorTest {
         .put(eq(WSS4JInInterceptor.class.getName() + ".DONE"), eq(Boolean.TRUE));
   }
 
-  @Test(expected = Fault.class)
+  @Test
   public void testHandleMessageSecurityManagerThrowsException() throws Exception {
     when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
     when(securityManager.getSubject(any(GuestAuthenticationToken.class)))
         .thenThrow(new SecurityServiceException("Test exception"));
 
-    interceptor.handleMessage(soapMessage);
+    assertThrows(Fault.class, () -> interceptor.handleMessage(soapMessage));
   }
 
-  @Test(expected = Fault.class)
-  public void testHandleMessageAuthenticationExceptionWrappedInFault() throws Exception {
+  @Test
+  public void testHandleMessageAuthenticationExceptionWrappedInFault() {
     interceptor = new GuestInterceptor(null);
     interceptor.setSecurityLogger(securityLogger);
 
     when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
-    interceptor.handleMessage(soapMessage);
+    assertThrows(Fault.class, () -> interceptor.handleMessage(soapMessage));
   }
 
   @Test

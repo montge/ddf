@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -196,13 +197,14 @@ public class OidcRealmTest {
     assertNotEquals("admin", authenticationInfo.getPrincipals().getPrimaryPrincipal());
   }
 
-  @Test(expected = AuthenticationException.class)
+  @Test
   public void testDoGetAuthenticationInvalid() throws Exception {
     String idToken = getIdTokenBuilder().withClaim("nonce", "myNonce").sign(invalidAlgorithm);
     JWT jwt = SignedJWT.parse(idToken);
     when(oidcCredentials.getIdToken()).thenReturn(jwt);
 
-    realm.doGetAuthenticationInfo(authenticationToken);
+    assertThrows(
+        AuthenticationException.class, () -> realm.doGetAuthenticationInfo(authenticationToken));
   }
 
   private JWTCreator.Builder getIdTokenBuilder() {

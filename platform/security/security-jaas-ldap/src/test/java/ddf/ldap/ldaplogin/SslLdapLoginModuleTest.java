@@ -15,6 +15,7 @@ package ddf.ldap.ldaplogin;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -48,10 +49,10 @@ public class SslLdapLoginModuleTest {
     assertThat(loginBool, is(false));
   }
 
-  @Test(expected = LoginException.class)
-  public void testBadCharacters() throws LoginException {
+  @Test
+  public void testBadCharacters() {
     SslLdapLoginModule sslLdapLoginModule = new SslLdapLoginModule();
-    sslLdapLoginModule.validateUsername("<user>");
+    assertThrows(LoginException.class, () -> sslLdapLoginModule.validateUsername("<user>"));
   }
 
   @Test
