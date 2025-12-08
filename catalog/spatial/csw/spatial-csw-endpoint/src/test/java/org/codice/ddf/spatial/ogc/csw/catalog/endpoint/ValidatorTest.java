@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.spatial.ogc.csw.catalog.endpoint;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -77,11 +78,11 @@ public class ValidatorTest {
     validator.validateTypes(qNameList, "version");
   }
 
-  @Test(expected = CswException.class)
-  public void testValidateTypesInvalidType() throws Exception {
+  @Test
+  public void testValidateTypesInvalidType() {
     QName[] qname = {new QName("schema", "name")};
     qNameList = Arrays.asList(qname);
-    validator.validateTypes(qNameList, "version");
+    assertThrows(CswException.class, () -> validator.validateTypes(qNameList, "version"));
   }
 
   @Test
@@ -106,12 +107,12 @@ public class ValidatorTest {
     validator.validateOutputSchema(schema, transformerManager);
   }
 
-  @Test(expected = CswException.class)
-  public void testValidateOutputSchemaInvalidOutputSchema() throws Exception {
-
+  @Test
+  public void testValidateOutputSchemaInvalidOutputSchema() {
     String schema = "schema";
     when(transformerManager.getTransformerBySchema(eq(schema))).thenReturn(null);
-    validator.validateOutputSchema(schema, transformerManager);
+    assertThrows(
+        CswException.class, () -> validator.validateOutputSchema(schema, transformerManager));
   }
 
   @Test
@@ -144,10 +145,10 @@ public class ValidatorTest {
         drr.getTypeName(), drr.getNamespace(), namespacePrefixToUriMappings);
   }
 
-  @Test(expected = CswException.class)
-  public void testEmptyNamespace() throws CswException {
+  @Test
+  public void testEmptyNamespace() {
     List<QName> types = Collections.singletonList(new QName("localname"));
-    validator.validateFullyQualifiedTypes(types);
+    assertThrows(CswException.class, () -> validator.validateFullyQualifiedTypes(types));
   }
 
   @Test
@@ -156,44 +157,47 @@ public class ValidatorTest {
     validator.validateTypes(null, "version");
   }
 
-  @Test(expected = CswException.class)
-  public void testBadElementSetNameCombination() throws CswException {
+  @Test
+  public void testBadElementSetNameCombination() {
     QueryType queryType = mock(QueryType.class);
     when(queryType.isSetElementName()).thenReturn(true);
     when(queryType.isSetElementSetName()).thenReturn(true);
-    validator.validateElementNames(queryType);
+    assertThrows(CswException.class, () -> validator.validateElementNames(queryType));
   }
 
-  @Test(expected = CswException.class)
-  public void testInvalidElementName() throws CswException {
+  @Test
+  public void testInvalidElementName() {
     QueryType queryType = mock(QueryType.class);
     when(queryType.isSetElementName()).thenReturn(true);
     when(queryType.getElementName())
         .thenReturn(Collections.singletonList(new QName("fake element name")));
-    validator.validateElementNames(queryType);
+    assertThrows(CswException.class, () -> validator.validateElementNames(queryType));
   }
 
-  @Test(expected = CswException.class)
-  public void testInvalidElementSetName() throws CswException {
+  @Test
+  public void testInvalidElementSetName() {
     QueryType queryType = mock(QueryType.class);
     when(queryType.isSetElementSetName()).thenReturn(true);
     when(queryType.getElementSetName()).thenReturn(new ElementSetNameType());
-    validator.validateElementNames(queryType);
+    assertThrows(CswException.class, () -> validator.validateElementNames(queryType));
   }
 
-  @Test(expected = CswException.class)
-  public void testInvalidVersion() throws CswException {
-    validator.validateVersion("invalid version");
+  @Test
+  public void testInvalidVersion() {
+    assertThrows(CswException.class, () -> validator.validateVersion("invalid version"));
   }
 
-  @Test(expected = CswException.class)
-  public void testInvalidOutputFormat() throws CswException {
-    validator.validateOutputFormat("invalid format", transformerManager);
+  @Test
+  public void testInvalidOutputFormat() {
+    assertThrows(
+        CswException.class,
+        () -> validator.validateOutputFormat("invalid format", transformerManager));
   }
 
-  @Test(expected = CswException.class)
-  public void testInvalidSchemaLanguage() throws CswException {
-    validator.validateSchemaLanguage("invalid schema language");
+  @Test
+  public void testInvalidSchemaLanguage() {
+    assertThrows(
+        CswException.class, () -> validator.validateSchemaLanguage("invalid schema language"));
   }
 
   /**
