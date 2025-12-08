@@ -17,6 +17,7 @@ package ddf.catalog.transformer.csv.common;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -198,7 +199,7 @@ public class MetacardIteratorTest {
     assertThat(iterator.next().toString(), isEmptyString());
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void testHasNext() {
     Metacard metacard = buildMetacard();
     Iterator<Serializable> iterator = new MetacardIterator(metacard, ATTRIBUTE_DESCRIPTOR_LIST);
@@ -207,7 +208,7 @@ public class MetacardIteratorTest {
       iterator.next();
     }
 
-    iterator.next();
+    assertThrows(NoSuchElementException.class, () -> iterator.next());
   }
 
   private Metacard buildMetacard() {

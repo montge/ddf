@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -211,7 +212,7 @@ public class XsltMetacardTransformerTest {
     assertThat(output.length() > 0, is(true));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testTransformWithMalformedXml() throws Exception {
     transformer = createTransformerWithXslt(IDENTITY_XSLT);
     MetacardImpl metacard = createBasicMetacard();
@@ -219,10 +220,10 @@ public class XsltMetacardTransformerTest {
     String malformedXml = "<metadata><title>Test</title><unclosed>";
     metacard.setMetadata(malformedXml);
 
-    transformer.transform(metacard, null);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testTransformWithInvalidXslt() throws Exception {
     String invalidXslt = "<?xml version=\"1.0\"?><not-xslt>Invalid</not-xslt>";
 
@@ -231,7 +232,7 @@ public class XsltMetacardTransformerTest {
     transformer = new XsltMetacardTransformer(mockBundle, "invalid.xsl");
     MetacardImpl metacard = createBasicMetacard();
 
-    transformer.transform(metacard, null);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
   }
 
   @Test
@@ -346,7 +347,7 @@ public class XsltMetacardTransformerTest {
    * SECURITY TEST: Verify that XXE (XML External Entity) attacks are prevented. The transformer
    * should use secure XML parsing that disables external entities.
    */
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testTransformBlocksXXEAttack() throws Exception {
     transformer = createTransformerWithXslt(IDENTITY_XSLT);
     MetacardImpl metacard = createBasicMetacard();
@@ -363,13 +364,8 @@ public class XsltMetacardTransformerTest {
 
     metacard.setMetadata(xxePayload);
 
-    // This should throw an exception or not process the external entity
-    BinaryContent result = transformer.transform(metacard, null);
-    String output = inputStreamToString(result.getInputStream());
-
-    // If we get here, verify that the external entity was NOT resolved
-    assertThat(output, not(containsString("root:")));
-    assertThat(output, not(containsString("/bin/bash")));
+    // This should throw an exception due to secure XML parser blocking DTD
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
   }
 
   /** SECURITY TEST: Test handling of namespace declarations */

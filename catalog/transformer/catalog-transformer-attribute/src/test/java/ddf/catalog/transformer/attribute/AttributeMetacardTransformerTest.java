@@ -15,6 +15,7 @@ package ddf.catalog.transformer.attribute;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,38 +59,31 @@ public class AttributeMetacardTransformerTest {
   private static final AttributeMetacardTransformer METADATA_TRANSFORMER =
       new AttributeMetacardTransformer(Metacard.METADATA, Metacard.METADATA, xmlMimeType);
 
-  /**
-   * Tests case of null {@link Metacard}
-   *
-   * @throws CatalogTransformerException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacard() throws CatalogTransformerException {
-    THUMBNAIL_TRANSFORMER.transform(null, null);
+  /** Tests case of null {@link Metacard} */
+  @Test
+  public void testNullMetacard() {
+    assertThrows(
+        CatalogTransformerException.class, () -> THUMBNAIL_TRANSFORMER.transform(null, null));
   }
 
-  /**
-   * Tests case where metacard's thumbnail is null.
-   *
-   * @throws CatalogTransformerException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacardThumbnail() throws CatalogTransformerException {
+  /** Tests case where metacard's thumbnail is null. */
+  @Test
+  public void testNullMetacardThumbnail() {
     Metacard mockMetacard = mock(Metacard.class);
 
-    THUMBNAIL_TRANSFORMER.transform(mockMetacard, null);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> THUMBNAIL_TRANSFORMER.transform(mockMetacard, null));
   }
 
-  /**
-   * Tests case where metacard's metadata is null.
-   *
-   * @throws CatalogTransformerException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacardMetadata() throws CatalogTransformerException {
+  /** Tests case where metacard's metadata is null. */
+  @Test
+  public void testNullMetacardMetadata() {
     Metacard mockMetacard = mock(Metacard.class);
 
-    METADATA_TRANSFORMER.transform(mockMetacard, null);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> METADATA_TRANSFORMER.transform(mockMetacard, null));
   }
 
   /**
@@ -139,32 +133,24 @@ public class AttributeMetacardTransformerTest {
     simpleStringTransform("");
   }
 
-  /**
-   * Tests exception thrown for {@code null} string
-   *
-   * @throws CatalogTransformerException
-   * @throws IOException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullString() throws CatalogTransformerException, IOException {
-    simpleStringTransform(null);
+  /** Tests exception thrown for {@code null} string */
+  @Test
+  public void testNullString() {
+    assertThrows(CatalogTransformerException.class, () -> simpleStringTransform(null));
   }
 
-  /**
-   * Tests exception thrown for {@code null} string
-   *
-   * @throws CatalogTransformerException
-   * @throws IOException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testNotAString() throws CatalogTransformerException, IOException {
+  /** Tests exception thrown for {@code null} string */
+  @Test
+  public void testNotAString() {
 
     Metacard mockMetacard = mock(Metacard.class);
 
     when(mockMetacard.getAttribute(isA(String.class)))
         .thenReturn(new AttributeImpl(Metacard.METADATA, new Date()));
 
-    METADATA_TRANSFORMER.transform(mockMetacard, null);
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> METADATA_TRANSFORMER.transform(mockMetacard, null));
   }
 
   /**
