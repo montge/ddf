@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.certificate.keystore.editor;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -667,46 +668,78 @@ public class KeystoreEditorTest {
     Assert.assertThat(keystore.size(), Is.is(0));
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testBadData() throws KeystoreEditor.KeystoreEditorException {
-    KeystoreEditor keystoreEditor = new KeystoreEditor();
-    keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
-    keystoreEditor.addPrivateKey("asdf", password, password, "*$%^*", "", "file.pem");
+  @Test
+  public void testBadData() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          KeystoreEditor keystoreEditor = new KeystoreEditor();
+          keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
+          keystoreEditor.addPrivateKey("asdf", password, password, "*$%^*", "", "file.pem");
+        });
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testBadKeyPassword() throws KeystoreEditor.KeystoreEditorException, IOException {
-    addPrivateKey("asdf", jksFile);
+  @Test
+  public void testBadKeyPassword() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          addPrivateKey("asdf", jksFile);
+        });
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testBadKeyPasswordP12() throws KeystoreEditor.KeystoreEditorException, IOException {
-    addPrivateKey("asdf", pkcs12StoreFile);
+  @Test
+  public void testBadKeyPasswordP12() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          addPrivateKey("asdf", pkcs12StoreFile);
+        });
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testBadStorePassword() throws KeystoreEditor.KeystoreEditorException, IOException {
-    addPrivateKey("asdf", jksFile);
+  @Test
+  public void testBadStorePassword() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          addPrivateKey("asdf", jksFile);
+        });
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testBadStorePasswordP12() throws KeystoreEditor.KeystoreEditorException, IOException {
-    addPrivateKey("asdf", pkcs12StoreFile);
+  @Test
+  public void testBadStorePasswordP12() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          addPrivateKey("asdf", pkcs12StoreFile);
+        });
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testNullAlias() throws KeystoreEditor.KeystoreEditorException, IOException {
-    addPrivateKey(null, pkcs12StoreFile);
+  @Test
+  public void testNullAlias() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          addPrivateKey(null, pkcs12StoreFile);
+        });
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testBlankAlias() throws KeystoreEditor.KeystoreEditorException, IOException {
-    addPrivateKey("", pkcs12StoreFile);
+  @Test
+  public void testBlankAlias() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          addPrivateKey("", pkcs12StoreFile);
+        });
   }
 
-  @Test(expected = KeystoreEditor.KeystoreEditorException.class)
-  public void testBadFile() throws KeystoreEditor.KeystoreEditorException, IOException {
-    addPrivateKey("", badFile);
+  @Test
+  public void testBadFile() {
+    assertThrows(
+        KeystoreEditor.KeystoreEditorException.class,
+        () -> {
+          addPrivateKey("", badFile);
+        });
   }
 
   private void addPrivateKey(String alias, File file)

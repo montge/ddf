@@ -14,6 +14,7 @@
 package org.codice.ddf.admin.application.service.command;
 
 import static org.codice.mockito.PrivilegedVerificationMode.privileged;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
@@ -116,34 +117,46 @@ public class ProfileInstallCommandTest {
     verifyExtraProfileMocks();
   }
 
-  @Test(expected = ResolutionException.class)
+  @Test
   public void testExtraProfileInvalidFeatureInstall() throws Exception {
-    profileInstallCommand.profileName = "invalidFeatureInstall";
-    doThrow(new ResolutionException(""))
-        .when(featuresService)
-        .installFeature("badFeature", NO_AUTO_REFRESH);
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
-    verify(featuresService, times(2)).installFeature(anyString(), eq(NO_AUTO_REFRESH));
+    assertThrows(
+        ResolutionException.class,
+        () -> {
+          profileInstallCommand.profileName = "invalidFeatureInstall";
+          doThrow(new ResolutionException(""))
+              .when(featuresService)
+              .installFeature("badFeature", NO_AUTO_REFRESH);
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+          verify(featuresService, times(2)).installFeature(anyString(), eq(NO_AUTO_REFRESH));
+        });
   }
 
-  @Test(expected = ResolutionException.class)
+  @Test
   public void testExtraProfileInvalidFeatureUninstall() throws Exception {
-    profileInstallCommand.profileName = "invalidFeatureUninstall";
-    doThrow(new ResolutionException(""))
-        .when(featuresService)
-        .uninstallFeature("badFeature", "0.0.0", NO_AUTO_REFRESH);
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
-    verify(featuresService, times(2)).uninstallFeature(anyString(), eq(NO_AUTO_REFRESH));
+    assertThrows(
+        ResolutionException.class,
+        () -> {
+          profileInstallCommand.profileName = "invalidFeatureUninstall";
+          doThrow(new ResolutionException(""))
+              .when(featuresService)
+              .uninstallFeature("badFeature", "0.0.0", NO_AUTO_REFRESH);
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+          verify(featuresService, times(2)).uninstallFeature(anyString(), eq(NO_AUTO_REFRESH));
+        });
   }
 
-  @Test(expected = BundleException.class)
+  @Test
   public void testExtraProfileInvalidStopBundle() throws Exception {
-    profileInstallCommand.profileName = "invalidStopBundles";
-    Bundle badBundle = mock(Bundle.class);
-    doThrow(new BundleException("")).when(badBundle).stop();
-    when(bundleService.getBundle("badBundle")).thenReturn(badBundle);
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
-    verify(bundleService, times(2)).getBundle(anyString());
+    assertThrows(
+        BundleException.class,
+        () -> {
+          profileInstallCommand.profileName = "invalidStopBundles";
+          Bundle badBundle = mock(Bundle.class);
+          doThrow(new BundleException("")).when(badBundle).stop();
+          when(bundleService.getBundle("badBundle")).thenReturn(badBundle);
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+          verify(bundleService, times(2)).getBundle(anyString());
+        });
   }
 
   @Test
@@ -153,37 +166,54 @@ public class ProfileInstallCommandTest {
     verifyMocksNoOp();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testProfileStartsFolderTraversal() throws Exception {
-    profileInstallCommand.profileName = "../testProfile";
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
-    verifyMocksNoOp();
+  @Test
+  public void testProfileStartsFolderTraversal() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          profileInstallCommand.profileName = "../testProfile";
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+          verifyMocksNoOp();
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testProfileStartsSlash() throws Exception {
-    profileInstallCommand.profileName = "/testProfile";
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
-    verifyMocksNoOp();
+  @Test
+  public void testProfileStartsSlash() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          profileInstallCommand.profileName = "/testProfile";
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+          verifyMocksNoOp();
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testBundleNotExist() throws Exception {
-    doThrow(IllegalArgumentException.class).when(bundleService).getBundle(any());
-    profileInstallCommand.profileName = "invalidStopBundles";
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+  @Test
+  public void testBundleNotExist() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          doThrow(IllegalArgumentException.class).when(bundleService).getBundle(any());
+          profileInstallCommand.profileName = "invalidStopBundles";
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+        });
   }
 
-  @Test(expected = Exception.class)
-  public void testInstallPostInstallModuleFailure() throws Exception {
-    Feature postInstallFeature = createMockFeature("admin-post-install-modules");
-    when(featuresService.getFeature("admin-post-install-modules")).thenReturn(postInstallFeature);
-    when(featuresService.isInstalled(postInstallFeature)).thenReturn(false);
-    doThrow(Exception.class)
-        .when(featuresService)
-        .installFeature("admin-post-install-modules", NO_AUTO_REFRESH);
-    profileInstallCommand.profileName = "devProfile";
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+  @Test
+  public void testInstallPostInstallModuleFailure() {
+    assertThrows(
+        Exception.class,
+        () -> {
+          Feature postInstallFeature = createMockFeature("admin-post-install-modules");
+          when(featuresService.getFeature("admin-post-install-modules"))
+              .thenReturn(postInstallFeature);
+          when(featuresService.isInstalled(postInstallFeature)).thenReturn(false);
+          doThrow(Exception.class)
+              .when(featuresService)
+              .installFeature("admin-post-install-modules", NO_AUTO_REFRESH);
+          profileInstallCommand.profileName = "devProfile";
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+        });
   }
 
   @Test
@@ -214,17 +244,21 @@ public class ProfileInstallCommandTest {
         .uninstallFeature(eq("admin-modules-installer"), eq("0.0.0"), eq(NO_AUTO_REFRESH));
   }
 
-  @Test(expected = Exception.class)
-  public void testUninstallInstallerFailure() throws Exception {
-    Feature installerFeature = createMockFeature("admin-modules-installer");
-    this.featuresService = mock(FeaturesService.class);
-    when(featuresService.getFeature(anyString())).thenReturn(installerFeature);
-    when(featuresService.isInstalled(installerFeature)).thenReturn(true);
-    doThrow(Exception.class)
-        .when(featuresService)
-        .uninstallFeature("admin-modules-installer", "0.0.0", NO_AUTO_REFRESH);
-    profileInstallCommand.profileName = "invalidStopBundles";
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+  @Test
+  public void testUninstallInstallerFailure() {
+    assertThrows(
+        Exception.class,
+        () -> {
+          Feature installerFeature = createMockFeature("admin-modules-installer");
+          this.featuresService = mock(FeaturesService.class);
+          when(featuresService.getFeature(anyString())).thenReturn(installerFeature);
+          when(featuresService.isInstalled(installerFeature)).thenReturn(true);
+          doThrow(Exception.class)
+              .when(featuresService)
+              .uninstallFeature("admin-modules-installer", "0.0.0", NO_AUTO_REFRESH);
+          profileInstallCommand.profileName = "invalidStopBundles";
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+        });
   }
 
   @Test
@@ -236,18 +270,26 @@ public class ProfileInstallCommandTest {
     verifyMocksNoOp();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testNullFeature() throws Exception {
-    FeaturesService badFeatureService = mock(FeaturesService.class);
-    when(badFeatureService.getFeature(any())).thenReturn(null);
-    profileInstallCommand.profileName = "invalidFeatureUninstall";
-    profileInstallCommand.doExecute(applicationService, badFeatureService, bundleService);
+  @Test
+  public void testNullFeature() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          FeaturesService badFeatureService = mock(FeaturesService.class);
+          when(badFeatureService.getFeature(any())).thenReturn(null);
+          profileInstallCommand.profileName = "invalidFeatureUninstall";
+          profileInstallCommand.doExecute(applicationService, badFeatureService, bundleService);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testProfileStartingWithDrive() throws Exception {
-    profileInstallCommand.profileName = "C:\\invalidStopBundles";
-    profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+  @Test
+  public void testProfileStartingWithDrive() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          profileInstallCommand.profileName = "C:\\invalidStopBundles";
+          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
+        });
   }
 
   private void verifyExtraProfileMocks() throws Exception {

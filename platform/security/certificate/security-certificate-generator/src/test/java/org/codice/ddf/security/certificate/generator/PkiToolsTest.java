@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -42,14 +43,22 @@ public class PkiToolsTest {
 
   @Mock private PrivateKey mockKey;
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void testDerToPrivateKey() {
-    PkiTools.derToPrivateKey(new byte[] {0});
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          PkiTools.derToPrivateKey(new byte[] {0});
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void nameIsNull() throws IllegalArgumentException {
-    PkiTools.makeDistinguishedName(null);
+  @Test
+  public void nameIsNull() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeDistinguishedName(null);
+        });
   }
 
   @Test
@@ -66,24 +75,40 @@ public class PkiToolsTest {
     assertThat(name.toString(), equalTo("cn=" + host));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void dnIsNull() throws CertificateEncodingException {
-    PkiTools.convertDistinguishedName((String[]) null);
+  @Test
+  public void dnIsNull() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.convertDistinguishedName((String[]) null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void dnIsEmpty() throws CertificateEncodingException {
-    PkiTools.convertDistinguishedName("");
+  @Test
+  public void dnIsEmpty() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.convertDistinguishedName("");
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void dnIsNotValidFormat() throws CertificateEncodingException {
-    PkiTools.convertDistinguishedName("cnIsSomething", "l=london");
+  @Test
+  public void dnIsNotValidFormat() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.convertDistinguishedName("cnIsSomething", "l=london");
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void dnHasInvalidRDN() throws CertificateEncodingException {
-    PkiTools.convertDistinguishedName("cnxxx=IsSomething", "l=london");
+  @Test
+  public void dnHasInvalidRDN() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.convertDistinguishedName("cnxxx=IsSomething", "l=london");
+        });
   }
 
   @Test
@@ -109,9 +134,13 @@ public class PkiToolsTest {
     assertThat(PkiTools.getHostName(), not(equalTo("")));
   }
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void exception() {
-    throw new CertificateGeneratorException("", new Exception());
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          throw new CertificateGeneratorException("", new Exception());
+        });
   }
 
   private String getPathTo(String path) {
@@ -133,22 +162,34 @@ public class PkiToolsTest {
   }
 
   // Null path to keyStore file.
-  @Test(expected = IllegalArgumentException.class)
-  public void nullPath() throws Exception {
-    PkiTools.createFileObject(null);
+  @Test
+  public void nullPath() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.createFileObject(null);
+        });
   }
 
   // Test constructor. Invalid path to keyStore file.
-  @Test(expected = FileNotFoundException.class)
-  public void invalidPath() throws Exception {
-    PkiTools.createFileObject("");
+  @Test
+  public void invalidPath() {
+    assertThrows(
+        FileNotFoundException.class,
+        () -> {
+          PkiTools.createFileObject("");
+        });
   }
 
   // Test Constructor. Path is a directory, not a file.
-  @Test(expected = FileNotFoundException.class)
-  public void pathIsDirectory() throws Exception {
+  @Test
+  public void pathIsDirectory() {
     String anyDirectory = getPathTo("");
-    PkiTools.createFileObject("");
+    assertThrows(
+        FileNotFoundException.class,
+        () -> {
+          PkiTools.createFileObject("");
+        });
   }
 
   @Test
@@ -159,55 +200,94 @@ public class PkiToolsTest {
         instanceOf(File.class));
   }
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void badKey() {
-    PkiTools.pemToPrivateKey("YmFkc3RyaW5n");
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          PkiTools.pemToPrivateKey("YmFkc3RyaW5n");
+        });
   }
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void badCert() {
-    PkiTools.pemToCertificate("YmFkc3RyaW5n");
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          PkiTools.pemToCertificate("YmFkc3RyaW5n");
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDerToCertificate() {
-
-    PkiTools.derToCertificate(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.derToCertificate(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDerToPem() {
-    PkiTools.derToPem(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.derToPem(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullToPrivateKey() {
-    PkiTools.derToPrivateKey(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.derToPrivateKey(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCertificateToPem() {
-    PkiTools.certificateToPem(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.certificateToPem(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testKeyToDer() {
-    PkiTools.keyToDer(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.keyToDer(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPemToDer() {
-    PkiTools.pemToDer(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.pemToDer(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testKeyToPem() {
-    PkiTools.keyToPem(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.keyToPem(null);
+        });
   }
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void test() {
-    PkiTools.certificateToPem(mockCert);
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          PkiTools.certificateToPem(mockCert);
+        });
   }
 
   @Test
@@ -216,35 +296,52 @@ public class PkiToolsTest {
     PkiTools.keyToDer(mockKey);
   }
 
-  @Test(expected = CertificateGeneratorException.class)
+  @Test
   public void testDerToCert() {
-    PkiTools.derToCertificate(new byte[] {0});
+    assertThrows(
+        CertificateGeneratorException.class,
+        () -> {
+          PkiTools.derToCertificate(new byte[] {0});
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeGeneralNameNullName() {
-    PkiTools.makeGeneralName(null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeGeneralName(null);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeGeneralNameMissingSeparator() {
     final String name = "A";
-
-    PkiTools.makeGeneralName(name);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeGeneralName(name);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeGeneralNameEmptyValue() {
     final String name = "A:";
-
-    PkiTools.makeGeneralName(name);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeGeneralName(name);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeGeneralNameUnkownTag() {
     final String name = "A:A";
-
-    PkiTools.makeGeneralName(name);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeGeneralName(name);
+        });
   }
 
   @Test
@@ -277,11 +374,14 @@ public class PkiToolsTest {
     assertThat(gname.getName().toString(), equalTo(value));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeGeneralNameForRIDWithInvalidID() {
     final String value = "3.2.1.4";
-
-    PkiTools.makeGeneralName("RID:" + value);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeGeneralName("RID:" + value);
+        });
   }
 
   @Test
@@ -304,11 +404,14 @@ public class PkiToolsTest {
     assertThat(gname.getName().toString(), equalTo("#01020304"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeGeneralNameForIPWithInvalidIP() {
     final String value = "1.2.3";
-
-    PkiTools.makeGeneralName("IP:" + value);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeGeneralName("IP:" + value);
+        });
   }
 
   @Test
@@ -321,10 +424,13 @@ public class PkiToolsTest {
     assertThat(gname.getName().toString(), equalTo(value));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testMakeGeneralNameForDirNameWithInvalidName() {
     final String value = "A";
-
-    PkiTools.makeGeneralName("dirName:" + value);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          PkiTools.makeGeneralName("dirName:" + value);
+        });
   }
 }

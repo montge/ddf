@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.admin.application.service.command;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -48,27 +49,39 @@ public class AbstractProfileCommandTest {
     this.abstractProfileCommand = getCommand(applicationService, featuresService, bundleService);
   }
 
-  @Test(expected = ApplicationServiceException.class)
-  public void testApplicationServiceFailure() throws Exception {
-    doAnswer(
-            invocation -> {
-              throw new ApplicationServiceException();
-            })
-        .when(applicationService)
-        .getApplication(anyString());
-    abstractProfileCommand.execute();
+  @Test
+  public void testApplicationServiceFailure() {
+    assertThrows(
+        ApplicationServiceException.class,
+        () -> {
+          doAnswer(
+                  invocation -> {
+                    throw new ApplicationServiceException();
+                  })
+              .when(applicationService)
+              .getApplication(anyString());
+          abstractProfileCommand.execute();
+        });
   }
 
-  @Test(expected = ResolutionException.class)
-  public void testFeatureServiceFailure() throws Exception {
-    doThrow(ResolutionException.class).when(featuresService).installFeature(anyString());
-    abstractProfileCommand.execute();
+  @Test
+  public void testFeatureServiceFailure() {
+    assertThrows(
+        ResolutionException.class,
+        () -> {
+          doThrow(ResolutionException.class).when(featuresService).installFeature(anyString());
+          abstractProfileCommand.execute();
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testBundleServiceFailure() throws Exception {
-    doThrow(IllegalArgumentException.class).when(bundleService).getBundle(anyString());
-    abstractProfileCommand.execute();
+  @Test
+  public void testBundleServiceFailure() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          doThrow(IllegalArgumentException.class).when(bundleService).getBundle(anyString());
+          abstractProfileCommand.execute();
+        });
   }
 
   @Test
