@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -582,7 +583,7 @@ public class WfsSourceTest {
    * Verify that, per DDF Query API Javadoc, if the startIndex is negative, the WfsSource throws an
    * UnsupportedQueryException.
    */
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testPagingStartIndexNegative() throws Exception {
     // Setup
     int pageSize = 4;
@@ -594,14 +595,14 @@ public class WfsSourceTest {
     Query query = new QueryImpl(filter, startIndex, pageSize, null, false, 0);
 
     // Execute
-    source.buildGetFeatureRequest(query);
+    assertThrows(UnsupportedQueryException.class, () -> source.buildGetFeatureRequest(query));
   }
 
   /**
    * Verify that, per DDF Query API Javadoc, if the startIndex is negative, the WfsSource throws an
    * UnsupportedQueryException.
    */
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testPagingPageSizeNegative() throws Exception {
     // Setup
     int pageSize = -4;
@@ -613,7 +614,7 @@ public class WfsSourceTest {
     Query query = new QueryImpl(filter, startIndex, pageSize, null, false, 0);
 
     // Execute
-    source.buildGetFeatureRequest(query);
+    assertThrows(UnsupportedQueryException.class, () -> source.buildGetFeatureRequest(query));
   }
 
   @Test

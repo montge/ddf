@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -409,14 +410,16 @@ public class WfsSourceTest {
     assertThat(source.isAvailable(), is(true));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testQueryEmptyQueryList() throws Exception {
     mapSchemaToFeatures(NO_PROPERTY_SCHEMA, ONE_FEATURE);
     setUpMocks(null, null, ONE_FEATURE, ONE_FEATURE);
     QueryImpl propertyIsLikeQuery =
         new QueryImpl(builder.attribute(Metacard.ANY_TEXT).is().like().text(LITERAL));
     propertyIsLikeQuery.setPageSize(MAX_FEATURES);
-    source.query(new QueryRequestImpl(propertyIsLikeQuery));
+    assertThrows(
+        UnsupportedQueryException.class,
+        () -> source.query(new QueryRequestImpl(propertyIsLikeQuery)));
   }
 
   @Test
@@ -711,7 +714,7 @@ public class WfsSourceTest {
     assertThat(query.getFilter().getSpatialOps().getValue(), is(instanceOf(SpatialOpsType.class)));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testUnsupportedSpatialOperandQuery() throws Exception {
     mapSchemaToFeatures(NO_PROPERTY_SCHEMA, ONE_FEATURE);
     setUpMocks(null, null, ONE_FEATURE, ONE_FEATURE);
@@ -720,10 +723,11 @@ public class WfsSourceTest {
     QueryImpl intersectQuery = new QueryImpl(intersectFilter);
     intersectQuery.setPageSize(MAX_FEATURES);
 
-    source.query(new QueryRequestImpl(intersectQuery));
+    assertThrows(
+        UnsupportedQueryException.class, () -> source.query(new QueryRequestImpl(intersectQuery)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testUnsupportedGeometryOperandQuery() throws Exception {
     mapSchemaToFeatures(ONE_GML_PROPERTY_SCHEMA, ONE_FEATURE);
     setUpMocks(Collections.singletonList("Intersects"), SRS_NAME, ONE_FEATURE, ONE_FEATURE);
@@ -732,7 +736,8 @@ public class WfsSourceTest {
     QueryImpl intersectQuery = new QueryImpl(intersectFilter);
     intersectQuery.setPageSize(MAX_FEATURES);
 
-    source.query(new QueryRequestImpl(intersectQuery));
+    assertThrows(
+        IllegalArgumentException.class, () -> source.query(new QueryRequestImpl(intersectQuery)));
   }
 
   @Test
@@ -936,7 +941,7 @@ public class WfsSourceTest {
    * Verify that, per DDF Query API Javadoc, if the startIndex is negative, the WfsSource throws an
    * UnsupportedQueryException.
    */
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testPagingStartIndexNegative() throws Exception {
     int pageSize = 4;
     int startIndex = -1;
@@ -944,14 +949,14 @@ public class WfsSourceTest {
     mapSchemaToFeatures(ONE_TEXT_PROPERTY_SCHEMA_PERSON, MAX_FEATURES);
     setUpMocks(null, null, MAX_FEATURES, MAX_FEATURES);
 
-    executeQuery(startIndex, pageSize);
+    assertThrows(UnsupportedQueryException.class, () -> executeQuery(startIndex, pageSize));
   }
 
   /**
    * Verify that, per DDF Query API Javadoc, if the startIndex is zero, the WfsSource throws an
    * UnsupportedQueryException.
    */
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testPagingStartIndexZero() throws Exception {
     int pageSize = 4;
     int startIndex = 0;
@@ -959,7 +964,7 @@ public class WfsSourceTest {
     mapSchemaToFeatures(ONE_TEXT_PROPERTY_SCHEMA_PERSON, MAX_FEATURES);
     setUpMocks(null, null, MAX_FEATURES, MAX_FEATURES);
 
-    executeQuery(startIndex, pageSize);
+    assertThrows(UnsupportedQueryException.class, () -> executeQuery(startIndex, pageSize));
   }
 
   /**
@@ -1270,7 +1275,7 @@ public class WfsSourceTest {
         is(true));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testOneIDOnePropertyQuery() throws Exception {
     mapSchemaToFeatures(ONE_TEXT_PROPERTY_SCHEMA_PERSON, TWO_FEATURES);
     setUpMocks(null, null, TWO_FEATURES, TWO_FEATURES);
@@ -1281,17 +1286,19 @@ public class WfsSourceTest {
     QueryImpl query = new QueryImpl(builder.anyOf(Arrays.asList(propertyIsLikeFilter, idFilter)));
 
     // we are verifying that mixing featureID filters with other filters is not supported
-    source.query(new QueryRequestImpl(query));
+    assertThrows(UnsupportedQueryException.class, () -> source.query(new QueryRequestImpl(query)));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testNoFeatures() throws Exception {
     setUpMocks(null, null, 0, TWO_FEATURES);
     QueryImpl propertyIsLikeQuery =
         new QueryImpl(builder.attribute(Metacard.ANY_TEXT).is().like().text("literal"));
     propertyIsLikeQuery.setPageSize(MAX_FEATURES);
 
-    source.query(new QueryRequestImpl(propertyIsLikeQuery));
+    assertThrows(
+        UnsupportedQueryException.class,
+        () -> source.query(new QueryRequestImpl(propertyIsLikeQuery)));
   }
 
   @Test
