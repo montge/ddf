@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -894,9 +895,8 @@ public class CswSourceTest extends TestCswSourceBase {
     assertXMLEqual(expectedXml, xml);
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testCswSourceNoFilterCapabilities()
-      throws CswException, UnsupportedQueryException, SecurityServiceException {
+  @Test
+  public void testCswSourceNoFilterCapabilities() throws CswException, SecurityServiceException {
     // Setup
     CapabilitiesType mockCapabilitiesType = mock(CapabilitiesType.class);
     when(mockCsw.getCapabilities(any(GetCapabilitiesRequest.class)))
@@ -909,7 +909,9 @@ public class CswSourceTest extends TestCswSourceBase {
         new QueryImpl(builder.attribute(Metacard.ANY_TEXT).is().like().text("junk"));
     propertyIsLikeQuery.setPageSize(10);
 
-    cswSource.query(getQueryRequestWithSubject(propertyIsLikeQuery));
+    assertThrows(
+        UnsupportedQueryException.class,
+        () -> cswSource.query(getQueryRequestWithSubject(propertyIsLikeQuery)));
   }
 
   @Test
@@ -1370,10 +1372,8 @@ public class CswSourceTest extends TestCswSourceBase {
     verify(csw, times(1)).getRecordById(any(GetRecordByIdRequest.class), any(String.class));
   }
 
-  @Test(expected = ResourceNotFoundException.class)
-  public void testRetrieveResourceUsingGetRecordByIdWithNoId()
-      throws CswException, ResourceNotFoundException, IOException, ResourceNotSupportedException,
-          URISyntaxException {
+  @Test
+  public void testRetrieveResourceUsingGetRecordByIdWithNoId() throws Exception {
     Csw csw = createMockCsw();
     CswRecordCollection collection = mock(CswRecordCollection.class);
     Resource resource = mock(Resource.class);
@@ -1387,7 +1387,9 @@ public class CswSourceTest extends TestCswSourceBase {
     cswSource.setResourceReader(reader);
 
     Map<String, Serializable> props = new HashMap<>();
-    cswSource.retrieveResource(new URI("http://example.com/resource"), props);
+    assertThrows(
+        ResourceNotFoundException.class,
+        () -> cswSource.retrieveResource(new URI("http://example.com/resource"), props));
   }
 
   private CswSourceConfiguration getStandardCswSourceConfiguration(

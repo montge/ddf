@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -346,7 +347,7 @@ public class GetRecordsMessageBodyReaderTest {
     assertThat(resource.getByteArray(), is(data));
   }
 
-  @Test(expected = WebApplicationException.class)
+  @Test
   public void testExceptionReport() throws Exception {
     GetRecordsMessageBodyReader reader =
         new GetRecordsMessageBodyReader(
@@ -355,7 +356,9 @@ public class GetRecordsMessageBodyReaderTest {
     try (InputStream is =
         GetRecordsMessageBodyReaderTest.class.getResourceAsStream("/exceptionReport.xml")) {
       MultivaluedMap<String, String> httpHeaders = new MultivaluedHashMap<>();
-      reader.readFrom(CswRecordCollection.class, null, null, null, httpHeaders, is);
+      assertThrows(
+          WebApplicationException.class,
+          () -> reader.readFrom(CswRecordCollection.class, null, null, null, httpHeaders, is));
     }
   }
 
