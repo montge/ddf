@@ -25,6 +25,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.AdditionalAnswers.returnsSecondArg;
@@ -1342,37 +1343,46 @@ public class CatalogFrameworkImplTest {
     // resourceResponse.getRequest());
   }
 
-  @Test(expected = FederationException.class)
-  public void testPreQueryStopExecution()
-      throws UnsupportedQueryException, FederationException, SourceUnavailableException {
+  @Test
+  public void testPreQueryStopExecution() {
+    assertThrows(
+        FederationException.class,
+        () -> {
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider",
+                  "Provider",
+                  "v1.0",
+                  "DDF",
+                  new HashSet<ContentType>(),
+                  true,
+                  new Date());
 
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, new Date());
+          FederationStrategy federationStrategy = mock(FederationStrategy.class);
 
-    FederationStrategy federationStrategy = mock(FederationStrategy.class);
+          QueryRequest request = mock(QueryRequest.class);
 
-    QueryRequest request = mock(QueryRequest.class);
+          when(request.getQuery()).thenReturn(mock(Query.class));
 
-    when(request.getQuery()).thenReturn(mock(Query.class));
+          PreQueryPlugin stopQueryPlugin =
+              new PreQueryPlugin() {
 
-    PreQueryPlugin stopQueryPlugin =
-        new PreQueryPlugin() {
+                @Override
+                public QueryRequest process(QueryRequest input)
+                    throws PluginExecutionException, StopProcessingException {
+                  throw new StopProcessingException(
+                      "Testing that the framework will stop the query.");
+                }
+              };
 
-          @Override
-          public QueryRequest process(QueryRequest input)
-              throws PluginExecutionException, StopProcessingException {
-            throw new StopProcessingException("Testing that the framework will stop the query.");
-          }
-        };
+          FrameworkProperties frameworkProperties = new FrameworkProperties();
+          frameworkProperties.setPreQuery(Arrays.asList(stopQueryPlugin));
+          frameworkProperties.setFederationStrategy(federationStrategy);
+          frameworkProperties.setCatalogProviders(Collections.singletonList(provider));
 
-    FrameworkProperties frameworkProperties = new FrameworkProperties();
-    frameworkProperties.setPreQuery(Arrays.asList(stopQueryPlugin));
-    frameworkProperties.setFederationStrategy(federationStrategy);
-    frameworkProperties.setCatalogProviders(Collections.singletonList(provider));
-
-    CatalogFrameworkImpl framework = createFramework(frameworkProperties);
-    framework.query(request);
+          CatalogFrameworkImpl framework = createFramework(frameworkProperties);
+          framework.query(request);
+        });
   }
 
   private CatalogFrameworkImpl createFramework(FrameworkProperties frameworkProperties) {
@@ -1462,52 +1472,56 @@ public class CatalogFrameworkImplTest {
     return catalogFramework;
   }
 
-  @Test(expected = FederationException.class)
-  public void testPostQueryStopExecution()
-      throws UnsupportedQueryException, FederationException, SourceUnavailableException {
+  @Test
+  public void testPostQueryStopExecution() {
+    assertThrows(
+        FederationException.class,
+        () -> {
+          BundleContext context = null;
 
-    BundleContext context = null;
+          FilterFactory filterFactory = new FilterFactoryImpl();
 
-    FilterFactory filterFactory = new FilterFactoryImpl();
+          Filter filter =
+              filterFactory.like(
+                  filterFactory.property(Metacard.METADATA), "goodyear", "*", "?", "/", false);
 
-    Filter filter =
-        filterFactory.like(
-            filterFactory.property(Metacard.METADATA), "goodyear", "*", "?", "/", false);
+          QueryRequest request = new QueryRequestImpl(new QueryImpl(filter));
 
-    QueryRequest request = new QueryRequestImpl(new QueryImpl(filter));
+          SourceResponseImpl sourceResponse =
+              new SourceResponseImpl(request, new ArrayList<Result>());
 
-    SourceResponseImpl sourceResponse = new SourceResponseImpl(request, new ArrayList<Result>());
+          QueryResponseImpl queryResponse = new QueryResponseImpl(sourceResponse, "anyId");
 
-    QueryResponseImpl queryResponse = new QueryResponseImpl(sourceResponse, "anyId");
+          CatalogProvider provider = mock(CatalogProvider.class);
 
-    CatalogProvider provider = mock(CatalogProvider.class);
+          when(provider.query(isA(QueryRequest.class))).thenReturn(sourceResponse);
 
-    when(provider.query(isA(QueryRequest.class))).thenReturn(sourceResponse);
+          FederationStrategy federationStrategy = mock(FederationStrategy.class);
 
-    FederationStrategy federationStrategy = mock(FederationStrategy.class);
+          when(federationStrategy.federate(isA(List.class), isA(QueryRequest.class)))
+              .thenReturn(queryResponse);
 
-    when(federationStrategy.federate(isA(List.class), isA(QueryRequest.class)))
-        .thenReturn(queryResponse);
+          PostQueryPlugin stopQueryPlugin =
+              new PostQueryPlugin() {
 
-    PostQueryPlugin stopQueryPlugin =
-        new PostQueryPlugin() {
+                @Override
+                public QueryResponse process(QueryResponse input)
+                    throws PluginExecutionException, StopProcessingException {
+                  throw new StopProcessingException(
+                      "Testing that the framework will stop the query.");
+                }
+              };
+          FrameworkProperties props = new FrameworkProperties();
+          props.setCatalogProviders(Collections.singletonList((CatalogProvider) provider));
+          props.setBundleContext(context);
+          props.setPostQuery(Arrays.asList(stopQueryPlugin));
+          props.setFederationStrategy(federationStrategy);
+          props.setQueryResponsePostProcessor(mock(QueryResponsePostProcessor.class));
+          props.setFilterBuilder(new GeotoolsFilterBuilder());
 
-          @Override
-          public QueryResponse process(QueryResponse input)
-              throws PluginExecutionException, StopProcessingException {
-            throw new StopProcessingException("Testing that the framework will stop the query.");
-          }
-        };
-    FrameworkProperties props = new FrameworkProperties();
-    props.setCatalogProviders(Collections.singletonList((CatalogProvider) provider));
-    props.setBundleContext(context);
-    props.setPostQuery(Arrays.asList(stopQueryPlugin));
-    props.setFederationStrategy(federationStrategy);
-    props.setQueryResponsePostProcessor(mock(QueryResponsePostProcessor.class));
-    props.setFilterBuilder(new GeotoolsFilterBuilder());
-
-    CatalogFrameworkImpl framework = createFramework(props);
-    framework.query(request);
+          CatalogFrameworkImpl framework = createFramework(props);
+          framework.query(request);
+        });
   }
 
   @Ignore
@@ -1550,48 +1564,65 @@ public class CatalogFrameworkImplTest {
     assertThat(queryMetacardType.getAttributeDescriptors(), is(expectedAttributeDescriptors));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testQueryTransformWithTransformException() throws Exception {
-    BundleContext context = mock(BundleContext.class);
-    QueryResponseTransformer transformer = mock(QueryResponseTransformer.class);
-    ServiceReference reference = mock(ServiceReference.class);
-    ServiceReference[] serviceReferences = new ServiceReference[] {reference};
-    when(context.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferences);
-    when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
-    when(transformer.transform(isA(SourceResponse.class), isA(Map.class)))
-        .thenThrow(new CatalogTransformerException("Could not transform"));
+  @Test
+  public void testQueryTransformWithTransformException() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> {
+          BundleContext context = mock(BundleContext.class);
+          QueryResponseTransformer transformer = mock(QueryResponseTransformer.class);
+          ServiceReference reference = mock(ServiceReference.class);
+          ServiceReference[] serviceReferences = new ServiceReference[] {reference};
+          when(context.getServiceReferences(anyString(), anyString()))
+              .thenReturn(serviceReferences);
+          when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
+          when(transformer.transform(isA(SourceResponse.class), isA(Map.class)))
+              .thenThrow(new CatalogTransformerException("Could not transform"));
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
-    SourceResponse response = new SourceResponseImpl(null, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(
+                  provider, storageProvider, context, eventAdmin, true);
+          SourceResponse response = new SourceResponseImpl(null, null);
 
-    framework.transform(response, "NONE", new HashMap<String, Serializable>());
+          framework.transform(response, "NONE", new HashMap<String, Serializable>());
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testQueryTransformWithNullResponse() throws Exception {
-    BundleContext context = mock(BundleContext.class);
-    ServiceReference reference = mock(ServiceReference.class);
-    ServiceReference[] serviceReferences = new ServiceReference[] {reference};
-    when(context.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferences);
+  @Test
+  public void testQueryTransformWithNullResponse() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          BundleContext context = mock(BundleContext.class);
+          ServiceReference reference = mock(ServiceReference.class);
+          ServiceReference[] serviceReferences = new ServiceReference[] {reference};
+          when(context.getServiceReferences(anyString(), anyString()))
+              .thenReturn(serviceReferences);
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(
+                  provider, storageProvider, context, eventAdmin, true);
 
-    framework.transform((SourceResponse) null, "NONE", new HashMap<String, Serializable>());
+          framework.transform((SourceResponse) null, "NONE", new HashMap<String, Serializable>());
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testQueryTransformWithInvalidSyntaxException() throws Exception {
-    BundleContext context = mock(BundleContext.class);
+  @Test
+  public void testQueryTransformWithInvalidSyntaxException() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          BundleContext context = mock(BundleContext.class);
 
-    when(context.getServiceReferences(anyString(), anyString()))
-        .thenThrow(new InvalidSyntaxException("Invalid Syntax", ""));
+          when(context.getServiceReferences(anyString(), anyString()))
+              .thenThrow(new InvalidSyntaxException("Invalid Syntax", ""));
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(
+                  provider, storageProvider, context, eventAdmin, true);
 
-    framework.transform((SourceResponse) null, "NONE", new HashMap<String, Serializable>());
+          framework.transform((SourceResponse) null, "NONE", new HashMap<String, Serializable>());
+        });
   }
 
   @Test
@@ -1615,49 +1646,66 @@ public class CatalogFrameworkImplTest {
     assertNotNull(content);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testMetacardTransformWithTransformException() throws Exception {
-    BundleContext context = mock(BundleContext.class);
-    MetacardTransformer transformer = mock(MetacardTransformer.class);
-    ServiceReference reference = mock(ServiceReference.class);
-    ServiceReference[] serviceReferences = new ServiceReference[] {reference};
-    when(context.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferences);
-    when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
-    when(transformer.transform(isA(Metacard.class), isA(Map.class)))
-        .thenThrow(new CatalogTransformerException("Could not transform"));
+  @Test
+  public void testMetacardTransformWithTransformException() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> {
+          BundleContext context = mock(BundleContext.class);
+          MetacardTransformer transformer = mock(MetacardTransformer.class);
+          ServiceReference reference = mock(ServiceReference.class);
+          ServiceReference[] serviceReferences = new ServiceReference[] {reference};
+          when(context.getServiceReferences(anyString(), anyString()))
+              .thenReturn(serviceReferences);
+          when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
+          when(transformer.transform(isA(Metacard.class), isA(Map.class)))
+              .thenThrow(new CatalogTransformerException("Could not transform"));
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
-    MetacardImpl newCard = new MetacardImpl();
-    newCard.setId(null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(
+                  provider, storageProvider, context, eventAdmin, true);
+          MetacardImpl newCard = new MetacardImpl();
+          newCard.setId(null);
 
-    framework.transform(newCard, "NONE", new HashMap<String, Serializable>());
+          framework.transform(newCard, "NONE", new HashMap<String, Serializable>());
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testMetacardTransformWithNullMetacard() throws Exception {
-    BundleContext context = mock(BundleContext.class);
-    ServiceReference reference = mock(ServiceReference.class);
-    ServiceReference[] serviceReferences = new ServiceReference[] {reference};
-    when(context.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferences);
+  @Test
+  public void testMetacardTransformWithNullMetacard() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          BundleContext context = mock(BundleContext.class);
+          ServiceReference reference = mock(ServiceReference.class);
+          ServiceReference[] serviceReferences = new ServiceReference[] {reference};
+          when(context.getServiceReferences(anyString(), anyString()))
+              .thenReturn(serviceReferences);
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(
+                  provider, storageProvider, context, eventAdmin, true);
 
-    framework.transform((Metacard) null, "NONE", new HashMap<String, Serializable>());
+          framework.transform((Metacard) null, "NONE", new HashMap<String, Serializable>());
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testMetacardTransformWithInvalidSyntaxException() throws Exception {
-    BundleContext context = mock(BundleContext.class);
+  @Test
+  public void testMetacardTransformWithInvalidSyntaxException() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          BundleContext context = mock(BundleContext.class);
 
-    when(context.getServiceReferences(anyString(), anyString()))
-        .thenThrow(new InvalidSyntaxException("Invalid Syntax", ""));
+          when(context.getServiceReferences(anyString(), anyString()))
+              .thenThrow(new InvalidSyntaxException("Invalid Syntax", ""));
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(
+                  provider, storageProvider, context, eventAdmin, true);
 
-    framework.transform((Metacard) null, "NONE", new HashMap<String, Serializable>());
+          framework.transform((Metacard) null, "NONE", new HashMap<String, Serializable>());
+        });
   }
 
   @Test
@@ -1861,27 +1909,31 @@ public class CatalogFrameworkImplTest {
    *
    * @throws SourceUnavailableException
    */
-  @Test(expected = SourceUnavailableException.class)
-  public void testProviderUnavailableCreate() throws SourceUnavailableException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
-    CatalogFramework framework =
-        createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
-    List<Metacard> metacards = new ArrayList<Metacard>();
-    MetacardImpl newCard = new MetacardImpl();
-    newCard.setId(null);
-    metacards.add(newCard);
+  @Test
+  public void testProviderUnavailableCreate() {
+    assertThrows(
+        SourceUnavailableException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
+          CatalogFramework framework =
+              createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
+          List<Metacard> metacards = new ArrayList<Metacard>();
+          MetacardImpl newCard = new MetacardImpl();
+          newCard.setId(null);
+          metacards.add(newCard);
 
-    CreateRequest create = new CreateRequestImpl(metacards);
+          CreateRequest create = new CreateRequestImpl(metacards);
 
-    // expected to throw exception due to catalog provider being unavailable
-    try {
-      framework.create(create);
-    } catch (IngestException e) {
-      fail();
-    }
+          // expected to throw exception due to catalog provider being unavailable
+          try {
+            framework.create(create);
+          } catch (IngestException e) {
+            fail();
+          }
+        });
   }
 
   /**
@@ -1891,33 +1943,37 @@ public class CatalogFrameworkImplTest {
    * @throws IngestException
    * @throws SourceUnavailableException
    */
-  @Test(expected = SourceUnavailableException.class)
-  public void testProviderUnavailableUpdateByID() throws SourceUnavailableException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
-    List<Metacard> metacards = new ArrayList<Metacard>();
-    List<URI> uris = new ArrayList<URI>();
-    // expected to throw exception due to catalog provider being unavailable
-    try {
-      MetacardImpl newCard = new MetacardImpl();
-      newCard.setId(null);
-      newCard.setResourceURI(new URI("uri:///1234"));
-      metacards.add(newCard);
-      uris.add(new URI("uri:///1234"));
+  @Test
+  public void testProviderUnavailableUpdateByID() {
+    assertThrows(
+        SourceUnavailableException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
+          List<Metacard> metacards = new ArrayList<Metacard>();
+          List<URI> uris = new ArrayList<URI>();
+          // expected to throw exception due to catalog provider being unavailable
+          try {
+            MetacardImpl newCard = new MetacardImpl();
+            newCard.setId(null);
+            newCard.setResourceURI(new URI("uri:///1234"));
+            metacards.add(newCard);
+            uris.add(new URI("uri:///1234"));
 
-      UpdateRequest update =
-          new UpdateRequestImpl((URI[]) uris.toArray(new URI[uris.size()]), metacards);
+            UpdateRequest update =
+                new UpdateRequestImpl((URI[]) uris.toArray(new URI[uris.size()]), metacards);
 
-      framework.update(update);
-    } catch (URISyntaxException e) {
-      fail();
-    } catch (IngestException e) {
-      fail();
-    }
+            framework.update(update);
+          } catch (URISyntaxException e) {
+            fail();
+          } catch (IngestException e) {
+            fail();
+          }
+        });
   }
 
   /**
@@ -1927,34 +1983,38 @@ public class CatalogFrameworkImplTest {
    * @throws IngestException
    * @throws SourceUnavailableException
    */
-  @Test(expected = SourceUnavailableException.class)
-  public void testProviderUnavailableUpdateByIdentifier() throws SourceUnavailableException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
-    List<Metacard> metacards = new ArrayList<Metacard>();
-    List<URI> uris = new ArrayList<URI>();
+  @Test
+  public void testProviderUnavailableUpdateByIdentifier() {
+    assertThrows(
+        SourceUnavailableException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
+          List<Metacard> metacards = new ArrayList<Metacard>();
+          List<URI> uris = new ArrayList<URI>();
 
-    // expected to throw exception due to catalog provider being unavailable
-    try {
-      MetacardImpl newCard = new MetacardImpl();
-      newCard.setId(null);
-      newCard.setResourceURI(new URI("uri:///1234"));
-      metacards.add(newCard);
-      uris.add(new URI("uri:////1234"));
+          // expected to throw exception due to catalog provider being unavailable
+          try {
+            MetacardImpl newCard = new MetacardImpl();
+            newCard.setId(null);
+            newCard.setResourceURI(new URI("uri:///1234"));
+            metacards.add(newCard);
+            uris.add(new URI("uri:////1234"));
 
-      UpdateRequest update =
-          new UpdateRequestImpl((URI[]) uris.toArray(new URI[uris.size()]), metacards);
+            UpdateRequest update =
+                new UpdateRequestImpl((URI[]) uris.toArray(new URI[uris.size()]), metacards);
 
-      framework.update(update);
-    } catch (URISyntaxException e) {
-      fail();
-    } catch (IngestException e) {
-      fail();
-    }
+            framework.update(update);
+          } catch (URISyntaxException e) {
+            fail();
+          } catch (IngestException e) {
+            fail();
+          }
+        });
   }
 
   /**
@@ -1964,25 +2024,30 @@ public class CatalogFrameworkImplTest {
    * @throws IngestException
    * @throws SourceUnavailableException
    */
-  @Test(expected = SourceUnavailableException.class)
-  public void testProviderUnavailableDeleteByID() throws SourceUnavailableException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
-    List<String> ids = new ArrayList<String>();
-    ids.add("1234");
+  @Test
+  public void testProviderUnavailableDeleteByID() {
+    assertThrows(
+        SourceUnavailableException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
+          List<String> ids = new ArrayList<String>();
+          ids.add("1234");
 
-    DeleteRequest request = new DeleteRequestImpl((String[]) ids.toArray(new String[ids.size()]));
+          DeleteRequest request =
+              new DeleteRequestImpl((String[]) ids.toArray(new String[ids.size()]));
 
-    // expected to throw exception due to catalog provider being unavailable
-    try {
-      framework.delete(request);
-    } catch (IngestException e) {
-      fail();
-    }
+          // expected to throw exception due to catalog provider being unavailable
+          try {
+            framework.delete(request);
+          } catch (IngestException e) {
+            fail();
+          }
+        });
   }
 
   /**
@@ -1992,27 +2057,32 @@ public class CatalogFrameworkImplTest {
    * @throws IngestException
    * @throws SourceUnavailableException
    */
-  @Test(expected = SourceUnavailableException.class)
-  public void testProviderUnavailableDeleteByIdentifier() throws SourceUnavailableException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
-    List<URI> uris = new ArrayList<URI>();
-    try {
-      uris.add(new URI("id://1234"));
-      DeleteRequest request = new DeleteRequestImpl((URI[]) uris.toArray(new URI[uris.size()]));
+  @Test
+  public void testProviderUnavailableDeleteByIdentifier() {
+    assertThrows(
+        SourceUnavailableException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), false, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, false);
+          List<URI> uris = new ArrayList<URI>();
+          try {
+            uris.add(new URI("id://1234"));
+            DeleteRequest request =
+                new DeleteRequestImpl((URI[]) uris.toArray(new URI[uris.size()]));
 
-      // expected to throw exception due to catalog provider being
-      // unavailable
-      framework.delete(request);
-    } catch (URISyntaxException e) {
-      fail();
-    } catch (IngestException e) {
-      fail();
-    }
+            // expected to throw exception due to catalog provider being
+            // unavailable
+            framework.delete(request);
+          } catch (URISyntaxException e) {
+            fail();
+          } catch (IngestException e) {
+            fail();
+          }
+        });
   }
 
   /**
@@ -2022,19 +2092,23 @@ public class CatalogFrameworkImplTest {
    * @throws SourceUnavailableException
    */
   @Ignore
-  @Test(expected = SourceUnavailableException.class)
-  public void testNoSitesAvailableFederatedQuery() throws SourceUnavailableException {
-    CatalogFramework framework = this.createDummyCatalogFramework(null, null, null, false);
+  @Test
+  public void testNoSitesAvailableFederatedQuery() {
+    assertThrows(
+        SourceUnavailableException.class,
+        () -> {
+          CatalogFramework framework = this.createDummyCatalogFramework(null, null, null, false);
 
-    QueryRequest request = new QueryRequestImpl(null);
+          QueryRequest request = new QueryRequestImpl(null);
 
-    try {
-      framework.query(request);
-    } catch (UnsupportedQueryException e) {
-      // we don't even care what the query was
-    } catch (FederationException e) {
-      fail();
-    }
+          try {
+            framework.query(request);
+          } catch (UnsupportedQueryException e) {
+            // we don't even care what the query was
+          } catch (FederationException e) {
+            fail();
+          }
+        });
   }
 
   /**
@@ -2043,29 +2117,33 @@ public class CatalogFrameworkImplTest {
    *
    * @throws UnsupportedQueryException
    */
-  @Test(expected = UnsupportedQueryException.class)
-  public void testNullQuery() throws UnsupportedQueryException {
-    boolean isAvailable = false;
-    CatalogProvider provider =
-        new MockMemoryProvider(
-            "Provider",
-            "Provider",
-            "v1.0",
-            "DDF",
-            new HashSet<ContentType>(),
-            isAvailable,
-            new Date());
+  @Test
+  public void testNullQuery() {
+    assertThrows(
+        UnsupportedQueryException.class,
+        () -> {
+          boolean isAvailable = false;
+          CatalogProvider provider =
+              new MockMemoryProvider(
+                  "Provider",
+                  "Provider",
+                  "v1.0",
+                  "DDF",
+                  new HashSet<ContentType>(),
+                  isAvailable,
+                  new Date());
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, null, true);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, null, true);
 
-    try {
-      framework.query(null);
-    } catch (FederationException e) {
-      fail();
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          try {
+            framework.query(null);
+          } catch (FederationException e) {
+            fail();
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
   /**
@@ -2074,221 +2152,286 @@ public class CatalogFrameworkImplTest {
    *
    * @throws UnsupportedQueryException
    */
-  @Test(expected = UnsupportedQueryException.class)
-  public void testNullFederatedQuery() throws UnsupportedQueryException {
-    boolean isAvailable = false;
-    CatalogProvider provider =
-        new MockMemoryProvider(
-            "Provider",
-            "Provider",
-            "v1.0",
-            "DDF",
-            new HashSet<ContentType>(),
-            isAvailable,
-            new Date());
-    createDefaultFederatedSourceList(isAvailable);
+  @Test
+  public void testNullFederatedQuery() {
+    assertThrows(
+        UnsupportedQueryException.class,
+        () -> {
+          boolean isAvailable = false;
+          CatalogProvider provider =
+              new MockMemoryProvider(
+                  "Provider",
+                  "Provider",
+                  "v1.0",
+                  "DDF",
+                  new HashSet<ContentType>(),
+                  isAvailable,
+                  new Date());
+          createDefaultFederatedSourceList(isAvailable);
 
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, null, true);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, null, true);
 
-    try {
-      framework.query(null, null);
-    } catch (FederationException e) {
-      fail();
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          try {
+            framework.query(null, null);
+          } catch (FederationException e) {
+            fail();
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testNullEntriesCreate() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, new Date());
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+  @Test
+  public void testNullEntriesCreate() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider",
+                  "Provider",
+                  "v1.0",
+                  "DDF",
+                  new HashSet<ContentType>(),
+                  true,
+                  new Date());
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
 
-    // call framework with null request
-    try {
-      framework.create((CreateRequest) null);
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          // call framework with null request
+          try {
+            framework.create((CreateRequest) null);
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testNullEntriesUpdate() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, new Date());
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+  @Test
+  public void testNullEntriesUpdate() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider",
+                  "Provider",
+                  "v1.0",
+                  "DDF",
+                  new HashSet<ContentType>(),
+                  true,
+                  new Date());
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
 
-    // call framework with null request
-    try {
-      framework.update((UpdateRequest) null);
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          // call framework with null request
+          try {
+            framework.update((UpdateRequest) null);
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testNullIdsDelete() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, new Date());
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+  @Test
+  public void testNullIdsDelete() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider",
+                  "Provider",
+                  "v1.0",
+                  "DDF",
+                  new HashSet<ContentType>(),
+                  true,
+                  new Date());
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
 
-    // call framework with null request
-    try {
-      framework.delete(null);
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          // call framework with null request
+          try {
+            framework.delete(null);
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testProviderRuntimeExceptionOnCreate() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    // use exception provider instead of memory
-    MockExceptionProvider provider =
-        new MockExceptionProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
-    List<Metacard> metacards = new ArrayList<Metacard>();
-    MetacardImpl newCard = new MetacardImpl();
-    newCard.setId(null);
-    metacards.add(newCard);
+  @Test
+  public void testProviderRuntimeExceptionOnCreate() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          // use exception provider instead of memory
+          MockExceptionProvider provider =
+              new MockExceptionProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+          List<Metacard> metacards = new ArrayList<Metacard>();
+          MetacardImpl newCard = new MetacardImpl();
+          newCard.setId(null);
+          metacards.add(newCard);
 
-    CreateRequest create = new CreateRequestImpl((Metacard) null);
-    try {
-      framework.create(create);
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          CreateRequest create = new CreateRequestImpl((Metacard) null);
+          try {
+            framework.create(create);
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testProviderRuntimeExceptionOnUpdateByID() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    // use exception provider instead of memory
-    MockExceptionProvider provider =
-        new MockExceptionProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
-    List<Entry<Object, Metacard>> metacards = new ArrayList<Entry<Object, Metacard>>();
-    HashMap<Object, Metacard> map = new HashMap<Object, Metacard>();
+  @Test
+  public void testProviderRuntimeExceptionOnUpdateByID() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          // use exception provider instead of memory
+          MockExceptionProvider provider =
+              new MockExceptionProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+          List<Entry<Object, Metacard>> metacards = new ArrayList<Entry<Object, Metacard>>();
+          HashMap<Object, Metacard> map = new HashMap<Object, Metacard>();
 
-    // expected to throw exception due to catalog provider being unavailable
-    try {
-      MetacardImpl newCard = new MetacardImpl();
-      newCard.setId(null);
-      newCard.setResourceURI(new URI("uri:///1234"));
-      map.put(Metacard.ID, newCard);
-      metacards.addAll(map.entrySet());
+          // expected to throw exception due to catalog provider being unavailable
+          try {
+            MetacardImpl newCard = new MetacardImpl();
+            newCard.setId(null);
+            newCard.setResourceURI(new URI("uri:///1234"));
+            map.put(Metacard.ID, newCard);
+            metacards.addAll(map.entrySet());
 
-      UpdateRequest update = new UpdateRequestImpl(null, Metacard.ID, null);
-      framework.update(update);
-    } catch (URISyntaxException e) {
-      fail();
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+            UpdateRequest update = new UpdateRequestImpl(null, Metacard.ID, null);
+            framework.update(update);
+          } catch (URISyntaxException e) {
+            fail();
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testProviderRuntimeExceptionOnUpdateByIdentifier() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    // use exception provider instead of memory
-    MockExceptionProvider provider =
-        new MockExceptionProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
-    List<Entry<Object, Metacard>> metacards = new ArrayList<Entry<Object, Metacard>>();
-    HashMap<Object, Metacard> map = new HashMap<Object, Metacard>();
+  @Test
+  public void testProviderRuntimeExceptionOnUpdateByIdentifier() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          // use exception provider instead of memory
+          MockExceptionProvider provider =
+              new MockExceptionProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+          List<Entry<Object, Metacard>> metacards = new ArrayList<Entry<Object, Metacard>>();
+          HashMap<Object, Metacard> map = new HashMap<Object, Metacard>();
 
-    try {
-      MetacardImpl newCard = new MetacardImpl();
-      newCard.setId(null);
-      newCard.setResourceURI(new URI("uri:///1234"));
-      map.put(Metacard.ID, newCard);
-      metacards.addAll(map.entrySet());
+          try {
+            MetacardImpl newCard = new MetacardImpl();
+            newCard.setId(null);
+            newCard.setResourceURI(new URI("uri:///1234"));
+            map.put(Metacard.ID, newCard);
+            metacards.addAll(map.entrySet());
 
-      UpdateRequest update = new UpdateRequestImpl(null, Metacard.RESOURCE_URI, null);
-      framework.update(update);
-    } catch (URISyntaxException e) {
-      fail();
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+            UpdateRequest update = new UpdateRequestImpl(null, Metacard.RESOURCE_URI, null);
+            framework.update(update);
+          } catch (URISyntaxException e) {
+            fail();
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testProviderRuntimeExceptionOnDeleteByID() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    // use exception provider instead of memory
-    MockExceptionProvider provider =
-        new MockExceptionProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
-    MockMemoryStorageProvider storageProvider = new MockMemoryStorageProvider();
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
-    List<String> ids = new ArrayList<String>();
-    ids.add("1234");
+  @Test
+  public void testProviderRuntimeExceptionOnDeleteByID() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          // use exception provider instead of memory
+          MockExceptionProvider provider =
+              new MockExceptionProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
+          MockMemoryStorageProvider storageProvider = new MockMemoryStorageProvider();
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+          List<String> ids = new ArrayList<String>();
+          ids.add("1234");
 
-    DeleteRequest request = new DeleteRequestImpl((String[]) ids.toArray(new String[ids.size()]));
+          DeleteRequest request =
+              new DeleteRequestImpl((String[]) ids.toArray(new String[ids.size()]));
 
-    // expected to throw exception due to catalog provider
-    try {
-      framework.delete(request);
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          // expected to throw exception due to catalog provider
+          try {
+            framework.delete(request);
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
-  @Test(expected = IngestException.class)
-  public void testProviderRuntimeExceptionOnDeleteByIdentifier() throws IngestException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    // use exception provider instead of memory
-    MockExceptionProvider provider =
-        new MockExceptionProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
-    // List<MetacardType> identifiers = new ArrayList<MetacardType>();
-    // identifiers.add( new MetacardTypeImpl( "id", "1234" ) );
-    ArrayList<URI> uris = new ArrayList<URI>();
+  @Test
+  public void testProviderRuntimeExceptionOnDeleteByIdentifier() {
+    assertThrows(
+        IngestException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          // use exception provider instead of memory
+          MockExceptionProvider provider =
+              new MockExceptionProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, null);
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+          // List<MetacardType> identifiers = new ArrayList<MetacardType>();
+          // identifiers.add( new MetacardTypeImpl( "id", "1234" ) );
+          ArrayList<URI> uris = new ArrayList<URI>();
 
-    DeleteRequest request = new DeleteRequestImpl((URI[]) uris.toArray(new URI[uris.size()]));
-    // expected to throw exception due to catalog provider being unavailable
-    try {
-      framework.delete(request);
-    } catch (SourceUnavailableException e) {
-      fail();
-    }
+          DeleteRequest request = new DeleteRequestImpl((URI[]) uris.toArray(new URI[uris.size()]));
+          // expected to throw exception due to catalog provider being unavailable
+          try {
+            framework.delete(request);
+          } catch (SourceUnavailableException e) {
+            fail();
+          }
+        });
   }
 
   @Ignore
-  @Test(expected = CatalogTransformerException.class)
-  public void testMetacardTransformWithBadShortname() throws CatalogTransformerException {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<ContentType>(), true, new Date());
-    // TODO pass in bundle context
-    CatalogFramework framework =
-        this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
-    MetacardImpl newCard = new MetacardImpl();
-    newCard.setId(null);
+  @Test
+  public void testMetacardTransformWithBadShortname() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider",
+                  "Provider",
+                  "v1.0",
+                  "DDF",
+                  new HashSet<ContentType>(),
+                  true,
+                  new Date());
+          // TODO pass in bundle context
+          CatalogFramework framework =
+              this.createDummyCatalogFramework(provider, storageProvider, eventAdmin, true);
+          MetacardImpl newCard = new MetacardImpl();
+          newCard.setId(null);
 
-    framework.transform(newCard, "NONE", new HashMap<String, Serializable>());
+          framework.transform(newCard, "NONE", new HashMap<String, Serializable>());
+        });
   }
 
   /**
@@ -2542,64 +2685,74 @@ public class CatalogFrameworkImplTest {
     assertThat(queryResponse.getResults().size(), is(0));
   }
 
-  @Test(expected = FederationException.class)
-  public void testFederatedQueryPermissionsNoSubject() throws Exception {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<>(), true, new Date());
+  @Test
+  public void testFederatedQueryPermissionsNoSubject() {
+    assertThrows(
+        FederationException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<>(), true, new Date());
 
-    List<CatalogStore> storeList = new ArrayList<>();
-    List<FederatedSource> sourceList = new ArrayList<>();
+          List<CatalogStore> storeList = new ArrayList<>();
+          List<FederatedSource> sourceList = new ArrayList<>();
 
-    Map<String, Set<String>> securityAttributes = new HashMap<>();
-    securityAttributes.put("role", Collections.singleton("myRole"));
-    MockCatalogStore store = new MockCatalogStore("catalogStoreId-1", true, securityAttributes);
-    storeList.add(store);
-    sourceList.add(store);
+          Map<String, Set<String>> securityAttributes = new HashMap<>();
+          securityAttributes.put("role", Collections.singleton("myRole"));
+          MockCatalogStore store =
+              new MockCatalogStore("catalogStoreId-1", true, securityAttributes);
+          storeList.add(store);
+          sourceList.add(store);
 
-    CatalogFramework framework =
-        createDummyCatalogFramework(provider, storeList, sourceList, eventAdmin);
+          CatalogFramework framework =
+              createDummyCatalogFramework(provider, storeList, sourceList, eventAdmin);
 
-    FilterBuilder builder = new GeotoolsFilterBuilder();
+          FilterBuilder builder = new GeotoolsFilterBuilder();
 
-    QueryImpl query =
-        new QueryImpl(builder.attribute(Metacard.CONTENT_TYPE).is().like().text("someType"));
-    QueryRequestImpl request =
-        new QueryRequestImpl(query, Collections.singletonList("catalogStoreId-1"));
-    framework.query(request);
+          QueryImpl query =
+              new QueryImpl(builder.attribute(Metacard.CONTENT_TYPE).is().like().text("someType"));
+          QueryRequestImpl request =
+              new QueryRequestImpl(query, Collections.singletonList("catalogStoreId-1"));
+          framework.query(request);
+        });
   }
 
-  @Test(expected = FederationException.class)
-  public void testFederatedQueryPermissionsNotPermitted() throws Exception {
-    MockEventProcessor eventAdmin = new MockEventProcessor();
-    MockMemoryProvider provider =
-        new MockMemoryProvider(
-            "Provider", "Provider", "v1.0", "DDF", new HashSet<>(), true, new Date());
+  @Test
+  public void testFederatedQueryPermissionsNotPermitted() {
+    assertThrows(
+        FederationException.class,
+        () -> {
+          MockEventProcessor eventAdmin = new MockEventProcessor();
+          MockMemoryProvider provider =
+              new MockMemoryProvider(
+                  "Provider", "Provider", "v1.0", "DDF", new HashSet<>(), true, new Date());
 
-    List<CatalogStore> storeList = new ArrayList<>();
-    List<FederatedSource> sourceList = new ArrayList<>();
+          List<CatalogStore> storeList = new ArrayList<>();
+          List<FederatedSource> sourceList = new ArrayList<>();
 
-    Map<String, Set<String>> securityAttributes = new HashMap<>();
-    securityAttributes.put("role", Collections.singleton("myRole"));
-    MockCatalogStore store = new MockCatalogStore("catalogStoreId-1", true, securityAttributes);
-    storeList.add(store);
-    sourceList.add(store);
+          Map<String, Set<String>> securityAttributes = new HashMap<>();
+          securityAttributes.put("role", Collections.singleton("myRole"));
+          MockCatalogStore store =
+              new MockCatalogStore("catalogStoreId-1", true, securityAttributes);
+          storeList.add(store);
+          sourceList.add(store);
 
-    CatalogFramework framework =
-        createDummyCatalogFramework(provider, storeList, sourceList, eventAdmin);
+          CatalogFramework framework =
+              createDummyCatalogFramework(provider, storeList, sourceList, eventAdmin);
 
-    FilterBuilder builder = new GeotoolsFilterBuilder();
-    Subject subject = mock(Subject.class);
-    when(subject.isPermitted(any(KeyValueCollectionPermission.class))).thenReturn(false);
-    HashMap<String, Serializable> properties = new HashMap<>();
-    properties.put(SecurityConstants.SECURITY_SUBJECT, subject);
-    QueryImpl query =
-        new QueryImpl(builder.attribute(Metacard.CONTENT_TYPE).is().like().text("someType"));
-    QueryRequestImpl request =
-        new QueryRequestImpl(
-            query, false, Collections.singletonList("catalogStoreId-1"), properties);
-    framework.query(request);
+          FilterBuilder builder = new GeotoolsFilterBuilder();
+          Subject subject = mock(Subject.class);
+          when(subject.isPermitted(any(KeyValueCollectionPermission.class))).thenReturn(false);
+          HashMap<String, Serializable> properties = new HashMap<>();
+          properties.put(SecurityConstants.SECURITY_SUBJECT, subject);
+          QueryImpl query =
+              new QueryImpl(builder.attribute(Metacard.CONTENT_TYPE).is().like().text("someType"));
+          QueryRequestImpl request =
+              new QueryRequestImpl(
+                  query, false, Collections.singletonList("catalogStoreId-1"), properties);
+          framework.query(request);
+        });
   }
 
   @Test
