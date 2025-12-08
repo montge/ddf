@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.solr.cache.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -147,12 +148,12 @@ public class SolrCacheTest {
     verify(mockCacheSolrMetacardClient).query(mockQuery);
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void queryThrowsUnsupportedQueryException() throws UnsupportedQueryException {
     QueryRequest mockQuery = mock(QueryRequest.class);
     doThrow(new UnsupportedQueryException()).when(mockCacheSolrMetacardClient).query(mockQuery);
 
-    solrCache.query(mockQuery);
+    assertThrows(UnsupportedQueryException.class, () -> solrCache.query(mockQuery));
   }
 
   @Test

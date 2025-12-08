@@ -25,8 +25,8 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
@@ -119,14 +119,11 @@ public class SolrProviderUpdate {
   }
 
   /** Tests what happens when the whole request is null. */
-  @Test(expected = IngestException.class)
-  public void testUpdateNull() throws IngestException, UnsupportedQueryException {
-
+  @Test
+  public void testUpdateNull() throws UnsupportedQueryException {
     deleteAll(provider);
 
-    provider.update(null);
-
-    fail();
+    assertThrows(IngestException.class, () -> provider.update(null));
   }
 
   /** Tests null list in UpdateRequest */
@@ -508,10 +505,9 @@ public class SolrProviderUpdate {
   }
 
   /** Tests if we catch properly the case that the attribute value matches multiple Metacards. */
-  @Test(expected = IngestException.class)
+  @Test
   public void testUpdateNonUniqueAttributeValue()
-      throws IngestException, UnsupportedQueryException {
-
+      throws UnsupportedQueryException, IngestException {
     deleteAll(provider);
 
     MockMetacard m1 = new MockMetacard(Library.getFlagstaffRecord());
@@ -522,61 +518,64 @@ public class SolrProviderUpdate {
 
     create(list, provider);
 
-    provider.update(
-        new UpdateRequest() {
+    assertThrows(
+        IngestException.class,
+        () ->
+            provider.update(
+                new UpdateRequest() {
 
-          @Override
-          public boolean hasProperties() {
-            return false;
-          }
+                  @Override
+                  public boolean hasProperties() {
+                    return false;
+                  }
 
-          @Override
-          public Serializable getPropertyValue(String name) {
-            return null;
-          }
+                  @Override
+                  public Serializable getPropertyValue(String name) {
+                    return null;
+                  }
 
-          @Override
-          public Set<String> getPropertyNames() {
-            return null;
-          }
+                  @Override
+                  public Set<String> getPropertyNames() {
+                    return null;
+                  }
 
-          @Override
-          public Map<String, Serializable> getProperties() {
-            return null;
-          }
+                  @Override
+                  public Map<String, Serializable> getProperties() {
+                    return null;
+                  }
 
-          @Override
-          public boolean containsPropertyName(String name) {
-            return false;
-          }
+                  @Override
+                  public boolean containsPropertyName(String name) {
+                    return false;
+                  }
 
-          @Override
-          public List<Map.Entry<Serializable, Metacard>> getUpdates() {
+                  @Override
+                  public List<Map.Entry<Serializable, Metacard>> getUpdates() {
 
-            MockMetacard newMetacard = new MockMetacard(Library.getShowLowRecord());
+                    MockMetacard newMetacard = new MockMetacard(Library.getShowLowRecord());
 
-            List<Map.Entry<Serializable, Metacard>> updateList = new ArrayList<>();
+                    List<Map.Entry<Serializable, Metacard>> updateList = new ArrayList<>();
 
-            updateList.add(new AbstractMap.SimpleEntry<>(MockMetacard.DEFAULT_TITLE, newMetacard));
+                    updateList.add(
+                        new AbstractMap.SimpleEntry<>(MockMetacard.DEFAULT_TITLE, newMetacard));
 
-            return updateList;
-          }
+                    return updateList;
+                  }
 
-          @Override
-          public String getAttributeName() {
-            return Metacard.TITLE;
-          }
-        });
+                  @Override
+                  public String getAttributeName() {
+                    return Metacard.TITLE;
+                  }
+                }));
   }
 
   /**
    * Tests if we catch a rare case where some attribute value match multiple Metacards while others
    * do not match any records.
    */
-  @Test(expected = IngestException.class)
+  @Test
   public void testUpdateNonUniqueAttributeValue2()
-      throws IngestException, UnsupportedQueryException {
-
+      throws UnsupportedQueryException, IngestException {
     deleteAll(provider);
 
     MockMetacard m1 = new MockMetacard(Library.getFlagstaffRecord());
@@ -586,146 +585,158 @@ public class SolrProviderUpdate {
 
     create(list, provider);
 
-    provider.update(
-        new UpdateRequest() {
+    assertThrows(
+        IngestException.class,
+        () ->
+            provider.update(
+                new UpdateRequest() {
 
-          @Override
-          public boolean hasProperties() {
-            return false;
-          }
+                  @Override
+                  public boolean hasProperties() {
+                    return false;
+                  }
 
-          @Override
-          public Serializable getPropertyValue(String name) {
-            return null;
-          }
+                  @Override
+                  public Serializable getPropertyValue(String name) {
+                    return null;
+                  }
 
-          @Override
-          public Set<String> getPropertyNames() {
-            return null;
-          }
+                  @Override
+                  public Set<String> getPropertyNames() {
+                    return null;
+                  }
 
-          @Override
-          public Map<String, Serializable> getProperties() {
-            return null;
-          }
+                  @Override
+                  public Map<String, Serializable> getProperties() {
+                    return null;
+                  }
 
-          @Override
-          public boolean containsPropertyName(String name) {
-            return false;
-          }
+                  @Override
+                  public boolean containsPropertyName(String name) {
+                    return false;
+                  }
 
-          @Override
-          public List<Map.Entry<Serializable, Metacard>> getUpdates() {
+                  @Override
+                  public List<Map.Entry<Serializable, Metacard>> getUpdates() {
 
-            MockMetacard newMetacard = new MockMetacard(Library.getShowLowRecord());
+                    MockMetacard newMetacard = new MockMetacard(Library.getShowLowRecord());
 
-            List<Map.Entry<Serializable, Metacard>> updateList = new ArrayList<>();
+                    List<Map.Entry<Serializable, Metacard>> updateList = new ArrayList<>();
 
-            updateList.add(new AbstractMap.SimpleEntry<>(MockMetacard.DEFAULT_TITLE, newMetacard));
-            updateList.add(new AbstractMap.SimpleEntry<>(Library.TAMPA_QUERY_PHRASE, newMetacard));
+                    updateList.add(
+                        new AbstractMap.SimpleEntry<>(MockMetacard.DEFAULT_TITLE, newMetacard));
+                    updateList.add(
+                        new AbstractMap.SimpleEntry<>(Library.TAMPA_QUERY_PHRASE, newMetacard));
 
-            return updateList;
-          }
+                    return updateList;
+                  }
 
-          @Override
-          public String getAttributeName() {
-            return Metacard.TITLE;
-          }
-        });
+                  @Override
+                  public String getAttributeName() {
+                    return Metacard.TITLE;
+                  }
+                }));
   }
 
   /** Testing if exception is thrown with a <code>null</code> property. */
-  @Test(expected = IngestException.class)
-  public void testUpdateNullAttribute() throws IngestException {
-    provider.update(
-        new UpdateRequest() {
+  @Test
+  public void testUpdateNullAttribute() {
+    assertThrows(
+        IngestException.class,
+        () ->
+            provider.update(
+                new UpdateRequest() {
 
-          @Override
-          public boolean hasProperties() {
-            return false;
-          }
+                  @Override
+                  public boolean hasProperties() {
+                    return false;
+                  }
 
-          @Override
-          public Serializable getPropertyValue(String name) {
-            return null;
-          }
+                  @Override
+                  public Serializable getPropertyValue(String name) {
+                    return null;
+                  }
 
-          @Override
-          public Set<String> getPropertyNames() {
-            return null;
-          }
+                  @Override
+                  public Set<String> getPropertyNames() {
+                    return null;
+                  }
 
-          @Override
-          public Map<String, Serializable> getProperties() {
-            return null;
-          }
+                  @Override
+                  public Map<String, Serializable> getProperties() {
+                    return null;
+                  }
 
-          @Override
-          public boolean containsPropertyName(String name) {
-            return false;
-          }
+                  @Override
+                  public boolean containsPropertyName(String name) {
+                    return false;
+                  }
 
-          @Override
-          public List<Map.Entry<Serializable, Metacard>> getUpdates() {
-            return null;
-          }
+                  @Override
+                  public List<Map.Entry<Serializable, Metacard>> getUpdates() {
+                    return null;
+                  }
 
-          @Override
-          public String getAttributeName() {
-            return null;
-          }
-        });
+                  @Override
+                  public String getAttributeName() {
+                    return null;
+                  }
+                }));
   }
 
   /** Testing update operation of unknown attribute. */
-  @Test(expected = IngestException.class)
-  public void testUpdateUnknownAttribute() throws IngestException, UnsupportedQueryException {
+  @Test
+  public void testUpdateUnknownAttribute() throws UnsupportedQueryException {
     deleteAll(provider);
 
-    provider.update(
-        new UpdateRequest() {
+    assertThrows(
+        IngestException.class,
+        () ->
+            provider.update(
+                new UpdateRequest() {
 
-          @Override
-          public boolean hasProperties() {
-            return false;
-          }
+                  @Override
+                  public boolean hasProperties() {
+                    return false;
+                  }
 
-          @Override
-          public Serializable getPropertyValue(String name) {
-            return null;
-          }
+                  @Override
+                  public Serializable getPropertyValue(String name) {
+                    return null;
+                  }
 
-          @Override
-          public Set<String> getPropertyNames() {
-            return null;
-          }
+                  @Override
+                  public Set<String> getPropertyNames() {
+                    return null;
+                  }
 
-          @Override
-          public Map<String, Serializable> getProperties() {
-            return null;
-          }
+                  @Override
+                  public Map<String, Serializable> getProperties() {
+                    return null;
+                  }
 
-          @Override
-          public boolean containsPropertyName(String name) {
-            return false;
-          }
+                  @Override
+                  public boolean containsPropertyName(String name) {
+                    return false;
+                  }
 
-          @Override
-          public List<Map.Entry<Serializable, Metacard>> getUpdates() {
-            MockMetacard newMetacard = new MockMetacard(Library.getShowLowRecord());
+                  @Override
+                  public List<Map.Entry<Serializable, Metacard>> getUpdates() {
+                    MockMetacard newMetacard = new MockMetacard(Library.getShowLowRecord());
 
-            List<Map.Entry<Serializable, Metacard>> updateList = new ArrayList<>();
+                    List<Map.Entry<Serializable, Metacard>> updateList = new ArrayList<>();
 
-            updateList.add(new AbstractMap.SimpleEntry<>(MockMetacard.DEFAULT_TITLE, newMetacard));
+                    updateList.add(
+                        new AbstractMap.SimpleEntry<>(MockMetacard.DEFAULT_TITLE, newMetacard));
 
-            return updateList;
-          }
+                    return updateList;
+                  }
 
-          @Override
-          public String getAttributeName() {
-            return "dataAccess";
-          }
-        });
+                  @Override
+                  public String getAttributeName() {
+                    return "dataAccess";
+                  }
+                }));
   }
 
   @Test

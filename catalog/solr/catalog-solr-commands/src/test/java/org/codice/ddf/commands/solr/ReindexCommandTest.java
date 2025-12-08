@@ -15,6 +15,7 @@ package org.codice.ddf.commands.solr;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -47,10 +48,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ReindexCommandTest extends SolrCommandTest {
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testNoArgReindex() throws Exception {
+  @Test
+  public void testNoArgReindex() {
     ReindexCommand reindexCommand = new ReindexCommand();
-    reindexCommand.execute();
+    assertThrows(IllegalArgumentException.class, () -> reindexCommand.execute());
   }
 
   @Test
