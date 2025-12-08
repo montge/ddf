@@ -16,6 +16,7 @@ package ddf.security.assertion.impl;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.assertion.AttributeStatement;
@@ -66,15 +67,18 @@ public class DefaultSecurityAssertionBuilderTest {
     assertThat(assertion.getWeight(), is(7));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testDefaultSecurityAssertionBuilderNoUserPrincipal() {
     DefaultSecurityAssertionBuilder builder = new DefaultSecurityAssertionBuilder();
-    builder
-        .addPrincipal(mock(Principal.class))
-        .issuer("test")
-        .addAttributeStatement(mock(AttributeStatementDefault.class))
-        .notBefore(Date.from(Instant.now()))
-        .notOnOrAfter(Date.from(Instant.now().plus(Duration.ofMinutes(1))))
-        .build();
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            builder
+                .addPrincipal(mock(Principal.class))
+                .issuer("test")
+                .addAttributeStatement(mock(AttributeStatementDefault.class))
+                .notBefore(Date.from(Instant.now()))
+                .notOnOrAfter(Date.from(Instant.now().plus(Duration.ofMinutes(1))))
+                .build());
   }
 }

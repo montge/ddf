@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -111,12 +112,13 @@ public class AbstractAuthorizingRealmTest {
     assertThat(authInfo.getRoles(), containsInAnyOrder("admin", "user"));
   }
 
-  @Test(expected = AuthorizationException.class)
+  @Test
   public void testDoGetAuthorizationInfoWithNoAssertion() {
     SimplePrincipalCollection principalCollection = new SimplePrincipalCollection();
     principalCollection.add("testUser", "testRealm");
 
-    realm.doGetAuthorizationInfo(principalCollection);
+    assertThrows(
+        AuthorizationException.class, () -> realm.doGetAuthorizationInfo(principalCollection));
   }
 
   @Test

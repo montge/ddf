@@ -15,6 +15,7 @@ package ddf.security.interceptor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -97,13 +98,13 @@ public class SecurityLoggerOutInterceptorTest {
     verifyNoInteractions(securityLogger);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testHandleMessageWithSubjectButNoSubjectOperationsThrows() {
     interceptor.setSubjectOperations(null);
     when(message.get(Message.REQUESTOR_ROLE)).thenReturn(Boolean.TRUE);
     ThreadContext.bind(subject);
 
-    interceptor.handleMessage(message);
+    assertThrows(IllegalStateException.class, () -> interceptor.handleMessage(message));
   }
 
   @Test

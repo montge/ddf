@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 
 import ddf.security.SecurityConstants;
 import ddf.security.encryption.crypter.Crypter.CrypterException;
@@ -59,14 +60,14 @@ public class EncryptionServiceImplTest {
     System.clearProperty(SecurityConstants.ASSOCIATED_DATA_PATH);
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testBadSetup() throws Exception {
     try (OutputStream badKeysetOutputStream =
         new FileOutputStream(
             System.getProperty(SecurityConstants.KEYSET_DIR) + "/" + CRYPTER_NAME + ".json")) {
       badKeysetOutputStream.write("BadKeyset".getBytes());
     }
-    new EncryptionServiceImpl();
+    assertThrows(CrypterException.class, () -> new EncryptionServiceImpl());
   }
 
   @Test
