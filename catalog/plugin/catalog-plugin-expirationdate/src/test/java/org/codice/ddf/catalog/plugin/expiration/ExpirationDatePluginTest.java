@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -508,35 +509,35 @@ public class ExpirationDatePluginTest {
     assertThat(result, is(deleteRequest));
   }
 
-  @Test(expected = PluginExecutionException.class)
-  public void testProcessNullCreateRequest()
-      throws PluginExecutionException, StopProcessingException {
+  @Test
+  public void testProcessNullCreateRequest() {
     expirationDatePlugin.setOverwriteIfBlank(true);
     expirationDatePlugin.setOverwriteIfExists(false);
 
-    expirationDatePlugin.process((CreateRequest) null);
+    assertThrows(
+        PluginExecutionException.class, () -> expirationDatePlugin.process((CreateRequest) null));
   }
 
-  @Test(expected = PluginExecutionException.class)
-  public void testProcessCreateRequestWithNullMetacards()
-      throws PluginExecutionException, StopProcessingException {
+  @Test
+  public void testProcessCreateRequestWithNullMetacards() {
     expirationDatePlugin.setOverwriteIfBlank(true);
     expirationDatePlugin.setOverwriteIfExists(false);
 
     when(mockCreateRequest.getMetacards()).thenReturn(null);
 
-    expirationDatePlugin.process(mockCreateRequest);
+    assertThrows(
+        PluginExecutionException.class, () -> expirationDatePlugin.process(mockCreateRequest));
   }
 
-  @Test(expected = PluginExecutionException.class)
-  public void testProcessCreateRequestWithEmptyMetacardsList()
-      throws PluginExecutionException, StopProcessingException {
+  @Test
+  public void testProcessCreateRequestWithEmptyMetacardsList() {
     expirationDatePlugin.setOverwriteIfBlank(true);
     expirationDatePlugin.setOverwriteIfExists(false);
 
     when(mockCreateRequest.getMetacards()).thenReturn(new ArrayList<>());
 
-    expirationDatePlugin.process(mockCreateRequest);
+    assertThrows(
+        PluginExecutionException.class, () -> expirationDatePlugin.process(mockCreateRequest));
   }
 
   @Test

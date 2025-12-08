@@ -13,6 +13,7 @@
  */
 package ddf.catalog.plugin.jpeg2000.thumbnail.converter;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -222,7 +223,7 @@ public class Jpeg2000ThumbnailConverterTest {
     assertTrue(Arrays.equals(invalidBytes, metacard.getThumbnail()));
   }
 
-  @Test(expected = PluginExecutionException.class)
+  @Test
   public void testIOExceptionDuringConversion() throws Exception {
     Metacard metacard = new MetacardImpl();
 
@@ -240,6 +241,7 @@ public class Jpeg2000ThumbnailConverterTest {
     QueryResponseImpl queryResponse = new QueryResponseImpl(null, resultList, 1);
 
     // Should throw PluginExecutionException due to IOException during processing
-    jpeg2000ThumbnailConverter.process(queryResponse);
+    assertThrows(
+        PluginExecutionException.class, () -> jpeg2000ThumbnailConverter.process(queryResponse));
   }
 }

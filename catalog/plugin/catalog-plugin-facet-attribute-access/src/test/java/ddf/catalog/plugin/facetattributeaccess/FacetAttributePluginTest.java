@@ -16,6 +16,7 @@ package ddf.catalog.plugin.facetattributeaccess;
 import static ddf.catalog.Constants.EXPERIMENTAL_FACET_PROPERTIES_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,11 +69,11 @@ public class FacetAttributePluginTest {
     assertThat(queryRequest, is(accessPlugin.processPreQuery(queryRequest)));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void testInvalidFacetAttribute() throws StopProcessingException {
+  @Test
+  public void testInvalidFacetAttribute() {
     queryProperties.put(EXPERIMENTAL_FACET_PROPERTIES_KEY, facetProperties);
     facetAttributes.add("invalidAttribute");
-    accessPlugin.processPreQuery(queryRequest);
+    assertThrows(StopProcessingException.class, () -> accessPlugin.processPreQuery(queryRequest));
   }
 
   @Test
