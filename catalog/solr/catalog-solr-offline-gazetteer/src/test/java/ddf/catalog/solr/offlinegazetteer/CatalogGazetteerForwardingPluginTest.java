@@ -18,6 +18,7 @@ import static ddf.catalog.solr.offlinegazetteer.GazetteerConstants.GAZETTEER_MET
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -115,24 +116,24 @@ public class CatalogGazetteerForwardingPluginTest {
     verify(solrClient).add(eq(COLLECTION_NAME), anyList());
   }
 
-  @Test(expected = PluginExecutionException.class)
+  @Test
   public void testProcessCreateThrowsOnSolrException() throws Exception {
     Metacard gazetteerMetacard = createGazetteerMetacard();
     when(createResponse.getCreatedMetacards())
         .thenReturn(Collections.singletonList(gazetteerMetacard));
     doThrow(new SolrServerException("test")).when(solrClient).add(eq(COLLECTION_NAME), anyList());
 
-    plugin.process(createResponse);
+    assertThrows(PluginExecutionException.class, () -> plugin.process(createResponse));
   }
 
-  @Test(expected = PluginExecutionException.class)
+  @Test
   public void testProcessCreateThrowsOnIOException() throws Exception {
     Metacard gazetteerMetacard = createGazetteerMetacard();
     when(createResponse.getCreatedMetacards())
         .thenReturn(Collections.singletonList(gazetteerMetacard));
     doThrow(new IOException("test")).when(solrClient).add(eq(COLLECTION_NAME), anyList());
 
-    plugin.process(createResponse);
+    assertThrows(PluginExecutionException.class, () -> plugin.process(createResponse));
   }
 
   // UpdateResponse tests
@@ -168,14 +169,14 @@ public class CatalogGazetteerForwardingPluginTest {
     verify(solrClient).add(eq(COLLECTION_NAME), anyList());
   }
 
-  @Test(expected = PluginExecutionException.class)
+  @Test
   public void testProcessUpdateThrowsOnSolrException() throws Exception {
     Metacard gazetteerMetacard = createGazetteerMetacard();
     when(update.getNewMetacard()).thenReturn(gazetteerMetacard);
     when(updateResponse.getUpdatedMetacards()).thenReturn(Collections.singletonList(update));
     doThrow(new SolrServerException("test")).when(solrClient).add(eq(COLLECTION_NAME), anyList());
 
-    plugin.process(updateResponse);
+    assertThrows(PluginExecutionException.class, () -> plugin.process(updateResponse));
   }
 
   // DeleteResponse tests
@@ -211,14 +212,14 @@ public class CatalogGazetteerForwardingPluginTest {
     verify(solrClient).deleteById(anyList());
   }
 
-  @Test(expected = PluginExecutionException.class)
+  @Test
   public void testProcessDeleteThrowsOnSolrException() throws Exception {
     Metacard gazetteerMetacard = createGazetteerMetacard();
     when(deleteResponse.getDeletedMetacards())
         .thenReturn(Collections.singletonList(gazetteerMetacard));
     doThrow(new SolrServerException("test")).when(solrClient).deleteById(anyList());
 
-    plugin.process(deleteResponse);
+    assertThrows(PluginExecutionException.class, () -> plugin.process(deleteResponse));
   }
 
   // Mixed metacard tests

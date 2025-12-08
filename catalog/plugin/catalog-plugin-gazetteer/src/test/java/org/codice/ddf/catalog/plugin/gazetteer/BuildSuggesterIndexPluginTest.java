@@ -17,6 +17,7 @@ import static org.codice.ddf.spatial.geocoding.GeoCodingConstants.GAZETTEER_META
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
@@ -223,15 +224,15 @@ public class BuildSuggesterIndexPluginTest {
     verify(scheduledFuture).cancel(false);
   }
 
-  @Test(expected = PluginExecutionException.class)
-  public void testThrowsPluginExecutionExceptionWhenRejected() throws Exception {
+  @Test
+  public void testThrowsPluginExecutionExceptionWhenRejected() {
     Metacard gazetteerMetacard = createGazetteerMetacard();
     when(createResponse.getCreatedMetacards())
         .thenReturn(Collections.singletonList(gazetteerMetacard));
     when(executor.schedule(any(Runnable.class), anyLong(), any(TimeUnit.class)))
         .thenThrow(new RejectedExecutionException("test"));
 
-    plugin.process(createResponse);
+    assertThrows(PluginExecutionException.class, () -> plugin.process(createResponse));
   }
 
   @Test

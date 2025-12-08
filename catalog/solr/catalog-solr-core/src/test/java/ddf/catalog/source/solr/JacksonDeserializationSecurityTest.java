@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -266,10 +267,11 @@ public class JacksonDeserializationSecurityTest {
   }
 
   /** CVE Coverage: Malformed JSON handling Test: Verify malformed JSON is rejected gracefully */
-  @Test(expected = JsonProcessingException.class)
-  public void testMalformedJsonIsRejected() throws Exception {
+  @Test
+  public void testMalformedJsonIsRejected() {
     String malformedJson = "{\"name\":\"test\", invalid}";
-    objectMapper.readValue(malformedJson, Object.class);
+    assertThrows(
+        JsonProcessingException.class, () -> objectMapper.readValue(malformedJson, Object.class));
   }
 
   /** CVE Coverage: Empty JSON handling Test: Verify empty JSON objects are handled safely */
