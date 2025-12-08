@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.content.plugin.uri;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -75,18 +76,22 @@ public class ContentUriAccessPluginTest {
     assertNoChanges();
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void updateUriNull() throws StopProcessingException, URISyntaxException {
+  @Test
+  public void updateUriNull() throws URISyntaxException {
     when(updateCard.getResourceURI()).thenReturn(null);
     when(existingMetacard.getResourceURI()).thenReturn(new URI(CONTENT_URI));
-    contentUriAccessPlugin.processPreUpdate(input, existingMetacards);
+    assertThrows(
+        StopProcessingException.class,
+        () -> contentUriAccessPlugin.processPreUpdate(input, existingMetacards));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void existingUriNull() throws StopProcessingException, URISyntaxException {
+  @Test
+  public void existingUriNull() throws URISyntaxException {
     when(updateCard.getResourceURI()).thenReturn(new URI(CONTENT_URI));
     when(existingMetacard.getResourceURI()).thenReturn(null);
-    contentUriAccessPlugin.processPreUpdate(input, existingMetacards);
+    assertThrows(
+        StopProcessingException.class,
+        () -> contentUriAccessPlugin.processPreUpdate(input, existingMetacards));
   }
 
   @Test
@@ -97,12 +102,14 @@ public class ContentUriAccessPluginTest {
     assertNoChanges();
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void existingUriContent() throws StopProcessingException, URISyntaxException {
+  @Test
+  public void existingUriContent() throws URISyntaxException {
     when(updateCard.getResourceURI()).thenReturn(new URI(""));
     when(existingMetacard.getResourceURI())
         .thenReturn(new URI(ContentItem.CONTENT_SCHEME, UUID.randomUUID().toString(), null));
-    contentUriAccessPlugin.processPreUpdate(input, existingMetacards);
+    assertThrows(
+        StopProcessingException.class,
+        () -> contentUriAccessPlugin.processPreUpdate(input, existingMetacards));
   }
 
   private void assertNoChanges() {

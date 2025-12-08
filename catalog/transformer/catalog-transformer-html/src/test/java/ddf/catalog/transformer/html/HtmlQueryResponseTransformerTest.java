@@ -15,6 +15,7 @@ package ddf.catalog.transformer.html;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Result;
@@ -46,9 +47,11 @@ public class HtmlQueryResponseTransformerTest {
     htmlTransformer = new HtmlQueryResponseTransformer(EMPTY_CATEGORY_LIST);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacardTransform() throws CatalogTransformerException {
-    htmlTransformer.transform(null, Collections.emptyMap());
+  @Test
+  public void testNullMetacardTransform() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> htmlTransformer.transform(null, Collections.emptyMap()));
   }
 
   @Test

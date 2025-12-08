@@ -18,6 +18,7 @@ import static org.codice.ddf.rest.api.CatalogService.SOURCES_PATH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -134,15 +135,17 @@ public class MetacardTransformerActionProviderTest extends AbstractActionProvide
     assertThat(url, is(getUrl(metacardId)));
   }
 
-  @Test(expected = URISyntaxException.class)
-  public void getMetacardActionUrlWhenUrlIsMalformed() throws Exception {
+  @Test
+  public void getMetacardActionUrlWhenUrlIsMalformed() {
     String invalidHost = "23^&*#";
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, invalidHost);
 
     // Create new provider to reset the SystemBaseUrl.EXTERNAL_HOST property lookup is cached
     MetacardTransformerActionProvider testProvider =
         new MetacardTransformerActionProvider(ACTION_PROVIDER_ID, SAMPLE_TRANSFORMER_ID);
-    testProvider.getMetacardActionUrl(REMOTE_SOURCE_ID, metacard);
+    assertThrows(
+        URISyntaxException.class,
+        () -> testProvider.getMetacardActionUrl(REMOTE_SOURCE_ID, metacard));
   }
 
   private URL getUrl(String metacardId) throws MalformedURLException {

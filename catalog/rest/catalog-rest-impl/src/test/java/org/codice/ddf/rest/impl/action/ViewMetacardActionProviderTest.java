@@ -17,6 +17,7 @@ import static org.codice.ddf.rest.api.CatalogService.CONTEXT_ROOT;
 import static org.codice.ddf.rest.api.CatalogService.SOURCES_PATH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import ddf.action.Action;
@@ -94,12 +95,14 @@ public class ViewMetacardActionProviderTest extends AbstractActionProviderTest {
     assertThat(url, is(getUrl(metacardId)));
   }
 
-  @Test(expected = URISyntaxException.class)
-  public void getMetacardActionUrlWhenUrlIsMalformed() throws Exception {
+  @Test
+  public void getMetacardActionUrlWhenUrlIsMalformed() {
     String invalidHost = "23^&*#";
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, invalidHost);
 
-    actionProvider.getMetacardActionUrl(REMOTE_SOURCE_ID, metacard);
+    assertThrows(
+        URISyntaxException.class,
+        () -> actionProvider.getMetacardActionUrl(REMOTE_SOURCE_ID, metacard));
   }
 
   private URL getUrl(String metacardId) throws MalformedURLException {

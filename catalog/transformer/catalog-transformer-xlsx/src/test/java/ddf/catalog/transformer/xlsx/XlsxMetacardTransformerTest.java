@@ -15,6 +15,7 @@ package ddf.catalog.transformer.xlsx;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Metacard;
@@ -25,10 +26,12 @@ import org.junit.Test;
 
 public class XlsxMetacardTransformerTest {
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacardTransform() throws CatalogTransformerException {
+  @Test
+  public void testNullMetacardTransform() {
     XlsxMetacardTransformer xlsxMetacardTransformer = new XlsxMetacardTransformer();
-    xlsxMetacardTransformer.transform(null, Collections.emptyMap());
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> xlsxMetacardTransformer.transform(null, Collections.emptyMap()));
   }
 
   @Test

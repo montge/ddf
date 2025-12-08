@@ -15,6 +15,7 @@ package ddf.catalog.transformer.html;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Metacard;
@@ -36,10 +37,12 @@ public class HtmlMetacardTransformerTest {
 
   private static final List<HtmlExportCategory> EMPTY_CATEGORY_LIST = Collections.emptyList();
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullMetacardTransform() throws CatalogTransformerException {
+  @Test
+  public void testNullMetacardTransform() {
     HtmlMetacardTransformer htmlTransformer = new HtmlMetacardTransformer(EMPTY_CATEGORY_LIST);
-    htmlTransformer.transform(null, Collections.emptyMap());
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> htmlTransformer.transform(null, Collections.emptyMap()));
   }
 
   @Test

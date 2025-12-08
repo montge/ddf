@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -143,14 +144,16 @@ public class ChecksumTest {
         nullValue());
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testProcessCreateWithNullInput() throws PluginExecutionException {
-    checksum.process((CreateStorageRequest) null);
+  @Test
+  public void testProcessCreateWithNullInput() {
+    assertThrows(
+        IllegalArgumentException.class, () -> checksum.process((CreateStorageRequest) null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testProcessUpdateWithNullInput() throws PluginExecutionException {
-    checksum.process((UpdateStorageRequest) null);
+  @Test
+  public void testProcessUpdateWithNullInput() {
+    assertThrows(
+        IllegalArgumentException.class, () -> checksum.process((UpdateStorageRequest) null));
   }
 
   @Test
