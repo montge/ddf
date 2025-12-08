@@ -16,6 +16,7 @@ package org.codice.ddf.spatial.geocoder.impl;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -66,9 +67,9 @@ public class GeoCoderServiceImplTest {
     when(mockGeoCoder.getNearbyCity(null)).thenReturn(null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorException() {
-    new GeoCoderServiceImpl(null);
+    assertThrows(IllegalArgumentException.class, () -> new GeoCoderServiceImpl(null));
   }
 
   @Test

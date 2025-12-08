@@ -14,6 +14,7 @@
 package ddf.security.samlp.impl;
 
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.base.Charsets;
@@ -145,7 +146,7 @@ public class SimpleSignTest {
     simpleSign.validateSignature(response.getSignature(), response.getDOM().getOwnerDocument());
   }
 
-  @Test(expected = SignatureException.class)
+  @Test
   public void testSignSamlObjectThenModify() throws Exception {
 
     Document responseDoc = StaxUtils.read(new ByteArrayInputStream(cannedResponse.getBytes()));
@@ -165,13 +166,19 @@ public class SimpleSignTest {
     }
     requestElement.setAttribute("oops", "changedit");
     String responseMessage = DOM2Writer.nodeToString(requestElement);
-    responseDoc = StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
-    element = responseDoc.getDocumentElement();
-    unmarshaller =
-        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(element);
-    responseXmlObject = unmarshaller.unmarshall(element);
-    response = (org.opensaml.saml.saml2.core.Response) responseXmlObject;
-    simpleSign.validateSignature(response.getSignature(), response.getDOM().getOwnerDocument());
+    Document finalResponseDoc =
+        StaxUtils.read(new ByteArrayInputStream(responseMessage.getBytes()));
+    Element finalElement = finalResponseDoc.getDocumentElement();
+    Unmarshaller finalUnmarshaller =
+        XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(finalElement);
+    XMLObject finalResponseXmlObject = finalUnmarshaller.unmarshall(finalElement);
+    org.opensaml.saml.saml2.core.Response finalResponse =
+        (org.opensaml.saml.saml2.core.Response) finalResponseXmlObject;
+    assertThrows(
+        SignatureException.class,
+        () ->
+            simpleSign.validateSignature(
+                finalResponse.getSignature(), finalResponse.getDOM().getOwnerDocument()));
   }
 
   @Test
@@ -263,7 +270,7 @@ public class SimpleSignTest {
     assertTrue("Signature was expected to be valid", valid);
   }
 
-  @Test(expected = SignatureException.class)
+  @Test
   public void testSignUriStringAndModifyWithDsa() throws Exception {
 
     systemCrypto =
@@ -295,7 +302,11 @@ public class SimpleSignTest {
             URLEncoder.encode(RELAY_STATE_VAL, "UTF-8"),
             SIG_ALG,
             URLEncoder.encode(signatureAlgorithm, "UTF-8"));
-    simpleSign.validateSignature(signatureAlgorithm, signedMessage, signatureString, dsaCert);
+    assertThrows(
+        SignatureException.class,
+        () ->
+            simpleSign.validateSignature(
+                signatureAlgorithm, signedMessage, signatureString, dsaCert));
   }
 
   /**

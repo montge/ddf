@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -154,13 +155,13 @@ public class BoundingBoxReaderTest {
     assertThat(wkt, is(notNullValue()));
   }
 
-  @Test(expected = CswException.class)
-  public void testInvalidNodeName() throws Exception {
+  @Test
+  public void testInvalidNodeName() {
     // Test with invalid node name (not BoundingBox)
     when(mockReader.getNodeName()).thenReturn("InvalidNode");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
-    reader.getWkt();
+    assertThrows(CswException.class, () -> reader.getWkt());
   }
 
   @Test
