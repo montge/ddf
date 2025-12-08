@@ -15,6 +15,7 @@ package org.codice.ddf.security.oidc.resolver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -208,52 +209,68 @@ public class OidcCredentialsResolverSecurityTest {
 
   // ==================== Token Validation Security Tests ====================
 
-  @Test(expected = TechnicalException.class)
+  @Test
   public void testInvalidIssuerRejected() throws Exception {
-    // Test that ID token with wrong issuer is rejected
-    JWT maliciousToken = createIdTokenWithIssuer(MALICIOUS_ISSUER);
+    assertThrows(
+        TechnicalException.class,
+        () -> {
+          // Test that ID token with wrong issuer is rejected
+          JWT maliciousToken = createIdTokenWithIssuer(MALICIOUS_ISSUER);
 
-    OidcCredentials credentials = new OidcCredentials();
-    credentials.setAccessToken(validAccessToken);
-    credentials.setIdToken(maliciousToken);
+          OidcCredentials credentials = new OidcCredentials();
+          credentials.setAccessToken(validAccessToken);
+          credentials.setIdToken(maliciousToken);
 
-    resolver.resolveIdToken(credentials, webContext);
+          resolver.resolveIdToken(credentials, webContext);
+        });
   }
 
-  @Test(expected = TechnicalException.class)
+  @Test
   public void testExpiredIdTokenRejected() throws Exception {
-    // Test that expired ID token is rejected
-    JWT expiredToken = createExpiredIdToken();
+    assertThrows(
+        TechnicalException.class,
+        () -> {
+          // Test that expired ID token is rejected
+          JWT expiredToken = createExpiredIdToken();
 
-    OidcCredentials credentials = new OidcCredentials();
-    credentials.setAccessToken(validAccessToken);
-    credentials.setIdToken(expiredToken);
+          OidcCredentials credentials = new OidcCredentials();
+          credentials.setAccessToken(validAccessToken);
+          credentials.setIdToken(expiredToken);
 
-    resolver.resolveIdToken(credentials, webContext);
+          resolver.resolveIdToken(credentials, webContext);
+        });
   }
 
-  @Test(expected = TechnicalException.class)
+  @Test
   public void testIdTokenWithFutureIatRejected() throws Exception {
-    // Test that ID token with future "issued at" time is rejected
-    JWT futureToken = createIdTokenWithFutureIat();
+    assertThrows(
+        TechnicalException.class,
+        () -> {
+          // Test that ID token with future "issued at" time is rejected
+          JWT futureToken = createIdTokenWithFutureIat();
 
-    OidcCredentials credentials = new OidcCredentials();
-    credentials.setAccessToken(validAccessToken);
-    credentials.setIdToken(futureToken);
+          OidcCredentials credentials = new OidcCredentials();
+          credentials.setAccessToken(validAccessToken);
+          credentials.setIdToken(futureToken);
 
-    resolver.resolveIdToken(credentials, webContext);
+          resolver.resolveIdToken(credentials, webContext);
+        });
   }
 
-  @Test(expected = TechnicalException.class)
+  @Test
   public void testIdTokenWithWrongAudienceRejected() throws Exception {
-    // Test that ID token with wrong audience is rejected
-    JWT wrongAudienceToken = createIdTokenWithAudience("wrong-client-id");
+    assertThrows(
+        TechnicalException.class,
+        () -> {
+          // Test that ID token with wrong audience is rejected
+          JWT wrongAudienceToken = createIdTokenWithAudience("wrong-client-id");
 
-    OidcCredentials credentials = new OidcCredentials();
-    credentials.setAccessToken(validAccessToken);
-    credentials.setIdToken(wrongAudienceToken);
+          OidcCredentials credentials = new OidcCredentials();
+          credentials.setAccessToken(validAccessToken);
+          credentials.setIdToken(wrongAudienceToken);
 
-    resolver.resolveIdToken(credentials, webContext);
+          resolver.resolveIdToken(credentials, webContext);
+        });
   }
 
   @Test
@@ -470,17 +487,21 @@ public class OidcCredentialsResolverSecurityTest {
 
   // ==================== Token Injection Attack Tests ====================
 
-  @Test(expected = TechnicalException.class)
+  @Test
   public void testIdTokenSubstitutionAttack() throws Exception {
-    // Test substitution of ID token from different user
-    JWT attackerToken = createIdTokenForSubject("attacker@example.com");
+    assertThrows(
+        TechnicalException.class,
+        () -> {
+          // Test substitution of ID token from different user
+          JWT attackerToken = createIdTokenForSubject("attacker@example.com");
 
-    OidcCredentials credentials = new OidcCredentials();
-    credentials.setAccessToken(validAccessToken);
-    credentials.setIdToken(attackerToken);
+          OidcCredentials credentials = new OidcCredentials();
+          credentials.setAccessToken(validAccessToken);
+          credentials.setIdToken(attackerToken);
 
-    resolver.resolveIdToken(credentials, webContext);
-    // Should reject if subject doesn't match access token
+          resolver.resolveIdToken(credentials, webContext);
+          // Should reject if subject doesn't match access token
+        });
   }
 
   @Test

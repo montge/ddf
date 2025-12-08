@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.csrf;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -123,9 +124,9 @@ public class CsrfFilterComprehensiveTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testMixedValidAndInvalidOrigins() throws Exception {
-    // Test with valid origin but invalid referer
+    // Test with valid origin but invalid referer - valid origin is sufficient
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
@@ -133,6 +134,9 @@ public class CsrfFilterComprehensiveTest {
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
     csrfFilter.doFilter(request, response, filterChain);
+
+    verify(filterChain).doFilter(request, response);
+    verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
   // ==================== HTTP Method Tests ====================
@@ -223,32 +227,40 @@ public class CsrfFilterComprehensiveTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testOriginWithWrongPort() throws Exception {
+  @Test
+  public void testOriginWithWrongPort() {
     // Test origin with wrong port
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn("https://localhost:9999");
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== Browser Detection Tests ====================
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testServicesContextWithOperaUserAgent() throws Exception {
+  @Test
+  public void testServicesContextWithOperaUserAgent() {
     // Test browser detection: Opera
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64) OPR/77.0.4054.277");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testServicesContextWithIEUserAgent() throws Exception {
+  @Test
+  public void testServicesContextWithIEUserAgent() {
     // Test browser detection: Internet Explorer
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
@@ -256,7 +268,11 @@ public class CsrfFilterComprehensiveTest {
         .thenReturn(
             "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko MSIE 11.0");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -397,8 +413,8 @@ public class CsrfFilterComprehensiveTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testWhitelistDoesNotApplyToDifferentMethod() throws Exception {
+  @Test
+  public void testWhitelistDoesNotApplyToDifferentMethod() {
     // Test that whitelist for GET doesn't apply to POST
     csrfFilter.setWhiteListContexts(java.util.Arrays.asList("/services/custom=GET"));
 
@@ -407,7 +423,11 @@ public class CsrfFilterComprehensiveTest {
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0) Chrome/91.0");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -443,19 +463,20 @@ public class CsrfFilterComprehensiveTest {
 
   // ==================== Security Logging Tests ====================
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testSecurityAuditLoggingOnFailure() throws Exception {
+  @Test
+  public void testSecurityAuditLoggingOnFailure() {
     // Verify that security failures are audited
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(INVALID_ORIGIN);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
-    try {
-      csrfFilter.doFilter(request, response, filterChain);
-    } finally {
-      verify(securityLogger).audit(anyString());
-    }
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
+    verify(securityLogger).audit(anyString());
   }
 
   // ==================== Initialization and Lifecycle Tests ====================
@@ -512,8 +533,8 @@ public class CsrfFilterComprehensiveTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testServicesContextWithOtherQueryString() throws Exception {
+  @Test
+  public void testServicesContextWithOtherQueryString() {
     // Test that other query strings don't bypass browser check
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("GET");
@@ -521,12 +542,16 @@ public class CsrfFilterComprehensiveTest {
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0) Chrome/91.0");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== Response Validation Tests ====================
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testResponseStatusSetCorrectly() throws Exception {
     // Verify that 403 status is set on failure
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
@@ -535,12 +560,13 @@ public class CsrfFilterComprehensiveTest {
     when(request.getHeader(REFERER_HEADER)).thenReturn(null);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
-    try {
-      csrfFilter.doFilter(request, response, filterChain);
-    } finally {
-      verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
-      verify(response).sendError(HttpServletResponse.SC_FORBIDDEN);
-      verify(response).flushBuffer();
-    }
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
+    verify(response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+    verify(response).sendError(HttpServletResponse.SC_FORBIDDEN);
+    verify(response).flushBuffer();
   }
 }

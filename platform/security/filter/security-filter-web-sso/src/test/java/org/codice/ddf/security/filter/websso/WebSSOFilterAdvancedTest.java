@@ -17,6 +17,7 @@ import static ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
@@ -219,8 +220,8 @@ public class WebSSOFilterAdvancedTest {
     verify(sessionFactory).getOrCreateSession(request);
   }
 
-  @Test(expected = AuthenticationException.class)
-  public void testSessionFactoryNullThrowsException() throws Exception {
+  @Test
+  public void testSessionFactoryNullThrowsException() {
     // Test that null session factory throws exception
     webSSOFilter.setSessionFactory(null);
     when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
@@ -228,7 +229,11 @@ public class WebSSOFilterAdvancedTest {
     when(request.getRequestedSessionId()).thenReturn(SESSION_ID);
     when(request.getSession(false)).thenReturn(null);
 
-    webSSOFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationException.class,
+        () -> {
+          webSSOFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== Multi-Handler Tests ====================
@@ -358,8 +363,8 @@ public class WebSSOFilterAdvancedTest {
     assertThat(captor.getValue().getToken() instanceof GuestAuthenticationToken, is(true));
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testGuestAccessDisabledWithNoActionResult() throws Exception {
+  @Test
+  public void testGuestAccessDisabledWithNoActionResult() {
     // Test that failure occurs when guest access disabled and handlers return NO_ACTION
     when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
@@ -373,13 +378,18 @@ public class WebSSOFilterAdvancedTest {
     when(handler1.getNormalizedToken(any(), any(), any(), anyBoolean())).thenReturn(noActionResult);
 
     webSSOFilter.setHandlerList(Collections.singletonList(handler1));
-    webSSOFilter.doFilter(request, response, filterChain);
+
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          webSSOFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== Error Handling Tests ====================
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testFilterChainThrowsException() throws Exception {
+  @Test
+  public void testFilterChainThrowsException() {
     // Test that exceptions in filter chain are handled and re-thrown
     when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
@@ -399,55 +409,70 @@ public class WebSSOFilterAdvancedTest {
         };
 
     webSSOFilter.setHandlerList(Collections.singletonList(handler1));
-    webSSOFilter.doFilter(request, response, throwingChain);
+
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          webSSOFilter.doFilter(request, response, throwingChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testHandlerErrorRecoveryNoAction() throws Exception {
-    // Test error recovery when handler returns NO_ACTION
-    when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
-    when(contextPolicyManager.getSessionAccess()).thenReturn(false);
-    when(contextPolicyManager.getContextPolicy(TEST_CONTEXT)).thenReturn(contextPolicy);
-    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("basic"));
+  @Test
+  public void testHandlerErrorRecoveryNoAction() {
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          // Test error recovery when handler returns NO_ACTION
+          when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
+          when(contextPolicyManager.getSessionAccess()).thenReturn(false);
+          when(contextPolicyManager.getContextPolicy(TEST_CONTEXT)).thenReturn(contextPolicy);
+          when(contextPolicy.getAuthenticationMethods())
+              .thenReturn(Collections.singletonList("basic"));
 
-    when(handler1.getAuthenticationType()).thenReturn("basic");
-    HandlerResult result = mock(HandlerResult.class);
-    when(result.getStatus()).thenReturn(Status.COMPLETED);
-    BaseAuthenticationToken token = mock(BaseAuthenticationToken.class);
-    when(result.getToken()).thenReturn(token);
-    when(handler1.getNormalizedToken(any(), any(), any(), anyBoolean())).thenReturn(result);
+          when(handler1.getAuthenticationType()).thenReturn("basic");
+          HandlerResult result = mock(HandlerResult.class);
+          when(result.getStatus()).thenReturn(Status.COMPLETED);
+          BaseAuthenticationToken token = mock(BaseAuthenticationToken.class);
+          when(result.getToken()).thenReturn(token);
+          when(handler1.getNormalizedToken(any(), any(), any(), anyBoolean())).thenReturn(result);
 
-    HandlerResult noActionError = mock(HandlerResult.class);
-    when(noActionError.getStatus()).thenReturn(Status.NO_ACTION);
-    when(handler1.handleError(any(), any(), any())).thenReturn(noActionError);
+          HandlerResult noActionError = mock(HandlerResult.class);
+          when(noActionError.getStatus()).thenReturn(Status.NO_ACTION);
+          when(handler1.handleError(any(), any(), any())).thenReturn(noActionError);
 
-    SecurityFilterChain throwingChain =
-        (req, res) -> {
-          throw new IOException("Chain error");
-        };
+          SecurityFilterChain throwingChain =
+              (req, res) -> {
+                throw new IOException("Chain error");
+              };
 
-    webSSOFilter.setHandlerList(Collections.singletonList(handler1));
-    webSSOFilter.doFilter(request, response, throwingChain);
+          webSSOFilter.setHandlerList(Collections.singletonList(handler1));
+          webSSOFilter.doFilter(request, response, throwingChain);
+        });
   }
 
   // ==================== Status Code Tests ====================
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testCompletedStatusWithNullToken() throws Exception {
-    // Test that COMPLETED status with null token is rejected
-    when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
-    when(contextPolicyManager.getSessionAccess()).thenReturn(false);
-    when(contextPolicyManager.getContextPolicy(TEST_CONTEXT)).thenReturn(contextPolicy);
-    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("basic"));
+  @Test
+  public void testCompletedStatusWithNullToken() {
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          // Test that COMPLETED status with null token is rejected
+          when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
+          when(contextPolicyManager.getSessionAccess()).thenReturn(false);
+          when(contextPolicyManager.getContextPolicy(TEST_CONTEXT)).thenReturn(contextPolicy);
+          when(contextPolicy.getAuthenticationMethods())
+              .thenReturn(Collections.singletonList("basic"));
 
-    when(handler1.getAuthenticationType()).thenReturn("basic");
-    HandlerResult result = mock(HandlerResult.class);
-    when(result.getStatus()).thenReturn(Status.COMPLETED);
-    when(result.getToken()).thenReturn(null);
-    when(handler1.getNormalizedToken(any(), any(), any(), anyBoolean())).thenReturn(result);
+          when(handler1.getAuthenticationType()).thenReturn("basic");
+          HandlerResult result = mock(HandlerResult.class);
+          when(result.getStatus()).thenReturn(Status.COMPLETED);
+          when(result.getToken()).thenReturn(null);
+          when(handler1.getNormalizedToken(any(), any(), any(), anyBoolean())).thenReturn(result);
 
-    webSSOFilter.setHandlerList(Collections.singletonList(handler1));
-    webSSOFilter.doFilter(request, response, filterChain);
+          webSSOFilter.setHandlerList(Collections.singletonList(handler1));
+          webSSOFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== Context Policy Tests ====================

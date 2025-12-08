@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.websso;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -147,16 +148,19 @@ public class WebSSOFilterSessionHandlingTest {
     verify(principalHolder, times(1)).remove();
   }
 
-  @Test(expected = SessionException.class)
-  public void testSessionFactoryNullWhenSessionNeeded()
-      throws IOException, AuthenticationException {
+  @Test
+  public void testSessionFactoryNullWhenSessionNeeded() {
     filter.setSessionFactory(null);
 
     when(contextPolicyManager.getSessionAccess()).thenReturn(true);
     when(request.getRequestedSessionId()).thenReturn("session-id");
     when(request.getSession(false)).thenReturn(null);
 
-    filter.doFilter(request, response, filterChain);
+    assertThrows(
+        SessionException.class,
+        () -> {
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -181,12 +185,16 @@ public class WebSSOFilterSessionHandlingTest {
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testNoHandlersAndGuestDisabled() throws IOException, AuthenticationException {
+  @Test
+  public void testNoHandlersAndGuestDisabled() {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
     when(contextPolicyManager.getGuestAccess()).thenReturn(false);
 
-    filter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -201,8 +209,8 @@ public class WebSSOFilterSessionHandlingTest {
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
-  @Test(expected = AuthenticationChallengeException.class)
-  public void testHandlerRedirects() throws IOException, AuthenticationException {
+  @Test
+  public void testHandlerRedirects() {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
 
     HandlerResult handlerResult = mock(HandlerResult.class);
@@ -212,11 +220,15 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.setHandlerList(Collections.singletonList(handler));
 
-    filter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationChallengeException.class,
+        () -> {
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testHandlerNoActionWithGuestDisabled() throws IOException, AuthenticationException {
+  @Test
+  public void testHandlerNoActionWithGuestDisabled() {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
     when(contextPolicyManager.getGuestAccess()).thenReturn(false);
 
@@ -226,7 +238,11 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.setHandlerList(Collections.singletonList(handler));
 
-    filter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -248,8 +264,8 @@ public class WebSSOFilterSessionHandlingTest {
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testHandlerCompletedWithoutToken() throws IOException, AuthenticationException {
+  @Test
+  public void testHandlerCompletedWithoutToken() {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
 
     HandlerResult handlerResult = mock(HandlerResult.class);
@@ -259,11 +275,15 @@ public class WebSSOFilterSessionHandlingTest {
 
     filter.setHandlerList(Collections.singletonList(handler));
 
-    filter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testFilterChainException() throws Exception {
+  @Test
+  public void testFilterChainException() {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
 
     HandlerResult handlerResult = mock(HandlerResult.class);
@@ -280,7 +300,11 @@ public class WebSSOFilterSessionHandlingTest {
 
     doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
 
-    filter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test

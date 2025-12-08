@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.csrf;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -102,7 +103,7 @@ public class CsrfFilterTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testRequestMissingOriginAndReferer() throws Exception {
     // Test attack: request without Origin or Referer header
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
@@ -111,7 +112,11 @@ public class CsrfFilterTest {
     when(request.getHeader(REFERER_HEADER)).thenReturn(null);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
 
     verify(filterChain, never()).doFilter(any(), any());
     verify(securityLogger)
@@ -120,7 +125,7 @@ public class CsrfFilterTest {
                 "Cross-site check failure: Incoming request did not have an Origin or Referer header."));
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testRequestWithInvalidOrigin() throws Exception {
     // Test attack: request from untrusted origin
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
@@ -128,7 +133,11 @@ public class CsrfFilterTest {
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(INVALID_ORIGIN);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
 
     verify(filterChain, never()).doFilter(any(), any());
     verify(securityLogger)
@@ -136,7 +145,7 @@ public class CsrfFilterTest {
     // origin
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testRequestMissingCsrfHeader() throws Exception {
     // Test attack: request without X-Requested-With header
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
@@ -144,7 +153,11 @@ public class CsrfFilterTest {
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
     when(request.getHeader(CSRF_HEADER)).thenReturn(null);
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
 
     verify(filterChain, never()).doFilter(any(), any());
     verify(securityLogger)
@@ -195,15 +208,19 @@ public class CsrfFilterTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testProtectedContextPostWithoutCsrfHeader() throws Exception {
+  @Test
+  public void testProtectedContextPostWithoutCsrfHeader() {
     // Test POST to protected context without CSRF header
     when(request.getRequestURI()).thenReturn(INTRIGUE_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
     when(request.getHeader(CSRF_HEADER)).thenReturn(null);
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== System Protection Tests ====================
@@ -221,7 +238,7 @@ public class CsrfFilterTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
+  @Test
   public void testServicesContextWithBrowserUserAgent() throws Exception {
     // Test attack: browser attempting to access /services directly
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
@@ -230,7 +247,11 @@ public class CsrfFilterTest {
         .thenReturn(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
 
     verify(filterChain, never()).doFilter(any(), any());
     verify(securityLogger).audit(eq("Cross-site check failure: Request was made from a browser."));
@@ -251,48 +272,64 @@ public class CsrfFilterTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testServicesContextWithChromeUserAgent() throws Exception {
+  @Test
+  public void testServicesContextWithChromeUserAgent() {
     // Test browser detection: Chrome
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testServicesContextWithSafariUserAgent() throws Exception {
+  @Test
+  public void testServicesContextWithSafariUserAgent() {
     // Test browser detection: Safari
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testServicesContextWithFirefoxUserAgent() throws Exception {
+  @Test
+  public void testServicesContextWithFirefoxUserAgent() {
     // Test browser detection: Firefox
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testServicesContextWithEdgeUserAgent() throws Exception {
+  @Test
+  public void testServicesContextWithEdgeUserAgent() {
     // Test browser detection: Edge
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/91.0.864.59");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== Bypass and Edge Cases ====================
@@ -352,15 +389,19 @@ public class CsrfFilterTest {
     System.clearProperty("csrf.trustedAuthorities");
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testMalformedOriginUrl() throws Exception {
+  @Test
+  public void testMalformedOriginUrl() {
     // Test attack: malformed origin URL
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn("not-a-valid-url");
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -391,8 +432,8 @@ public class CsrfFilterTest {
     verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testBlankOriginAndReferer() throws Exception {
+  @Test
+  public void testBlankOriginAndReferer() {
     // Test with blank (empty string) origin and referer
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
@@ -400,7 +441,11 @@ public class CsrfFilterTest {
     when(request.getHeader(REFERER_HEADER)).thenReturn("");
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
 
-    csrfFilter.doFilter(request, response, filterChain);
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          csrfFilter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test

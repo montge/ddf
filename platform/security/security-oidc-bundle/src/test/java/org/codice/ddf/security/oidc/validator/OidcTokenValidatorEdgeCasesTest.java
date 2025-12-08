@@ -16,6 +16,7 @@ package org.codice.ddf.security.oidc.validator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -187,15 +188,19 @@ public class OidcTokenValidatorEdgeCasesTest {
     OidcTokenValidator.validateUserInfoIdToken(jwt, resourceRetriever, oidcProviderMetadata);
   }
 
-  @Test(expected = OidcValidationException.class)
+  @Test
   public void testValidateUserInfoIdTokenWithMismatchedAlgorithm() throws Exception {
-    when(oidcProviderMetadata.getUserInfoJWSAlgs())
-        .thenReturn(Collections.singletonList(JWSAlgorithm.HS256));
+    assertThrows(
+        OidcValidationException.class,
+        () -> {
+          when(oidcProviderMetadata.getUserInfoJWSAlgs())
+              .thenReturn(Collections.singletonList(JWSAlgorithm.HS256));
 
-    String stringJwt = createIdToken("myNonce");
-    JWT jwt = SignedJWT.parse(stringJwt);
+          String stringJwt = createIdToken("myNonce");
+          JWT jwt = SignedJWT.parse(stringJwt);
 
-    OidcTokenValidator.validateUserInfoIdToken(jwt, resourceRetriever, oidcProviderMetadata);
+          OidcTokenValidator.validateUserInfoIdToken(jwt, resourceRetriever, oidcProviderMetadata);
+        });
   }
 
   @Test
@@ -260,32 +265,40 @@ public class OidcTokenValidatorEdgeCasesTest {
         accessToken, idToken, resourceRetriever, oidcProviderMetadata, configuration);
   }
 
-  @Test(expected = OidcValidationException.class)
+  @Test
   public void testValidateAccessTokenWithImplicitFlowNoAtHash() throws Exception {
-    // Mock response type before creating tokens
-    when(configuration.getResponseType()).thenReturn("id_token token");
+    assertThrows(
+        OidcValidationException.class,
+        () -> {
+          // Mock response type before creating tokens
+          when(configuration.getResponseType()).thenReturn("id_token token");
 
-    String accessTokenString = createAccessToken();
-    AccessToken accessToken = new BearerAccessToken(accessTokenString);
+          String accessTokenString = createAccessToken();
+          AccessToken accessToken = new BearerAccessToken(accessTokenString);
 
-    // Create ID token WITHOUT at_hash claim - this should trigger validation error
-    // for implicit flow
-    String idTokenString = createIdToken("myNonce");
-    JWT idToken = SignedJWT.parse(idTokenString);
+          // Create ID token WITHOUT at_hash claim - this should trigger validation error
+          // for implicit flow
+          String idTokenString = createIdToken("myNonce");
+          JWT idToken = SignedJWT.parse(idTokenString);
 
-    OidcTokenValidator.validateAccessToken(
-        accessToken, idToken, resourceRetriever, oidcProviderMetadata, configuration);
+          OidcTokenValidator.validateAccessToken(
+              accessToken, idToken, resourceRetriever, oidcProviderMetadata, configuration);
+        });
   }
 
-  @Test(expected = OidcValidationException.class)
+  @Test
   public void testValidateUserInfoIdTokenWithNoMatchingKeys() throws Exception {
-    when(resourceRetriever.retrieveResource(any()))
-        .thenReturn(new Resource("{\"keys\": []}", APPLICATION_JSON));
+    assertThrows(
+        OidcValidationException.class,
+        () -> {
+          when(resourceRetriever.retrieveResource(any()))
+              .thenReturn(new Resource("{\"keys\": []}", APPLICATION_JSON));
 
-    String stringJwt = createIdToken("myNonce");
-    JWT jwt = SignedJWT.parse(stringJwt);
+          String stringJwt = createIdToken("myNonce");
+          JWT jwt = SignedJWT.parse(stringJwt);
 
-    OidcTokenValidator.validateUserInfoIdToken(jwt, resourceRetriever, oidcProviderMetadata);
+          OidcTokenValidator.validateUserInfoIdToken(jwt, resourceRetriever, oidcProviderMetadata);
+        });
   }
 
   private String createIdToken(String nonce) {

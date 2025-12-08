@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -209,15 +210,19 @@ public class OidcCredentialsResolverTest {
     assertThat(credentials.getIdToken(), is(notNullValue()));
   }
 
-  @Test(expected = TechnicalException.class)
+  @Test
   public void testResolveIdTokenWithInvalidAccessToken() throws Exception {
-    String invalidAccessTokenString = "invalid.access.token";
-    AccessToken accessToken = new BearerAccessToken(invalidAccessTokenString);
+    assertThrows(
+        TechnicalException.class,
+        () -> {
+          String invalidAccessTokenString = "invalid.access.token";
+          AccessToken accessToken = new BearerAccessToken(invalidAccessTokenString);
 
-    OidcCredentials credentials = new OidcCredentials();
-    credentials.setAccessToken(accessToken);
+          OidcCredentials credentials = new OidcCredentials();
+          credentials.setAccessToken(accessToken);
 
-    resolver.resolveIdToken(credentials, webContext);
+          resolver.resolveIdToken(credentials, webContext);
+        });
   }
 
   @Test

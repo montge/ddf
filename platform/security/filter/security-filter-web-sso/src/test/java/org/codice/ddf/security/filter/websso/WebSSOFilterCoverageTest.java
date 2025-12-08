@@ -17,6 +17,7 @@ import static ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY;
 import static ddf.security.SecurityConstants.SECURITY_TOKEN_KEY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -123,11 +124,15 @@ public class WebSSOFilterCoverageTest {
     verify(request, times(1)).setAttribute(eq(ContextPolicy.NO_AUTH_POLICY), eq(null));
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testNoHandlersNoGuestAccessReturns503() throws IOException, AuthenticationException {
-    when(contextPolicyManager.getGuestAccess()).thenReturn(false);
+  @Test
+  public void testNoHandlersNoGuestAccessReturns503() {
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          when(contextPolicyManager.getGuestAccess()).thenReturn(false);
 
-    filter.doFilter(request, response, filterChain);
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -151,21 +156,25 @@ public class WebSSOFilterCoverageTest {
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testHandlerReturnsCompletedButNullToken()
-      throws IOException, AuthenticationException {
-    HandlerResult result = mock(HandlerResult.class);
-    when(result.getStatus()).thenReturn(Status.COMPLETED);
-    when(result.getToken()).thenReturn(null);
-    when(handler1.getNormalizedToken(any(), any(), any(), anyBoolean())).thenReturn(result);
-    when(handler1.getAuthenticationType()).thenReturn("test");
+  @Test
+  public void testHandlerReturnsCompletedButNullToken() {
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          HandlerResult result = mock(HandlerResult.class);
+          when(result.getStatus()).thenReturn(Status.COMPLETED);
+          when(result.getToken()).thenReturn(null);
+          when(handler1.getNormalizedToken(any(), any(), any(), anyBoolean())).thenReturn(result);
+          when(handler1.getAuthenticationType()).thenReturn("test");
 
-    when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
-    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
+          when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
+          when(contextPolicy.getAuthenticationMethods())
+              .thenReturn(Collections.singletonList("test"));
 
-    filter.setHandlerList(Collections.singletonList(handler1));
+          filter.setHandlerList(Collections.singletonList(handler1));
 
-    filter.doFilter(request, response, filterChain);
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -249,19 +258,24 @@ public class WebSSOFilterCoverageTest {
     verify(filterChain, times(1)).doFilter(request, response);
   }
 
-  @Test(expected = AuthenticationChallengeException.class)
-  public void testHandlerReturnsRedirected() throws IOException, AuthenticationException {
-    HandlerResult result = mock(HandlerResult.class);
-    when(result.getStatus()).thenReturn(Status.REDIRECTED);
-    when(handler1.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(result);
-    when(handler1.getAuthenticationType()).thenReturn("test");
+  @Test
+  public void testHandlerReturnsRedirected() {
+    assertThrows(
+        AuthenticationChallengeException.class,
+        () -> {
+          HandlerResult result = mock(HandlerResult.class);
+          when(result.getStatus()).thenReturn(Status.REDIRECTED);
+          when(handler1.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(result);
+          when(handler1.getAuthenticationType()).thenReturn("test");
 
-    when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
-    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
+          when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
+          when(contextPolicy.getAuthenticationMethods())
+              .thenReturn(Collections.singletonList("test"));
 
-    filter.setHandlerList(Collections.singletonList(handler1));
+          filter.setHandlerList(Collections.singletonList(handler1));
 
-    filter.doFilter(request, response, filterChain);
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -318,16 +332,19 @@ public class WebSSOFilterCoverageTest {
     verify(principalHolder, times(1)).remove();
   }
 
-  @Test(expected = SessionException.class)
-  public void testSessionFactoryNullThrowsSessionException()
-      throws IOException, AuthenticationException {
-    filter.setSessionFactory(null);
+  @Test
+  public void testSessionFactoryNullThrowsSessionException() {
+    assertThrows(
+        SessionException.class,
+        () -> {
+          filter.setSessionFactory(null);
 
-    when(contextPolicyManager.getSessionAccess()).thenReturn(true);
-    when(request.getRequestedSessionId()).thenReturn("session-123");
-    when(request.getSession(false)).thenReturn(null);
+          when(contextPolicyManager.getSessionAccess()).thenReturn(true);
+          when(request.getRequestedSessionId()).thenReturn("session-123");
+          when(request.getSession(false)).thenReturn(null);
 
-    filter.doFilter(request, response, filterChain);
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -359,50 +376,62 @@ public class WebSSOFilterCoverageTest {
     verify(securityLogger, times(1)).audit(anyString(), anyString());
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testFilterChainThrowsExceptionHandlerHandlesError() throws Exception {
-    BaseAuthenticationToken token = mock(BaseAuthenticationToken.class);
-    HandlerResult completedResult = mock(HandlerResult.class);
-    when(completedResult.getStatus()).thenReturn(Status.COMPLETED);
-    when(completedResult.getToken()).thenReturn(token);
-    when(handler1.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(completedResult);
-    when(handler1.getAuthenticationType()).thenReturn("test");
+  @Test
+  public void testFilterChainThrowsExceptionHandlerHandlesError() {
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          BaseAuthenticationToken token = mock(BaseAuthenticationToken.class);
+          HandlerResult completedResult = mock(HandlerResult.class);
+          when(completedResult.getStatus()).thenReturn(Status.COMPLETED);
+          when(completedResult.getToken()).thenReturn(token);
+          when(handler1.getNormalizedToken(any(), any(), any(), eq(false)))
+              .thenReturn(completedResult);
+          when(handler1.getAuthenticationType()).thenReturn("test");
 
-    HandlerResult errorResult = mock(HandlerResult.class);
-    when(errorResult.getStatus()).thenReturn(Status.NO_ACTION);
-    when(handler1.handleError(any(), any(), any())).thenReturn(errorResult);
+          HandlerResult errorResult = mock(HandlerResult.class);
+          when(errorResult.getStatus()).thenReturn(Status.NO_ACTION);
+          when(handler1.handleError(any(), any(), any())).thenReturn(errorResult);
 
-    when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
-    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
+          when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
+          when(contextPolicy.getAuthenticationMethods())
+              .thenReturn(Collections.singletonList("test"));
 
-    filter.setHandlerList(Collections.singletonList(handler1));
+          filter.setHandlerList(Collections.singletonList(handler1));
 
-    doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
+          doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
 
-    filter.doFilter(request, response, filterChain);
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
-  @Test(expected = AuthenticationFailureException.class)
-  public void testFilterChainExceptionHandlerReturnsRedirected() throws Exception {
-    BaseAuthenticationToken token = mock(BaseAuthenticationToken.class);
-    HandlerResult completedResult = mock(HandlerResult.class);
-    when(completedResult.getStatus()).thenReturn(Status.COMPLETED);
-    when(completedResult.getToken()).thenReturn(token);
-    when(handler1.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(completedResult);
-    when(handler1.getAuthenticationType()).thenReturn("test");
+  @Test
+  public void testFilterChainExceptionHandlerReturnsRedirected() {
+    assertThrows(
+        AuthenticationFailureException.class,
+        () -> {
+          BaseAuthenticationToken token = mock(BaseAuthenticationToken.class);
+          HandlerResult completedResult = mock(HandlerResult.class);
+          when(completedResult.getStatus()).thenReturn(Status.COMPLETED);
+          when(completedResult.getToken()).thenReturn(token);
+          when(handler1.getNormalizedToken(any(), any(), any(), eq(false)))
+              .thenReturn(completedResult);
+          when(handler1.getAuthenticationType()).thenReturn("test");
 
-    HandlerResult errorResult = mock(HandlerResult.class);
-    when(errorResult.getStatus()).thenReturn(Status.REDIRECTED);
-    when(handler1.handleError(any(), any(), any())).thenReturn(errorResult);
+          HandlerResult errorResult = mock(HandlerResult.class);
+          when(errorResult.getStatus()).thenReturn(Status.REDIRECTED);
+          when(handler1.handleError(any(), any(), any())).thenReturn(errorResult);
 
-    when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
-    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
+          when(contextPolicyManager.getContextPolicy("/test/path")).thenReturn(contextPolicy);
+          when(contextPolicy.getAuthenticationMethods())
+              .thenReturn(Collections.singletonList("test"));
 
-    filter.setHandlerList(Collections.singletonList(handler1));
+          filter.setHandlerList(Collections.singletonList(handler1));
 
-    doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
+          doThrow(new RuntimeException("Test exception")).when(filterChain).doFilter(any(), any());
 
-    filter.doFilter(request, response, filterChain);
+          filter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
