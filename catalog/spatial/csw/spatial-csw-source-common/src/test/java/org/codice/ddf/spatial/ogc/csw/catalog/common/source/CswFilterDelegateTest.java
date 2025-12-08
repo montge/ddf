@@ -31,6 +31,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -1883,14 +1884,18 @@ public class CswFilterDelegateTest {
     assertXMLEqual(propertyIsEqualToXmlWithBoolean, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsEqualToByteArrayLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsEqualTo(propertyName, byteArrayLiteral);
+  @Test
+  public void testPropertyIsEqualToByteArrayLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsEqualTo(propertyName, byteArrayLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsEqualToObjectLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsEqualTo(propertyName, objectLiteral);
+  @Test
+  public void testPropertyIsEqualToObjectLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsEqualTo(propertyName, objectLiteral));
   }
 
   @Test
@@ -1973,14 +1978,18 @@ public class CswFilterDelegateTest {
     assertXMLEqual(propertyIsNotEqualToXmlWithBoolean, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsNotEqualToByteArrayLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsNotEqualTo(propertyName, byteArrayLiteral);
+  @Test
+  public void testPropertyIsNotEqualToByteArrayLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsNotEqualTo(propertyName, byteArrayLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsNotEqualToObjectLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsNotEqualTo(propertyName, objectLiteral);
+  @Test
+  public void testPropertyIsNotEqualToObjectLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsNotEqualTo(propertyName, objectLiteral));
   }
 
   /** Property is greater than tests */
@@ -2046,19 +2055,25 @@ public class CswFilterDelegateTest {
     assertXMLEqual(propertyIsGreaterThanXmlWithDecimal, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsGreaterThanBooleanLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsGreaterThan(propertyName, booleanLiteral);
+  @Test
+  public void testPropertyIsGreaterThanBooleanLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsGreaterThan(propertyName, booleanLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsGreaterThanByteArrayLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsGreaterThan(propertyName, byteArrayLiteral);
+  @Test
+  public void testPropertyIsGreaterThanByteArrayLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsGreaterThan(propertyName, byteArrayLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsGreaterThanObjectLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsGreaterThan(propertyName, objectLiteral);
+  @Test
+  public void testPropertyIsGreaterThanObjectLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsGreaterThan(propertyName, objectLiteral));
   }
 
   /** Property is greater than or equal to tests */
@@ -2124,19 +2139,26 @@ public class CswFilterDelegateTest {
     assertXMLEqual(propertyIsGreaterThanOrEqualToXmlWithDecimal, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsGreaterThanOrEqualToBooleanLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsGreaterThanOrEqualTo(propertyName, booleanLiteral);
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToBooleanLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsGreaterThanOrEqualTo(propertyName, booleanLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsGreaterThanOrEqualToByteArrayLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsGreaterThanOrEqualTo(propertyName, byteArrayLiteral);
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToByteArrayLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () ->
+            cswFilterDelegateLatLon.propertyIsGreaterThanOrEqualTo(propertyName, byteArrayLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsGreaterThanOrEqualToObjectLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsGreaterThanOrEqualTo(propertyName, objectLiteral);
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToObjectLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsGreaterThanOrEqualTo(propertyName, objectLiteral));
   }
 
   /** Property is less than tests */
@@ -2192,19 +2214,25 @@ public class CswFilterDelegateTest {
     assertXMLEqual(propertyIsLessThanXmlWithDecimal, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsLessThanBooleanLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsLessThan(propertyName, booleanLiteral);
+  @Test
+  public void testPropertyIsLessThanBooleanLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsLessThan(propertyName, booleanLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsLessThanByteArrayLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsLessThan(propertyName, byteArrayLiteral);
+  @Test
+  public void testPropertyIsLessThanByteArrayLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsLessThan(propertyName, byteArrayLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsLessThanObjectLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsLessThan(propertyName, objectLiteral);
+  @Test
+  public void testPropertyIsLessThanObjectLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsLessThan(propertyName, objectLiteral));
   }
 
   /** Property is less than or equal to tests */
@@ -2270,19 +2298,25 @@ public class CswFilterDelegateTest {
     assertXMLEqual(propertyIsLessThanOrEqualToXmlWithDecimal, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsLessThanOrEqualToBooleanLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsLessThanOrEqualTo(propertyName, booleanLiteral);
+  @Test
+  public void testPropertyIsLessThanOrEqualToBooleanLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsLessThanOrEqualTo(propertyName, booleanLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsLessThanOrEqualToByteArrayLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsLessThanOrEqualTo(propertyName, byteArrayLiteral);
+  @Test
+  public void testPropertyIsLessThanOrEqualToByteArrayLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsLessThanOrEqualTo(propertyName, byteArrayLiteral));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testPropertyIsLessThanOrEqualToObjectLiteral() throws JAXBException {
-    cswFilterDelegateLatLon.propertyIsLessThanOrEqualTo(propertyName, objectLiteral);
+  @Test
+  public void testPropertyIsLessThanOrEqualToObjectLiteral() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> cswFilterDelegateLatLon.propertyIsLessThanOrEqualTo(propertyName, objectLiteral));
   }
 
   /** Property is between tests */
@@ -2441,9 +2475,8 @@ public class CswFilterDelegateTest {
     assertXpathExists("/ogc:Filter/ogc:FeatureId[@fid='cswRecord.5678']", xml);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testFeatureIdAndComparisonOpsOr() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testFeatureIdAndComparisonOpsOr() {
     ObjectFactory filterObjectFactory = new ObjectFactory();
     FeatureIdType fidType = new FeatureIdType();
     fidType.setFid("cswRecord.1234");
@@ -2460,12 +2493,13 @@ public class CswFilterDelegateTest {
     filterList.add(idFilter);
     filterList.add(propertyIsLikeFilter);
 
-    cswFilterDelegateLatLon.or(filterList);
+    assertThrows(UnsupportedOperationException.class, () -> cswFilterDelegateLatLon.or(filterList));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testPropertyLikeOrEmptyList() {
-    cswFilterDelegateLatLon.or(new ArrayList<>());
+    assertThrows(
+        UnsupportedOperationException.class, () -> cswFilterDelegateLatLon.or(new ArrayList<>()));
   }
 
   @Test
@@ -2516,9 +2550,10 @@ public class CswFilterDelegateTest {
     assertXMLEqual(andSpatialOpsXml, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testPropertyIsLikeAndEmptyList() {
-    cswFilterDelegateLatLon.and(new ArrayList<>());
+    assertThrows(
+        UnsupportedOperationException.class, () -> cswFilterDelegateLatLon.and(new ArrayList<>()));
   }
 
   @Test
@@ -2535,7 +2570,7 @@ public class CswFilterDelegateTest {
     assertThat(filter.getComparisonOps(), notNullValue());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testAndInvalidFilter() {
     FilterType propertyIsLikeFilter =
         cswFilterDelegateLatLon.propertyIsLike(propertyName, likeLiteral, isCaseSensitive);
@@ -2544,7 +2579,7 @@ public class CswFilterDelegateTest {
     filters.add(null);
     filters.add(propertyIsLikeFilter);
 
-    cswFilterDelegateLatLon.and(filters);
+    assertThrows(UnsupportedOperationException.class, () -> cswFilterDelegateLatLon.and(filters));
   }
 
   @Test
@@ -2562,7 +2597,7 @@ public class CswFilterDelegateTest {
     assertThat(filter.getLogicOps(), nullValue());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testOrInvalidFilter() {
     FilterType propertyIsLikeFilter =
         cswFilterDelegateLatLon.propertyIsLike(propertyName, likeLiteral, isCaseSensitive);
@@ -2571,7 +2606,7 @@ public class CswFilterDelegateTest {
     filters.add(null);
     filters.add(propertyIsLikeFilter);
 
-    cswFilterDelegateLatLon.or(filters);
+    assertThrows(UnsupportedOperationException.class, () -> cswFilterDelegateLatLon.or(filters));
   }
 
   @Test
@@ -2734,94 +2769,103 @@ public class CswFilterDelegateTest {
     assertXMLEqual(intersectsEnvelopeXmlPropertyOwsBoundingBox, getXmlFromMarshaller(filterType));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testIntersectsUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testIntersectsUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.intersects(propName, polygonWkt);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.intersects(propName, polygonWkt));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testBeyondUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testBeyondUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.beyond(propName, polygonWkt, SAMPLE_DISTANCE);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.beyond(propName, polygonWkt, SAMPLE_DISTANCE));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testDWithinUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testDWithinUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.dwithin(propName, polygonWkt, SAMPLE_DISTANCE);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.dwithin(propName, polygonWkt, SAMPLE_DISTANCE));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testContainsUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testContainsUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.contains(propName, polygonWkt);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.contains(propName, polygonWkt));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testCrossesUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testCrossesUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.crosses(propName, polygonWkt);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.crosses(propName, polygonWkt));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testDisjointUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testDisjointUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.disjoint(propName, polygonWkt);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.disjoint(propName, polygonWkt));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testOverlapsUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testOverlapsUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.overlaps(propName, polygonWkt);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.overlaps(propName, polygonWkt));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testTouchesUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testTouchesUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.touches(propName, polygonWkt);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.touches(propName, polygonWkt));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void testWithinUnsupportedOperation() throws JAXBException, SAXException, IOException {
-
+  @Test
+  public void testWithinUnsupportedOperation() {
     String propName = CswConstants.BBOX_PROP;
     CswFilterDelegate localCswFilterDelegate =
         initCswFilterDelegate(
             null, initCswSourceConfiguration(CswAxisOrder.LAT_LON, false, CswConstants.CSW_TYPE));
-    localCswFilterDelegate.within(propName, polygonWkt);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> localCswFilterDelegate.within(propName, polygonWkt));
   }
 
   @Test
