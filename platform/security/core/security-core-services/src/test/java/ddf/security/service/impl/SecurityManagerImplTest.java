@@ -13,7 +13,10 @@
  */
 package ddf.security.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,19 +25,16 @@ import ddf.security.audit.SecurityLogger;
 import ddf.security.service.SecurityServiceException;
 import java.util.Arrays;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class SecurityManagerImplTest {
 
   private static final String REALM_NAME = "MOCKREALM";
-
-  @Rule public ExpectedException thrown = ExpectedException.none();
 
   /**
    * Test for failure when a non-token is sent in.
@@ -42,10 +42,9 @@ public class SecurityManagerImplTest {
    * @throws SecurityServiceException
    */
   @Test
-  public void testBadToken() throws SecurityServiceException {
-    thrown.expect(SecurityServiceException.class);
+  public void testBadToken() {
     SecurityManagerImpl manager = new SecurityManagerImpl(mock(SecurityLogger.class));
-    manager.getSubject(REALM_NAME);
+    assertThrows(SecurityServiceException.class, () -> manager.getSubject(REALM_NAME));
   }
 
   /**
@@ -54,16 +53,17 @@ public class SecurityManagerImplTest {
    * @throws SecurityServiceException
    */
   @Test
-  public void testAuthTokenNoRealm() throws SecurityServiceException {
-    thrown.expect(org.apache.shiro.authc.AuthenticationException.class);
-    thrown.expectMessage("Authentication failed for token submission");
+  public void testAuthTokenNoRealm() {
     AuthenticationToken token = mock(AuthenticationToken.class);
     when(token.getCredentials()).thenReturn("testUser");
     AuthenticationInfo info = mock(AuthenticationInfo.class);
     Realm realm = mock(Realm.class);
     when(realm.getAuthenticationInfo(token)).thenReturn(info);
     SecurityManagerImpl manager = new SecurityManagerImpl(mock(SecurityLogger.class));
-    manager.getSubject(token);
+    AuthenticationException exception =
+        assertThrows(AuthenticationException.class, () -> manager.getSubject(token));
+    assertThat(
+        exception.getMessage(), containsString("Authentication failed for token submission"));
   }
 
   /**

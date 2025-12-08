@@ -13,8 +13,10 @@
  */
 package org.codice.ddf.catalog.sourcepoller;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,8 +24,8 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
@@ -35,9 +37,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -151,16 +151,11 @@ public class PollerRunnerTest {
     pollerRunner.destroy();
   }
 
-  @Rule public final ExpectedException exception = ExpectedException.none();
-
   @Test
   public void testPollVirtualMachineError() throws Exception {
-    // then: 'the VirtualMachineError thrown by pollItems is not caught'
-    // Not sure why this needs to go at the beginning of the method
-    final VirtualMachineError virtualMachineError = mock(VirtualMachineError.class);
-    exception.expect(is(virtualMachineError));
-
     // given:
+    final VirtualMachineError virtualMachineError = mock(VirtualMachineError.class);
+
     final ScheduledExecutorService mockScheduledExecutorService =
         mock(ScheduledExecutorService.class);
     when(mockScheduledExecutorService.scheduleAtFixedRate(
@@ -188,8 +183,10 @@ public class PollerRunnerTest {
           }
         };
 
-    // when:
-    pollerRunner.init();
+    // then: 'the VirtualMachineError thrown by pollItems is not caught'
+    VirtualMachineError thrown =
+        assertThrows(VirtualMachineError.class, () -> pollerRunner.init());
+    assertThat(thrown, is(sameInstance(virtualMachineError)));
 
     // cleanup:
     pollerRunner.destroy();

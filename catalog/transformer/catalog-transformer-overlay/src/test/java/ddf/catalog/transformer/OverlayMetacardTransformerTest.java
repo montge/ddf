@@ -16,7 +16,7 @@ package ddf.catalog.transformer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThrows;
@@ -37,15 +37,11 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.locationtech.jts.io.ParseException;
 
 public class OverlayMetacardTransformerTest {
   private OverlayMetacardTransformer transformer;
-
-  @Rule public ExpectedException expectedException = ExpectedException.none();
 
   @Before
   public void setUp() {
@@ -148,9 +144,9 @@ public class OverlayMetacardTransformerTest {
     final MetacardImpl metacard = getMetacard();
     metacard.setLocation("INVALID WKT");
 
-    expectedException.expect(CatalogTransformerException.class);
-    expectedException.expectCause(isA(ParseException.class));
-    transform(metacard, null);
+    CatalogTransformerException exception =
+        assertThrows(CatalogTransformerException.class, () -> transform(metacard, null));
+    assertThat(exception.getCause(), instanceOf(ParseException.class));
   }
 
   @Test
@@ -162,6 +158,6 @@ public class OverlayMetacardTransformerTest {
 
   @Test
   public void testNullImageSupplier() {
-    assertThrows(IllegalArgumentException.class, () -> new OverlayMetacardTransformer(null));
+    assertThrows(NullPointerException.class, () -> new OverlayMetacardTransformer(null));
   }
 }

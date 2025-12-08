@@ -17,6 +17,7 @@ import static org.codice.ddf.commands.solr.SolrCommands.ZOOKEEPER_HOSTS_PROP;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -40,9 +41,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -62,8 +61,6 @@ public class BackupCommandTest extends SolrCommandTest {
   private static final int SUCCESS_STATUS_CODE = 0;
 
   private static final int FAILURE_STATUS_CODE = 500;
-
-  @Rule public ExpectedException expectedException = ExpectedException.none();
 
   @Mock SolrClient mockSolrClient;
 
@@ -122,31 +119,27 @@ public class BackupCommandTest extends SolrCommandTest {
   @Test
   public void testPerformSolrCloudSynchronousBackupNoOptions() throws Exception {
 
-    // Setup exception expectations
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectMessage(SEE_COMMAND_USAGE_MESSAGE);
-
     // Setup BackupCommand
     BackupCommand backupCommand =
         getSynchronousBackupCommand(null, null, miniSolrCloud.getSolrClient());
 
     // Perform Test
-    backupCommand.execute();
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> backupCommand.execute());
+    assertThat(exception.getMessage(), containsString(SEE_COMMAND_USAGE_MESSAGE));
   }
 
   @Test
   public void testPerformSolrCloudSynchronousBackupNoBackupLocation() throws Exception {
-
-    // Setup exception expectations
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectMessage(SEE_COMMAND_USAGE_MESSAGE);
 
     // Setup BackupCommand
     BackupCommand backupCommand =
         getSynchronousBackupCommand(null, DEFAULT_CORE_NAME, miniSolrCloud.getSolrClient());
 
     // Perform Test
-    backupCommand.execute();
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> backupCommand.execute());
+    assertThat(exception.getMessage(), containsString(SEE_COMMAND_USAGE_MESSAGE));
   }
 
   @Test
@@ -201,10 +194,6 @@ public class BackupCommandTest extends SolrCommandTest {
   @Test
   public void testPerformSolrCloudSynchronousBackupNumberToKeepSupplied() throws Exception {
 
-    // Setup exception expectations
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectMessage(SEE_COMMAND_USAGE_MESSAGE);
-
     // Setup BackupCommand
     BackupCommand backupCommand =
         getSynchronousBackupCommand(
@@ -212,15 +201,13 @@ public class BackupCommandTest extends SolrCommandTest {
     backupCommand.numberToKeep = 3;
 
     // Perform Test
-    backupCommand.execute();
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> backupCommand.execute());
+    assertThat(exception.getMessage(), containsString(SEE_COMMAND_USAGE_MESSAGE));
   }
 
   @Test
   public void testPerformSolrCloudAsynchronousBackupNumberToKeepSupplied() throws Exception {
-
-    // Setup exception expectations
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectMessage(SEE_COMMAND_USAGE_MESSAGE);
 
     // Setup BackupCommand
     BackupCommand backupCommand =
@@ -229,7 +216,9 @@ public class BackupCommandTest extends SolrCommandTest {
     backupCommand.numberToKeep = 3;
 
     // Perform Test
-    backupCommand.execute();
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> backupCommand.execute());
+    assertThat(exception.getMessage(), containsString(SEE_COMMAND_USAGE_MESSAGE));
   }
 
   @Test
@@ -282,37 +271,31 @@ public class BackupCommandTest extends SolrCommandTest {
 
   @Test
   public void testGetSolrCloudAsynchronousBackupStatusNoRequestId() throws Exception {
-    // Setup exception expectations
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectMessage(
-        "asyncBackupReqId must not be empty when checking on async status of a backup.");
-
     // Setup BackupCommand for status lookup
     BackupCommand statusBackupCommand = getStatusBackupCommand(null, miniSolrCloud.getSolrClient());
 
-    statusBackupCommand.execute();
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> statusBackupCommand.execute());
+    assertThat(
+        exception.getMessage(),
+        containsString(
+            "asyncBackupReqId must not be empty when checking on async status of a backup."));
   }
 
   @Test
   public void testGetSolrCloudAsynchronousBackupStatusNoStatusOption() throws Exception {
 
-    // Setup exception expectations
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectMessage(SEE_COMMAND_USAGE_MESSAGE);
-
     // Setup BackupCommand (ie. solr:backup -i <request Id>)
     BackupCommand invalidBackupStatusCommand =
         getBackupCommand(null, null, false, false, "myRequestId0", miniSolrCloud.getSolrClient());
 
-    invalidBackupStatusCommand.execute();
+    IllegalArgumentException exception =
+        assertThrows(IllegalArgumentException.class, () -> invalidBackupStatusCommand.execute());
+    assertThat(exception.getMessage(), containsString(SEE_COMMAND_USAGE_MESSAGE));
   }
 
   @Test
   public void testGetCloudSolrClientNoZkHosts() throws Exception {
-
-    // Setup exception expectations
-    expectedException.expect(RuntimeException.class);
-    expectedException.expectMessage("Could not determine Zookeeper Hosts.");
 
     System.clearProperty(ZOOKEEPER_HOSTS_PROP);
 
@@ -320,7 +303,9 @@ public class BackupCommandTest extends SolrCommandTest {
     BackupCommand backupCommand = new BackupCommand();
     backupCommand.backupLocation = getBackupLocation();
 
-    backupCommand.execute();
+    RuntimeException exception =
+        assertThrows(RuntimeException.class, () -> backupCommand.execute());
+    assertThat(exception.getMessage(), containsString("Could not determine Zookeeper Hosts."));
   }
 
   /**

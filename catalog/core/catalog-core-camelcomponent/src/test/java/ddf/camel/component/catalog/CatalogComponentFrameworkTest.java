@@ -50,9 +50,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.osgi.framework.BundleContext;
 import org.springframework.util.Assert;
 
@@ -120,8 +118,6 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
   private static MetacardImpl metacard2;
 
   private static CatalogFramework catalogFramework;
-
-  @Rule public ExpectedException thrown = ExpectedException.none();
 
   @BeforeClass
   public static void oneTimeSetup() throws Exception {

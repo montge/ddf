@@ -16,6 +16,7 @@ package org.codice.ddf.spatial.ogc.wfs.v110.catalog.source;
 import static org.codice.ddf.libs.geo.util.GeospatialUtil.LAT_LON_ORDER;
 import static org.codice.ddf.libs.geo.util.GeospatialUtil.LON_LAT_ORDER;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
@@ -111,9 +112,7 @@ import org.codice.ddf.spatial.ogc.wfs.v110.catalog.common.DescribeFeatureTypeReq
 import org.codice.ddf.spatial.ogc.wfs.v110.catalog.common.GetCapabilitiesRequest;
 import org.codice.ddf.spatial.ogc.wfs.v110.catalog.common.Wfs11Constants;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.opengis.filter.Filter;
@@ -285,8 +284,6 @@ public class WfsSourceTest {
   private List<MetacardMapper> metacardMappers = new ArrayList<>();
 
   private boolean forceAllGeometryOperands = false;
-
-  @Rule public ExpectedException expectedEx = ExpectedException.none();
 
   @BeforeClass
   public static void setupClass() {
@@ -588,10 +585,6 @@ public class WfsSourceTest {
   // of the filter
   @Test
   public void testAndQueryFailsWithInvalidFeatureProperty() throws Exception {
-    expectedEx.expect(UnsupportedQueryException.class);
-    expectedEx.expectMessage(
-        "Unable to build query. No filters could be created from query criteria.");
-
     mapSchemaToSingleFeature(TWO_TEXT_PROPERTY_SCHEMA, 0);
     mapSchemaToSingleFeature(ONE_TEXT_PROPERTY_SCHEMA_PERSON, 1);
 
@@ -617,7 +610,12 @@ public class WfsSourceTest {
     QueryImpl inQuery = new QueryImpl(totalFilter);
     inQuery.setPageSize(MAX_FEATURES);
 
-    source.query(new QueryRequestImpl(inQuery));
+    UnsupportedQueryException exception =
+        assertThrows(
+            UnsupportedQueryException.class, () -> source.query(new QueryRequestImpl(inQuery)));
+    assertThat(
+        exception.getMessage(),
+        containsString("Unable to build query. No filters could be created from query criteria."));
   }
 
   @Test
@@ -1679,9 +1677,6 @@ public class WfsSourceTest {
   @Test
   public void testSortingNoSortMapping() throws Exception {
     // if sorting is enabled but there is no sort mapping, throw an UnsupportedQueryException
-    expectedEx.expect(UnsupportedQueryException.class);
-    expectedEx.expectMessage("Source WFS_ID does not support specified sort property title");
-
     mapSchemaToFeatures(ONE_TEXT_PROPERTY_SCHEMA_PERSON, ONE_FEATURE);
     setUpMocks(null, null, ONE_FEATURE, ONE_FEATURE);
     final QueryImpl propertyIsLikeQuery =
@@ -1691,15 +1686,18 @@ public class WfsSourceTest {
     source.setDisableSorting(false);
     propertyIsLikeQuery.setSortBy(new SortByImpl("title", SortOrder.ASCENDING));
 
-    source.query(new QueryRequestImpl(propertyIsLikeQuery));
+    UnsupportedQueryException exception =
+        assertThrows(
+            UnsupportedQueryException.class,
+            () -> source.query(new QueryRequestImpl(propertyIsLikeQuery)));
+    assertThat(
+        exception.getMessage(),
+        containsString("Source WFS_ID does not support specified sort property title"));
   }
 
   @Test
   public void testSortingNoSortOrder() throws Exception {
     // if sort order is missing, throw UnsupportedQueryException
-    expectedEx.expect(UnsupportedQueryException.class);
-    expectedEx.expectMessage("Source WFS_ID does not support specified sort property TEMPORAL");
-
     mapSchemaToFeatures(ONE_TEXT_PROPERTY_SCHEMA_PERSON, ONE_FEATURE);
     setUpMocks(null, null, ONE_FEATURE, ONE_FEATURE);
     final QueryImpl propertyIsLikeQuery =
@@ -1709,7 +1707,13 @@ public class WfsSourceTest {
     source.setMetacardMappers(metacardMappers);
     propertyIsLikeQuery.setSortBy(new SortByImpl(Result.TEMPORAL, (String) null));
 
-    source.query(new QueryRequestImpl(propertyIsLikeQuery));
+    UnsupportedQueryException exception =
+        assertThrows(
+            UnsupportedQueryException.class,
+            () -> source.query(new QueryRequestImpl(propertyIsLikeQuery)));
+    assertThat(
+        exception.getMessage(),
+        containsString("Source WFS_ID does not support specified sort property TEMPORAL"));
   }
 
   @Test
@@ -1744,9 +1748,6 @@ public class WfsSourceTest {
   @Test
   public void testSortingBadSortOrder() throws Exception {
     // if sort order is invalid throw UnsupportedQueryException
-    expectedEx.expect(UnsupportedQueryException.class);
-    expectedEx.expectMessage("Source WFS_ID does not support specified sort property TEMPORAL");
-
     mapSchemaToFeatures(ONE_TEXT_PROPERTY_SCHEMA_PERSON, ONE_FEATURE);
     setUpMocks(null, null, ONE_FEATURE, ONE_FEATURE);
     final QueryImpl propertyIsLikeQuery =
@@ -1756,7 +1757,13 @@ public class WfsSourceTest {
     source.setMetacardMappers(metacardMappers);
     propertyIsLikeQuery.setSortBy(new SortByImpl(Result.TEMPORAL, "foo"));
 
-    source.query(new QueryRequestImpl(propertyIsLikeQuery));
+    UnsupportedQueryException exception =
+        assertThrows(
+            UnsupportedQueryException.class,
+            () -> source.query(new QueryRequestImpl(propertyIsLikeQuery)));
+    assertThat(
+        exception.getMessage(),
+        containsString("Source WFS_ID does not support specified sort property TEMPORAL"));
   }
 
   private void assertFeature(

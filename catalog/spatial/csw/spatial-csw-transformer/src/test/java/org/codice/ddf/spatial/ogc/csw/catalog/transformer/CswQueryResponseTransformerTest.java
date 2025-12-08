@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -71,9 +72,7 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswJAXBElementProvider;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.transformer.TransformerManager;
 import org.hamcrest.core.IsEqual;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.opengis.filter.Filter;
 
@@ -100,8 +99,6 @@ public class CswQueryResponseTransformerTest {
 
   private List<Result> mockResults;
 
-  @Rule public ExpectedException thrown = ExpectedException.none();
-
   @Before
   public void before() {
     mockTransformerManager = mock(TransformerManager.class);
@@ -118,64 +115,74 @@ public class CswQueryResponseTransformerTest {
 
   @Test
   public void whenNullArgumentsThenThrowException() throws CatalogTransformerException {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Null argument map.");
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class, () -> transformer.transform(mockSourceResponse, null));
 
-    transformer.transform(mockSourceResponse, null);
+    assertThat(exception.getMessage(), containsString("Null argument map."));
   }
 
   @Test
   public void whenNullSourceResponseThenThrowException() throws CatalogTransformerException {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Null source response.");
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class, () -> transformer.transform(null, mockArguments));
 
-    transformer.transform(null, mockArguments);
+    assertThat(exception.getMessage(), containsString("Null source response."));
   }
 
   @Test
   public void whenNullResultListThenThrowException() throws CatalogTransformerException {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Null results list.");
-
     when(mockSourceResponse.getResults()).thenReturn(null);
 
-    transformer.transform(mockSourceResponse, mockArguments);
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> transformer.transform(mockSourceResponse, mockArguments));
+
+    assertThat(exception.getMessage(), containsString("Null results list."));
   }
 
   @Test
   public void whenNullResultTypeArgumentThenThrowException() throws CatalogTransformerException {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Null result type argument.");
-
     when(mockSourceResponse.getResults()).thenReturn(mockResults);
     when(mockArguments.get(anyString())).thenReturn(null);
 
-    transformer.transform(mockSourceResponse, mockArguments);
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> transformer.transform(mockSourceResponse, mockArguments));
+
+    assertThat(exception.getMessage(), containsString("Null result type argument."));
   }
 
   @Test
   public void whenNullQueryRequestThenThrowException() throws CatalogTransformerException {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Null source response query request.");
-
     when(mockSourceResponse.getResults()).thenReturn(mockResults);
     when(mockArguments.get(anyString())).thenReturn(ResultType.RESULTS);
     when(mockSourceResponse.getRequest()).thenReturn(null);
 
-    transformer.transform(mockSourceResponse, mockArguments);
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> transformer.transform(mockSourceResponse, mockArguments));
+
+    assertThat(exception.getMessage(), containsString("Null source response query request."));
   }
 
   @Test
   public void whenNullQueryThenThrowException() throws CatalogTransformerException {
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("Null source response query.");
-
     when(mockSourceResponse.getResults()).thenReturn(mockResults);
     when(mockArguments.get(anyString())).thenReturn(ResultType.RESULTS);
     when(mockSourceResponse.getRequest()).thenReturn(mockQueryRequest);
     when(mockQueryRequest.getQuery()).thenReturn(null);
 
-    transformer.transform(mockSourceResponse, mockArguments);
+    IllegalArgumentException exception =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> transformer.transform(mockSourceResponse, mockArguments));
+
+    assertThat(exception.getMessage(), containsString("Null source response query."));
   }
 
   @Test

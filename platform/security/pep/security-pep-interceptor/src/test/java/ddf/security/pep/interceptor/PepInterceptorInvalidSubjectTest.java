@@ -13,7 +13,10 @@
  */
 package ddf.security.pep.interceptor;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -32,16 +35,9 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class PepInterceptorInvalidSubjectTest {
-
-  @Rule
-  // CHECKSTYLE.OFF: VisibilityModifier - Needs to be public for Mockito
-  public ExpectedException expectedExForInvalidSubject = ExpectedException.none();
-  // CHECKSTYLE.ON: VisibilityModifier
 
   @Test
   public void testMessageInvalidSecurityAssertionToken() throws SecurityServiceException {
@@ -76,9 +72,12 @@ public class PepInterceptorInvalidSubjectTest {
     when(mockBOI.getExtensor(SoapOperationInfo.class)).thenReturn(null);
 
     when(mockSubject.isPermitted(isA(CollectionPermission.class))).thenReturn(false);
-    expectedExForInvalidSubject.expect(AccessDeniedException.class);
-    expectedExForInvalidSubject.expectMessage("Unauthorized");
+
     // This should throw
-    interceptor.handleMessage(messageWithInvalidSecurityAssertion);
+    AccessDeniedException exception =
+        assertThrows(
+            AccessDeniedException.class,
+            () -> interceptor.handleMessage(messageWithInvalidSecurityAssertion));
+    assertThat(exception.getMessage(), containsString("Unauthorized"));
   }
 }

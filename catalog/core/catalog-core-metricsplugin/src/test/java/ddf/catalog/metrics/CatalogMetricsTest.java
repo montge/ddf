@@ -14,9 +14,11 @@
 package ddf.catalog.metrics;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -63,9 +65,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.codice.ddf.configuration.SystemInfo;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.opengis.filter.Filter;
 
 public class CatalogMetricsTest {
@@ -81,8 +81,6 @@ public class CatalogMetricsTest {
 
   private CatalogMetrics catalogMetrics;
 
-  @Rule public ExpectedException exception = ExpectedException.none();
-
   @Before
   public void setup() {
     meterRegistry = new SimpleMeterRegistry();
@@ -93,9 +91,9 @@ public class CatalogMetricsTest {
 
   @Test
   public void testNullFilterAdapter() {
-    exception.expect(NullPointerException.class);
-    exception.expectMessage("filterAdapter");
-    new CatalogMetrics(null);
+    NullPointerException exception =
+        assertThrows(NullPointerException.class, () -> new CatalogMetrics(null));
+    assertThat(exception.getMessage(), containsString("filterAdapter"));
   }
 
   @Test

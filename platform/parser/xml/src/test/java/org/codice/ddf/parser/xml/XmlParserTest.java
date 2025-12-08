@@ -21,6 +21,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.ImmutableList;
 import java.io.ByteArrayInputStream;
@@ -41,15 +42,11 @@ import org.codice.ddf.parser.ParserException;
 import org.codice.ddf.parser.xml.domain.ChildElement;
 import org.codice.ddf.parser.xml.domain.MotherElement;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class XmlParserTest {
-  @Rule public ExpectedException thrown = ExpectedException.none();
-
   private Parser parser;
 
   private ParserConfigurator configurator;
@@ -142,10 +139,10 @@ public class XmlParserTest {
     assertEquals(mother.getAge(), unmarshal.getAge());
 
     configurator.addProperty("UnknownProperty", Boolean.TRUE);
-    is = new ByteArrayInputStream(os.toByteArray());
+    ByteArrayInputStream isFinal = new ByteArrayInputStream(os.toByteArray());
 
-    thrown.expect(ParserException.class);
-    parser.unmarshal(configurator, MotherElement.class, is);
+    assertThrows(
+        ParserException.class, () -> parser.unmarshal(configurator, MotherElement.class, isFinal));
   }
 
   @Test
@@ -155,8 +152,12 @@ public class XmlParserTest {
 
     ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 
-    thrown.expect(ClassCastException.class);
-    ChildElement unmarshal = parser.unmarshal(configurator, ChildElement.class, is);
+    // The assignment triggers the ClassCastException
+    assertThrows(
+        ClassCastException.class,
+        () -> {
+          ChildElement unmarshal = parser.unmarshal(configurator, ChildElement.class, is);
+        });
   }
 
   @Test
@@ -240,8 +241,7 @@ public class XmlParserTest {
 
   @Test
   public void testMarshalNodeRunTimeException() throws Exception {
-    thrown.expect(ParserException.class);
-    parser.marshal(configurator, mother, (Node) null);
+    assertThrows(ParserException.class, () -> parser.marshal(configurator, mother, (Node) null));
   }
 
   @Test
@@ -252,8 +252,7 @@ public class XmlParserTest {
 
     configurator.addProperty("BadKey", "BadValue");
 
-    thrown.expect(ParserException.class);
-    parser.marshal(configurator, mother, doc);
+    assertThrows(ParserException.class, () -> parser.marshal(configurator, mother, doc));
   }
 
   @Test
@@ -276,8 +275,9 @@ public class XmlParserTest {
 
   @Test
   public void testUnmarshalNodeRunTimeException() throws Exception {
-    thrown.expect(ParserException.class);
-    parser.unmarshal(configurator, MotherElement.class, (Node) null);
+    assertThrows(
+        ParserException.class,
+        () -> parser.unmarshal(configurator, MotherElement.class, (Node) null));
   }
 
   @Test
@@ -290,8 +290,8 @@ public class XmlParserTest {
 
     configurator.addProperty("BadKey", "BadValue");
 
-    thrown.expect(ParserException.class);
-    parser.unmarshal(configurator, MotherElement.class, doc);
+    assertThrows(
+        ParserException.class, () -> parser.unmarshal(configurator, MotherElement.class, doc));
   }
 
   @Test
@@ -314,8 +314,9 @@ public class XmlParserTest {
 
   @Test
   public void testUnmarshalSourceRunTimeException() throws Exception {
-    thrown.expect(ParserException.class);
-    parser.unmarshal(configurator, MotherElement.class, (Source) null);
+    assertThrows(
+        ParserException.class,
+        () -> parser.unmarshal(configurator, MotherElement.class, (Source) null));
   }
 
   @Test
@@ -327,8 +328,9 @@ public class XmlParserTest {
     JAXBSource motherSource = new JAXBSource(motherContext, motherElementJAXBElement);
 
     configurator.addProperty("BadKey", "BadValue");
-    thrown.expect(ParserException.class);
-    parser.unmarshal(configurator, MotherElement.class, motherSource);
+    assertThrows(
+        ParserException.class,
+        () -> parser.unmarshal(configurator, MotherElement.class, motherSource));
   }
 
   @Test
@@ -336,24 +338,22 @@ public class XmlParserTest {
     configurator.setContextPath(ImmutableList.of(""));
     ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-    thrown.expect(ParserException.class);
-    parser.marshal(configurator, mother, os);
+    assertThrows(ParserException.class, () -> parser.marshal(configurator, mother, os));
   }
 
   @Test
   public void testBadMarshal() throws Exception {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-    thrown.expect(ParserException.class);
-    parser.marshal(configurator, this, os);
+    assertThrows(ParserException.class, () -> parser.marshal(configurator, this, os));
   }
 
   @Test
   public void testBadUnmarshal() throws Exception {
     ByteArrayInputStream is = new ByteArrayInputStream(new byte[] {0, 1, 2});
 
-    thrown.expect(ParserException.class);
-    parser.unmarshal(configurator, ChildElement.class, is);
+    assertThrows(
+        ParserException.class, () -> parser.unmarshal(configurator, ChildElement.class, is));
   }
 
   @Test

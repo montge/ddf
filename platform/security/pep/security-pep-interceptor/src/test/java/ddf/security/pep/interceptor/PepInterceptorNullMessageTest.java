@@ -13,25 +13,24 @@
  */
 package ddf.security.pep.interceptor;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.audit.SecurityLogger;
 import org.apache.cxf.interceptor.security.AccessDeniedException;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class PepInterceptorNullMessageTest {
-
-  @Rule public ExpectedException expectedExForNullMessage = ExpectedException.none();
 
   @Test
   public void testNullMessage() {
     PEPAuthorizingInterceptor interceptor = new PEPAuthorizingInterceptor();
     interceptor.setSecurityLogger(mock(SecurityLogger.class));
 
-    expectedExForNullMessage.expect(AccessDeniedException.class);
-    expectedExForNullMessage.expectMessage("Unauthorized");
-    interceptor.handleMessage(null);
+    AccessDeniedException exception =
+        assertThrows(AccessDeniedException.class, () -> interceptor.handleMessage(null));
+    assertThat(exception.getMessage(), containsString("Unauthorized"));
   }
 }
