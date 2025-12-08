@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -134,17 +135,17 @@ public class ConfluenceInputTransformerTest {
     assertThat(mcard.getResourceSize(), equalTo("30895"));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testBadResponseData() throws Exception {
+  @Test
+  public void testBadResponseData() {
     InputStream stream =
         new ByteArrayInputStream("<some><xml></xml></some>".getBytes(StandardCharsets.UTF_8));
-    transformer.transform(stream);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(stream));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testMissingRequiredData() throws Exception {
+  @Test
+  public void testMissingRequiredData() {
     InputStream stream = new ByteArrayInputStream("{}".getBytes(StandardCharsets.UTF_8));
-    transformer.transform(stream);
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(stream));
   }
 
   @Test

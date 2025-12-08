@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -220,8 +221,8 @@ public class ConfluenceSourceTest {
     assertThat(response.getResults().get(0).getMetacard(), notNullValue());
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testFailedQuery() throws Exception {
+  @Test
+  public void testFailedQuery() {
     QueryRequest request =
         new QueryRequestImpl(
             new QueryImpl(
@@ -237,10 +238,10 @@ public class ConfluenceSourceTest {
     when(clientResponse.getStatus())
         .thenReturn(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
-    SourceResponse response = confluence.query(request);
+    assertThrows(UnsupportedQueryException.class, () -> confluence.query(request));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testFailedQueryStreamError() throws Exception {
     QueryRequest request =
         new QueryRequestImpl(
@@ -257,7 +258,7 @@ public class ConfluenceSourceTest {
     when(clientResponse.getStatus())
         .thenReturn(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
-    SourceResponse response = confluence.query(request);
+    assertThrows(UnsupportedQueryException.class, () -> confluence.query(request));
   }
 
   @Test

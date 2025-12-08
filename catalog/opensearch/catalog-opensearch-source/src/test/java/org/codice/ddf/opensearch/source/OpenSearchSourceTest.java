@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -43,7 +44,6 @@ import ddf.catalog.operation.impl.QueryImpl;
 import ddf.catalog.operation.impl.QueryRequestImpl;
 import ddf.catalog.operation.impl.ResourceResponseImpl;
 import ddf.catalog.resource.ResourceNotFoundException;
-import ddf.catalog.resource.ResourceNotSupportedException;
 import ddf.catalog.resource.ResourceReader;
 import ddf.catalog.resource.impl.ResourceImpl;
 import ddf.catalog.source.UnsupportedQueryException;
@@ -570,26 +570,25 @@ public class OpenSearchSourceTest {
     assertThat(response.getHits(), is(1L));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testResponseWithNoCorrespondingTransformer()
-      throws InvalidSyntaxException, UnsupportedQueryException {
+  @Test
+  public void testResponseWithNoCorrespondingTransformer() throws InvalidSyntaxException {
     source.setBundle(getMockBundleContext(null));
     when(response.getEntity()).thenReturn(getSampleAtomStream());
 
     Filter filter =
         FILTER_BUILDER.attribute(NOT_ID_ATTRIBUTE_NAME).like().text(SAMPLE_SEARCH_PHRASE);
 
-    source.query(getQueryRequest(filter));
+    assertThrows(UnsupportedQueryException.class, () -> source.query(getQueryRequest(filter)));
   }
 
-  @Test(expected = UnsupportedQueryException.class)
-  public void testQueryBadResponse() throws UnsupportedQueryException {
+  @Test
+  public void testQueryBadResponse() {
     doReturn(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).when(response).getStatus();
 
     Filter filter =
         FILTER_BUILDER.attribute(NOT_ID_ATTRIBUTE_NAME).like().text(SAMPLE_SEARCH_PHRASE);
 
-    source.query(getQueryRequest(filter));
+    assertThrows(UnsupportedQueryException.class, () -> source.query(getQueryRequest(filter)));
   }
 
   @Test
@@ -669,10 +668,9 @@ public class OpenSearchSourceTest {
   }
 
   /** Given all null params, nothing will be returned, expect an exception. */
-  @Test(expected = ResourceNotFoundException.class)
-  public void testRetrieveNullProduct()
-      throws ResourceNotFoundException, ResourceNotSupportedException, IOException {
-    source.retrieveResource(null, null);
+  @Test
+  public void testRetrieveNullProduct() {
+    assertThrows(ResourceNotFoundException.class, () -> source.retrieveResource(null, null));
   }
 
   @Test
