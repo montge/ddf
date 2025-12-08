@@ -31,6 +31,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.Attribute;
@@ -78,20 +79,25 @@ public class AttributeFactoryTest {
     attributeFactory = new AttributeFactory();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateAttributeWithIllegalArgument() throws Exception {
+  @Test
+  public void testCreateAttributeWithIllegalArgument() {
     when(mockType.getAttributeFormat()).thenReturn(INTEGER);
-    attributeFactory.createAttribute(mockDescriptor, "1874xyz");
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> attributeFactory.createAttribute(mockDescriptor, "1874xyz"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateAttributeWithNullDescriptor() throws Exception {
-    attributeFactory.createAttribute(null, "value");
+  @Test
+  public void testCreateAttributeWithNullDescriptor() {
+    assertThrows(
+        IllegalArgumentException.class, () -> attributeFactory.createAttribute(null, "value"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateAttributeWithNullParseValue() throws Exception {
-    attributeFactory.createAttribute(mockDescriptor, null);
+  @Test
+  public void testCreateAttributeWithNullParseValue() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> attributeFactory.createAttribute(mockDescriptor, null));
   }
 
   @Test
@@ -108,21 +114,25 @@ public class AttributeFactoryTest {
     assertThat(languages, containsInAnyOrder(ENGLISH, FRENCH, GERMAN));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateMultiValuedAttributeWithTypeMismatch() throws Exception {
+  @Test
+  public void testCreateMultiValuedAttributeWithTypeMismatch() {
     when(mockDescriptor.isMultiValued()).thenReturn(true);
     when(mockDescriptor.getName()).thenReturn(LANGUAGE);
     when(mockType.getAttributeFormat()).thenReturn(INTEGER);
 
-    attributeFactory.createAttribute(mockDescriptor, COMMA_SEPARATED_INTS_WITH_STRING);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> attributeFactory.createAttribute(mockDescriptor, COMMA_SEPARATED_INTS_WITH_STRING));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateMultiValuedAttributesWithEmptyElements() throws Exception {
+  @Test
+  public void testCreateMultiValuedAttributesWithEmptyElements() {
     when(mockDescriptor.isMultiValued()).thenReturn(true);
     when(mockDescriptor.getName()).thenReturn(LANGUAGE);
 
-    attributeFactory.createAttribute(mockDescriptor, COMMA_SEPARATED_WHITE_SPACE);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> attributeFactory.createAttribute(mockDescriptor, COMMA_SEPARATED_WHITE_SPACE));
   }
 
   @Test

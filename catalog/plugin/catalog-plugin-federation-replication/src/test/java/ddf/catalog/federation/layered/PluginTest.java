@@ -16,6 +16,7 @@ package ddf.catalog.federation.layered;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -167,10 +168,8 @@ public class PluginTest {
         .addDocument(isA(HttpHeaders.class), isA(UriInfo.class), isA(InputStream.class));
   }
 
-  @Test(expected = PluginExecutionException.class)
-  public void testCreateBadTransform()
-      throws PluginExecutionException, CatalogTransformerException, IOException, IngestException,
-          SourceUnavailableException {
+  @Test
+  public void testCreateBadTransform() throws CatalogTransformerException {
     // given
     when(transformer.transform(isA(Metacard.class), isA(Map.class)))
         .thenThrow(CatalogTransformerException.class);
@@ -178,7 +177,7 @@ public class PluginTest {
         new CreateResponseImpl(new CreateRequestImpl(metacard), null, Arrays.asList(metacard));
 
     // when
-    plugin.process(createResponse);
+    assertThrows(PluginExecutionException.class, () -> plugin.process(createResponse));
   }
 
   @Test

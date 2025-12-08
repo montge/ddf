@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.plugin.metacard.util;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -107,15 +108,15 @@ public class KeyValueParserTest {
     runMapTest(parser);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateMapNullList() throws Exception {
+  @Test
+  public void testCreateMapNullList() {
     KeyValueParser parser = new KeyValueParser();
-    parser.parsePairsToMap(null);
+    assertThrows(IllegalArgumentException.class, () -> parser.parsePairsToMap(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateMapFailFast() throws Exception {
-    runMapTest(new KeyValueParser(true));
+  @Test
+  public void testCreateMapFailFast() {
+    assertThrows(IllegalArgumentException.class, () -> runMapTest(new KeyValueParser(true)));
   }
 
   private void runMapTest(KeyValueParser givenParser) {
