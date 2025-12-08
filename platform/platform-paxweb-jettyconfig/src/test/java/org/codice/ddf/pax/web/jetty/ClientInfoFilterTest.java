@@ -17,6 +17,7 @@ import static org.codice.ddf.security.util.ThreadContextProperties.CLIENT_INFO_K
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 
@@ -57,11 +58,13 @@ public class ClientInfoFilterTest {
     assertThatMapIsNull();
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testClientInfoCleansUpOnException() throws Exception {
     doThrow(RuntimeException.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
     try {
-      clientInfoFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
+      assertThrows(
+          RuntimeException.class,
+          () -> clientInfoFilter.doFilter(mockRequest, mockResponse, mockFilterChain));
     } finally {
       assertThatMapIsNull();
     }

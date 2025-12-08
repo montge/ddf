@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -42,15 +43,18 @@ public class DoPrivilegedFilterTest {
     verify(mockFilterChain).doFilter(mockRequest, mockResponse);
   }
 
-  @Test(expected = IOException.class)
-  public void testIoException() throws Exception {
+  @Test
+  public void testIoException() {
     doThrow(IOException.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
-    underTest.doFilter(mockRequest, mockResponse, mockFilterChain);
+    assertThrows(
+        IOException.class, () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
   }
 
-  @Test(expected = ServletException.class)
-  public void testServletException() throws Exception {
+  @Test
+  public void testServletException() {
     doThrow(ServletException.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
-    underTest.doFilter(mockRequest, mockResponse, mockFilterChain);
+    assertThrows(
+        ServletException.class,
+        () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
   }
 }

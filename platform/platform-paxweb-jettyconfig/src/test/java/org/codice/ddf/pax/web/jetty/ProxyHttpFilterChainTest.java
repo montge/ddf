@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
@@ -197,7 +198,7 @@ public class ProxyHttpFilterChainTest {
     verify(mockHandler).handle(customTarget, customBaseRequest, mockRequest, mockResponse);
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testFilterThrowsIOException() throws IOException, ServletException {
     List<HttpFilter> filters = Collections.singletonList(mockFilter1);
 
@@ -209,10 +210,10 @@ public class ProxyHttpFilterChainTest {
         .when(mockFilter1)
         .doFilter(any(), any(), any());
 
-    chain.doFilter(mockRequest, mockResponse);
+    assertThrows(IOException.class, () -> chain.doFilter(mockRequest, mockResponse));
   }
 
-  @Test(expected = ServletException.class)
+  @Test
   public void testFilterThrowsServletException() throws IOException, ServletException {
     List<HttpFilter> filters = Collections.singletonList(mockFilter1);
 
@@ -224,7 +225,7 @@ public class ProxyHttpFilterChainTest {
         .when(mockFilter1)
         .doFilter(any(), any(), any());
 
-    chain.doFilter(mockRequest, mockResponse);
+    assertThrows(ServletException.class, () -> chain.doFilter(mockRequest, mockResponse));
   }
 
   @Test

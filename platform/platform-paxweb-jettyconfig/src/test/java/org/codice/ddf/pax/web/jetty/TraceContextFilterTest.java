@@ -15,6 +15,7 @@ package org.codice.ddf.pax.web.jetty;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 
@@ -63,11 +64,13 @@ public class TraceContextFilterTest {
     assertThatMapIsNull();
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testTraceContextCleansUpOnException() throws Exception {
     doThrow(RuntimeException.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
     try {
-      traceContextFilter.doFilter(mockRequest, mockResponse, mockFilterChain);
+      assertThrows(
+          RuntimeException.class,
+          () -> traceContextFilter.doFilter(mockRequest, mockResponse, mockFilterChain));
     } finally {
       assertThatMapIsNull();
     }
