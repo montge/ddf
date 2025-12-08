@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
@@ -371,14 +372,19 @@ public class WfsFilterDelegateTest {
     return mockFeatureType + "\\.\\d+";
   }
 
-  @Test(expected = IllegalArgumentException.class)
   /**
    * Verify that when Feature property "myFeatureProperty" is not defined in the Feature schema as a
    * {http://www.opengis.net/gml/3.2}TimePeriodType an IllegalArgumentException is thrown.
    */
-  public void testDuringPropertyIsNotOfTemporalType() throws Throwable {
-    testSequentialPropertyIsNotOfTemporalType(
-        "during", new DateTime().minusDays(365).toDate(), new DateTime().minusDays(10).toDate());
+  @Test
+  public void testDuringPropertyIsNotOfTemporalType() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            testSequentialPropertyIsNotOfTemporalType(
+                "during",
+                new DateTime().minusDays(365).toDate(),
+                new DateTime().minusDays(10).toDate()));
   }
 
   @Test
@@ -412,7 +418,7 @@ public class WfsFilterDelegateTest {
             .withNamespaceContext(namespaceContext));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDuringFilterFeaturePropertyIsNotQueryable() {
     doReturn(mockFeatureProperty).when(mockMapper).getFeatureProperty(Core.CREATED);
     doReturn(singletonList(mockFeatureProperty))
@@ -428,7 +434,9 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.during(Core.CREATED, new Date(1), new Date(2));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.during(Core.CREATED, new Date(1), new Date(2)));
   }
 
   @Test
@@ -494,9 +502,11 @@ public class WfsFilterDelegateTest {
    * Verify that when Feature property "myFeatureProperty" is not defined in the Feature schema as a
    * {http://www.opengis.net/gml/3.2}TimePeriodType an IllegalArgumentException is thrown.
    */
-  @Test(expected = IllegalArgumentException.class)
-  public void testRelativePropertyIsNotOfTemporalType() throws Throwable {
-    testSequentialPropertyIsNotOfTemporalType("relative", 604800000L);
+  @Test
+  public void testRelativePropertyIsNotOfTemporalType() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> testSequentialPropertyIsNotOfTemporalType("relative", 604800000L));
   }
 
   @Test
@@ -530,7 +540,7 @@ public class WfsFilterDelegateTest {
             .withNamespaceContext(namespaceContext));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testRelativeFilterFeaturePropertyIsNotQueryable() {
     doReturn(mockFeatureProperty).when(mockMapper).getFeatureProperty(Core.CREATED);
     doReturn(singletonList(mockFeatureProperty))
@@ -546,7 +556,9 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.relative(Core.CREATED, TimeUnit.DAYS.toMillis(1));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.relative(Core.CREATED, TimeUnit.DAYS.toMillis(1)));
   }
 
   /**
@@ -570,9 +582,13 @@ public class WfsFilterDelegateTest {
    * Verify that when Feature property "myFeatureProperty" is not defined in the Feature schema as a
    * {http://www.opengis.net/gml/3.2}TimeInstantType an IllegalArgumentException is thrown.
    */
-  @Test(expected = IllegalArgumentException.class)
-  public void testAfterPropertyIsNotOfTemporalType() throws Throwable {
-    testSequentialPropertyIsNotOfTemporalType("after", new DateTime().minusDays(365).toDate());
+  @Test
+  public void testAfterPropertyIsNotOfTemporalType() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            testSequentialPropertyIsNotOfTemporalType(
+                "after", new DateTime().minusDays(365).toDate()));
   }
 
   @Test
@@ -606,7 +622,7 @@ public class WfsFilterDelegateTest {
             .withNamespaceContext(namespaceContext));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testAfterFilterFeaturePropertyIsNotQueryable() {
     doReturn(mockFeatureProperty).when(mockMapper).getFeatureProperty(Core.CREATED);
     doReturn(singletonList(mockFeatureProperty))
@@ -622,7 +638,7 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.after(Core.CREATED, new Date());
+    assertThrows(IllegalArgumentException.class, () -> delegate.after(Core.CREATED, new Date()));
   }
 
   /**
@@ -678,9 +694,13 @@ public class WfsFilterDelegateTest {
    * Verify that when Feature property "myFeatureProperty" is not defined in the Feature schema as a
    * {http://www.opengis.net/gml/3.2}TimeInstantType an IllegalArgumentException is thrown.
    */
-  @Test(expected = IllegalArgumentException.class)
-  public void testBeforePropertyIsNotOfTemporalType() throws Throwable {
-    testSequentialPropertyIsNotOfTemporalType("before", new DateTime().minusDays(365).toDate());
+  @Test
+  public void testBeforePropertyIsNotOfTemporalType() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            testSequentialPropertyIsNotOfTemporalType(
+                "before", new DateTime().minusDays(365).toDate()));
   }
 
   @Test
@@ -714,7 +734,7 @@ public class WfsFilterDelegateTest {
             .withNamespaceContext(namespaceContext));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBeforeFilterFeaturePropertyIsNotQueryable() {
     doReturn(mockFeatureProperty).when(mockMapper).getFeatureProperty(Core.CREATED);
     doReturn(singletonList(mockFeatureProperty))
@@ -730,7 +750,7 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.before(Core.CREATED, new Date());
+    assertThrows(IllegalArgumentException.class, () -> delegate.before(Core.CREATED, new Date()));
   }
 
   private void testSequentialPropertyIsNotOfTemporalType(String methName, Object... inputParams)
@@ -1085,7 +1105,7 @@ public class WfsFilterDelegateTest {
     assertThat(literal1, is(LITERAL));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testLogicalWithNullOrEmpty() {
     String mockProperty = "myPropertyName";
     String mockType = "myType";
@@ -1107,10 +1127,10 @@ public class WfsFilterDelegateTest {
     assertNull(delegate.or(filtersToBeCombined));
 
     // Finally, test a null list with an or
-    delegate.or(null);
+    assertThrows(UnsupportedOperationException.class, () -> delegate.or(null));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testLogicalAndNoLogicalSupport() {
     WfsFilterDelegate delegate = makeDelegateForLogicalSupportTests();
 
@@ -1121,10 +1141,10 @@ public class WfsFilterDelegateTest {
     filtersToBeAnded.add(compFilter2);
 
     // Perform Test
-    delegate.and(filtersToBeAnded);
+    assertThrows(UnsupportedOperationException.class, () -> delegate.and(filtersToBeAnded));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testLogicalOrNoLogicalSupport() {
     WfsFilterDelegate delegate = makeDelegateForLogicalSupportTests();
 
@@ -1135,16 +1155,16 @@ public class WfsFilterDelegateTest {
     filtersToBeOred.add(compFilter2);
 
     // Perform Test
-    delegate.or(filtersToBeOred);
+    assertThrows(UnsupportedOperationException.class, () -> delegate.or(filtersToBeOred));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testLogicalNotNoLogicalSupport() {
     WfsFilterDelegate delegate = makeDelegateForLogicalSupportTests();
     FilterType filterToBeNoted = delegate.propertyIsLike(Metacard.ANY_TEXT, LITERAL, true);
 
     // Perform Test
-    delegate.not(filterToBeNoted);
+    assertThrows(UnsupportedOperationException.class, () -> delegate.not(filterToBeNoted));
   }
 
   private WfsFilterDelegate makeDelegateForLogicalSupportTests() {
@@ -1608,12 +1628,12 @@ public class WfsFilterDelegateTest {
     assertNull(filter);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSingleGmlPropertyBlacklisted() {
     WfsFilterDelegate delegate = setupFilterDelegate(SPATIAL_OPERATORS.CONTAINS.toString());
     when(mockFeatureMetacardType.isQueryable(MOCK_GEOM)).thenReturn(false);
 
-    delegate.contains(MOCK_GEOM, POLYGON);
+    assertThrows(IllegalArgumentException.class, () -> delegate.contains(MOCK_GEOM, POLYGON));
   }
 
   @Test
@@ -1659,16 +1679,19 @@ public class WfsFilterDelegateTest {
     }
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testBadPolygonWkt() {
     WfsFilterDelegate delegate = setupFilterDelegate(SPATIAL_OPERATORS.INTERSECTS.toString());
-    delegate.intersects(Metacard.ANY_GEO, "junk");
+    assertThrows(
+        UnsupportedOperationException.class, () -> delegate.intersects(Metacard.ANY_GEO, "junk"));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testBadPointWkt() {
     WfsFilterDelegate delegate = setupFilterDelegate(SPATIAL_OPERATORS.D_WITHIN.toString());
-    delegate.dwithin(Metacard.ANY_GEO, "junk", DISTANCE);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> delegate.dwithin(Metacard.ANY_GEO, "junk", DISTANCE));
   }
 
   @Test
@@ -1689,7 +1712,7 @@ public class WfsFilterDelegateTest {
     assertTrue(filter == null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGeoFilterNullMetacardType() {
     WfsFilterDelegate delegate =
         new WfsFilterDelegate(
@@ -1699,7 +1722,8 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.beyond(Metacard.ANY_GEO, POLYGON, DISTANCE);
+    assertThrows(
+        IllegalArgumentException.class, () -> delegate.beyond(Metacard.ANY_GEO, POLYGON, DISTANCE));
   }
 
   private String fetchPropertyIsLikeExpression(
@@ -2105,7 +2129,7 @@ public class WfsFilterDelegateTest {
         is(nullValue()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsFilterFeaturePropertyIsNotQueryable() {
     doReturn(mockFeatureProperty).when(mockMapper).getFeatureProperty(Core.TITLE);
     doReturn(singletonList(mockFeatureProperty)).when(mockFeatureMetacardType).getProperties();
@@ -2119,7 +2143,9 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.propertyIsEqualTo(Core.TITLE, LITERAL, true);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.propertyIsEqualTo(Core.TITLE, LITERAL, true));
   }
 
   @Test
@@ -2161,7 +2187,7 @@ public class WfsFilterDelegateTest {
         is(nullValue()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsBetweenFilterFeaturePropertyIsNotQueryable() {
     doReturn(mockFeatureProperty).when(mockMapper).getFeatureProperty(Core.RESOURCE_SIZE);
     doReturn(singletonList(mockFeatureProperty)).when(mockFeatureMetacardType).getProperties();
@@ -2175,7 +2201,9 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.propertyIsBetween(Core.RESOURCE_SIZE, 100, 200);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.propertyIsBetween(Core.RESOURCE_SIZE, 100, 200));
   }
 
   @Test
@@ -2216,7 +2244,7 @@ public class WfsFilterDelegateTest {
         is(nullValue()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGeospatialFilterFeaturePropertyIsNotQueryable() {
     doReturn(MOCK_GEOM).when(mockMapper).getFeatureProperty(Core.LOCATION);
     doReturn(singletonList(MOCK_GEOM)).when(mockFeatureMetacardType).getGmlProperties();
@@ -2230,7 +2258,8 @@ public class WfsFilterDelegateTest {
             mockMapper,
             GeospatialUtil.LAT_LON_ORDER);
 
-    delegate.dwithin(Core.LOCATION, POINT, DISTANCE);
+    assertThrows(
+        IllegalArgumentException.class, () -> delegate.dwithin(Core.LOCATION, POINT, DISTANCE));
   }
 
   private WfsFilterDelegate setupTemporalFilterDelegate() {
