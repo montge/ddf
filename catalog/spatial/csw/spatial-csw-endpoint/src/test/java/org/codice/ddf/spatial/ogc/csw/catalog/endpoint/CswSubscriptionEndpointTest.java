@@ -16,6 +16,7 @@ package org.codice.ddf.spatial.ogc.csw.catalog.endpoint;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -331,28 +332,40 @@ public class CswSubscriptionEndpointTest {
             eq(Subscription.class.getName()), any(Subscription.class), any(Dictionary.class));
   }
 
-  @Test(expected = CswException.class)
+  @Test
   public void testCreateRecordsSubscriptionPOSTwithoutResponseHandler() throws Exception {
     GetRecordsRequest getRecordsRequest = createDefaultGetRecordsRequest();
     getRecordsRequest.setResponseHandler(null);
-    cswSubscriptionEndpoint.createRecordsSubscription(getRecordsRequest.get202RecordsType());
+    assertThrows(
+        CswException.class,
+        () ->
+            cswSubscriptionEndpoint.createRecordsSubscription(
+                getRecordsRequest.get202RecordsType()));
   }
 
-  @Test(expected = CswException.class)
-  public void testCreateRecordsSubscriptionGETNullRequest() throws CswException {
-    cswSubscriptionEndpoint.createRecordsSubscription((GetRecordsRequest) null);
+  @Test
+  public void testCreateRecordsSubscriptionGETNullRequest() {
+    assertThrows(
+        CswException.class,
+        () -> cswSubscriptionEndpoint.createRecordsSubscription((GetRecordsRequest) null));
   }
 
-  @Test(expected = CswException.class)
-  public void testCreateRecordsSubscriptionPOSTNullRequest() throws CswException {
-    cswSubscriptionEndpoint.createRecordsSubscription((GetRecordsType) null);
+  @Test
+  public void testCreateRecordsSubscriptionPOSTNullRequest() {
+    assertThrows(
+        CswException.class,
+        () -> cswSubscriptionEndpoint.createRecordsSubscription((GetRecordsType) null));
   }
 
-  @Test(expected = CswException.class)
-  public void testCreateRecordsSubscriptionPOSTBadResponseHandler() throws CswException {
+  @Test
+  public void testCreateRecordsSubscriptionPOSTBadResponseHandler() throws Exception {
     GetRecordsRequest getRecordsRequest = createDefaultGetRecordsRequest();
     getRecordsRequest.setResponseHandler("[]@!$&'()*+,;=");
-    cswSubscriptionEndpoint.createRecordsSubscription(getRecordsRequest.get202RecordsType());
+    assertThrows(
+        CswException.class,
+        () ->
+            cswSubscriptionEndpoint.createRecordsSubscription(
+                getRecordsRequest.get202RecordsType()));
   }
 
   private GetRecordsRequest createDefaultGetRecordsRequest() {
@@ -429,31 +442,31 @@ public class CswSubscriptionEndpointTest {
     verify(eventProcessor).notifyDeleted(any(Metacard.class));
   }
 
-  @Test(expected = CswException.class)
-  public void testCreateEventInvalidSchema() throws Exception {
+  @Test
+  public void testCreateEventInvalidSchema() {
     GetRecordsResponseType getRecordsResponse = new GetRecordsResponseType();
     SearchResultsType searchResults = new SearchResultsType();
     searchResults.setRecordSchema(CswConstants.CSW_OUTPUT_SCHEMA);
     getRecordsResponse.setSearchResults(searchResults);
-    cswSubscriptionEndpoint.createEvent(getRecordsResponse);
+    assertThrows(CswException.class, () -> cswSubscriptionEndpoint.createEvent(getRecordsResponse));
   }
 
-  @Test(expected = CswException.class)
-  public void testUpdateEventInvalidSchema() throws Exception {
+  @Test
+  public void testUpdateEventInvalidSchema() {
     GetRecordsResponseType getRecordsResponse = new GetRecordsResponseType();
     SearchResultsType searchResults = new SearchResultsType();
     searchResults.setRecordSchema(CswConstants.CSW_OUTPUT_SCHEMA);
     getRecordsResponse.setSearchResults(searchResults);
-    cswSubscriptionEndpoint.updateEvent(getRecordsResponse);
+    assertThrows(CswException.class, () -> cswSubscriptionEndpoint.updateEvent(getRecordsResponse));
   }
 
-  @Test(expected = CswException.class)
-  public void testDeleteEventInvalidSchema() throws Exception {
+  @Test
+  public void testDeleteEventInvalidSchema() {
     GetRecordsResponseType getRecordsResponse = new GetRecordsResponseType();
     SearchResultsType searchResults = new SearchResultsType();
     searchResults.setRecordSchema(CswConstants.CSW_OUTPUT_SCHEMA);
     getRecordsResponse.setSearchResults(searchResults);
-    cswSubscriptionEndpoint.deleteEvent(getRecordsResponse);
+    assertThrows(CswException.class, () -> cswSubscriptionEndpoint.deleteEvent(getRecordsResponse));
   }
 
   private GetRecordsResponseType getRecordsResponse(int metacardCount)

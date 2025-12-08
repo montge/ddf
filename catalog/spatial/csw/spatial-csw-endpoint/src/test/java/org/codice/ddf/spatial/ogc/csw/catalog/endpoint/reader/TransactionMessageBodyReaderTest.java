@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -609,46 +610,56 @@ public class TransactionMessageBodyReaderTest {
     assertThat(request.isVerbose(), is(false));
   }
 
-  @Test(expected = ConversionException.class)
-  public void testConversionExceptionWhenNoNameInUpdateRecordProperty() throws IOException {
+  @Test
+  public void testConversionExceptionWhenNoNameInUpdateRecordProperty() {
     TransactionMessageBodyReader reader =
         new TransactionMessageBodyReader(
             mock(Converter.class), CswQueryFactoryTest.getCswMetacardType(), registry);
-    reader.readFrom(
-        CswTransactionRequest.class,
-        null,
-        null,
-        null,
-        null,
-        IOUtils.toInputStream(UPDATE_REQUEST_NO_RECORDPROPERTY_NAME_XML, StandardCharsets.UTF_8));
+    assertThrows(
+        ConversionException.class,
+        () ->
+            reader.readFrom(
+                CswTransactionRequest.class,
+                null,
+                null,
+                null,
+                null,
+                IOUtils.toInputStream(
+                    UPDATE_REQUEST_NO_RECORDPROPERTY_NAME_XML, StandardCharsets.UTF_8)));
   }
 
-  @Test(expected = ConversionException.class)
-  public void testConversionExceptionWhenNoConstraintInUpdate() throws IOException {
+  @Test
+  public void testConversionExceptionWhenNoConstraintInUpdate() {
     TransactionMessageBodyReader reader =
         new TransactionMessageBodyReader(
             mock(Converter.class), CswQueryFactoryTest.getCswMetacardType(), registry);
-    reader.readFrom(
-        CswTransactionRequest.class,
-        null,
-        null,
-        null,
-        null,
-        IOUtils.toInputStream(UPDATE_REQUEST_NO_CONSTRAINT_XML, StandardCharsets.UTF_8));
+    assertThrows(
+        ConversionException.class,
+        () ->
+            reader.readFrom(
+                CswTransactionRequest.class,
+                null,
+                null,
+                null,
+                null,
+                IOUtils.toInputStream(UPDATE_REQUEST_NO_CONSTRAINT_XML, StandardCharsets.UTF_8)));
   }
 
-  @Test(expected = ForbiddenClassException.class)
-  public void testForbiddenDeserialization() throws IOException {
+  @Test
+  public void testForbiddenDeserialization() {
     TransactionMessageBodyReader reader =
         new TransactionMessageBodyReader(
             mock(Converter.class), CswQueryFactoryTest.getCswMetacardType(), registry);
-    reader.readFrom(
-        CswTransactionRequest.class,
-        null,
-        null,
-        null,
-        null,
-        IOUtils.toInputStream(DYNAMIC_PROXY_SERIALIZED_XML, StandardCharsets.UTF_8));
+    assertThrows(
+        ForbiddenClassException.class,
+        () ->
+            reader.readFrom(
+                CswTransactionRequest.class,
+                null,
+                null,
+                null,
+                null,
+                IOUtils.toInputStream(DYNAMIC_PROXY_SERIALIZED_XML, StandardCharsets.UTF_8)));
   }
 
   private String getInsertRequest(int count) {
