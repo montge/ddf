@@ -15,6 +15,7 @@ package org.codice.ddf.validator.metacard.framecenter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -107,12 +108,12 @@ public class MetacardFrameCenterValidatorTest {
     validator.validate(metacard);
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateWithInvalidFrameCenterThrowsException() throws Exception {
+  @Test
+  public void testValidateWithInvalidFrameCenterThrowsException() {
     when(wktValidator.isValid(anyString())).thenReturn(false);
     Metacard metacard = createMetacardWithFrameCenter(INVALID_WKT);
 
-    validator.validate(metacard);
+    assertThrows(ValidationException.class, () -> validator.validate(metacard));
   }
 
   @Test

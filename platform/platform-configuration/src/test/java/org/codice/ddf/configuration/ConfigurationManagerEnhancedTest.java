@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -402,13 +403,15 @@ public class ConfigurationManagerEnhancedTest {
     assertThat(value, is(""));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testGetConfigurationValueHandlesRuntimeException() throws IOException {
     when(mockConfigAdmin.getConfiguration(TEST_SERVICE_PID))
         .thenThrow(new RuntimeException("Unexpected error"));
 
     // The method doesn't catch RuntimeException, so it will propagate
-    configManager.getConfigurationValue(TEST_SERVICE_PID, TEST_PROPERTY_NAME);
+    assertThrows(
+        RuntimeException.class,
+        () -> configManager.getConfigurationValue(TEST_SERVICE_PID, TEST_PROPERTY_NAME));
   }
 
   @Test

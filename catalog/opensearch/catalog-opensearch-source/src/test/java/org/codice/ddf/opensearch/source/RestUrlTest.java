@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 
 import java.net.URISyntaxException;
 import org.junit.Test;
@@ -213,10 +214,10 @@ public class RestUrlTest {
     assertThat(restUrl.isRetrieveResource(), is(false));
   }
 
-  @Test(expected = URISyntaxException.class)
-  public void testInvalidUrlTemplate() throws Exception {
+  @Test
+  public void testInvalidUrlTemplate() {
     String invalidUrl = "not a valid url template";
-    RestUrl.newInstance(invalidUrl);
+    assertThrows(URISyntaxException.class, () -> RestUrl.newInstance(invalidUrl));
   }
 
   @Test

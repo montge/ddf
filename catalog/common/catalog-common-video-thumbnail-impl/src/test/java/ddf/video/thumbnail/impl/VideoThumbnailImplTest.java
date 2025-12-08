@@ -17,6 +17,7 @@ import static ddf.video.thumbnail.impl.VideoThumbnailImpl.DEFAULT_MAX_FILE_SIZE_
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -150,13 +151,13 @@ public class VideoThumbnailImplTest {
     assertThat(optionalBytes.isPresent(), is(false));
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testProcessCorruptedVideo() throws Exception {
     // given
     final File file = getResource("/corrupted.mp4");
 
     // when
-    videoThumbnailImpl.videoThumbnail(file, VIDEO_MP4);
+    assertThrows(IOException.class, () -> videoThumbnailImpl.videoThumbnail(file, VIDEO_MP4));
   }
 
   @Test

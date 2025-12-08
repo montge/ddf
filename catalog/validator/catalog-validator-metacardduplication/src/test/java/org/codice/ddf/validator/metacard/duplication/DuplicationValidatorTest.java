@@ -21,6 +21,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -106,14 +107,14 @@ public class DuplicationValidatorTest {
     validator = new DuplicationValidator(mockFramework, mockFilterBuilder);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testValidateMetacardNullInput() {
-    validator.validateMetacard(null);
+    assertThrows(IllegalArgumentException.class, () -> validator.validateMetacard(null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testValidateNullInput() throws ValidationException {
-    validator.validate(null);
+  @Test
+  public void testValidateNullInput() {
+    assertThrows(IllegalArgumentException.class, () -> validator.validate(null));
   }
 
   @Test

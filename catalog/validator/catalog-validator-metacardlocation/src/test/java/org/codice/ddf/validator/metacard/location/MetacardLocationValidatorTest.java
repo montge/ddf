@@ -15,6 +15,7 @@ package org.codice.ddf.validator.metacard.location;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -107,12 +108,12 @@ public class MetacardLocationValidatorTest {
     validator.validate(metacard);
   }
 
-  @Test(expected = ValidationException.class)
-  public void testValidateWithInvalidLocationThrowsException() throws Exception {
+  @Test
+  public void testValidateWithInvalidLocationThrowsException() {
     when(wktValidator.isValid(anyString())).thenReturn(false);
     Metacard metacard = createMetacardWithLocation(INVALID_WKT);
 
-    validator.validate(metacard);
+    assertThrows(ValidationException.class, () -> validator.validate(metacard));
   }
 
   @Test

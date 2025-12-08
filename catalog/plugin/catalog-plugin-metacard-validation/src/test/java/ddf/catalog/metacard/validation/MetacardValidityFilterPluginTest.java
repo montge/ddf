@@ -15,6 +15,7 @@ package ddf.catalog.metacard.validation;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -283,13 +284,15 @@ public class MetacardValidityFilterPluginTest {
         is(true));
   }
 
-  @Test(expected = StopProcessingException.class)
-  public void noSubjectAvailable() throws Exception {
+  @Test
+  public void noSubjectAvailable() {
     metacardValidityFilterPlugin.setAttributeMap(ATTRIBUTE_MAPPING);
 
     QueryRequest queryRequest = mockQueryRequest(Collections.emptyMap());
 
-    metacardValidityFilterPlugin.process(LOCAL_PROVIDER, queryRequest);
+    assertThrows(
+        StopProcessingException.class,
+        () -> metacardValidityFilterPlugin.process(LOCAL_PROVIDER, queryRequest));
   }
 
   private Metacard getValidMetacard() {
