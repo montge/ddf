@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -78,9 +79,11 @@ public class AtomTransformerEnhancedTest {
     transformer.setMetacardTransformer(mockMetacardTransformer);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullSourceResponse() throws CatalogTransformerException {
-    transformer.transform(null, Collections.emptyMap());
+  @Test
+  public void testTransformNullSourceResponse() {
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> transformer.transform(null, Collections.emptyMap()));
   }
 
   @Test

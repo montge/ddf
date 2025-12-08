@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,14 +45,15 @@ public class RtfQueryResponseAndMetacardTransformerTest extends BaseTestConfigur
     assertThat("Transformer cannot be null", transformer, notNullValue());
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullMetacard()
-      throws CatalogTransformerException, MimeTypeParseException {
+  @Test
+  public void testTransformNullMetacard() throws MimeTypeParseException {
     RtfQueryResponseAndMetacardTransformer transformer = createTransformer();
 
     Metacard nullCard = null;
 
-    transformer.transform(nullCard, Collections.emptyMap());
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> transformer.transform(nullCard, Collections.emptyMap()));
   }
 
   @Test
@@ -108,13 +110,14 @@ public class RtfQueryResponseAndMetacardTransformerTest extends BaseTestConfigur
         equalTo(referenceRtfWithEmptyThumbnail.length()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNullSourceResponse()
-      throws CatalogTransformerException, MimeTypeParseException {
+  @Test
+  public void testTransformNullSourceResponse() throws MimeTypeParseException {
     RtfQueryResponseAndMetacardTransformer transformer = createTransformer();
 
     SourceResponse response = null;
-    transformer.transform(response, Collections.emptyMap());
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> transformer.transform(response, Collections.emptyMap()));
   }
 
   @Test

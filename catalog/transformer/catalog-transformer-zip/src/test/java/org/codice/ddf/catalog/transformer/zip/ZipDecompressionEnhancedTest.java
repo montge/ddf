@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.transformer.zip;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.transform.CatalogTransformerException;
@@ -48,37 +49,42 @@ public class ZipDecompressionEnhancedTest {
     arguments.put(ZipDecompression.FILE_NAME, "test.zip");
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformWithNullInputStream() throws CatalogTransformerException {
-    zipDecompression.transform(null, arguments);
+  @Test
+  public void testTransformWithNullInputStream() {
+    assertThrows(
+        CatalogTransformerException.class, () -> zipDecompression.transform(null, arguments));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformWithNullArguments() throws CatalogTransformerException {
+  @Test
+  public void testTransformWithNullArguments() {
     InputStream stream = createEmptyZipStream();
-    zipDecompression.transform(stream, null);
+    assertThrows(CatalogTransformerException.class, () -> zipDecompression.transform(stream, null));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformWithEmptyArguments() throws CatalogTransformerException {
+  @Test
+  public void testTransformWithEmptyArguments() {
     InputStream stream = createEmptyZipStream();
-    zipDecompression.transform(stream, new HashMap<>());
+    assertThrows(
+        CatalogTransformerException.class,
+        () -> zipDecompression.transform(stream, new HashMap<>()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformWithMissingFilePath() throws CatalogTransformerException {
+  @Test
+  public void testTransformWithMissingFilePath() {
     Map<String, Serializable> badArgs = new HashMap<>();
     badArgs.put(ZipDecompression.FILE_NAME, "test.zip");
     InputStream stream = createEmptyZipStream();
-    zipDecompression.transform(stream, badArgs);
+    assertThrows(
+        CatalogTransformerException.class, () -> zipDecompression.transform(stream, badArgs));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformWithMissingFileName() throws CatalogTransformerException {
+  @Test
+  public void testTransformWithMissingFileName() {
     Map<String, Serializable> badArgs = new HashMap<>();
     badArgs.put(ZipDecompression.FILE_PATH, "target/");
     InputStream stream = createEmptyZipStream();
-    zipDecompression.transform(stream, badArgs);
+    assertThrows(
+        CatalogTransformerException.class, () -> zipDecompression.transform(stream, badArgs));
   }
 
   @Test
@@ -141,11 +147,12 @@ public class ZipDecompressionEnhancedTest {
     assertThat(result, notNullValue());
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformCorruptedZipStream() throws CatalogTransformerException {
+  @Test
+  public void testTransformCorruptedZipStream() {
     byte[] corruptedData = new byte[] {0x50, 0x4B, 0x03, 0x04, 0x00, 0x00, 0x00, 0x00};
     InputStream stream = new ByteArrayInputStream(corruptedData);
-    zipDecompression.transform(stream, arguments);
+    assertThrows(
+        CatalogTransformerException.class, () -> zipDecompression.transform(stream, arguments));
   }
 
   @Test
@@ -218,11 +225,12 @@ public class ZipDecompressionEnhancedTest {
     assertThat(result, notNullValue());
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformNonZipInputStream() throws CatalogTransformerException {
+  @Test
+  public void testTransformNonZipInputStream() {
     String plainText = "This is not a zip file";
     InputStream stream = new ByteArrayInputStream(plainText.getBytes());
-    zipDecompression.transform(stream, arguments);
+    assertThrows(
+        CatalogTransformerException.class, () -> zipDecompression.transform(stream, arguments));
   }
 
   @Test
