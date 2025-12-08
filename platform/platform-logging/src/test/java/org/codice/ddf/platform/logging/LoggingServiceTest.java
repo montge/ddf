@@ -15,6 +15,7 @@ package org.codice.ddf.platform.logging;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -77,22 +78,24 @@ public class LoggingServiceTest {
     assertThat(actualLogEvents, contains(expectedLogEventAfterResize));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetMaxLogEventsTo0() throws Exception {
     // Setup
     LoggingService loggingServiceBean = getLoggingService();
 
     // Perform Test
-    loggingServiceBean.setMaxLogEvents(0);
+    assertThrows(IllegalArgumentException.class, () -> loggingServiceBean.setMaxLogEvents(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSetMaxLogEventsToExceedLimit() throws Exception {
     // Setup
     LoggingService loggingServiceBean = getLoggingService();
 
     // Perform Test
-    loggingServiceBean.setMaxLogEvents(MAX_LOG_EVENTS_LIMIT + 1);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> loggingServiceBean.setMaxLogEvents(MAX_LOG_EVENTS_LIMIT + 1));
   }
 
   /** Verify oldest log events are evicted when queue is full. */

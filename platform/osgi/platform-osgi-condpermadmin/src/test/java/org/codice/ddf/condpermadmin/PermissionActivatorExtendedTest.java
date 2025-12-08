@@ -16,6 +16,7 @@ package org.codice.ddf.condpermadmin;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
@@ -79,7 +80,7 @@ public class PermissionActivatorExtendedTest {
     assertThat(activator.securityAdmin, is(notNullValue()));
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testSystemExitCalledOnParseError() throws Exception {
     // Create invalid policy file
     File invalidPolicyFile = new File(securityDir, "invalid-policy.policy");
@@ -88,7 +89,7 @@ public class PermissionActivatorExtendedTest {
     }
 
     // This should trigger start() to call systemExit() which throws RuntimeException
-    activator.start(mockBundleContext);
+    assertThrows(RuntimeException.class, () -> activator.start(mockBundleContext));
   }
 
   @Test

@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -92,19 +93,19 @@ public class WaitForReadyCommandTest {
     verify(syncInstaller).waitForBootFinish(eq(0L));
   }
 
-  @Test(expected = InterruptedException.class)
+  @Test
   public void testExecuteThrowsWhenSyncInstallerThrows() throws Exception {
     doThrow(new InterruptedException("test")).when(syncInstaller).waitForBootFinish();
 
-    command.execute();
+    assertThrows(InterruptedException.class, () -> command.execute());
   }
 
-  @Test(expected = InterruptedException.class)
+  @Test
   public void testExecuteThrowsWhenSyncInstallerWithTimeoutThrows() throws Exception {
     command.waitTime = 10;
     doThrow(new InterruptedException("test")).when(syncInstaller).waitForBootFinish(anyLong());
 
-    command.execute();
+    assertThrows(InterruptedException.class, () -> command.execute());
   }
 
   @Test
