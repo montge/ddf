@@ -16,6 +16,7 @@ package org.codice.ddf.transformer.xml.streaming.impl;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.validation.ValidationException;
 import java.io.InputStream;
@@ -53,26 +54,26 @@ public class Gml3ToWktImplTest {
     assertThat(gtw.convert(createGmlPoint(1, 1)), is(createWktPoint(1, 1)));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testBadGml() throws ValidationException {
+  @Test
+  public void testBadGml() {
     String badGml = createGmlPoint(0, 0).replaceAll("pos", "badType");
-    gtw.convert(badGml);
+    assertThrows(ValidationException.class, () -> gtw.convert(badGml));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testBadInputStreamConvert() throws ValidationException {
-    gtw.convert((InputStream) null);
+  @Test
+  public void testBadInputStreamConvert() {
+    assertThrows(ValidationException.class, () -> gtw.convert((InputStream) null));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testBadInputStreamParseXml() throws ValidationException {
-    gtw.convert((InputStream) null);
+  @Test
+  public void testBadInputStreamParseXml() {
+    assertThrows(ValidationException.class, () -> gtw.convert((InputStream) null));
   }
 
-  @Test(expected = ValidationException.class)
-  public void testBadXmlStructure() throws ValidationException {
+  @Test
+  public void testBadXmlStructure() {
     String badXml = "<gml:Point></gml:Point>";
-    gtw.convert(badXml);
+    assertThrows(ValidationException.class, () -> gtw.convert(badXml));
   }
 
   @Test

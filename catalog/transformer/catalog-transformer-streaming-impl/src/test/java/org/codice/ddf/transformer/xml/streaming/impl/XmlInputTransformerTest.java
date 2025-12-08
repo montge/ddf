@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -129,9 +130,8 @@ public class XmlInputTransformerTest {
     assertThat(metacard.getAttribute(Metacard.CONTENT_TYPE).getValues().get(0), is("ddf.metacard"));
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testBadGHTransform()
-      throws FileNotFoundException, CatalogTransformerException, SAXException {
+  @Test
+  public void testBadGHTransform() throws FileNotFoundException, SAXException {
 
     inputStream = new FileInputStream("src/test/resources/metacard2.xml");
 
@@ -146,7 +146,7 @@ public class XmlInputTransformerTest {
     saxEventHandlerDelegate =
         new SaxEventHandlerDelegate(Arrays.asList(saxEventHandler, gmlHandler));
 
-    saxEventHandlerDelegate.read(inputStream);
+    assertThrows(NullPointerException.class, () -> saxEventHandlerDelegate.read(inputStream));
   }
 
   @Test
