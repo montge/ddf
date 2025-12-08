@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -153,12 +154,13 @@ public class GuestClaimsHandlerExtTest {
     assertNull(handlerExt.getProfileConfigs());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSelectClaimsProfileBadName() throws Exception {
     GuestClaimsHandlerExt handlerExt =
         new GuestClaimsHandlerUnderTest(profilesDotJsonPath, availableClaimsFilePath);
     handlerExt.init();
-    handlerExt.setSelectedClaimsProfileName("profile0");
+    assertThrows(
+        IllegalArgumentException.class, () -> handlerExt.setSelectedClaimsProfileName("profile0"));
   }
 
   private void verifyMapValidity(Map inputMap) throws Exception {

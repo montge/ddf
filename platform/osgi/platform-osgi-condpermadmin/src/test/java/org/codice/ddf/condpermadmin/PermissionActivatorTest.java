@@ -15,6 +15,7 @@ package org.codice.ddf.condpermadmin;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
@@ -143,9 +144,9 @@ public class PermissionActivatorTest {
     createPermissionActivator("/emptyEntry.policy");
   }
 
-  @Test(expected = RuntimeException.class)
-  public void malformedPolicyFile() throws Exception {
-    createPermissionActivator("/badformat.policy");
+  @Test
+  public void malformedPolicyFile() {
+    assertThrows(RuntimeException.class, () -> createPermissionActivator("/badformat.policy"));
   }
 
   @Test

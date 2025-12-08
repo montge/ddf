@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -199,15 +200,15 @@ public class SmtpClientImplITCaseTest {
     validateUsernamePassword(username, password);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testWithNullHostname() {
     SmtpClientImpl emailService = new SmtpClientImpl(null);
-    emailService.createSession();
+    assertThrows(IllegalArgumentException.class, () -> emailService.createSession());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void throwsIllegalArgumentExceptionWhenPortNumberIsLessThanOne() {
-    new SmtpClientImpl(null).setPortNumber(0);
+    assertThrows(IllegalArgumentException.class, () -> new SmtpClientImpl(null).setPortNumber(0));
   }
 
   private void validateUsernamePassword(String username, String password)

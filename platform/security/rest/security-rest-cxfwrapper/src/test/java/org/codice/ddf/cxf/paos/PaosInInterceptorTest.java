@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -133,7 +134,7 @@ public class PaosInInterceptorTest {
     assertThat(headers.get(listOfIntsHeaderKey), hasItems("1", "2", "3"));
   }
 
-  @Test(expected = Fault.class)
+  @Test
   public void handleMessagePaosResponseBasicBad() throws IOException {
     Message message = new MessageImpl();
     message.setContent(
@@ -167,10 +168,10 @@ public class PaosInInterceptorTest {
             return httpResponseWrapper;
           }
         };
-    paosInInterceptor.handleMessage(message);
+    assertThrows(Fault.class, () -> paosInInterceptor.handleMessage(message));
   }
 
-  @Test(expected = Fault.class)
+  @Test
   public void handleMessagePaosResponseBasicNoIdp() throws IOException {
     Message message = new MessageImpl();
     message.setContent(
@@ -189,7 +190,7 @@ public class PaosInInterceptorTest {
     exchange.setOutMessage(outMessage);
     message.setExchange(exchange);
     PaosInInterceptor paosInInterceptor = new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity());
-    paosInInterceptor.handleMessage(message);
+    assertThrows(Fault.class, () -> paosInInterceptor.handleMessage(message));
   }
 
   @Test
