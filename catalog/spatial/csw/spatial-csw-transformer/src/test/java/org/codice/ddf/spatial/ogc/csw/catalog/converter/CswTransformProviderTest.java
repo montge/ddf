@@ -15,6 +15,7 @@ package org.codice.ddf.spatial.ogc.csw.catalog.converter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -126,8 +127,8 @@ public class CswTransformProviderTest {
     assertThat(outputSchema, is(OTHER_SCHEMA));
   }
 
-  @Test(expected = ConversionException.class)
-  public void testMarshalNoTransformers() throws Exception {
+  @Test
+  public void testMarshalNoTransformers() {
     when(mockMetacardManager.getTransformerBySchema(anyString())).thenReturn(null);
 
     StringWriter stringWriter = new StringWriter();
@@ -135,7 +136,7 @@ public class CswTransformProviderTest {
     CswTransformProvider provider = new CswTransformProvider(mockMetacardManager, null);
     MarshallingContext context = new TreeMarshaller(writer, null, null);
 
-    provider.marshal(getMetacard(), writer, context);
+    assertThrows(ConversionException.class, () -> provider.marshal(getMetacard(), writer, context));
   }
 
   @Test
@@ -251,15 +252,15 @@ public class CswTransformProviderTest {
     assertThat(outputSchema, is(OTHER_SCHEMA));
   }
 
-  @Test(expected = ConversionException.class)
-  public void testUnmarshalNoTransformers() throws Exception {
+  @Test
+  public void testUnmarshalNoTransformers() {
     when(mockInputManager.getTransformerBySchema(anyString())).thenReturn(null);
 
     HierarchicalStreamReader reader = new WstxDriver().createReader(new StringReader(getRecord()));
     CswTransformProvider provider = new CswTransformProvider(null, mockInputManager);
     UnmarshallingContext context = new TreeUnmarshaller(null, null, null, null);
 
-    provider.unmarshal(reader, context);
+    assertThrows(ConversionException.class, () -> provider.unmarshal(reader, context));
   }
 
   @Test

@@ -16,6 +16,7 @@ package org.codice.ddf.spatial.ogc.csw.catalog.transformer;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -80,12 +81,12 @@ public class CswQueryFilterTransformerProviderTest extends CswQueryFilterTransfo
     assertThat(resultByTypeName.isPresent(), equalTo(false));
   }
 
-  @Test(expected = Test.None.class)
+  @Test
   public void testNullServiceReferenceOnBind() {
     bind(null);
   }
 
-  @Test(expected = Test.None.class)
+  @Test
   public void testNullServiceReferenceOnUnbind() {
     unbind(null);
   }
@@ -108,10 +109,10 @@ public class CswQueryFilterTransformerProviderTest extends CswQueryFilterTransfo
     assertThat(result.isPresent(), equalTo(false));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testNullServiceReferenceId() {
     when(serviceReference.getProperty(ID_KEY)).thenReturn(null);
-    bind(serviceReference);
+    assertThrows(IllegalArgumentException.class, () -> bind(serviceReference));
   }
 
   @Test
@@ -128,10 +129,10 @@ public class CswQueryFilterTransformerProviderTest extends CswQueryFilterTransfo
     }
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testNullTransformer() {
     when(bundleContext.getService(serviceReference)).thenReturn(null);
-    bind(serviceReference);
+    assertThrows(IllegalStateException.class, () -> bind(serviceReference));
   }
 
   @Override

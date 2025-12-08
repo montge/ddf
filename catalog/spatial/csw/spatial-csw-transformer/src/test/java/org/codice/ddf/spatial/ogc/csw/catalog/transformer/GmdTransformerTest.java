@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 
@@ -97,11 +98,11 @@ public class GmdTransformerTest {
     assertThat(metacard.getMetacardType().getName(), is(gmdMetacardType.getName()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void testBadInputStream() throws Exception {
     InputStream is = Mockito.mock(InputStream.class);
     doThrow(new IOException()).when(is).read(any());
-    gmdTransformer.transform(is);
+    assertThrows(CatalogTransformerException.class, () -> gmdTransformer.transform(is));
   }
 
   @Test
