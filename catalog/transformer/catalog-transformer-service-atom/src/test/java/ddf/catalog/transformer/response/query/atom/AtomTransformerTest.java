@@ -18,6 +18,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathNotExists;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -168,15 +169,12 @@ public class AtomTransformerTest {
     XMLUnit.setXpathNamespaceContext(ctx);
   }
 
-  /**
-   * Tests actions when given <code>null</code> input
-   *
-   * @throws CatalogTransformerException
-   */
-  @Test(expected = CatalogTransformerException.class)
-  public void testNullInput() throws CatalogTransformerException {
+  /** Tests actions when given <code>null</code> input */
+  @Test
+  public void testNullInput() {
 
-    new AtomTransformer().transform(null, null);
+    assertThrows(
+        CatalogTransformerException.class, () -> new AtomTransformer().transform(null, null));
   }
 
   /**

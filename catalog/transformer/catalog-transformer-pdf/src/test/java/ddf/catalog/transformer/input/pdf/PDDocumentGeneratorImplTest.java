@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -78,36 +79,36 @@ public class PDDocumentGeneratorImplTest {
     stream.close();
   }
 
-  @Test(expected = Exception.class)
-  public void testApplyWithNullInputStream() throws Exception {
-    generator.apply(null);
+  @Test
+  public void testApplyWithNullInputStream() {
+    assertThrows(Exception.class, () -> generator.apply(null));
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithEmptyInputStream() throws Exception {
+  @Test
+  public void testApplyWithEmptyInputStream() {
     InputStream emptyStream = new ByteArrayInputStream(new byte[0]);
-    generator.apply(emptyStream);
+    assertThrows(IOException.class, () -> generator.apply(emptyStream));
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithInvalidPdfData() throws Exception {
+  @Test
+  public void testApplyWithInvalidPdfData() {
     byte[] invalidData = "This is not a PDF file".getBytes();
     InputStream invalidStream = new ByteArrayInputStream(invalidData);
-    generator.apply(invalidStream);
+    assertThrows(IOException.class, () -> generator.apply(invalidStream));
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithCorruptedPdf() throws Exception {
+  @Test
+  public void testApplyWithCorruptedPdf() {
     byte[] corruptedPdf = "%PDF-1.4\n%corrupted content here\n%%EOF".getBytes();
     InputStream corruptedStream = new ByteArrayInputStream(corruptedPdf);
-    generator.apply(corruptedStream);
+    assertThrows(IOException.class, () -> generator.apply(corruptedStream));
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithPartialPdfHeader() throws Exception {
+  @Test
+  public void testApplyWithPartialPdfHeader() {
     byte[] partialHeader = "%PDF".getBytes();
     InputStream partialStream = new ByteArrayInputStream(partialHeader);
-    generator.apply(partialStream);
+    assertThrows(IOException.class, () -> generator.apply(partialStream));
   }
 
   @Test
@@ -125,14 +126,14 @@ public class PDDocumentGeneratorImplTest {
     stream.close();
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithBinaryGarbage() throws Exception {
+  @Test
+  public void testApplyWithBinaryGarbage() {
     byte[] binaryGarbage = new byte[1024];
     for (int i = 0; i < binaryGarbage.length; i++) {
       binaryGarbage[i] = (byte) (Math.random() * 256);
     }
     InputStream garbageStream = new ByteArrayInputStream(binaryGarbage);
-    generator.apply(garbageStream);
+    assertThrows(IOException.class, () -> generator.apply(garbageStream));
   }
 
   @Test
@@ -190,14 +191,14 @@ public class PDDocumentGeneratorImplTest {
     }
   }
 
-  @Test(expected = IOException.class)
+  @Test
   public void testApplyWithClosedInputStream() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull("Test PDF file not found", stream);
     stream.close();
 
-    generator.apply(stream);
+    assertThrows(IOException.class, () -> generator.apply(stream));
   }
 
   @Test
@@ -242,25 +243,25 @@ public class PDDocumentGeneratorImplTest {
     stream2.close();
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithHtmlFileInsteadOfPdf() throws Exception {
+  @Test
+  public void testApplyWithHtmlFileInsteadOfPdf() {
     byte[] htmlContent = "<html><body>Not a PDF</body></html>".getBytes();
     InputStream htmlStream = new ByteArrayInputStream(htmlContent);
-    generator.apply(htmlStream);
+    assertThrows(IOException.class, () -> generator.apply(htmlStream));
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithXmlFileInsteadOfPdf() throws Exception {
+  @Test
+  public void testApplyWithXmlFileInsteadOfPdf() {
     byte[] xmlContent = "<?xml version=\"1.0\"?><root>Not a PDF</root>".getBytes();
     InputStream xmlStream = new ByteArrayInputStream(xmlContent);
-    generator.apply(xmlStream);
+    assertThrows(IOException.class, () -> generator.apply(xmlStream));
   }
 
-  @Test(expected = IOException.class)
-  public void testApplyWithImageFileInsteadOfPdf() throws Exception {
+  @Test
+  public void testApplyWithImageFileInsteadOfPdf() {
     byte[] fakeImage = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xE0};
     InputStream fakeStream = new ByteArrayInputStream(fakeImage);
-    generator.apply(fakeStream);
+    assertThrows(IOException.class, () -> generator.apply(fakeStream));
   }
 
   @Test
