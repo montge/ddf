@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.thoughtworks.xstream.converters.Converter;
@@ -133,9 +134,11 @@ public class CswSourceImplTest {
     assertThat(url, is(equalTo(CSW_URL)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithNullEncryptionService() {
-    new CswSourceImpl(null, mockClientBuilderFactory, mockSecurity, mockPermissions);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new CswSourceImpl(null, mockClientBuilderFactory, mockSecurity, mockPermissions));
   }
 
   @Test

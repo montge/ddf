@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -432,9 +433,13 @@ public class FeatureMetacardTypeTest {
     assertThat(featureMetacardType.getTextualProperties(), is(singletonList("FeatureTypeName")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testExceptionThrownWhenSchemaIsNull() {
-    new FeatureMetacardType(null, FEATURE_TYPE, EMPTY_NON_QUERYABLE_PROPS, GML_3_1_1_NAMESPACE);
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new FeatureMetacardType(
+                null, FEATURE_TYPE, EMPTY_NON_QUERYABLE_PROPS, GML_3_1_1_NAMESPACE));
   }
 
   @Test

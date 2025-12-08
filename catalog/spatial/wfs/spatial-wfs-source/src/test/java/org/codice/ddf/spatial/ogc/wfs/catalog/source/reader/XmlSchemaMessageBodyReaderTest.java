@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -90,10 +91,12 @@ public class XmlSchemaMessageBodyReaderTest {
     assertThat(result, is(nullValue()));
   }
 
-  @Test(expected = XmlSchemaException.class)
-  public void testReadFromWithEmptyContentThrowsException() throws Exception {
+  @Test
+  public void testReadFromWithEmptyContentThrowsException() {
     InputStream inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
 
-    reader.readFrom(XmlSchema.class, null, null, null, null, inputStream);
+    assertThrows(
+        XmlSchemaException.class,
+        () -> reader.readFrom(XmlSchema.class, null, null, null, null, inputStream));
   }
 }

@@ -13,6 +13,8 @@
  */
 package org.codice.ddf.spatial.geocoding.create;
 
+import static org.junit.Assert.assertThrows;
+
 import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.codice.ddf.spatial.geocoding.TestBase;
 import org.junit.Test;
@@ -50,13 +52,15 @@ public class GeoNamesCreatorTest extends TestBase {
     verifyGeoEntry(geoEntry, "Cave Creek", 33.83333, -111.95083, "PPL", 5015, "", "USA");
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void testNotEnoughFields() {
     final String wrongFormat = "5288858\tCave Creek\tCave Creek\tAlternate names\t33.83333";
-    GEONAMES_CREATOR.createGeoEntry(wrongFormat, TEST_RESOURCE);
+    assertThrows(
+        ArrayIndexOutOfBoundsException.class,
+        () -> GEONAMES_CREATOR.createGeoEntry(wrongFormat, TEST_RESOURCE));
   }
 
-  @Test(expected = NumberFormatException.class)
+  @Test
   public void testWrongFieldOrder() {
     /* This string has the correct number of fields but the fields are in the wrong order. The
     GeoNamesCreator will attempt to parse the latitude and longitude from the string, but
@@ -66,21 +70,27 @@ public class GeoNamesCreatorTest extends TestBase {
         "5289282\t33.30616\t-111.84125\t"
             + "Candler,Candleris,Chandler,Chandlur\tChandler\tChandler\tP\tPPL\tUS\tUS\tAZ\t"
             + "013\t012\t011\t236123\t370\t368\tAmerica/Phoenix\t2011-05-14";
-    GEONAMES_CREATOR.createGeoEntry(wrongFormat, TEST_RESOURCE);
+    assertThrows(
+        NumberFormatException.class,
+        () -> GEONAMES_CREATOR.createGeoEntry(wrongFormat, TEST_RESOURCE));
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void testNotTabDelimited() {
     final String wrongFormat =
         "5289282,Chandler,Chandler,"
             + "Candler,Candleris,Chandler,Chandlu,33.30616,-111.84125,P,PPL,US,US,AZ,"
             + "013,012,011,236123,370,368,America/Phoenix,2011-05-14";
-    GEONAMES_CREATOR.createGeoEntry(wrongFormat, TEST_RESOURCE);
+    assertThrows(
+        ArrayIndexOutOfBoundsException.class,
+        () -> GEONAMES_CREATOR.createGeoEntry(wrongFormat, TEST_RESOURCE));
   }
 
-  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  @Test
   public void testEmptyLine() {
-    GEONAMES_CREATOR.createGeoEntry("", TEST_RESOURCE);
+    assertThrows(
+        ArrayIndexOutOfBoundsException.class,
+        () -> GEONAMES_CREATOR.createGeoEntry("", TEST_RESOURCE));
   }
 
   @Test

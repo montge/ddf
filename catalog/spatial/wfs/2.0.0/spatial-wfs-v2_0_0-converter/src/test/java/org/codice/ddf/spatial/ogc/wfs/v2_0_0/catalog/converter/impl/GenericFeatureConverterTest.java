@@ -15,6 +15,7 @@ package org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.converter.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -277,17 +278,18 @@ public class GenericFeatureConverterTest {
     assertTrue(mc.getLocation().startsWith("POINT (-123.26 49.41)"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testUnmarshalNoMetacardTypeRegisteredInConverter() throws Throwable {
+  @Test
+  public void testUnmarshalNoMetacardTypeRegisteredInConverter() {
     xstream.registerConverter(new GenericFeatureConverterWfs20());
     xstream.registerConverter(new GmlGeometryConverter());
     xstream.alias(FEATURE_TYPE, Metacard.class);
     InputStream is = GenericFeatureConverterTest.class.getResourceAsStream("/video_data_set.xml");
-    try {
-      xstream.fromXML(is);
-    } catch (Exception e) {
-      throw e.getCause();
-    }
+    Exception exception = assertThrows(Exception.class, () -> xstream.fromXML(is));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          throw exception.getCause();
+        });
   }
 
   @Test

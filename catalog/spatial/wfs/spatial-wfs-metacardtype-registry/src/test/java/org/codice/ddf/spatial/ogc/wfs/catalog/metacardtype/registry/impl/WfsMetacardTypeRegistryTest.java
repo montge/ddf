@@ -15,6 +15,7 @@ package org.codice.ddf.spatial.ogc.wfs.catalog.metacardtype.registry.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
@@ -132,19 +133,29 @@ public class WfsMetacardTypeRegistryTest {
     verify(mockServiceRegistration1, times(1)).unregister();
   }
 
-  @Test(expected = VerifyException.class)
+  @Test
   public void testNullMetacardType() {
-    wfsMetacardTypeRegistry.registerMetacardType(null, TEST_SOURCE_ID, TEST_FEATURE_SIMPLE_NAME);
+    assertThrows(
+        VerifyException.class,
+        () ->
+            wfsMetacardTypeRegistry.registerMetacardType(
+                null, TEST_SOURCE_ID, TEST_FEATURE_SIMPLE_NAME));
   }
 
-  @Test(expected = VerifyException.class)
+  @Test
   public void testNullSourceId() {
-    wfsMetacardTypeRegistry.registerMetacardType(mockMetacardType, null, TEST_FEATURE_SIMPLE_NAME);
+    assertThrows(
+        VerifyException.class,
+        () ->
+            wfsMetacardTypeRegistry.registerMetacardType(
+                mockMetacardType, null, TEST_FEATURE_SIMPLE_NAME));
   }
 
-  @Test(expected = VerifyException.class)
+  @Test
   public void testNullFeatureSimpleName() {
-    wfsMetacardTypeRegistry.registerMetacardType(mockMetacardType, TEST_SOURCE_ID, null);
+    assertThrows(
+        VerifyException.class,
+        () -> wfsMetacardTypeRegistry.registerMetacardType(mockMetacardType, TEST_SOURCE_ID, null));
   }
 
   @Test
