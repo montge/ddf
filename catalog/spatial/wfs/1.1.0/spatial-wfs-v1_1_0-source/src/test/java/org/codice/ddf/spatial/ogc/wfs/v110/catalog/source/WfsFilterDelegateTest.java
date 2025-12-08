@@ -25,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -409,17 +410,20 @@ public class WfsFilterDelegateTest {
 
   private MetacardMapper metacardMapper = mock(MetacardMapper.class);
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testWfsFilterDelegateNullFeatureMetacardType() {
-    new WfsFilterDelegate(
-        null,
-        metacardMapper,
-        emptyList(),
-        Wfs11Constants.wktOperandsAsList(),
-        new LatLonCoordinateStrategy(),
-        WfsConstants.WILD_CARD.charAt(0),
-        FilterDelegate.SINGLE_CHAR.charAt(0),
-        WfsConstants.ESCAPE.charAt(0));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new WfsFilterDelegate(
+                null,
+                metacardMapper,
+                emptyList(),
+                Wfs11Constants.wktOperandsAsList(),
+                new LatLonCoordinateStrategy(),
+                WfsConstants.WILD_CARD.charAt(0),
+                FilterDelegate.SINGLE_CHAR.charAt(0),
+                WfsConstants.ESCAPE.charAt(0)));
   }
 
   @Test
@@ -539,19 +543,20 @@ public class WfsFilterDelegateTest {
     assertThat(filter.getComparisonOps(), is(instanceOf(JAXBElement.class)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsEqualToStringStringBooleanAnyTextNullMetacardType() {
-    WfsFilterDelegate delegate =
-        new WfsFilterDelegate(
-            null,
-            metacardMapper,
-            SUPPORTED_GEO,
-            Wfs11Constants.wktOperandsAsList(),
-            new LatLonCoordinateStrategy(),
-            WfsConstants.WILD_CARD.charAt(0),
-            FilterDelegate.SINGLE_CHAR.charAt(0),
-            WfsConstants.ESCAPE.charAt(0));
-    delegate.propertyIsEqualTo(Metacard.ANY_TEXT, LITERAL, true);
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            new WfsFilterDelegate(
+                null,
+                metacardMapper,
+                SUPPORTED_GEO,
+                Wfs11Constants.wktOperandsAsList(),
+                new LatLonCoordinateStrategy(),
+                WfsConstants.WILD_CARD.charAt(0),
+                FilterDelegate.SINGLE_CHAR.charAt(0),
+                WfsConstants.ESCAPE.charAt(0)));
   }
 
   @Test
@@ -1051,16 +1056,20 @@ public class WfsFilterDelegateTest {
     assertXMLEqual(propertyBetweenXmlDecimal, marshal(filter));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsBetweenNullLowerBoundary() {
     WfsFilterDelegate delegate = createDelegate();
-    delegate.propertyIsBetween(MOCK_PROPERTY, null, LITERAL);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.propertyIsBetween(MOCK_PROPERTY, null, LITERAL));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsBetweenNullUpperBoundary() {
     WfsFilterDelegate delegate = createDelegate();
-    delegate.propertyIsBetween(MOCK_PROPERTY, LITERAL, null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.propertyIsBetween(MOCK_PROPERTY, LITERAL, null));
   }
 
   @Test
@@ -1193,13 +1202,15 @@ public class WfsFilterDelegateTest {
     assertThat(filter, nullValue());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsLikePropertyBlacklisted() {
     WfsFilterDelegate delegate = createSinglePropertyDelegate();
 
     when(featureMetacardType.isQueryable(MOCK_PROPERTY)).thenReturn(false);
 
-    delegate.propertyIsLike(MOCK_PROPERTY, LITERAL, false);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.propertyIsLike(MOCK_PROPERTY, LITERAL, false));
   }
 
   @Test
@@ -1283,12 +1294,12 @@ public class WfsFilterDelegateTest {
     assertThat("The dates were not 100 seconds apart.", end - start, is(100_000L));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBlacklistedGeoProperty() {
     WfsFilterDelegate delegate =
         setupFilterDelegate(SPATIAL_OPERATORS.BBOX.getValue(), new LatLonCoordinateStrategy());
     when(featureMetacardType.isQueryable(MOCK_GEOM)).thenReturn(false);
-    delegate.intersects(MOCK_GEOM, POLYGON);
+    assertThrows(IllegalArgumentException.class, () -> delegate.intersects(MOCK_GEOM, POLYGON));
   }
 
   @Test
@@ -1594,19 +1605,21 @@ public class WfsFilterDelegateTest {
     assertThat(filter, nullValue());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadPolygonWkt() {
     WfsFilterDelegate delegate =
         setupFilterDelegate(
             SPATIAL_OPERATORS.INTERSECTS.getValue(), new LatLonCoordinateStrategy());
-    delegate.intersects(Metacard.ANY_GEO, "junk");
+    assertThrows(
+        IllegalArgumentException.class, () -> delegate.intersects(Metacard.ANY_GEO, "junk"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testBadPointWkt() {
     WfsFilterDelegate delegate =
         setupFilterDelegate(SPATIAL_OPERATORS.DWITHIN.getValue(), new LatLonCoordinateStrategy());
-    delegate.dwithin(Metacard.ANY_GEO, "junk", DISTANCE);
+    assertThrows(
+        IllegalArgumentException.class, () -> delegate.dwithin(Metacard.ANY_GEO, "junk", DISTANCE));
   }
 
   @Test
@@ -1650,14 +1663,16 @@ public class WfsFilterDelegateTest {
         is(nullValue()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsFilterFeaturePropertyIsNotQueryable() {
     final WfsFilterDelegate delegate = createSinglePropertyDelegate();
 
     doReturn(MOCK_PROPERTY).when(metacardMapper).getFeatureProperty(Core.TITLE);
     doReturn(false).when(featureMetacardType).isQueryable(MOCK_PROPERTY);
 
-    delegate.propertyIsEqualTo(Core.TITLE, LITERAL, true);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.propertyIsEqualTo(Core.TITLE, LITERAL, true));
   }
 
   @Test
@@ -1682,14 +1697,16 @@ public class WfsFilterDelegateTest {
         is(nullValue()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testPropertyIsBetweenFilterFeaturePropertyIsNotQueryable() {
     final WfsFilterDelegate delegate = createSinglePropertyDelegate();
 
     doReturn(MOCK_PROPERTY).when(metacardMapper).getFeatureProperty(Core.CREATED);
     doReturn(false).when(featureMetacardType).isQueryable(MOCK_PROPERTY);
 
-    delegate.propertyIsBetween(Core.CREATED, date, endDate);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> delegate.propertyIsBetween(Core.CREATED, date, endDate));
   }
 
   @Test
@@ -1722,7 +1739,7 @@ public class WfsFilterDelegateTest {
         is(nullValue()));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGeospatialFilterFeaturePropertyIsNotQueryable() {
     doReturn(MOCK_GEOM).when(metacardMapper).getFeatureProperty(Core.LOCATION);
 
@@ -1730,7 +1747,8 @@ public class WfsFilterDelegateTest {
         setupFilterDelegate(SPATIAL_OPERATORS.DWITHIN.getValue(), new LatLonCoordinateStrategy());
     when(featureMetacardType.isQueryable(MOCK_GEOM)).thenReturn(false);
 
-    delegate.dwithin(Core.LOCATION, POINT, DISTANCE);
+    assertThrows(
+        IllegalArgumentException.class, () -> delegate.dwithin(Core.LOCATION, POINT, DISTANCE));
   }
 
   @Test
