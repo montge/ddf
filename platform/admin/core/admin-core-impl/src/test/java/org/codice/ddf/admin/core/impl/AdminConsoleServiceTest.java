@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
@@ -214,12 +215,12 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testInitException() throws Exception {
     when(testServer.registerMBean(any(Object.class), any(ObjectName.class)))
         .thenThrow(new NullPointerException());
 
-    configAdmin.init();
+    assertThrows(RuntimeException.class, () -> configAdmin.init());
   }
 
   /**
@@ -242,13 +243,13 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = RuntimeException.class)
+  @Test
   public void testDestroyException() throws Exception {
 
     doThrow(new NullPointerException()).when(testServer).unregisterMBean(any(ObjectName.class));
 
     configAdmin.init();
-    configAdmin.destroy();
+    assertThrows(RuntimeException.class, () -> configAdmin.destroy());
   }
 
   /**
@@ -417,10 +418,10 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testCreateFactoryConfigurationIOException() throws Exception {
-
-    configAdmin.createFactoryConfiguration(StringUtils.EMPTY);
+  @Test
+  public void testCreateFactoryConfigurationIOException() {
+    assertThrows(
+        IOException.class, () -> configAdmin.createFactoryConfiguration(StringUtils.EMPTY));
   }
 
   /**
@@ -455,10 +456,9 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = Exception.class)
-  public void testDeleteIOException() throws Exception {
-
-    configAdmin.delete(null);
+  @Test
+  public void testDeleteIOException() {
+    assertThrows(Exception.class, () -> configAdmin.delete(null));
   }
 
   /**
@@ -495,10 +495,9 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testDeleteConfigurationsIOException() throws Exception {
-
-    configAdmin.deleteConfigurations(StringUtils.EMPTY);
+  @Test
+  public void testDeleteConfigurationsIOException() {
+    assertThrows(IOException.class, () -> configAdmin.deleteConfigurations(StringUtils.EMPTY));
   }
 
   /**
@@ -507,7 +506,7 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
+  @Test
   public void testDeleteConfigurationsInvalidFilter() throws Exception {
     org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
         mock(org.osgi.service.cm.ConfigurationAdmin.class);
@@ -522,7 +521,7 @@ public class AdminConsoleServiceTest {
     doThrow(new InvalidSyntaxException("Invalid filter.", "filter"))
         .when(testConfigAdmin)
         .listConfigurations("><><");
-    configAdmin.deleteConfigurations("><><");
+    assertThrows(IOException.class, () -> configAdmin.deleteConfigurations("><><"));
   }
 
   /**
@@ -579,10 +578,9 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testGetBundleLocationIOException() throws Exception {
-
-    configAdmin.getBundleLocation(null);
+  @Test
+  public void testGetBundleLocationIOException() {
+    assertThrows(IOException.class, () -> configAdmin.getBundleLocation(null));
   }
 
   /**
@@ -624,10 +622,9 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testGetConfigurationsNullParam() throws Exception {
-
-    configAdmin.getConfigurations(null);
+  @Test
+  public void testGetConfigurationsNullParam() {
+    assertThrows(IOException.class, () -> configAdmin.getConfigurations(null));
   }
 
   /**
@@ -636,7 +633,7 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
+  @Test
   public void testGetConfigurationsInvalidFilter() throws Exception {
     org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
         mock(org.osgi.service.cm.ConfigurationAdmin.class);
@@ -651,7 +648,7 @@ public class AdminConsoleServiceTest {
     doThrow(new InvalidSyntaxException("", ""))
         .when(testConfigAdmin)
         .listConfigurations(anyString());
-    configAdmin.getConfigurations(TEST_FILTER_1);
+    assertThrows(IOException.class, () -> configAdmin.getConfigurations(TEST_FILTER_1));
   }
 
   /**
@@ -686,10 +683,9 @@ public class AdminConsoleServiceTest {
    * AdminConsoleService#getFactoryPidForLocation(String, String)} methods for the case where the
    * argument pid is null
    */
-  @Test(expected = Exception.class)
-  public void testGetFactoryPidNullParam() throws Exception {
-
-    configAdmin.getFactoryPid(null);
+  @Test
+  public void testGetFactoryPidNullParam() {
+    assertThrows(Exception.class, () -> configAdmin.getFactoryPid(null));
   }
 
   /**
@@ -732,10 +728,9 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = Exception.class)
-  public void testGetPropertiesNullParam() throws Exception {
-
-    configAdmin.getPropertiesForLocation(null, null);
+  @Test
+  public void testGetPropertiesNullParam() {
+    assertThrows(Exception.class, () -> configAdmin.getPropertiesForLocation(null, null));
   }
 
   /**
@@ -763,10 +758,9 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testSetBundleLocationNullLocation() throws Exception {
-
-    configAdmin.setBundleLocation(null, TEST_LOCATION);
+  @Test
+  public void testSetBundleLocationNullLocation() {
+    assertThrows(IOException.class, () -> configAdmin.setBundleLocation(null, TEST_LOCATION));
   }
 
   /**

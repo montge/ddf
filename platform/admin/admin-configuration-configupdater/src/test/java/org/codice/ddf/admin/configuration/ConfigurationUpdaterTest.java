@@ -18,6 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -180,7 +181,7 @@ public class ConfigurationUpdaterTest {
     assertThat(props.get(PASSWORD_ID), is(PASSWORD_ENCRYPTED));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testHandleStoreNoAppropriateStrategy() throws Exception {
     when(mockStrategy.getExtension()).thenReturn("not_tmp");
 
@@ -196,7 +197,7 @@ public class ConfigurationUpdaterTest {
     when(mockContext.getSanitizedProperties()).thenReturn(propsNew);
 
     installer.initialize(configs);
-    installer.handleStore(mockContext);
+    assertThrows(IllegalArgumentException.class, () -> installer.handleStore(mockContext));
   }
 
   /**
@@ -247,12 +248,12 @@ public class ConfigurationUpdaterTest {
         .setProperty(eq(FELIX_FILENAME), eq(fileB.getAbsoluteFile().toURI().toString()));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testHandleStoreConfigFileIllegallyChanged() throws Exception {
     when(mockContext.getServicePid()).thenReturn(PID_001);
     when(mockContext.getConfigFile()).thenReturn(fileA);
     installer.initialize(configs);
-    installer.handleStore(mockContext);
+    assertThrows(IllegalStateException.class, () -> installer.handleStore(mockContext));
 
     verifyNoInteractions(mockStrategy);
   }

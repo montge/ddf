@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
@@ -199,14 +200,14 @@ public class ApplicationServiceBeanTest {
    *
    * @throws Exception
    */
-  @Test(expected = ApplicationServiceException.class)
+  @Test
   public void testInitWhenRegisterMBeanThrowsInstanceAlreadyExistsException() throws Exception {
     ApplicationServiceBean serviceBean = newApplicationServiceBean();
 
     when(mBeanServer.registerMBean(any(Object.class), any(ObjectName.class)))
         .thenThrow(new NullPointerException());
 
-    serviceBean.init();
+    assertThrows(ApplicationServiceException.class, () -> serviceBean.init());
   }
 
   /**
@@ -229,13 +230,13 @@ public class ApplicationServiceBeanTest {
    *
    * @throws Exception
    */
-  @Test(expected = ApplicationServiceException.class)
+  @Test
   public void testDestroyWhenUnregisterMBeanThrowsInstanceNotFoundException() throws Exception {
     ApplicationServiceBean serviceBean = newApplicationServiceBean();
 
     doThrow(new InstanceNotFoundException()).when(mBeanServer).unregisterMBean(objectName);
 
-    serviceBean.destroy();
+    assertThrows(ApplicationServiceException.class, () -> serviceBean.destroy());
   }
 
   /**
@@ -244,7 +245,7 @@ public class ApplicationServiceBeanTest {
    *
    * @throws Exception
    */
-  @Test(expected = ApplicationServiceException.class)
+  @Test
   public void testDestroyWhenUnregisterMBeanThrowsMBeanRegistrationException() throws Exception {
     ApplicationServiceBean serviceBean = newApplicationServiceBean();
 
@@ -252,7 +253,7 @@ public class ApplicationServiceBeanTest {
         .when(mBeanServer)
         .unregisterMBean(any(ObjectName.class));
 
-    serviceBean.destroy();
+    assertThrows(ApplicationServiceException.class, () -> serviceBean.destroy());
   }
 
   @Test

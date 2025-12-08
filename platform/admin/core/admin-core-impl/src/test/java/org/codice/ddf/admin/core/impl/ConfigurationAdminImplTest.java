@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -249,7 +250,7 @@ public class ConfigurationAdminImplTest {
    *
    * @throws Exception
    */
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testEnableConfigurationsException() throws Exception {
     setUpListServices();
     when(testMTI.getObjectClassDefinition(TEST_FACTORY_PID, Locale.getDefault().toString()))
@@ -272,7 +273,10 @@ public class ConfigurationAdminImplTest {
     when(testConfig.getProperties()).thenReturn(testProperties);
     when(testFactoryConfig.getPid()).thenReturn(TEST_FACTORY_PID);
 
-    configurationAdminImpl.enableManagedServiceFactoryConfiguration(TEST_PID, testConfig);
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            configurationAdminImpl.enableManagedServiceFactoryConfiguration(TEST_PID, testConfig));
   }
 
   /**
