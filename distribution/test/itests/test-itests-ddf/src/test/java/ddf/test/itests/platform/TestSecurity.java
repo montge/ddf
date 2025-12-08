@@ -39,6 +39,7 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.data.Metacard;
@@ -434,22 +435,22 @@ public class TestSecurity extends AbstractIntegrationTest {
         .statusCode(equalTo(403));
   }
 
-  @Test(expected = SSLHandshakeException.class)
+  @Test
   public void testTLSv10IsDisabled() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog/query?q=*&src=local";
     HttpClient client = createHttpClient("TLSv1");
 
     HttpGet get = new HttpGet(url);
-    client.execute(get);
+    assertThrows(SSLHandshakeException.class, () -> client.execute(get));
   }
 
-  @Test(expected = SSLHandshakeException.class)
+  @Test
   public void testTLSv11IsDisabled() throws Exception {
     String url = SERVICE_ROOT.getUrl() + "/catalog/query?q=*&src=local";
     HttpClient client = createHttpClient("TLSv1.1");
 
     HttpGet get = new HttpGet(url);
-    client.execute(get);
+    assertThrows(SSLHandshakeException.class, () -> client.execute(get));
   }
 
   @Test
@@ -492,7 +493,7 @@ public class TestSecurity extends AbstractIntegrationTest {
     }
   }
 
-  @Test(expected = SSLHandshakeException.class)
+  @Test
   public void testDisallowedCipherSuites() throws Exception {
     String[] disallowedCipherSuites =
         new String[] {
@@ -547,7 +548,7 @@ public class TestSecurity extends AbstractIntegrationTest {
     HttpClient client = createHttpClient("TLSv1.2", disallowedCipherSuites, credentialsProvider);
 
     HttpGet get = new HttpGet(url);
-    client.execute(get);
+    assertThrows(SSLHandshakeException.class, () -> client.execute(get));
   }
 
   @Test
