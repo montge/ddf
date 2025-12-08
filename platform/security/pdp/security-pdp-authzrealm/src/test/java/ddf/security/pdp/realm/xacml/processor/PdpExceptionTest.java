@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import org.junit.Test;
@@ -150,9 +151,13 @@ public class PdpExceptionTest {
     }
   }
 
-  @Test(expected = PdpException.class)
-  public void testExceptionPropagation() throws PdpException {
-    methodThatThrowsPdpException();
+  @Test
+  public void testExceptionPropagation() {
+    assertThrows(
+        PdpException.class,
+        () -> {
+          methodThatThrowsPdpException();
+        });
   }
 
   @Test

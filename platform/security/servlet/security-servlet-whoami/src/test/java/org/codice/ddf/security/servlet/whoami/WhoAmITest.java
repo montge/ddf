@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -81,22 +82,34 @@ public class WhoAmITest {
     ThreadContext.unbindSubject();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithNullSubjectThrowsException() {
-    new WhoAmI(null, subjectOperations);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new WhoAmI(null, subjectOperations);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithNullPrincipalsThrowsException() {
-    when(subject.getPrincipals()).thenReturn(null);
-    new WhoAmI(subject, subjectOperations);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          when(subject.getPrincipals()).thenReturn(null);
+          new WhoAmI(subject, subjectOperations);
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testConstructorWithEmptyAssertionsThrowsException() {
-    when(subject.getPrincipals()).thenReturn(principals);
-    when(principals.byType(SecurityAssertion.class)).thenReturn(Collections.emptySet());
-    new WhoAmI(subject, subjectOperations);
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          when(subject.getPrincipals()).thenReturn(principals);
+          when(principals.byType(SecurityAssertion.class)).thenReturn(Collections.emptySet());
+          new WhoAmI(subject, subjectOperations);
+        });
   }
 
   @Test

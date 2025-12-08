@@ -16,6 +16,7 @@ package ddf.security.pdp.realm.xacml.processor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
@@ -71,14 +72,22 @@ public class XacmlClientEnhancedTest {
     temporaryFolder.delete();
   }
 
-  @Test(expected = PdpException.class)
-  public void testConstructorWithNullDirectory() throws PdpException {
-    new XacmlClient(null, new XmlParser(), securityLogger);
+  @Test
+  public void testConstructorWithNullDirectory() {
+    assertThrows(
+        PdpException.class,
+        () -> {
+          new XacmlClient(null, new XmlParser(), securityLogger);
+        });
   }
 
-  @Test(expected = PdpException.class)
-  public void testConstructorWithEmptyDirectory() throws PdpException {
-    new XacmlClient("", new XmlParser(), securityLogger);
+  @Test
+  public void testConstructorWithEmptyDirectory() {
+    assertThrows(
+        PdpException.class,
+        () -> {
+          new XacmlClient("", new XmlParser(), securityLogger);
+        });
   }
 
   @Test

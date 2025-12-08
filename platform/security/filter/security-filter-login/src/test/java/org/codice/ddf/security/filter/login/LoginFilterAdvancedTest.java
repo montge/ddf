@@ -18,6 +18,7 @@ import static ddf.security.SecurityConstants.SECURITY_JAVA_SUBJECT;
 import static ddf.security.SecurityConstants.SECURITY_TOKEN_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -200,14 +201,18 @@ public class LoginFilterAdvancedTest {
 
   // ==================== Security Manager Tests ====================
 
-  @Test(expected = AuthenticationException.class)
-  public void testNullSecurityManagerThrowsException() throws Exception {
-    // Test that null security manager throws exception
-    loginFilter.setSecurityManager(null);
-    HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
-    when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
+  @Test
+  public void testNullSecurityManagerThrowsException() {
+    assertThrows(
+        AuthenticationException.class,
+        () -> {
+          // Test that null security manager throws exception
+          loginFilter.setSecurityManager(null);
+          HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
+          when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
 
-    loginFilter.doFilter(request, response, filterChain);
+          loginFilter.doFilter(request, response, filterChain);
+        });
   }
 
   @Test
@@ -311,19 +316,23 @@ public class LoginFilterAdvancedTest {
     verify(sessionFactory, never()).getOrCreateSession(any());
   }
 
-  @Test(expected = AuthenticationException.class)
-  public void testSessionFactoryNullThrowsException() throws Exception {
-    // Test that null session factory throws exception when session access enabled
-    loginFilter.setSessionFactory(null);
-    when(contextPolicyManager.getSessionAccess()).thenReturn(true);
-    HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
-    when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
-    when(securityManager.getSubject(authToken)).thenReturn(subject);
-    when(subject.getPrincipals()).thenReturn(principalCollection);
-    when(principalCollection.byType(SecurityAssertion.class))
-        .thenReturn(Collections.singletonList(securityAssertion));
+  @Test
+  public void testSessionFactoryNullThrowsException() {
+    assertThrows(
+        AuthenticationException.class,
+        () -> {
+          // Test that null session factory throws exception when session access enabled
+          loginFilter.setSessionFactory(null);
+          when(contextPolicyManager.getSessionAccess()).thenReturn(true);
+          HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
+          when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
+          when(securityManager.getSubject(authToken)).thenReturn(subject);
+          when(subject.getPrincipals()).thenReturn(principalCollection);
+          when(principalCollection.byType(SecurityAssertion.class))
+              .thenReturn(Collections.singletonList(securityAssertion));
 
-    loginFilter.doFilter(request, response, filterChain);
+          loginFilter.doFilter(request, response, filterChain);
+        });
   }
 
   // ==================== Java Subject Tests ====================

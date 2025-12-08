@@ -14,6 +14,7 @@
 package ddf.security.pdp.realm.xacml.processor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -377,73 +378,81 @@ public class XacmlClientTest {
     FileUtils.deleteDirectory(policyDir);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void testIllegalStateException() throws Exception {
-    LOGGER.debug("\n\n\n##### testExecption");
+    assertThrows(
+        IllegalStateException.class,
+        () -> {
+          LOGGER.debug("\n\n\n##### testExecption");
 
-    File policyDir = folder.newFolder("tempDir");
+          File policyDir = folder.newFolder("tempDir");
 
-    // Perform Test
-    XacmlClient pdp =
-        new XacmlClient(policyDir.getCanonicalPath(), null, mock(SecurityLogger.class));
+          // Perform Test
+          XacmlClient pdp =
+              new XacmlClient(policyDir.getCanonicalPath(), null, mock(SecurityLogger.class));
 
-    File srcFile =
-        new File(
-            projectHome + File.separator + RELATIVE_POLICIES_DIR + File.separator + POLICY_FILE);
-    FileUtils.copyFileToDirectory(srcFile, policyDir);
+          File srcFile =
+              new File(
+                  projectHome
+                      + File.separator
+                      + RELATIVE_POLICIES_DIR
+                      + File.separator
+                      + POLICY_FILE);
+          FileUtils.copyFileToDirectory(srcFile, policyDir);
 
-    RequestType xacmlRequestType = new RequestType();
-    xacmlRequestType.setCombinedDecision(false);
-    xacmlRequestType.setReturnPolicyIdList(false);
+          RequestType xacmlRequestType = new RequestType();
+          xacmlRequestType.setCombinedDecision(false);
+          xacmlRequestType.setReturnPolicyIdList(false);
 
-    AttributesType actionAttributes = new AttributesType();
-    actionAttributes.setCategory(ACTION_CATEGORY);
-    AttributeType actionAttribute = new AttributeType();
-    actionAttribute.setAttributeId(ACTION_ID);
-    actionAttribute.setIncludeInResult(false);
-    AttributeValueType actionValue = new AttributeValueType();
-    actionValue.setDataType(STRING_DATA_TYPE);
-    actionValue.getContent().add(QUERY_ACTION);
-    actionAttribute.getAttributeValue().add(actionValue);
-    actionAttributes.getAttribute().add(actionAttribute);
+          AttributesType actionAttributes = new AttributesType();
+          actionAttributes.setCategory(ACTION_CATEGORY);
+          AttributeType actionAttribute = new AttributeType();
+          actionAttribute.setAttributeId(ACTION_ID);
+          actionAttribute.setIncludeInResult(false);
+          AttributeValueType actionValue = new AttributeValueType();
+          actionValue.setDataType(STRING_DATA_TYPE);
+          actionValue.getContent().add(QUERY_ACTION);
+          actionAttribute.getAttributeValue().add(actionValue);
+          actionAttributes.getAttribute().add(actionAttribute);
 
-    AttributesType subjectAttributes = new AttributesType();
-    subjectAttributes.setCategory(SUBJECT_CATEGORY);
-    AttributeType subjectAttribute = new AttributeType();
-    subjectAttribute.setAttributeId(SUBJECT_ID);
-    subjectAttribute.setIncludeInResult(false);
-    AttributeValueType subjectValue = new AttributeValueType();
-    subjectValue.setDataType(STRING_DATA_TYPE);
-    subjectValue.getContent().add(TEST_USER_1);
-    subjectAttribute.getAttributeValue().add(subjectValue);
-    subjectAttributes.getAttribute().add(subjectAttribute);
+          AttributesType subjectAttributes = new AttributesType();
+          subjectAttributes.setCategory(SUBJECT_CATEGORY);
+          AttributeType subjectAttribute = new AttributeType();
+          subjectAttribute.setAttributeId(SUBJECT_ID);
+          subjectAttribute.setIncludeInResult(false);
+          AttributeValueType subjectValue = new AttributeValueType();
+          subjectValue.setDataType(STRING_DATA_TYPE);
+          subjectValue.getContent().add(TEST_USER_1);
+          subjectAttribute.getAttributeValue().add(subjectValue);
+          subjectAttributes.getAttribute().add(subjectAttribute);
 
-    AttributeType roleAttribute = new AttributeType();
-    roleAttribute.setAttributeId(ROLE_CLAIM);
-    roleAttribute.setIncludeInResult(false);
-    AttributeValueType roleValue = new AttributeValueType();
-    roleValue.setDataType(STRING_DATA_TYPE);
-    roleValue.getContent().add(ROLE);
-    roleAttribute.getAttributeValue().add(roleValue);
-    subjectAttributes.getAttribute().add(roleAttribute);
+          AttributeType roleAttribute = new AttributeType();
+          roleAttribute.setAttributeId(ROLE_CLAIM);
+          roleAttribute.setIncludeInResult(false);
+          AttributeValueType roleValue = new AttributeValueType();
+          roleValue.setDataType(STRING_DATA_TYPE);
+          roleValue.getContent().add(ROLE);
+          roleAttribute.getAttributeValue().add(roleValue);
+          subjectAttributes.getAttribute().add(roleAttribute);
 
-    AttributesType categoryAttributes = new AttributesType();
-    categoryAttributes.setCategory(PERMISSIONS_CATEGORY);
-    AttributeType citizenshipAttribute = new AttributeType();
-    citizenshipAttribute.setAttributeId(CITIZENSHIP_ATTRIBUTE);
-    citizenshipAttribute.setIncludeInResult(false);
-    AttributeValueType citizenshipValue = new AttributeValueType();
-    citizenshipValue.setDataType(STRING_DATA_TYPE);
-    citizenshipValue.getContent().add(US_COUNTRY);
-    citizenshipAttribute.getAttributeValue().add(citizenshipValue);
-    categoryAttributes.getAttribute().add(citizenshipAttribute);
+          AttributesType categoryAttributes = new AttributesType();
+          categoryAttributes.setCategory(PERMISSIONS_CATEGORY);
+          AttributeType citizenshipAttribute = new AttributeType();
+          citizenshipAttribute.setAttributeId(CITIZENSHIP_ATTRIBUTE);
+          citizenshipAttribute.setIncludeInResult(false);
+          AttributeValueType citizenshipValue = new AttributeValueType();
+          citizenshipValue.setDataType(STRING_DATA_TYPE);
+          citizenshipValue.getContent().add(US_COUNTRY);
+          citizenshipAttribute.getAttributeValue().add(citizenshipValue);
+          categoryAttributes.getAttribute().add(citizenshipAttribute);
 
-    xacmlRequestType.getAttributes().add(actionAttributes);
-    xacmlRequestType.getAttributes().add(subjectAttributes);
-    xacmlRequestType.getAttributes().add(categoryAttributes);
+          xacmlRequestType.getAttributes().add(actionAttributes);
+          xacmlRequestType.getAttributes().add(subjectAttributes);
+          xacmlRequestType.getAttributes().add(categoryAttributes);
 
-    // Perform Test
-    pdp.evaluate(xacmlRequestType);
+          // Perform Test
+          pdp.evaluate(xacmlRequestType);
+        });
   }
 
   @After

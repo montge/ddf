@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.service.SecurityServiceException;
@@ -98,10 +99,14 @@ public class LogoutServiceTest {
     assertThat(result, containsString("LOCAL"));
   }
 
-  @Test(expected = SecurityServiceException.class)
-  public void testGetActionProvidersThrowsExceptionOnError() throws SecurityServiceException {
-    logoutService.setThrowException(true);
-    logoutService.getActionProviders(mockRequest, mockResponse);
+  @Test
+  public void testGetActionProvidersThrowsExceptionOnError() {
+    assertThrows(
+        SecurityServiceException.class,
+        () -> {
+          logoutService.setThrowException(true);
+          logoutService.getActionProviders(mockRequest, mockResponse);
+        });
   }
 
   @Test

@@ -17,6 +17,7 @@ import static ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -90,15 +91,19 @@ public class LoginFilterSecurityExceptionTest {
     when(requestMock.getRequestURI()).thenReturn("/test/path");
   }
 
-  @Test(expected = AuthenticationException.class)
-  public void testSecurityManagerNull() throws Exception {
-    loginFilter.setSecurityManager(null);
+  @Test
+  public void testSecurityManagerNull() {
+    assertThrows(
+        AuthenticationException.class,
+        () -> {
+          loginFilter.setSecurityManager(null);
 
-    HandlerResult result =
-        new HandlerResultImpl(HandlerResult.Status.COMPLETED, authenticationTokenMock);
-    when(requestMock.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
+          HandlerResult result =
+              new HandlerResultImpl(HandlerResult.Status.COMPLETED, authenticationTokenMock);
+          when(requestMock.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
 
-    loginFilter.doFilter(requestMock, responseMock, filterChainMock);
+          loginFilter.doFilter(requestMock, responseMock, filterChainMock);
+        });
   }
 
   @Test

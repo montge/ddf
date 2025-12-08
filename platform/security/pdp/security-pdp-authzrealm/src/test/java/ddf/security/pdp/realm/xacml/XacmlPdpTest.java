@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.audit.SecurityLogger;
@@ -136,16 +137,24 @@ public class XacmlPdpTest {
     temporaryFolder.delete();
   }
 
-  @Test(expected = PdpException.class)
-  public void testBadSetupNull() throws PdpException {
-    XacmlPdp xacmlPdp =
-        new XacmlPdp(null, new XmlParser(), new ArrayList<>(), mock(SecurityLogger.class));
+  @Test
+  public void testBadSetupNull() {
+    assertThrows(
+        PdpException.class,
+        () -> {
+          XacmlPdp xacmlPdp =
+              new XacmlPdp(null, new XmlParser(), new ArrayList<>(), mock(SecurityLogger.class));
+        });
   }
 
-  @Test(expected = PdpException.class)
-  public void testBadSetupEmpty() throws PdpException {
-    XacmlPdp xacmlPdp =
-        new XacmlPdp("", new XmlParser(), new ArrayList<>(), mock(SecurityLogger.class));
+  @Test
+  public void testBadSetupEmpty() {
+    assertThrows(
+        PdpException.class,
+        () -> {
+          XacmlPdp xacmlPdp =
+              new XacmlPdp("", new XmlParser(), new ArrayList<>(), mock(SecurityLogger.class));
+        });
   }
 
   @Test

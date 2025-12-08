@@ -18,6 +18,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.codice.ddf.admin.insecure.defaults.service.DefaultUsersDeletionScheduler.getTempTimestampFilePath;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -103,13 +104,17 @@ public class DefaultUsersDeletionSchedulerTest {
     assertNull("Incorrect cron calculation.", actual);
   }
 
-  @Test(expected = DateTimeParseException.class)
+  @Test
   public void writeToFileNumberFormatException() throws Exception {
-    createTempFile();
-    writeTimestamp("Incorrect type");
+    assertThrows(
+        DateTimeParseException.class,
+        () -> {
+          createTempFile();
+          writeTimestamp("Incorrect type");
 
-    String actual = scheduler.getCronOrDelete();
-    assertNull("Incorrect error handling.", actual);
+          String actual = scheduler.getCronOrDelete();
+          assertNull("Incorrect error handling.", actual);
+        });
   }
 
   @Test
