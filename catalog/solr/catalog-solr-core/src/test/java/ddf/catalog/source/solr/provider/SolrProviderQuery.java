@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -271,47 +272,49 @@ public class SolrProviderQuery {
     assertEquals("Tampa should be found", 1, sourceResponse.getResults().size());
   }
 
-  @Test(expected = IngestException.class)
-  public void testDeleteNullAttribute() throws IngestException {
+  @Test
+  public void testDeleteNullAttribute() {
+    assertThrows(
+        IngestException.class,
+        () ->
+            provider.delete(
+                new DeleteRequest() {
 
-    provider.delete(
-        new DeleteRequest() {
+                  @Override
+                  public boolean hasProperties() {
+                    return false;
+                  }
 
-          @Override
-          public boolean hasProperties() {
-            return false;
-          }
+                  @Override
+                  public Serializable getPropertyValue(String name) {
+                    return null;
+                  }
 
-          @Override
-          public Serializable getPropertyValue(String name) {
-            return null;
-          }
+                  @Override
+                  public Set<String> getPropertyNames() {
+                    return null;
+                  }
 
-          @Override
-          public Set<String> getPropertyNames() {
-            return null;
-          }
+                  @Override
+                  public Map<String, Serializable> getProperties() {
+                    return null;
+                  }
 
-          @Override
-          public Map<String, Serializable> getProperties() {
-            return null;
-          }
+                  @Override
+                  public boolean containsPropertyName(String name) {
+                    return false;
+                  }
 
-          @Override
-          public boolean containsPropertyName(String name) {
-            return false;
-          }
+                  @Override
+                  public List<? extends Serializable> getAttributeValues() {
+                    return null;
+                  }
 
-          @Override
-          public List<? extends Serializable> getAttributeValues() {
-            return null;
-          }
-
-          @Override
-          public String getAttributeName() {
-            return null;
-          }
-        });
+                  @Override
+                  public String getAttributeName() {
+                    return null;
+                  }
+                }));
   }
 
   @Test
@@ -1414,7 +1417,7 @@ public class SolrProviderQuery {
         provider);
   }
 
-  @Test(expected = UnsupportedQueryException.class)
+  @Test
   public void testPropertyIsEqualToCaseSensitive() throws Exception {
     deleteAll(provider);
 
@@ -1424,7 +1427,7 @@ public class SolrProviderQuery {
             filterFactory.property(Metacard.TITLE), filterFactory.literal("Mary"), false);
 
     // Expect an exception
-    queryAndVerifyCount(0, filter, provider);
+    assertThrows(UnsupportedQueryException.class, () -> queryAndVerifyCount(0, filter, provider));
   }
 
   /** Tests the offset aka start index (startIndex) functionality. */

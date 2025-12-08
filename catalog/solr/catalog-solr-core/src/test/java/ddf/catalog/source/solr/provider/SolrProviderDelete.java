@@ -24,8 +24,8 @@ import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
@@ -126,14 +126,11 @@ public class SolrProviderDelete {
   }
 
   /** Tests what happens when the whole request is null. */
-  @Test(expected = IngestException.class)
-  public void testDeleteNull() throws IngestException, UnsupportedQueryException {
-
+  @Test
+  public void testDeleteNull() throws UnsupportedQueryException {
     deleteAll(provider);
 
-    provider.delete(null);
-
-    fail();
+    assertThrows(IngestException.class, () -> provider.delete(null));
   }
 
   /** Tests the provider will allow you to delete nothing. */

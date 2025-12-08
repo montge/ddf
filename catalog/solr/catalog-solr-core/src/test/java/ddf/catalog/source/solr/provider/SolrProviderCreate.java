@@ -28,8 +28,8 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
@@ -152,20 +152,18 @@ public class SolrProviderCreate {
   }
 
   /** Testing that you cannot instantiate with a null Solr client. */
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSolrClientNull() {
-    new SolrCatalogProviderImpl(null, null, null, null);
+    assertThrows(
+        IllegalArgumentException.class, () -> new SolrCatalogProviderImpl(null, null, null, null));
   }
 
   /** Tests what happens when the whole request is null. */
-  @Test(expected = IngestException.class)
-  public void testCreateNull() throws IngestException, UnsupportedQueryException {
-
+  @Test
+  public void testCreateNull() throws UnsupportedQueryException {
     deleteAll(provider);
 
-    provider.create(null);
-
-    fail();
+    assertThrows(IngestException.class, () -> provider.create(null));
   }
 
   @Test
@@ -297,10 +295,8 @@ public class SolrProviderCreate {
     assertEquals(MASKED_ID, mResult.getSourceId());
   }
 
-  @Test(expected = IngestException.class)
-  public void testCreateOperationWithSourceIdNoId()
-      throws IngestException, UnsupportedQueryException {
-
+  @Test
+  public void testCreateOperationWithSourceIdNoId() throws UnsupportedQueryException {
     deleteAll(provider);
 
     MockMetacard metacard = new MockMetacard(Library.getFlagstaffRecord());
@@ -313,7 +309,7 @@ public class SolrProviderCreate {
     metacard.setEffectiveDate(oneDayAgo);
     metacard.setModifiedDate(oneDayAgo);
 
-    create(metacard, provider);
+    assertThrows(IngestException.class, () -> create(metacard, provider));
   }
 
   @Test
