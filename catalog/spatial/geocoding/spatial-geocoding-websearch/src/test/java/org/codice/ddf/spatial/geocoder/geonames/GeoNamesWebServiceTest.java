@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -151,11 +152,11 @@ public class GeoNamesWebServiceTest {
     assertThat(countryCode.get(), is("AND"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testGetCountryCodeNoLocation() {
     prepareWebClient(COUNRTY_CODE_QUERY_TEST_RESPONSE);
 
-    webServiceSpy.getCountryCode(null, 10);
+    assertThrows(IllegalArgumentException.class, () -> webServiceSpy.getCountryCode(null, 10));
   }
 
   @Test

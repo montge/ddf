@@ -28,6 +28,7 @@ import de.micromata.opengis.kml.v_2_2_0.MultiGeometry;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -151,14 +152,15 @@ public class MetacardToKmlTest {
     assertThat(kmlGeoPolygon.getInnerBoundaryIs(), hasSize(0));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void getKmlGeoFromJtsGeoError() throws CatalogTransformerException {
+  @Test
+  public void getKmlGeoFromJtsGeoError() {
     final org.locationtech.jts.geom.Geometry jtsGeo =
         Mockito.mock(org.locationtech.jts.geom.Geometry.class);
 
     doReturn("UNKNOWN").when(jtsGeo).getGeometryType();
 
-    MetacardToKml.getKmlGeoFromJtsGeo(jtsGeo);
+    Assert.assertThrows(
+        CatalogTransformerException.class, () -> MetacardToKml.getKmlGeoFromJtsGeo(jtsGeo));
   }
 
   @Test
@@ -177,8 +179,9 @@ public class MetacardToKmlTest {
     assertThat(coordinate2.y, is(20.0));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void getJtsGeoFromWktInvalidWkt() throws CatalogTransformerException {
-    MetacardToKml.getJtsGeoFromWkt("x");
+  @Test
+  public void getJtsGeoFromWktInvalidWkt() {
+    Assert.assertThrows(
+        CatalogTransformerException.class, () -> MetacardToKml.getJtsGeoFromWkt("x"));
   }
 }

@@ -27,6 +27,7 @@ import ddf.catalog.data.impl.MetacardTypeImpl;
 import ddf.catalog.transform.CatalogTransformerException;
 import java.io.InputStream;
 import java.util.HashSet;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestKmzInputTransformer {
@@ -90,11 +91,12 @@ public class TestKmzInputTransformer {
     assertThat(multipleKmlMetacard.getLocation(), equalTo(singleKmlMetacard.getLocation()));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testKmzWithoutKmlInside() throws Exception {
+  @Test
+  public void testKmzWithoutKmlInside() {
     KmzInputTransformer kmzInputTransformer =
         new KmzInputTransformer(mock(KmlInputTransformer.class));
     InputStream stream = TestKmzInputTransformer.class.getResourceAsStream("/no_kml_inside.kmz");
-    kmzInputTransformer.transform(stream);
+    Assert.assertThrows(
+        CatalogTransformerException.class, () -> kmzInputTransformer.transform(stream));
   }
 }

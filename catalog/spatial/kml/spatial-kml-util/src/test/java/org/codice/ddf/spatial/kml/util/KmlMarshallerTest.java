@@ -31,6 +31,7 @@ import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -65,9 +66,9 @@ public class KmlMarshallerTest {
     assertXpathEvaluatesTo("a", "//m:Placemark/m:name", kmlString);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void marshallNull() {
-    kmlMarshaller.marshal(null);
+    Assert.assertThrows(IllegalArgumentException.class, () -> kmlMarshaller.marshal(null));
   }
 
   @Test
@@ -79,20 +80,15 @@ public class KmlMarshallerTest {
     assertThat(feature.getName(), is("Simple placemark"));
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void unmarshallNullStream() {
-    final Kml kml = kmlMarshaller.unmarshal(null).get();
-    final Feature feature = kml.getFeature();
-
-    assertThat(feature.getName(), is("Simple placemark"));
+    Assert.assertThrows(NoSuchElementException.class, () -> kmlMarshaller.unmarshal(null).get());
   }
 
-  @Test(expected = NoSuchElementException.class)
+  @Test
   public void unmarshallEmptyStream() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes(UTF_8));
-    final Kml kml = kmlMarshaller.unmarshal(inputStream).get();
-    final Feature feature = kml.getFeature();
-
-    assertThat(feature.getName(), is("Simple placemark"));
+    Assert.assertThrows(
+        NoSuchElementException.class, () -> kmlMarshaller.unmarshal(inputStream).get());
   }
 }

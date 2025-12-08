@@ -62,6 +62,7 @@ import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -153,10 +154,12 @@ public class KMLTransformerImplTest {
     XMLUnit.setXpathNamespaceContext(ctx);
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testPerformDefaultTransformationNoLocation() throws CatalogTransformerException {
+  @Test
+  public void testPerformDefaultTransformationNoLocation() {
     Metacard metacard = createMockMetacard();
-    kmlTransformer.performDefaultTransformation(metacard);
+    Assert.assertThrows(
+        CatalogTransformerException.class,
+        () -> kmlTransformer.performDefaultTransformation(metacard));
   }
 
   @Test

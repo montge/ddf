@@ -17,6 +17,7 @@ import static org.codice.ddf.spatial.geocoding.GeoEntryExtractor.ExtractionCallb
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -129,16 +130,18 @@ public class GeoNamesFileExtractorTest extends TestBase {
     }
   }
 
-  @Test(expected = GeoEntryExtractionException.class)
-  public void testExtractFromUnsupportedFileType()
-      throws GeoEntryExtractionException, GeoNamesRemoteDownloadException {
-    geoNamesFileExtractor.getGeoEntries(UNSUPPORTED_FILE_PATH, null);
+  @Test
+  public void testExtractFromUnsupportedFileType() {
+    assertThrows(
+        GeoEntryExtractionException.class,
+        () -> geoNamesFileExtractor.getGeoEntries(UNSUPPORTED_FILE_PATH, null));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testNullExtractionCallback()
-      throws GeoEntryExtractionException, GeoNamesRemoteDownloadException {
-    geoNamesFileExtractor.pushGeoEntriesToExtractionCallback(VALID_TEXT_FILE_PATH, null);
+  @Test
+  public void testNullExtractionCallback() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> geoNamesFileExtractor.pushGeoEntriesToExtractionCallback(VALID_TEXT_FILE_PATH, null));
   }
 
   @Test
@@ -150,36 +153,41 @@ public class GeoNamesFileExtractorTest extends TestBase {
     testFileExtractionStreaming("AU");
   }
 
-  @Test(expected = GeoEntryExtractionException.class)
-  public void testExtractFromMockWebConnectionInvalidFileExtension()
-      throws GeoEntryExtractionException, GeoNamesRemoteDownloadException, IOException {
+  @Test
+  public void testExtractFromMockWebConnectionInvalidFileExtension() throws IOException {
     setMockConnection(404, 12345);
     setMockInputStream("/geonames/valid.txt");
-    geoNamesFileExtractor.getGeoEntries("valid", mock(ProgressCallback.class));
+    assertThrows(
+        GeoEntryExtractionException.class,
+        () -> geoNamesFileExtractor.getGeoEntries("valid", mock(ProgressCallback.class)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testExtractFromMockWebConnectionNullCallback()
-      throws GeoEntryExtractionException, GeoNamesRemoteDownloadException, IOException {
+  @Test
+  public void testExtractFromMockWebConnectionNullCallback() throws IOException {
     setMockConnection(404, 12345);
     setMockInputStream("/geonames/nonexistentfile.txt");
-    geoNamesFileExtractor.pushGeoEntriesToExtractionCallback("nonexistentfile.txt", null);
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            geoNamesFileExtractor.pushGeoEntriesToExtractionCallback("nonexistentfile.txt", null));
   }
 
-  @Test(expected = GeoNamesRemoteDownloadException.class)
-  public void testExtractFromMockWebConnectionNonExistentFile()
-      throws GeoEntryExtractionException, GeoNamesRemoteDownloadException, IOException {
+  @Test
+  public void testExtractFromMockWebConnectionNonExistentFile() throws IOException {
     setMockConnection(404, 12345);
     setMockInputStream("/geonames/s.txt");
-    geoNamesFileExtractor.getGeoEntries("s", mock(ProgressCallback.class));
+    assertThrows(
+        GeoNamesRemoteDownloadException.class,
+        () -> geoNamesFileExtractor.getGeoEntries("s", mock(ProgressCallback.class)));
   }
 
-  @Test(expected = GeoNamesRemoteDownloadException.class)
-  public void testExtractFromMockWebConnectionInvalidStreamForFile()
-      throws GeoEntryExtractionException, GeoNamesRemoteDownloadException, IOException {
+  @Test
+  public void testExtractFromMockWebConnectionInvalidStreamForFile() {
     setMockConnection(404, 12345);
     doReturn(null).when(geoNamesFileExtractor).getUrlInputStreamFromWebClient();
-    geoNamesFileExtractor.getGeoEntries("valid", mock(ProgressCallback.class));
+    assertThrows(
+        GeoNamesRemoteDownloadException.class,
+        () -> geoNamesFileExtractor.getGeoEntries("valid", mock(ProgressCallback.class)));
   }
 
   @Test
@@ -192,13 +200,17 @@ public class GeoNamesFileExtractorTest extends TestBase {
     verifyGeoEntryList(entries);
   }
 
-  @Test(expected = GeoNamesRemoteDownloadException.class)
-  public void testDownloadFailureFromUrl() throws Exception {
+  @Test
+  public void testDownloadFailureFromUrl() {
     setMockConnection(404, 102938437);
     doThrow(GeoNamesRemoteDownloadException.class)
         .when(geoNamesFileExtractor)
         .getUrlInputStreamFromWebClient();
-    geoNamesFileExtractor.getGeoEntries("http://fake.com/file.zip", mock(ProgressCallback.class));
+    assertThrows(
+        GeoNamesRemoteDownloadException.class,
+        () ->
+            geoNamesFileExtractor.getGeoEntries(
+                "http://fake.com/file.zip", mock(ProgressCallback.class)));
   }
 
   @Test

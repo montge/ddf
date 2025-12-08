@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,11 +59,12 @@ public class KmlInputTransformerTest {
         new KmlInputTransformer(new MetacardTypeImpl("kmlMetacardType", metacardTypes));
   }
 
-  @Test(expected = CatalogTransformerException.class)
-  public void testTransformBadKmlThrowsException() throws Exception {
+  @Test
+  public void testTransformBadKmlThrowsException() {
     InputStream stream = this.getClass().getResourceAsStream("/notKml.kml");
 
-    kmlInputTransformer.transform(stream);
+    Assert.assertThrows(
+        CatalogTransformerException.class, () -> kmlInputTransformer.transform(stream));
   }
 
   @Test
@@ -83,11 +85,12 @@ public class KmlInputTransformerTest {
     assertThat(metacard.getId(), is(equalTo(id)));
   }
 
-  @Test(expected = CatalogTransformerException.class)
+  @Test
   public void transformerThrowsCatalogTransformerExceptionOnIOException() throws Exception {
     InputStream inputStream = mock(InputStream.class);
     doThrow(IOException.class).when(inputStream).read(any(byte[].class));
 
-    kmlInputTransformer.transform(inputStream);
+    Assert.assertThrows(
+        CatalogTransformerException.class, () -> kmlInputTransformer.transform(inputStream));
   }
 }

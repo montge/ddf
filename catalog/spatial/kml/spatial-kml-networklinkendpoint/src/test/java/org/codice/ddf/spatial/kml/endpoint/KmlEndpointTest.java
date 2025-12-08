@@ -50,6 +50,7 @@ import org.apache.commons.io.IOUtils;
 import org.codice.ddf.branding.BrandingRegistry;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -217,10 +218,10 @@ public class KmlEndpointTest {
   }
 
   /** Tests missing icon in the default resource */
-  @Test(expected = WebApplicationException.class)
+  @Test
   public void testExceptionGetIconLocation() {
     KmlEndpoint kmlEndpoint = new KmlEndpoint(mockBranding, mockFramework);
-    kmlEndpoint.getIcon(null, JET_ICON);
+    Assert.assertThrows(WebApplicationException.class, () -> kmlEndpoint.getIcon(null, JET_ICON));
   }
 
   @Test
@@ -232,10 +233,10 @@ public class KmlEndpointTest {
   }
 
   /** Tests missing icon in the directory location */
-  @Test(expected = WebApplicationException.class)
+  @Test
   public void testExceptionGetCustomIconLocation() {
     KmlEndpoint kmlEndpoint = new KmlEndpoint(mockBranding, mockFramework);
     kmlEndpoint.setIconLoc(bomberPath);
-    kmlEndpoint.getIcon(null, JET_ICON);
+    Assert.assertThrows(WebApplicationException.class, () -> kmlEndpoint.getIcon(null, JET_ICON));
   }
 }
