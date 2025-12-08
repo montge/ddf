@@ -806,18 +806,22 @@ public class AdminConsoleServiceTest {
     assertThat(((Integer[]) captor.getValue().get(arrayInteger)).length, equalTo(0));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testSanitizeUIConfiguration() throws Exception {
-    AdminConsoleService configAdmin = getConfigAdmin();
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          AdminConsoleService configAdmin = getConfigAdmin();
 
-    // Initialize illegal values.
-    Map<String, Object> currentProps = new Hashtable<>();
-    currentProps.put("color", "yellow;");
-    currentProps.put(
-        "background",
-        "black; float: left; text-align: center; width: 120px; border: 1px solid gray; margin: 4px; padding: 6px;");
+          // Initialize illegal values.
+          Map<String, Object> currentProps = new Hashtable<>();
+          currentProps.put("color", "yellow;");
+          currentProps.put(
+              "background",
+              "black; float: left; text-align: center; width: 120px; border: 1px solid gray; margin: 4px; padding: 6px;");
 
-    configAdmin.update(UI_CONFIG_PID, currentProps);
+          configAdmin.update(UI_CONFIG_PID, currentProps);
+        });
   }
 
   @Test
@@ -962,12 +966,15 @@ public class AdminConsoleServiceTest {
    * AdminConsoleService#updateForLocation(String, String, Map)} methods for the case where the pid
    * argument is null
    */
-  @Test(expected = IllegalArgumentException.class)
-  public void testUpdateNullPid() throws Exception {
+  @Test
+  public void testUpdateNullPid() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          Map<String, Object> testConfigTable = new Hashtable<>();
 
-    Map<String, Object> testConfigTable = new Hashtable<>();
-
-    configAdmin.update(null, testConfigTable);
+          configAdmin.update(null, testConfigTable);
+        });
   }
 
   /**
@@ -977,10 +984,13 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IllegalArgumentException.class)
-  public void testUpdateNullConfigTable() throws Exception {
-
-    configAdmin.update(TEST_PID, null);
+  @Test
+  public void testUpdateNullConfigTable() {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          configAdmin.update(TEST_PID, null);
+        });
   }
 
   /**
@@ -1006,10 +1016,13 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testDisableConfigurationsNoConfig() throws Exception {
-
-    configAdmin.disableConfiguration(TEST_PID);
+  @Test
+  public void testDisableConfigurationsNoConfig() {
+    assertThrows(
+        IOException.class,
+        () -> {
+          configAdmin.disableConfiguration(TEST_PID);
+        });
   }
 
   /**
@@ -1018,10 +1031,13 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testDisableConfigurationsNullParam() throws Exception {
-
-    configAdmin.disableConfiguration(null);
+  @Test
+  public void testDisableConfigurationsNullParam() {
+    assertThrows(
+        IOException.class,
+        () -> {
+          configAdmin.disableConfiguration(null);
+        });
   }
 
   /**
@@ -1030,21 +1046,25 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = Exception.class)
-  public void testDisableConfigurationsAlreadyDisabled() throws Exception {
-    org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
-        mock(org.osgi.service.cm.ConfigurationAdmin.class);
-    AdminConsoleService configAdmin =
-        new AdminConsoleService(testConfigAdmin, configurationAdminImpl);
+  @Test
+  public void testDisableConfigurationsAlreadyDisabled() {
+    assertThrows(
+        Exception.class,
+        () -> {
+          org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
+              mock(org.osgi.service.cm.ConfigurationAdmin.class);
+          AdminConsoleService configAdmin =
+              new AdminConsoleService(testConfigAdmin, configurationAdminImpl);
 
-    Configuration testConfig = mock(Configuration.class);
-    Configuration testFactoryConfig = mock(Configuration.class);
-    Dictionary<String, Object> testProperties = new Hashtable<>();
+          Configuration testConfig = mock(Configuration.class);
+          Configuration testFactoryConfig = mock(Configuration.class);
+          Dictionary<String, Object> testProperties = new Hashtable<>();
 
-    testProperties.put(
-        org.osgi.service.cm.ConfigurationAdmin.SERVICE_FACTORYPID, TEST_FACT_PID_DISABLED);
+          testProperties.put(
+              org.osgi.service.cm.ConfigurationAdmin.SERVICE_FACTORYPID, TEST_FACT_PID_DISABLED);
 
-    configAdmin.disableConfiguration(TEST_PID);
+          configAdmin.disableConfiguration(TEST_PID);
+        });
   }
 
   /**
@@ -1052,10 +1072,13 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = Exception.class)
-  public void testEnableConfigurationsNullParam() throws Exception {
-
-    configAdmin.enableConfiguration(null);
+  @Test
+  public void testEnableConfigurationsNullParam() {
+    assertThrows(
+        Exception.class,
+        () -> {
+          configAdmin.enableConfiguration(null);
+        });
   }
 
   /**
@@ -1064,25 +1087,30 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testEnableConfigurationsAlreadyEnabled() throws Exception {
-    org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
-        mock(org.osgi.service.cm.ConfigurationAdmin.class);
-    AdminConsoleService configAdmin =
-        new AdminConsoleService(testConfigAdmin, configurationAdminImpl) {
-          @Override
-          public boolean isPermittedToViewService(String servicePid) {
-            return true;
-          }
-        };
+  @Test
+  public void testEnableConfigurationsAlreadyEnabled() {
+    assertThrows(
+        IOException.class,
+        () -> {
+          org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
+              mock(org.osgi.service.cm.ConfigurationAdmin.class);
+          AdminConsoleService configAdmin =
+              new AdminConsoleService(testConfigAdmin, configurationAdminImpl) {
+                @Override
+                public boolean isPermittedToViewService(String servicePid) {
+                  return true;
+                }
+              };
 
-    Configuration testConfig = mock(Configuration.class);
-    Configuration testFactoryConfig = mock(Configuration.class);
-    Dictionary<String, Object> testProperties = new Hashtable<>();
+          Configuration testConfig = mock(Configuration.class);
+          Configuration testFactoryConfig = mock(Configuration.class);
+          Dictionary<String, Object> testProperties = new Hashtable<>();
 
-    testProperties.put(org.osgi.service.cm.ConfigurationAdmin.SERVICE_FACTORYPID, TEST_FACTORY_PID);
+          testProperties.put(
+              org.osgi.service.cm.ConfigurationAdmin.SERVICE_FACTORYPID, TEST_FACTORY_PID);
 
-    configAdmin.enableConfiguration(TEST_PID);
+          configAdmin.enableConfiguration(TEST_PID);
+        });
   }
 
   /**
@@ -1091,19 +1119,23 @@ public class AdminConsoleServiceTest {
    *
    * @throws Exception
    */
-  @Test(expected = IOException.class)
-  public void testEnableConfigurationsNullDisabledConfig() throws Exception {
-    org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
-        mock(org.osgi.service.cm.ConfigurationAdmin.class);
-    AdminConsoleService configAdmin =
-        new AdminConsoleService(testConfigAdmin, configurationAdminImpl) {
-          @Override
-          public boolean isPermittedToViewService(String servicePid) {
-            return true;
-          }
-        };
+  @Test
+  public void testEnableConfigurationsNullDisabledConfig() {
+    assertThrows(
+        IOException.class,
+        () -> {
+          org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
+              mock(org.osgi.service.cm.ConfigurationAdmin.class);
+          AdminConsoleService configAdmin =
+              new AdminConsoleService(testConfigAdmin, configurationAdminImpl) {
+                @Override
+                public boolean isPermittedToViewService(String servicePid) {
+                  return true;
+                }
+              };
 
-    configAdmin.enableConfiguration(TEST_PID);
+          configAdmin.enableConfiguration(TEST_PID);
+        });
   }
 
   @Test

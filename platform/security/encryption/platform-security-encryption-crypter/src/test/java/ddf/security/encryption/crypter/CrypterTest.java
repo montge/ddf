@@ -16,6 +16,7 @@ package ddf.security.encryption.crypter;
 import static ddf.security.encryption.crypter.Crypter.CHUNK_SIZE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import com.google.common.io.ByteStreams;
@@ -51,13 +52,18 @@ public class CrypterTest {
     System.clearProperty(SecurityConstants.ASSOCIATED_DATA_PATH);
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testBadSetup() throws Exception {
-    try (OutputStream badKeysetOutputStream =
-        new FileOutputStream(System.getProperty(SecurityConstants.KEYSET_DIR) + "/default.json")) {
-      badKeysetOutputStream.write("BadKeyset".getBytes());
-    }
-    new Crypter();
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          try (OutputStream badKeysetOutputStream =
+              new FileOutputStream(
+                  System.getProperty(SecurityConstants.KEYSET_DIR) + "/default.json")) {
+            badKeysetOutputStream.write("BadKeyset".getBytes());
+          }
+          new Crypter();
+        });
   }
 
   @Test
@@ -102,74 +108,110 @@ public class CrypterTest {
     assertArrayEquals(plainBytes, decryptedBytes);
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testEncryptNull() {
-    final Crypter crypter = new Crypter();
-    final String nullString = null;
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final String nullString = null;
 
-    crypter.encrypt(nullString);
+          crypter.encrypt(nullString);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testEncryptNullStream() {
-    final Crypter crypter = new Crypter();
-    final InputStream nullInputStream = null;
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final InputStream nullInputStream = null;
 
-    crypter.encrypt(nullInputStream);
+          crypter.encrypt(nullInputStream);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testEncryptEmpty() {
-    final Crypter crypter = new Crypter();
-    final String emptyString = "";
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final String emptyString = "";
 
-    crypter.encrypt(emptyString);
+          crypter.encrypt(emptyString);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testEncryptEmptyStream() {
-    final Crypter crypter = new Crypter();
-    final InputStream emptyInputStream = new ByteArrayInputStream("".getBytes());
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final InputStream emptyInputStream = new ByteArrayInputStream("".getBytes());
 
-    crypter.encrypt(emptyInputStream);
+          crypter.encrypt(emptyInputStream);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testEncryptBlank() {
-    final Crypter crypter = new Crypter();
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
 
-    crypter.encrypt(" ");
+          crypter.encrypt(" ");
+        });
   }
 
-  @Test(expected = CrypterException.class)
-  public void testDecryptNull() throws Exception {
-    final Crypter crypter = new Crypter();
-    final String nullString = null;
+  @Test
+  public void testDecryptNull() {
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final String nullString = null;
 
-    crypter.decrypt(nullString);
+          crypter.decrypt(nullString);
+        });
   }
 
-  @Test(expected = CrypterException.class)
-  public void testDecryptNullStream() throws Exception {
-    final Crypter crypter = new Crypter();
-    final InputStream nullInputStream = null;
+  @Test
+  public void testDecryptNullStream() {
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final InputStream nullInputStream = null;
 
-    crypter.decrypt(nullInputStream);
+          crypter.decrypt(nullInputStream);
+        });
   }
 
-  @Test(expected = CrypterException.class)
-  public void testDecryptEmpty() throws Exception {
-    final Crypter crypter = new Crypter();
+  @Test
+  public void testDecryptEmpty() {
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
 
-    crypter.decrypt("");
+          crypter.decrypt("");
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testDecryptEmptyStream() {
-    final Crypter crypter = new Crypter();
-    final InputStream emptyInputStream = new ByteArrayInputStream("".getBytes());
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final InputStream emptyInputStream = new ByteArrayInputStream("".getBytes());
 
-    crypter.decrypt(emptyInputStream);
+          crypter.decrypt(emptyInputStream);
+        });
   }
 
   @Test
@@ -213,52 +255,77 @@ public class CrypterTest {
     }
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testEncryptNullBytes() {
-    final Crypter crypter = new Crypter();
-    final byte[] nullBytes = null;
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final byte[] nullBytes = null;
 
-    crypter.encrypt(nullBytes);
+          crypter.encrypt(nullBytes);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testEncryptEmptyBytes() {
-    final Crypter crypter = new Crypter();
-    final byte[] emptyBytes = new byte[0];
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final byte[] emptyBytes = new byte[0];
 
-    crypter.encrypt(emptyBytes);
+          crypter.encrypt(emptyBytes);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testDecryptNullBytes() {
-    final Crypter crypter = new Crypter();
-    final byte[] nullBytes = null;
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final byte[] nullBytes = null;
 
-    crypter.decrypt(nullBytes);
+          crypter.decrypt(nullBytes);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testDecryptEmptyBytes() {
-    final Crypter crypter = new Crypter();
-    final byte[] emptyBytes = new byte[0];
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
+          final byte[] emptyBytes = new byte[0];
 
-    crypter.decrypt(emptyBytes);
+          crypter.decrypt(emptyBytes);
+        });
   }
 
-  @Test(expected = CrypterException.class)
+  @Test
   public void testDecryptBlank() {
-    final Crypter crypter = new Crypter();
+    assertThrows(
+        CrypterException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
 
-    crypter.decrypt(" ");
+          crypter.decrypt(" ");
+        });
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testDecryptInvalidBase64() {
-    final Crypter crypter = new Crypter();
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          final Crypter crypter = new Crypter();
 
-    // Invalid base64 string should cause decryption failure (IllegalArgumentException from Base64
-    // decoder)
-    crypter.decrypt("this-is-not-valid-base64!@#$%");
+          // Invalid base64 string should cause decryption failure (IllegalArgumentException from
+          // Base64
+          // decoder)
+          crypter.decrypt("this-is-not-valid-base64!@#$%");
+        });
   }
 
   @Test
