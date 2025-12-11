@@ -16,7 +16,7 @@ package ddf.catalog.federation.layered;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -47,7 +47,7 @@ import java.util.Map;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 import org.apache.cxf.endpoint.Server;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -78,7 +78,7 @@ public class PluginTest {
       when(bc.getByteArray()).thenReturn(bytes);
       when(transformer.transform(isA(Metacard.class), isA(Map.class))).thenReturn(bc);
     } catch (Exception e) {
-      Assert.fail(e.getLocalizedMessage());
+      Assertions.fail(e.getLocalizedMessage());
     }
 
     plugin.setTransformer(transformer);

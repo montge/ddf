@@ -13,8 +13,8 @@
  */
 package ddf.security.command;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import ddf.security.SecurityConstants;
 import ddf.security.encryption.impl.EncryptionServiceImpl;

@@ -17,8 +17,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringWhiteSpace;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -56,7 +56,7 @@ public class CacheKeyTest {
 
     String key = cacheKey.generateKey();
 
-    assertNotNull("Key must not be null.", key);
+    assertNotNull(key, "Key must not be null.");
     assertThat("Key must not be empty.", key, not(equalToIgnoringWhiteSpace("")));
   }
 
@@ -66,7 +66,7 @@ public class CacheKeyTest {
 
     String key = cacheKey.generateKey();
 
-    assertNotNull("Key must not be null.", key);
+    assertNotNull(key, "Key must not be null.");
     assertThat("Key must not be empty.", key, not(equalToIgnoringWhiteSpace("")));
   }
 

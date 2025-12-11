@@ -17,7 +17,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 import ddf.catalog.transform.CatalogTransformerException;
@@ -28,7 +28,7 @@ import de.micromata.opengis.kml.v_2_2_0.MultiGeometry;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import java.util.List;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -159,7 +159,7 @@ public class MetacardToKmlTest {
 
     doReturn("UNKNOWN").when(jtsGeo).getGeometryType();
 
-    Assert.assertThrows(
+    Assertions.assertThrows(
         CatalogTransformerException.class, () -> MetacardToKml.getKmlGeoFromJtsGeo(jtsGeo));
   }
 
@@ -181,7 +181,7 @@ public class MetacardToKmlTest {
 
   @Test
   public void getJtsGeoFromWktInvalidWkt() {
-    Assert.assertThrows(
+    Assertions.assertThrows(
         CatalogTransformerException.class, () -> MetacardToKml.getJtsGeoFromWkt("x"));
   }
 }

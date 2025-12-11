@@ -42,7 +42,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import org.codice.ddf.configuration.SystemInfo;
 import org.codice.ddf.opensearch.endpoint.query.OpenSearchQuery;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 
@@ -108,7 +108,7 @@ public class OpenSearchEndpointTest {
 
               // ***Test verification***
               // This assert is the whole point of this unit test
-              Assert.assertTrue(
+              Assertions.assertTrue(
                   ((OpenSearchQuery) queryRequest.getQuery()).getSiteIds().contains(testSiteName));
 
               return new QueryResponseImpl(queryRequest);

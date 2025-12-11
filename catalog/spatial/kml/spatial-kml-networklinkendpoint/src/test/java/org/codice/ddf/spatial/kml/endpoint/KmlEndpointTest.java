@@ -50,7 +50,7 @@ import org.apache.commons.io.IOUtils;
 import org.codice.ddf.branding.BrandingRegistry;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -221,7 +221,8 @@ public class KmlEndpointTest {
   @Test
   public void testExceptionGetIconLocation() {
     KmlEndpoint kmlEndpoint = new KmlEndpoint(mockBranding, mockFramework);
-    Assert.assertThrows(WebApplicationException.class, () -> kmlEndpoint.getIcon(null, JET_ICON));
+    Assertions.assertThrows(
+        WebApplicationException.class, () -> kmlEndpoint.getIcon(null, JET_ICON));
   }
 
   @Test
@@ -237,6 +238,7 @@ public class KmlEndpointTest {
   public void testExceptionGetCustomIconLocation() {
     KmlEndpoint kmlEndpoint = new KmlEndpoint(mockBranding, mockFramework);
     kmlEndpoint.setIconLoc(bomberPath);
-    Assert.assertThrows(WebApplicationException.class, () -> kmlEndpoint.getIcon(null, JET_ICON));
+    Assertions.assertThrows(
+        WebApplicationException.class, () -> kmlEndpoint.getIcon(null, JET_ICON));
   }
 }

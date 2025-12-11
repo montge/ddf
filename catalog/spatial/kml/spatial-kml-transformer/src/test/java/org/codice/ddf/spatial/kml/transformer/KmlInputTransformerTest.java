@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +63,7 @@ public class KmlInputTransformerTest {
   public void testTransformBadKmlThrowsException() {
     InputStream stream = this.getClass().getResourceAsStream("/notKml.kml");
 
-    Assert.assertThrows(
+    Assertions.assertThrows(
         CatalogTransformerException.class, () -> kmlInputTransformer.transform(stream));
   }
 
@@ -90,7 +90,7 @@ public class KmlInputTransformerTest {
     InputStream inputStream = mock(InputStream.class);
     doThrow(IOException.class).when(inputStream).read(any(byte[].class));
 
-    Assert.assertThrows(
+    Assertions.assertThrows(
         CatalogTransformerException.class, () -> kmlInputTransformer.transform(inputStream));
   }
 }

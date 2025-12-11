@@ -15,7 +15,7 @@ package org.codice.ddf.checksum;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +25,7 @@ import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.codice.ddf.checksum.impl.Adler32ChecksumProvider;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -79,7 +79,7 @@ public class Adler32ChecksumProviderTest {
     // compare returned checksum to previous checksum
     // as they should be the same if the checksum is calculated
     // correctly
-    Assert.assertThat(checksumValue, is(checksumCompareHash));
+    Assertions.assertThat(checksumValue, is(checksumCompareHash));
   }
 
   @Test

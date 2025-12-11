@@ -31,7 +31,7 @@ import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -68,7 +68,7 @@ public class KmlMarshallerTest {
 
   @Test
   public void marshallNull() {
-    Assert.assertThrows(IllegalArgumentException.class, () -> kmlMarshaller.marshal(null));
+    Assertions.assertThrows(IllegalArgumentException.class, () -> kmlMarshaller.marshal(null));
   }
 
   @Test
@@ -82,13 +82,14 @@ public class KmlMarshallerTest {
 
   @Test
   public void unmarshallNullStream() {
-    Assert.assertThrows(NoSuchElementException.class, () -> kmlMarshaller.unmarshal(null).get());
+    Assertions.assertThrows(
+        NoSuchElementException.class, () -> kmlMarshaller.unmarshal(null).get());
   }
 
   @Test
   public void unmarshallEmptyStream() {
     final ByteArrayInputStream inputStream = new ByteArrayInputStream("".getBytes(UTF_8));
-    Assert.assertThrows(
+    Assertions.assertThrows(
         NoSuchElementException.class, () -> kmlMarshaller.unmarshal(inputStream).get());
   }
 }

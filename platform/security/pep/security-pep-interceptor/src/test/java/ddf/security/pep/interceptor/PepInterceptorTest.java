@@ -13,7 +13,7 @@
  */
 package ddf.security.pep.interceptor;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.audit.SecurityLogger;

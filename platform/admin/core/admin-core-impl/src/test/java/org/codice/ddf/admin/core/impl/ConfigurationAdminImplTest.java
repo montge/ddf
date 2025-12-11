@@ -17,9 +17,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.atLeastOnce;
@@ -530,7 +530,7 @@ public class ConfigurationAdminImplTest {
     when(testRef1.getProperty(Constants.SERVICE_PID)).thenReturn(BAD_PID);
 
     List<Service> result = configurationAdminImpl.listServices(TEST_FACT_FILTER, TEST_FILTER);
-    assertTrue("Should not return any services.", result.isEmpty());
+    assertTrue(result.isEmpty(), "Should not return any services.");
   }
 
   /**

@@ -17,7 +17,7 @@ import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.create;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.deleteAll;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ddf.catalog.data.ContentType;
 import ddf.catalog.data.Metacard;

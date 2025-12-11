@@ -13,7 +13,7 @@
  */
 package ddf.catalog.transform.xml;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ddf.catalog.transform.CatalogTransformerException;
 import ddf.catalog.transformer.api.PrintWriter;

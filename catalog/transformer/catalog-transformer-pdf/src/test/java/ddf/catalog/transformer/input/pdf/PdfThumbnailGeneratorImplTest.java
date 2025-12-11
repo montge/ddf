@@ -17,9 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -64,12 +64,12 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyWithValidSinglePagePdf() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
 
-    assertTrue("Thumbnail should be generated", result.isPresent());
+    assertTrue(result.isPresent(), "Thumbnail should be generated");
     byte[] thumbnailData = result.get();
     assertThat(thumbnailData.length, is(greaterThan(0)));
 
@@ -81,14 +81,14 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyWithMultiPagePdf() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
 
     if (testDocument.getNumberOfPages() > 0) {
       Optional<byte[]> result = generator.apply(testDocument);
 
-      assertTrue("Thumbnail should be generated for multi-page PDF", result.isPresent());
+      assertTrue(result.isPresent(), "Thumbnail should be generated for multi-page PDF");
       byte[] thumbnailData = result.get();
       assertThat(thumbnailData.length, is(greaterThan(0)));
 
@@ -103,7 +103,7 @@ public class PdfThumbnailGeneratorImplTest {
 
     Optional<byte[]> result = generator.apply(testDocument);
 
-    assertFalse("Thumbnail should not be generated for empty PDF", result.isPresent());
+    assertFalse(result.isPresent(), "Thumbnail should not be generated for empty PDF");
   }
 
   @Test
@@ -114,14 +114,14 @@ public class PdfThumbnailGeneratorImplTest {
 
     Optional<byte[]> result = generator.apply(testDocument);
 
-    assertFalse("Should return empty Optional for PDF with no pages", result.isPresent());
+    assertFalse(result.isPresent(), "Should return empty Optional for PDF with no pages");
   }
 
   @Test
   public void testApplyGeneratesScaledThumbnail() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
@@ -136,7 +136,7 @@ public class PdfThumbnailGeneratorImplTest {
 
     ByteArrayInputStream thumbnailStream = new ByteArrayInputStream(thumbnailData);
     var image = ImageIO.read(thumbnailStream);
-    assertNotNull("Generated thumbnail should be a valid image", image);
+    assertNotNull(image, "Generated thumbnail should be a valid image");
 
     assertThat("Thumbnail width should be at most 128", image.getWidth(), is(lessThan(129)));
     assertThat("Thumbnail height should be at most 128", image.getHeight(), is(lessThan(129)));
@@ -150,7 +150,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyMaintainsAspectRatio() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
@@ -166,8 +166,8 @@ public class PdfThumbnailGeneratorImplTest {
     int height = image.getHeight();
 
     assertTrue(
-        "Aspect ratio should be preserved (dimensions should be reasonable)",
-        width > 0 && height > 0 && width <= 128 && height <= 128);
+        width > 0 && height > 0 && width <= 128 && height <= 128,
+        "Aspect ratio should be preserved (dimensions should be reasonable)");
 
     stream.close();
   }
@@ -176,7 +176,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyGeneratesJpegFormat() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
@@ -184,7 +184,7 @@ public class PdfThumbnailGeneratorImplTest {
     assertTrue(result.isPresent());
     byte[] thumbnailData = result.get();
 
-    assertTrue("JPEG files should start with FF D8 FF marker", thumbnailData.length > 3);
+    assertTrue(thumbnailData.length > 3, "JPEG files should start with FF D8 FF marker");
     assertThat("First byte should be FF (JPEG SOI marker)", thumbnailData[0] & 0xFF, is(0xFF));
     assertThat("Second byte should be D8 (JPEG SOI marker)", thumbnailData[1] & 0xFF, is(0xD8));
 
@@ -195,7 +195,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyProducesValidImageData() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
@@ -206,7 +206,7 @@ public class PdfThumbnailGeneratorImplTest {
     ByteArrayInputStream imageStream = new ByteArrayInputStream(thumbnailData);
     var bufferedImage = ImageIO.read(imageStream);
 
-    assertNotNull("Should produce valid image data that can be read by ImageIO", bufferedImage);
+    assertNotNull(bufferedImage, "Should produce valid image data that can be read by ImageIO");
 
     stream.close();
   }
@@ -215,15 +215,15 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyMultipleTimes() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
 
     Optional<byte[]> result1 = generator.apply(testDocument);
     Optional<byte[]> result2 = generator.apply(testDocument);
 
-    assertTrue("First call should generate thumbnail", result1.isPresent());
-    assertTrue("Second call should generate thumbnail", result2.isPresent());
+    assertTrue(result1.isPresent(), "First call should generate thumbnail");
+    assertTrue(result2.isPresent(), "Second call should generate thumbnail");
 
     assertThat(result1.get().length, is(result2.get().length));
 
@@ -234,7 +234,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyWithDifferentPdfDocuments() throws Exception {
     InputStream stream1 =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream1);
+    assertNotNull(stream1, "Test PDF file not found");
 
     PDDocument doc1 = PDDocument.load(stream1);
     Optional<byte[]> result1 = generator.apply(doc1);
@@ -257,7 +257,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyGeneratesReasonableSizedThumbnail() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
@@ -277,12 +277,12 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyWithPdfContainingImages() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
 
-    assertTrue("Should generate thumbnail even if PDF contains images", result.isPresent());
+    assertTrue(result.isPresent(), "Should generate thumbnail even if PDF contains images");
     assertThat(result.get().length, is(greaterThan(0)));
 
     stream.close();
@@ -292,14 +292,14 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyRenderFirstPageOnly() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
 
     if (testDocument.getNumberOfPages() >= 1) {
       Optional<byte[]> result = generator.apply(testDocument);
 
-      assertTrue("Should generate thumbnail from first page", result.isPresent());
+      assertTrue(result.isPresent(), "Should generate thumbnail from first page");
       assertThat(result.get().length, is(greaterThan(0)));
     }
 
@@ -310,7 +310,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyGeneratesRGBImage() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     Optional<byte[]> result = generator.apply(testDocument);
@@ -330,14 +330,14 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyWithNewGeneratorInstance() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
 
     PdfThumbnailGeneratorImpl newGenerator = new PdfThumbnailGeneratorImpl();
     Optional<byte[]> result = newGenerator.apply(testDocument);
 
-    assertTrue("New generator instance should work", result.isPresent());
+    assertTrue(result.isPresent(), "New generator instance should work");
     assertThat(result.get().length, is(greaterThan(0)));
 
     stream.close();
@@ -347,7 +347,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyDoesNotModifyOriginalDocument() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
     int originalPageCount = testDocument.getNumberOfPages();
@@ -366,7 +366,7 @@ public class PdfThumbnailGeneratorImplTest {
   public void testApplyConsistentOutput() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     testDocument = PDDocument.load(stream);
 
@@ -385,12 +385,12 @@ public class PdfThumbnailGeneratorImplTest {
   }
 
   private void verifyImageData(byte[] imageData) throws IOException {
-    assertNotNull("Image data should not be null", imageData);
+    assertNotNull(imageData, "Image data should not be null");
     assertThat("Image data should not be empty", imageData.length, is(greaterThan(0)));
 
     ByteArrayInputStream stream = new ByteArrayInputStream(imageData);
     var image = ImageIO.read(stream);
-    assertNotNull("Image data should be readable as image", image);
+    assertNotNull(image, "Image data should be readable as image");
     assertThat("Image width should be positive", image.getWidth(), is(greaterThan(0)));
     assertThat("Image height should be positive", image.getHeight(), is(greaterThan(0)));
   }

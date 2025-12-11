@@ -18,7 +18,7 @@ import static ddf.catalog.data.Metacard.TITLE;
 import static ddf.catalog.data.impl.MetacardImpl.BASIC_METACARD;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ddf.catalog.data.DefaultAttributeValueRegistry;
 import java.io.Serializable;

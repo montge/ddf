@@ -13,12 +13,12 @@
  */
 package org.codice.ddf.admin.insecure.defaults.service;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static org.codice.ddf.admin.insecure.defaults.service.DefaultUsersDeletionScheduler.getTempTimestampFilePath;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -94,7 +94,7 @@ public class DefaultUsersDeletionSchedulerTest {
     writeTimestamp(Instant.now().toString());
 
     String actual = scheduler.getCronOrDelete();
-    assertNotNull("Incorrect cron calculation.", actual);
+    assertNotNull(actual, "Incorrect cron calculation.");
   }
 
   @Test
@@ -103,7 +103,7 @@ public class DefaultUsersDeletionSchedulerTest {
     writeTimestamp(Instant.now().minus(Duration.ofDays(4)).toString());
 
     String actual = scheduler.getCronOrDelete();
-    assertNull("Incorrect cron calculation.", actual);
+    assertNull(actual, "Incorrect cron calculation.");
   }
 
   @Test
@@ -115,7 +115,7 @@ public class DefaultUsersDeletionSchedulerTest {
           writeTimestamp("Incorrect type");
 
           String actual = scheduler.getCronOrDelete();
-          assertNull("Incorrect error handling.", actual);
+          assertNull(actual, "Incorrect error handling.");
         });
   }
 
@@ -139,7 +139,7 @@ public class DefaultUsersDeletionSchedulerTest {
     writeTimestamp(instant.toString());
 
     Instant actual = scheduler.installationDate();
-    assertEquals("Incorrect Instant read.", instant, actual);
+    assertEquals(instant, actual, "Incorrect Instant read.");
   }
 
   private void createTempFile() throws IOException {

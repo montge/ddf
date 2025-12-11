@@ -33,7 +33,7 @@ import static org.codice.ddf.itests.common.AbstractIntegrationTest.DynamicUrl.SE
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.pac4j.oidc.profile.OidcProfileDefinition.ACCESS_TOKEN;
 import static org.pac4j.oidc.profile.OidcProfileDefinition.AUTH_TIME;
 import static org.pac4j.oidc.profile.OidcProfileDefinition.AZP;

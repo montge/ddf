@@ -15,10 +15,10 @@ package ddf.catalog.cache.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.impl.AttributeImpl;
@@ -100,10 +100,10 @@ public class ResourceCacheImplTest {
     Metacard metacard = generateMetacard();
     ReliableResource reliableResource = createCachedResource(metacard);
     resourceCache.addPendingCacheEntry(reliableResource);
-    assertFalse("cache should be noop", resourceCache.isPending(CACHED_RESOURCE_KEY));
+    assertFalse(resourceCache.isPending(CACHED_RESOURCE_KEY), "cache should be noop");
     resourceCache.put(reliableResource);
-    assertNull("cache should be noop", resourceCache.getValid(CACHED_RESOURCE_KEY, metacard));
-    assertFalse("cache should be noop", resourceCache.isPending(CACHED_RESOURCE_KEY));
+    assertNull(resourceCache.getValid(CACHED_RESOURCE_KEY, metacard), "cache should be noop");
+    assertFalse(resourceCache.isPending(CACHED_RESOURCE_KEY), "cache should be noop");
   }
 
   /**
@@ -115,8 +115,8 @@ public class ResourceCacheImplTest {
     ReliableResource reliableResource = createCachedResource(metacard);
 
     resourceCache.put(reliableResource);
-    assertFalse("cache should be noop", resourceCache.isPending(CACHED_RESOURCE_KEY));
-    assertNull("cache should be noop", resourceCache.getValid(CACHED_RESOURCE_KEY, metacard));
+    assertFalse(resourceCache.isPending(CACHED_RESOURCE_KEY), "cache should be noop");
+    assertNull(resourceCache.getValid(CACHED_RESOURCE_KEY, metacard), "cache should be noop");
   }
 
   @Test
@@ -191,7 +191,7 @@ public class ResourceCacheImplTest {
         new ReliableResource(
             cachedResourceMetacardKey, cachedResourceFilePath.toString(), null, null, metacard);
     resourceCache.validateCacheEntry(cachedResource, metacard1);
-    assertTrue("cache should be noop", cachedResourceFile.exists());
+    assertTrue(cachedResourceFile.exists(), "cache should be noop");
   }
 
   @Test
@@ -201,7 +201,7 @@ public class ResourceCacheImplTest {
 
     String cacheKey = "cacheKey1";
     resourceCache.put(new ReliableResource(cacheKey, "", null, "name", cachedMetacard));
-    assertFalse("cache should be noop", resourceCache.containsValid(cacheKey, latestMetacard));
+    assertFalse(resourceCache.containsValid(cacheKey, latestMetacard), "cache should be noop");
   }
 
   @Test
@@ -235,7 +235,7 @@ public class ResourceCacheImplTest {
     assertFalse(
         "cache should be noop",
         resourceCache.containsValid(cachedResourceMetacardKey, latestMetacard));
-    assertTrue("cache should be noop", cachedResourceFile.exists());
+    assertTrue(cachedResourceFile.exists(), "cache should be noop");
   }
 
   @Test
@@ -288,7 +288,7 @@ public class ResourceCacheImplTest {
     ReliableResource cachedResource = createCachedResource(cachedMetacard);
     resourceCache.put(cachedResource);
     Optional<Resource> optionalResource = newResourceCache.get(cachedMetacard);
-    assertFalse("cache should be noop", optionalResource.isPresent());
+    assertFalse(optionalResource.isPresent(), "cache should be noop");
   }
 
   @Test
@@ -297,7 +297,7 @@ public class ResourceCacheImplTest {
     resourceCache.put(cachedResource);
     Optional<Resource> optionalResource =
         newResourceCache.get(cachedMetacard, new ResourceRequestById(METACARD_ID));
-    assertFalse("cache should be noop", optionalResource.isPresent());
+    assertFalse(optionalResource.isPresent(), "cache should be noop");
   }
 
   @Test

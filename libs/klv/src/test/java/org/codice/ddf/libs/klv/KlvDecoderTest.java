@@ -24,9 +24,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.number.IsCloseTo.closeTo;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -790,11 +790,11 @@ public class KlvDecoderTest {
       fail("Should have thrown KlvDecodingException for exceeding max recursion depth");
     } catch (KlvDecodingException e) {
       assertTrue(
-          "Exception message should mention nesting depth",
-          e.getMessage().contains("nesting depth"));
+          e.getMessage().contains("nesting depth"),
+          "Exception message should mention nesting depth");
       assertTrue(
-          "Exception message should mention maximum allowed depth",
-          e.getMessage().contains("maximum allowed depth"));
+          e.getMessage().contains("maximum allowed depth"),
+          "Exception message should mention maximum allowed depth");
     }
   }
 

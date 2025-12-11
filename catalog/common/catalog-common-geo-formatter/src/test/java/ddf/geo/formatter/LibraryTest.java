@@ -13,7 +13,7 @@
  */
 package ddf.geo.formatter;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.StringReader;
 import org.junit.jupiter.api.Test;

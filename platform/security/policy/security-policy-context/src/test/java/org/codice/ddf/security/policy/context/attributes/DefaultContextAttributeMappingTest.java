@@ -13,6 +13,8 @@
  */
 package org.codice.ddf.security.policy.context.attributes;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import ddf.security.permission.KeyValueCollectionPermission;
 import ddf.security.permission.KeyValuePermission;
 import ddf.security.permission.impl.KeyValueCollectionPermissionImpl;
@@ -20,7 +22,6 @@ import ddf.security.permission.impl.KeyValuePermissionImpl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

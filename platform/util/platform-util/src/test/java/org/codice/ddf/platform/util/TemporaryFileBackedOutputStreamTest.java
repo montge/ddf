@@ -15,7 +15,7 @@ package org.codice.ddf.platform.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.io.ByteSource;
 import java.io.IOException;

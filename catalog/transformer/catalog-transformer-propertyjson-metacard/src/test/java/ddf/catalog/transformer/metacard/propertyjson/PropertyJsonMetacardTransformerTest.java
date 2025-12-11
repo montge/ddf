@@ -18,7 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -91,7 +91,7 @@ public class PropertyJsonMetacardTransformerTest {
   public void testTransformWithNullMetacard() {
     try {
       transformer.transform(null, null);
-      assertTrue("Should have thrown CatalogTransformerException", false);
+      assertTrue(false, "Should have thrown CatalogTransformerException");
     } catch (CatalogTransformerException e) {
       assertThat(e.getMessage(), containsString("null metacard"));
     }

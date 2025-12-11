@@ -17,7 +17,7 @@ import static org.codice.ddf.rest.api.CatalogService.CONTEXT_ROOT;
 import static org.codice.ddf.rest.api.CatalogService.SOURCES_PATH;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import ddf.action.Action;

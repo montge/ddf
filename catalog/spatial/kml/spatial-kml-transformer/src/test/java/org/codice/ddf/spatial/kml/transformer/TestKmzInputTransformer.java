@@ -27,7 +27,7 @@ import ddf.catalog.data.impl.MetacardTypeImpl;
 import ddf.catalog.transform.CatalogTransformerException;
 import java.io.InputStream;
 import java.util.HashSet;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class TestKmzInputTransformer {
@@ -96,7 +96,7 @@ public class TestKmzInputTransformer {
     KmzInputTransformer kmzInputTransformer =
         new KmzInputTransformer(mock(KmlInputTransformer.class));
     InputStream stream = TestKmzInputTransformer.class.getResourceAsStream("/no_kml_inside.kmz");
-    Assert.assertThrows(
+    Assertions.assertThrows(
         CatalogTransformerException.class, () -> kmzInputTransformer.transform(stream));
   }
 }

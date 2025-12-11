@@ -16,7 +16,7 @@ package org.codice.solr.factory.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.junit.jupiter.api.Test;

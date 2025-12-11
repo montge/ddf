@@ -13,9 +13,9 @@
  */
 package ddf.catalog.transformer.attribute;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -192,7 +192,7 @@ public class AttributeMetacardTransformerTest {
 
     assertArrayEquals(thumbnailBytes, IOUtils.toByteArray(content.getInputStream()));
 
-    assertEquals("Mime type failed to match.", jpegMimeType, content.getMimeType());
+    assertEquals(jpegMimeType, content.getMimeType(), "Mime type failed to match.");
   }
 
   private void simpleStringTransform(String metadata)
@@ -206,6 +206,6 @@ public class AttributeMetacardTransformerTest {
 
     assertEquals(metadata, IOUtils.toString(content.getInputStream()));
 
-    assertEquals("Mime type failed to match.", xmlMimeType, content.getMimeType());
+    assertEquals(xmlMimeType, content.getMimeType(), "Mime type failed to match.");
   }
 }

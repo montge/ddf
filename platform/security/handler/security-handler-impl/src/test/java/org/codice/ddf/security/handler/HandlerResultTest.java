@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.security.handler;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.junit.jupiter.api.Test;

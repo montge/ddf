@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.spatial.geocoding.create;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.codice.ddf.spatial.geocoding.TestBase;

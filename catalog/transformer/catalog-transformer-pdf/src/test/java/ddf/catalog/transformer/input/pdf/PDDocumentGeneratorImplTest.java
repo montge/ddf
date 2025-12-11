@@ -17,10 +17,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -52,13 +52,13 @@ public class PDDocumentGeneratorImplTest {
   public void testApplyWithValidPdf() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     PDDocument document = generator.apply(stream);
 
     assertThat(document, is(notNullValue()));
     assertThat(document.getNumberOfPages(), is(greaterThan(0)));
-    assertTrue("Document should not be encrypted by default", !document.isEncrypted());
+    assertTrue(!document.isEncrypted(), "Document should not be encrypted by default");
 
     document.close();
     stream.close();
@@ -68,7 +68,7 @@ public class PDDocumentGeneratorImplTest {
   public void testApplyWithValidMultiPagePdf() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     PDDocument document = generator.apply(stream);
 
@@ -115,7 +115,7 @@ public class PDDocumentGeneratorImplTest {
   public void testApplyWithSmallValidPdf() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     PDDocument document = generator.apply(stream);
 
@@ -140,7 +140,7 @@ public class PDDocumentGeneratorImplTest {
   public void testApplyReturnsClosablePDDocument() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     PDDocument document = generator.apply(stream);
 
@@ -148,7 +148,7 @@ public class PDDocumentGeneratorImplTest {
 
     try {
       document.close();
-      assertTrue("Document should close without exceptions", true);
+      assertTrue(true, "Document should close without exceptions");
     } catch (Exception e) {
       fail("Document.close() should not throw exception: " + e.getMessage());
     }
@@ -160,7 +160,7 @@ public class PDDocumentGeneratorImplTest {
   public void testApplyWithPdfVersion14() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     PDDocument document = generator.apply(stream);
 
@@ -176,7 +176,7 @@ public class PDDocumentGeneratorImplTest {
     for (int i = 0; i < 3; i++) {
       InputStream stream =
           Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-      assertNotNull("Test PDF file not found", stream);
+      assertNotNull(stream, "Test PDF file not found");
 
       PDDocument document = generator.apply(stream);
 
@@ -195,7 +195,7 @@ public class PDDocumentGeneratorImplTest {
   public void testApplyWithClosedInputStream() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
     stream.close();
 
     assertThrows(IOException.class, () -> generator.apply(stream));
@@ -227,15 +227,15 @@ public class PDDocumentGeneratorImplTest {
     InputStream stream2 =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
 
-    assertNotNull("Test PDF file not found", stream1);
-    assertNotNull("Test PDF file not found", stream2);
+    assertNotNull(stream1, "Test PDF file not found");
+    assertNotNull(stream2, "Test PDF file not found");
 
     PDDocument doc1 = generator.apply(stream1);
     PDDocument doc2 = generator.apply(stream2);
 
     assertNotNull(doc1);
     assertNotNull(doc2);
-    assertTrue("Should create different document instances", doc1 != doc2);
+    assertTrue(doc1 != doc2, "Should create different document instances");
 
     doc1.close();
     doc2.close();
@@ -268,12 +268,12 @@ public class PDDocumentGeneratorImplTest {
   public void testApplyPreservesDocumentStructure() throws Exception {
     InputStream stream =
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-    assertNotNull("Test PDF file not found", stream);
+    assertNotNull(stream, "Test PDF file not found");
 
     PDDocument document = generator.apply(stream);
 
     assertNotNull(document);
-    assertNotNull("Document catalog should exist", document.getDocumentCatalog());
+    assertNotNull(document.getDocumentCatalog(), "Document catalog should exist");
     assertThat(
         "Document should have at least one page", document.getNumberOfPages(), is(greaterThan(0)));
 

@@ -13,8 +13,8 @@
  */
 package ddf.security.permission;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import ddf.security.permission.impl.KeyValueCollectionPermissionImpl;
 import java.util.ArrayList;

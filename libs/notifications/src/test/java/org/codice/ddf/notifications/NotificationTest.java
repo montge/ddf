@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.notifications;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import org.joda.time.format.ISODateTimeFormat;
@@ -37,9 +37,9 @@ public class NotificationTest {
         new Notification(
             "myId", "mySessionId", "myAppName", "testing", "testing", new Date().getTime(), "");
     assertEquals(
-        "Notification constructor accepted empty userId",
         DEFAULT_USER_ID,
-        notification.getUserId());
+        notification.getUserId(),
+        "Notification constructor accepted empty userId");
   }
 
   /**
@@ -55,16 +55,16 @@ public class NotificationTest {
         new Notification("myId", "mySessionId", "myAppName", "testing", "testing", timeNow);
 
     assertEquals(
-        "Notification did not return expected timestamp string",
         ISODateTimeFormat.dateTime().print(timeNow.getTime()),
-        notification.getTimestampString());
+        notification.getTimestampString(),
+        "Notification did not return expected timestamp string");
 
     Date newTime = new Date();
     notification.setTimestamp(newTime);
 
     assertEquals(
-        "Notification did not return correct timestamp value",
         newTime.getTime(),
-        notification.getTimestampLong().longValue());
+        notification.getTimestampLong().longValue(),
+        "Notification did not return correct timestamp value");
   }
 }

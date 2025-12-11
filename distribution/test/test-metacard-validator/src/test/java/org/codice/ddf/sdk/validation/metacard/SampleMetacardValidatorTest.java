@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.sdk.validation.metacard;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.ImmutableSet;
 import ddf.catalog.data.impl.MetacardImpl;

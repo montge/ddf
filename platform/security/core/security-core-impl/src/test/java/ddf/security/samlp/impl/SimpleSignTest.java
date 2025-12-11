@@ -13,8 +13,8 @@
  */
 package ddf.security.samlp.impl;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.base.Charsets;
@@ -267,7 +267,7 @@ public class SimpleSignTest {
             URLEncoder.encode(signatureAlgorithm, "UTF-8"));
     boolean valid =
         simpleSign.validateSignature(signatureAlgorithm, signedMessage, signatureString, dsaCert);
-    assertTrue("Signature was expected to be valid", valid);
+    assertTrue(valid, "Signature was expected to be valid");
   }
 
   @Test

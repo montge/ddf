@@ -62,7 +62,7 @@ import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -157,7 +157,7 @@ public class KMLTransformerImplTest {
   @Test
   public void testPerformDefaultTransformationNoLocation() {
     Metacard metacard = createMockMetacard();
-    Assert.assertThrows(
+    Assertions.assertThrows(
         CatalogTransformerException.class,
         () -> kmlTransformer.performDefaultTransformation(metacard));
   }

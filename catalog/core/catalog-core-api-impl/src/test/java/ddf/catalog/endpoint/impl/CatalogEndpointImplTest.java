@@ -13,9 +13,9 @@
  */
 package ddf.catalog.endpoint.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,11 +43,11 @@ public class CatalogEndpointImplTest {
 
     CatalogEndpointImpl catalogEndpoint = new CatalogEndpointImpl();
     Map<String, String> endpointProperties = catalogEndpoint.getEndpointProperties();
-    assertTrue("Endpoint Properties should be empty.", endpointProperties.isEmpty());
+    assertTrue(endpointProperties.isEmpty(), "Endpoint Properties should be empty.");
 
     catalogEndpoint.setEndpointProperties(propertiesMap);
     endpointProperties = catalogEndpoint.getEndpointProperties();
-    assertFalse("Endpoint Properties shouldn't be empty.", endpointProperties.isEmpty());
+    assertFalse(endpointProperties.isEmpty(), "Endpoint Properties shouldn't be empty.");
 
     assertEndpointPropertiesContainDefaults(endpointProperties);
   }
@@ -58,7 +58,7 @@ public class CatalogEndpointImplTest {
     CatalogEndpointImpl catalogEndpoint = new CatalogEndpointImpl(endpointProps);
 
     Map<String, String> endpointProperties = catalogEndpoint.getEndpointProperties();
-    assertFalse("Endpoint Properties shouldn't be empty.", endpointProperties.isEmpty());
+    assertFalse(endpointProperties.isEmpty(), "Endpoint Properties shouldn't be empty.");
 
     assertEndpointPropertiesContainDefaults(endpointProperties);
   }
@@ -76,7 +76,7 @@ public class CatalogEndpointImplTest {
     CatalogEndpointImpl catalogEndpoint = getTestCatalogEndpointWithDefaults();
 
     Map<String, String> endpointProperties = catalogEndpoint.getEndpointProperties();
-    assertFalse("Endpoint Properties shouldn't be empty.", endpointProperties.isEmpty());
+    assertFalse(endpointProperties.isEmpty(), "Endpoint Properties shouldn't be empty.");
 
     // Make sure the values were actually set
     assertEndpointPropertiesContainDefaults(endpointProperties);
@@ -88,7 +88,7 @@ public class CatalogEndpointImplTest {
     catalogEndpoint.setUrl(null);
     catalogEndpoint.setUrlBindingName(null);
     catalogEndpoint.setVersion(null);
-    assertTrue("Endpoint Properties should be empty.", endpointProperties.isEmpty());
+    assertTrue(endpointProperties.isEmpty(), "Endpoint Properties should be empty.");
   }
 
   private CatalogEndpointImpl getTestCatalogEndpointWithDefaults() {
@@ -122,21 +122,21 @@ public class CatalogEndpointImplTest {
 
   private void assertEndpointPropertiesContainDefaults(Map<String, String> endpointProperties) {
     assertEquals(
-        "Binding Type",
         DEFAULT_BINDING_TYPE,
-        endpointProperties.get(CatalogEndpointImpl.BINDING_TYPE_KEY));
+        endpointProperties.get(CatalogEndpointImpl.BINDING_TYPE_KEY),
+        "Binding Type");
     assertEquals(
-        "Description",
         DEFAULT_DESCRIPTION,
-        endpointProperties.get(CatalogEndpointImpl.DESCRIPTION_KEY));
-    assertEquals("Id", DEFAULT_ID, endpointProperties.get(CatalogEndpointImpl.ID_KEY));
-    assertEquals("Name", DEFAULT_NAME, endpointProperties.get(CatalogEndpointImpl.NAME_KEY));
-    assertEquals("Url", DEFAULT_URL, endpointProperties.get(CatalogEndpointImpl.URL_KEY));
+        endpointProperties.get(CatalogEndpointImpl.DESCRIPTION_KEY),
+        "Description");
+    assertEquals(DEFAULT_ID, endpointProperties.get(CatalogEndpointImpl.ID_KEY), "Id");
+    assertEquals(DEFAULT_NAME, endpointProperties.get(CatalogEndpointImpl.NAME_KEY), "Name");
+    assertEquals(DEFAULT_URL, endpointProperties.get(CatalogEndpointImpl.URL_KEY), "Url");
     assertEquals(
-        "Url Binding Name",
         DEFAULT_URL_BINDING_NAME,
-        endpointProperties.get(CatalogEndpointImpl.URL_BINDING_NAME_KEY));
+        endpointProperties.get(CatalogEndpointImpl.URL_BINDING_NAME_KEY),
+        "Url Binding Name");
     assertEquals(
-        "Version", DEFAULT_VERSION, endpointProperties.get(CatalogEndpointImpl.VERSION_KEY));
+        DEFAULT_VERSION, endpointProperties.get(CatalogEndpointImpl.VERSION_KEY), "Version");
   }
 }

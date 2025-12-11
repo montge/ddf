@@ -17,8 +17,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -126,7 +126,7 @@ public class SmtpClientImplITCaseTest {
     List<SmtpMessage> emails = server.getReceivedEmails();
     assertThat(emails, hasSize(1));
     SmtpMessage email = emails.get(0);
-    assertNotNull("The email was null.", email);
+    assertNotNull(email, "The email was null.");
     assertThat(email.getHeaderValue(SUBJECT_HEADER), is(SUBJECT));
     assertThat(email.getHeaderValue(FROM_HEADER), containsString(FROM_ADDR));
     assertThat(email.getHeaderValue(TO_HEADER), containsString(TO_ADDR));
@@ -171,7 +171,7 @@ public class SmtpClientImplITCaseTest {
     List<SmtpMessage> emails = server.getReceivedEmails();
     assertThat(emails, hasSize(1));
     SmtpMessage email = emails.get(0);
-    assertNotNull("The email was null.", email);
+    assertNotNull(email, "The email was null.");
     assertThat(email.getHeaderValue(SUBJECT_HEADER), is(SUBJECT));
     assertThat(email.getHeaderValue(FROM_HEADER), containsString(FROM_ADDR));
     assertThat(email.getHeaderValue(TO_HEADER), containsString(TO_ADDR));

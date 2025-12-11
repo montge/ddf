@@ -13,7 +13,7 @@
  */
 package ddf.catalog.event.retrievestatus;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.cache.impl.ResourceCacheImpl;

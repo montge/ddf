@@ -18,8 +18,8 @@ import static ddf.catalog.data.Metacard.TAGS;
 import static ddf.catalog.data.Metacard.TITLE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ddf.catalog.data.DefaultAttributeValueRegistry;
 import java.io.Serializable;

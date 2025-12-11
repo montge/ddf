@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.transformer.xml.streaming.lib;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

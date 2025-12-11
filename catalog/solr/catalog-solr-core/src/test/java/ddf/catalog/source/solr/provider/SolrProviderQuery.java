@@ -29,10 +29,10 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -75,7 +75,7 @@ import org.geotools.filter.FunctionFactory;
 import org.geotools.util.factory.FactoryIteratorProvider;
 import org.geotools.util.factory.GeoTools;
 import org.joda.time.DateTime;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
@@ -1589,7 +1589,8 @@ public class SolrProviderQuery {
 
     try {
       provider.query(new QueryRequestImpl(query));
-      Assert.fail("Expected an exception stating that the start index should be greater than 0. ");
+      Assertions.fail(
+          "Expected an exception stating that the start index should be greater than 0. ");
     } catch (UnsupportedQueryException e) {
       assertTrue(e.getMessage().contains("greater than 0"));
     }

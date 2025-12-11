@@ -15,7 +15,7 @@ package org.codice.ddf.checksum;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import org.codice.ddf.checksum.impl.Sha256ChecksumProvider;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -79,7 +79,7 @@ public class Sha256ChecksumProviderTest {
     InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     String checksumValue = checksumProvider.calculateChecksum(inputStream);
 
-    Assert.assertThat(
+    Assertions.assertThat(
         checksumValue, is("7b42b8b57b09e1f451a6cf6b63b35724520f46f7f927dbae7f6ab209128800ff"));
   }
 

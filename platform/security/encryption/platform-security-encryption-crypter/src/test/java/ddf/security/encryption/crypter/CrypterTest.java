@@ -14,10 +14,10 @@
 package ddf.security.encryption.crypter;
 
 import static ddf.security.encryption.crypter.Crypter.CHUNK_SIZE;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.google.common.io.ByteStreams;
 import ddf.security.SecurityConstants;

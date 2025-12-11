@@ -22,8 +22,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -105,7 +105,7 @@ import org.geotools.filter.FilterFactoryImpl;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.opengis.filter.Filter;
@@ -225,7 +225,7 @@ public class CswSourceTest extends TestCswSourceBase {
     SourceResponse response = cswSource.query(getQueryRequestWithSubject(propertyIsLikeQuery));
 
     // Verify
-    Assert.assertNotNull(response);
+    Assertions.assertNotNull(response);
     assertThat(response.getResults().size(), is(numRecordsReturned));
     assertThat(response.getHits(), is(numRecordsMatched));
     ArgumentCaptor<GetRecordsType> captor = ArgumentCaptor.forClass(GetRecordsType.class);
@@ -279,7 +279,7 @@ public class CswSourceTest extends TestCswSourceBase {
     SourceResponse response = cswSource.query(getQueryRequestWithSubject(query));
 
     // Verify
-    Assert.assertNotNull(response);
+    Assertions.assertNotNull(response);
     assertThat(response.getResults().size(), is(numRecordsReturned));
     assertThat(response.getHits(), is(numRecordsMatched));
     ArgumentCaptor<GetRecordsType> captor = ArgumentCaptor.forClass(GetRecordsType.class);
@@ -325,7 +325,7 @@ public class CswSourceTest extends TestCswSourceBase {
     SourceResponse response = cswSource.query(getQueryRequestWithSubject(query));
 
     // Verify
-    Assert.assertNotNull(response);
+    Assertions.assertNotNull(response);
     assertThat(response.getResults().size(), is(numRecordsReturned));
     assertThat(response.getHits(), is(numRecordsMatched));
     ArgumentCaptor<GetRecordsType> captor = ArgumentCaptor.forClass(GetRecordsType.class);
@@ -376,7 +376,7 @@ public class CswSourceTest extends TestCswSourceBase {
     SourceResponse response = cswSource.query(getQueryRequestWithSubject(query));
 
     // Verify
-    Assert.assertNotNull(response);
+    Assertions.assertNotNull(response);
     assertThat(response.getResults().size(), is(numRecordsReturned));
     assertThat(response.getHits(), is(numRecordsMatched));
     ArgumentCaptor<GetRecordsType> captor = ArgumentCaptor.forClass(GetRecordsType.class);
@@ -436,7 +436,7 @@ public class CswSourceTest extends TestCswSourceBase {
     SourceResponse response = cswSource.query(getQueryRequestWithSubject(query));
 
     // Verify
-    Assert.assertNotNull(response);
+    Assertions.assertNotNull(response);
     assertThat(response.getResults().size(), is(numRecordsReturned));
     assertThat(response.getHits(), is(numRecordsMatched));
     ArgumentCaptor<GetRecordsType> captor = ArgumentCaptor.forClass(GetRecordsType.class);
@@ -483,7 +483,7 @@ public class CswSourceTest extends TestCswSourceBase {
     SourceResponse response = cswSource.query(getQueryRequestWithSubject(query));
 
     // Verify
-    Assert.assertNotNull(response);
+    Assertions.assertNotNull(response);
     assertThat(response.getResults().size(), is(numRecordsReturned));
     assertThat(response.getHits(), is(numRecordsMatched));
     ArgumentCaptor<GetRecordsType> captor = ArgumentCaptor.forClass(GetRecordsType.class);
@@ -542,7 +542,7 @@ public class CswSourceTest extends TestCswSourceBase {
     SourceResponse response = cswSource.query(getQueryRequestWithSubject(query));
 
     // Verify
-    Assert.assertNotNull(response);
+    Assertions.assertNotNull(response);
     assertThat(response.getResults().size(), is(numRecordsReturned));
     assertThat(response.getHits(), is(numRecordsMatched));
     ArgumentCaptor<GetRecordsType> captor = ArgumentCaptor.forClass(GetRecordsType.class);
@@ -1079,8 +1079,8 @@ public class CswSourceTest extends TestCswSourceBase {
     CswSourceConfiguration cswSourceConfiguration = cswSource.cswSourceConfiguration;
 
     // Assert Refresh Changes
-    Assert.assertTrue(cswSourceConfiguration.isRegisterForEvents());
-    Assert.assertEquals(cswSourceConfiguration.getEventServiceAddress(), eventEndpoint);
+    Assertions.assertTrue(cswSourceConfiguration.isRegisterForEvents());
+    Assertions.assertEquals(cswSourceConfiguration.getEventServiceAddress(), eventEndpoint);
     verify(ack).getRequestId();
   }
 
@@ -1118,8 +1118,8 @@ public class CswSourceTest extends TestCswSourceBase {
     CswSourceConfiguration cswSourceConfiguration = cswSource.cswSourceConfiguration;
 
     // Assert Refresh Changes
-    Assert.assertTrue(cswSourceConfiguration.isRegisterForEvents());
-    Assert.assertEquals(cswSourceConfiguration.getEventServiceAddress(), eventEndpoint);
+    Assertions.assertTrue(cswSourceConfiguration.isRegisterForEvents());
+    Assertions.assertEquals(cswSourceConfiguration.getEventServiceAddress(), eventEndpoint);
     verify(client).deleteRecordsSubscription(subscriptionId);
     verify(ack).getRequestId();
   }
@@ -1158,8 +1158,8 @@ public class CswSourceTest extends TestCswSourceBase {
     CswSourceConfiguration cswSourceConfiguration = cswSource.cswSourceConfiguration;
 
     // Assert Refresh Changes
-    Assert.assertFalse(cswSourceConfiguration.isRegisterForEvents());
-    Assert.assertEquals(cswSourceConfiguration.getEventServiceAddress(), eventEndpoint);
+    Assertions.assertFalse(cswSourceConfiguration.isRegisterForEvents());
+    Assertions.assertEquals(cswSourceConfiguration.getEventServiceAddress(), eventEndpoint);
     verify(client).deleteRecordsSubscription(subscriptionId);
   }
 

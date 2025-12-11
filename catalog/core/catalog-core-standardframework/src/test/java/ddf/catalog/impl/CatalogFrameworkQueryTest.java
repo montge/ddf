@@ -13,9 +13,9 @@
  */
 package ddf.catalog.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
@@ -206,7 +206,7 @@ public class CatalogFrameworkQueryTest {
     try {
       QueryResponse response = framework.query(queryReq);
       LOGGER.info("Response:{}", response);
-      assertEquals("Expecting return 2 results.", 2, response.getHits());
+      assertEquals(2, response.getHits(), "Expecting return 2 results.");
     } catch (UnsupportedQueryException e) {
       LOGGER.error("Failure!!!", e);
       fail();
@@ -221,7 +221,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("After filter should return 1 result", 1, response.getHits());
+      assertEquals(1, response.getHits(), "After filter should return 1 result");
       assertEquals(
           "After filter should return metacard[" + mcId2 + "]",
           mcId2,
@@ -240,7 +240,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("After filter should return 0 results.", 0, response.getHits());
+      assertEquals(0, response.getHits(), "After filter should return 0 results.");
     } catch (UnsupportedQueryException e) {
       fail();
     } catch (FederationException e) {
@@ -298,7 +298,7 @@ public class CatalogFrameworkQueryTest {
 
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("Expecting return 2 results.", 2, response.getHits());
+      assertEquals(2, response.getHits(), "Expecting return 2 results.");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();
@@ -311,7 +311,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("Before filter should return 1 result", 1, response.getHits());
+      assertEquals(1, response.getHits(), "Before filter should return 1 result");
       assertEquals(
           "Before filter should return metacard[" + mcId1 + "]",
           mcId1,
@@ -329,7 +329,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("Before filter should return 0 results.", 0, response.getHits());
+      assertEquals(0, response.getHits(), "Before filter should return 0 results.");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();
@@ -395,7 +395,7 @@ public class CatalogFrameworkQueryTest {
 
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("Expecting return 0 results.", 0, response.getHits());
+      assertEquals(0, response.getHits(), "Expecting return 0 results.");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();
@@ -412,7 +412,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("Begins filter should return 1 result", 1, response.getHits());
+      assertEquals(1, response.getHits(), "Begins filter should return 1 result");
       assertEquals(
           "Begins filter should return metacard[" + mcId1 + "]",
           mcId1,
@@ -433,7 +433,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("Begins filter should return 1 result", 1, response.getHits());
+      assertEquals(1, response.getHits(), "Begins filter should return 1 result");
       assertEquals(
           "Begins filter should return metacard[" + mcId2 + "]",
           mcId2,
@@ -503,7 +503,7 @@ public class CatalogFrameworkQueryTest {
 
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("Expecting return 1 result.", 1, response.getHits());
+      assertEquals(1, response.getHits(), "Expecting return 1 result.");
       assertEquals(
           "During filter should return metacard[" + mcId1 + "]",
           mcId1,
@@ -525,7 +525,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("During filter should return 1 result", 1, response.getHits());
+      assertEquals(1, response.getHits(), "During filter should return 1 result");
       assertEquals(
           "During filter should return metacard[" + mcId2 + "]",
           mcId2,
@@ -546,7 +546,7 @@ public class CatalogFrameworkQueryTest {
     queryReq = new QueryRequestImpl(query, false);
     try {
       QueryResponse response = framework.query(queryReq);
-      assertEquals("During filter should return 2 result", 2, response.getHits());
+      assertEquals(2, response.getHits(), "During filter should return 2 result");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();

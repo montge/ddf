@@ -13,6 +13,7 @@
  */
 package ddf.camel.component.catalog;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
@@ -242,7 +243,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull("InputTransformer for text/xml;id=identity not found", transformer);
+    assertNotNull(transformer, "InputTransformer for text/xml;id=identity not found");
 
     // Attempt to transform the XML input into a Metacard
     try {
@@ -276,7 +277,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull("InputTransformer for text/xml;id=identity not found", transformer);
+    assertNotNull(transformer, "InputTransformer for text/xml;id=identity not found");
 
     // Attempt to transform the XML input into a Metacard
     try {
@@ -320,7 +321,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull("InputTransformer for mimeType=text/xml&id=identity not found", transformer);
+    assertNotNull(transformer, "InputTransformer for mimeType=text/xml&id=identity not found");
 
     // Transform the XML input into a Metacard
     Metacard metacard = transformer.transform(input);

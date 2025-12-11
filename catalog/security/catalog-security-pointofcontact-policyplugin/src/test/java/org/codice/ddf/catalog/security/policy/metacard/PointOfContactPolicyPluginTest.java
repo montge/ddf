@@ -16,7 +16,7 @@ package org.codice.ddf.catalog.security.policy.metacard;
 import static ddf.catalog.Constants.OPERATION_TRANSACTION_KEY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

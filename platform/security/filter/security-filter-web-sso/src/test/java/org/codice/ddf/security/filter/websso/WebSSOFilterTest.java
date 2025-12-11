@@ -15,7 +15,7 @@ package org.codice.ddf.security.filter.websso;
 
 import static ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY;
 import static ddf.security.SecurityConstants.SECURITY_TOKEN_KEY;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;

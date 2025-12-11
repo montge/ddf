@@ -17,7 +17,7 @@ import static com.google.common.net.HttpHeaders.AUTHORIZATION;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.codice.ddf.cxf.oauth.OAuthSecurity.OAUTH;
 import static org.codice.ddf.cxf.oauth.OAuthSecurityImpl.GSON;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;

@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.idp.client;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,7 +28,6 @@ import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
-import junit.framework.Assert;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,6 +80,6 @@ public class IdpLogoutActionProviderTest {
     Object notsubject = new Object();
     when(encryptionService.encrypt(any(String.class))).thenReturn(nameIdTime);
     Action action = idpLogoutActionProvider.getAction(notsubject);
-    Assert.assertNull("Expected the url to be null", action);
+    assertNull(action, "Expected the url to be null");
   }
 }

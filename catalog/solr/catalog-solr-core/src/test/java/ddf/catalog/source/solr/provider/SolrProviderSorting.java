@@ -19,8 +19,8 @@ import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.create;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.deleteAll;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.getFilterBuilder;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.numericalDescriptors;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.Metacard;

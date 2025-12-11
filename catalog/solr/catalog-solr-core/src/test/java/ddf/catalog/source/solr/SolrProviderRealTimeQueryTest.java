@@ -18,8 +18,8 @@ import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.create;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.deleteAll;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.getFilterBuilder;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.queryAndVerifyCount;
-import static junit.framework.TestCase.assertTrue;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.Lists;
 import ddf.catalog.data.Metacard;
@@ -46,10 +46,10 @@ import org.apache.solr.SolrTestCaseJ4;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.cloud.MiniSolrCloudCluster;
 import org.codice.solr.factory.impl.SolrCloudClientFactory;
-import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
@@ -198,7 +198,7 @@ public class SolrProviderRealTimeQueryTest {
         createResponse.getCreatedMetacards().stream().map(m -> m.getId()).findFirst();
 
     if (!id.isPresent()) {
-      Assert.fail("Metacard creation failed for metacard with title: " + metacardTitle);
+      Assertions.fail("Metacard creation failed for metacard with title: " + metacardTitle);
     }
 
     // Real time queries only work when querying by ID, so a real time query by title only will
@@ -229,7 +229,7 @@ public class SolrProviderRealTimeQueryTest {
         createResponse.getCreatedMetacards().stream().map(m -> m.getId()).findFirst();
 
     if (!id.isPresent()) {
-      Assert.fail("Metacard creation failed for metacard with title: " + metacardTitle);
+      Assertions.fail("Metacard creation failed for metacard with title: " + metacardTitle);
     }
 
     // Real time queries only work when querying by ID, so a real time query by title only will
@@ -400,7 +400,7 @@ public class SolrProviderRealTimeQueryTest {
         createResponse.getCreatedMetacards().stream().map(m -> m.getId()).findFirst();
 
     if (!id.isPresent()) {
-      Assert.fail("Metacard creation failed for metacard with title: " + metacardTitle);
+      Assertions.fail("Metacard creation failed for metacard with title: " + metacardTitle);
     }
 
     // Real time queries only happen when querying by ID, so a query by title only will

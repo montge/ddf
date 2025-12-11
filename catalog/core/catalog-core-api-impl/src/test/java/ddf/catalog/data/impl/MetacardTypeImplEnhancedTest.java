@@ -19,10 +19,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ddf.catalog.data.AttributeDescriptor;
 import ddf.catalog.data.MetacardType;
@@ -202,7 +202,7 @@ public class MetacardTypeImplEnhancedTest {
     try {
       retrieved.add(
           new AttributeDescriptorImpl("new", true, true, false, false, BasicTypes.STRING_TYPE));
-      assertFalse("Should have thrown UnsupportedOperationException", true);
+      assertFalse(true, "Should have thrown UnsupportedOperationException");
     } catch (UnsupportedOperationException e) {
       // Expected
       assertTrue(true);

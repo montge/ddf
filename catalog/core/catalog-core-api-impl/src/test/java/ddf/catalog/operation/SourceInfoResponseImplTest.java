@@ -13,7 +13,7 @@
  */
 package ddf.catalog.operation;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import ddf.catalog.operation.impl.SourceInfoRequestLocal;
 import ddf.catalog.operation.impl.SourceInfoResponseImpl;
