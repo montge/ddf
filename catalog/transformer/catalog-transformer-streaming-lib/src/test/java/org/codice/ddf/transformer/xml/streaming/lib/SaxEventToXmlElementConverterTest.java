@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class SaxEventToXmlElementConverterTest {

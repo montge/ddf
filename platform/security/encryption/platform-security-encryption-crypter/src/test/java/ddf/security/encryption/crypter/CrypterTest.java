@@ -27,16 +27,18 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SecureRandom;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class CrypterTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     String keysetHome = temporaryFolder.newFolder("keysets").getAbsolutePath();
     String associatedDataHome = temporaryFolder.newFolder("etc").getAbsolutePath();
@@ -46,7 +48,7 @@ public class CrypterTest {
         associatedDataHome.concat("/associatedData.properties"));
   }
 
-  @After
+  @AfterEach
   public void cleanUp() throws Exception {
     System.clearProperty(SecurityConstants.KEYSET_DIR);
     System.clearProperty(SecurityConstants.ASSOCIATED_DATA_PATH);

@@ -16,12 +16,12 @@ package org.codice.ddf.configuration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SystemBaseUrlTest {
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     System.setProperty("org.codice.ddf.system.protocol", "https://");
     System.setProperty("org.codice.ddf.system.hostname", "localhost");

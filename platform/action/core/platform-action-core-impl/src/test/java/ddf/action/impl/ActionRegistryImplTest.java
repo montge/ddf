@@ -27,9 +27,8 @@ import ddf.action.MultiActionProvider;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner.Silent;
 
@@ -56,7 +55,7 @@ public class ActionRegistryImplTest {
 
   private ActionRegistryImpl registry;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     registry = new ActionRegistryImpl();
 

@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.SpringVersion;
 
 /**

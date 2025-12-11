@@ -19,8 +19,8 @@ import static org.hamcrest.Matchers.nullValue;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link HandlerResult} interface contract. Uses a simple implementation to verify the
@@ -30,7 +30,7 @@ public class HandlerResultTest {
 
   private TestHandlerResult handlerResult;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     handlerResult = new TestHandlerResult();
   }

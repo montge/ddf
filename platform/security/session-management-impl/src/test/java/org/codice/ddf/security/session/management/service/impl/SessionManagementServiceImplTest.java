@@ -50,8 +50,8 @@ import org.apache.cxf.helpers.DOMUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -103,7 +103,7 @@ public class SessionManagementServiceImplTest {
     return oidcAssertion;
   }
 
-  @Before
+  @BeforeEach
   public void setup()
       throws ParserConfigurationException, SAXException, IOException, SecurityServiceException {
     request = mock(HttpServletRequest.class);

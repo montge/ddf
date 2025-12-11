@@ -44,14 +44,14 @@ import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.api.AuthenticationHandler;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Test session handling and edge cases for WebSSOFilter. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WebSSOFilterSessionHandlingTest {
 
   private WebSSOFilter filter;
@@ -65,7 +65,7 @@ public class WebSSOFilterSessionHandlingTest {
   @Mock private HttpSession session;
   @Mock private AuthenticationHandler handler;
 
-  @Before
+  @BeforeEach
   public void setup() {
     filter = new WebSSOFilter();
     filter.setContextPolicyManager(contextPolicyManager);

@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PlatformGlobalConfigurationValidatorTest {
 

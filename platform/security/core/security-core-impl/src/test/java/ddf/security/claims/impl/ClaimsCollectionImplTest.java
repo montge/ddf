@@ -22,17 +22,17 @@ import static org.mockito.Mockito.mock;
 
 import ddf.security.claims.Claim;
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClaimsCollectionImplTest {
 
   private ClaimsCollectionImpl claimsCollection;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     claimsCollection = new ClaimsCollectionImpl();
   }

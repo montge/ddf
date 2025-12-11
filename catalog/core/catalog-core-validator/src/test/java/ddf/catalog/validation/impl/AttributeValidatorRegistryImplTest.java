@@ -24,13 +24,13 @@ import ddf.catalog.validation.impl.validator.PastDateValidator;
 import ddf.catalog.validation.impl.validator.PatternValidator;
 import ddf.catalog.validation.impl.validator.SizeValidator;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeValidatorRegistryImplTest {
   private AttributeValidatorRegistry registry;
 
-  @Before
+  @BeforeEach
   public void setup() {
     registry = new AttributeValidatorRegistryImpl();
   }

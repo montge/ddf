@@ -30,14 +30,14 @@ import org.codice.ddf.cxf.client.SecureCxfClientFactory;
 import org.codice.ddf.cxf.client.impl.ClientBuilderImpl;
 import org.codice.ddf.cxf.oauth.OAuthSecurity;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SolrRestTest {
 
   private SolrRest solrRest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     EncryptionService encryptionService = mock(EncryptionService.class);
     when(encryptionService.decrypt(anyString())).thenReturn("test");

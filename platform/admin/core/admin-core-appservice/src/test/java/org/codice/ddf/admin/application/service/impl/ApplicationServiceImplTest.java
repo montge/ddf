@@ -41,8 +41,8 @@ import org.apache.karaf.features.internal.service.RepositoryImpl;
 import org.codice.ddf.admin.application.rest.model.FeatureDetails;
 import org.codice.ddf.admin.application.service.ApplicationService;
 import org.codice.ddf.security.impl.Security;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -96,7 +96,7 @@ public class ApplicationServiceImplTest {
    * conditions. @see {@link #createMockFeaturesService(Set, Set, Set)}
    */
   @SuppressWarnings("unchecked")
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // Recreate the repos and BundleContext prior to each test in order to
     // ensure modifications made in one test do not effect another test.

@@ -16,7 +16,7 @@ package org.codice.ddf.spatial.ogc.csw.catalog.common.converter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultCswRecordMapTest {
 

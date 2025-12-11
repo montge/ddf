@@ -36,8 +36,8 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.authz.permission.WildcardPermission;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.ddf.parser.xml.XmlParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** User: tustisos Date: 3/20/13 Time: 9:35 AM */
 public class AuthzRealmTest {
@@ -49,7 +49,7 @@ public class AuthzRealmTest {
 
   PrincipalCollection mockSubjectPrincipal;
 
-  @Before
+  @BeforeEach
   public void setup() throws PdpException {
     String ruleClaim = "FineAccessControls";
     String countryClaim = "CountryOfAffiliation";

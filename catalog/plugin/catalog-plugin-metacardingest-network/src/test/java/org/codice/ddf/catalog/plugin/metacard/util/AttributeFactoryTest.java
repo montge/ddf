@@ -40,14 +40,14 @@ import ddf.catalog.data.AttributeType;
 import java.io.Serializable;
 import java.util.List;
 import javax.xml.bind.DatatypeConverter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Validate the behavior for {@link AttributeFactory}. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AttributeFactoryTest {
 
   private static final String SAMPLE_JSON_STRING = "{ \"id\": \"j8k767bjav592j2\"}";
@@ -73,7 +73,7 @@ public class AttributeFactoryTest {
 
   private AttributeFactory attributeFactory;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     when(mockDescriptor.getType()).thenReturn(mockType);
     attributeFactory = new AttributeFactory();

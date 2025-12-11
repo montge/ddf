@@ -31,7 +31,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
 import org.apache.solr.common.util.NamedList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RemoteSolrCatalogProviderTest {
 

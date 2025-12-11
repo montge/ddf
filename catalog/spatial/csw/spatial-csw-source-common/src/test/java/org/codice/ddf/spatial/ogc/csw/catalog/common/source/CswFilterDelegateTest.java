@@ -95,9 +95,9 @@ import org.geotools.geometry.jts.Geometries;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -756,7 +756,7 @@ public class CswFilterDelegateTest {
               + " 30.000216601947248 30.00108893152347"
               + " 30.0 30.001110264953223");
 
-  @BeforeClass
+  @BeforeAll
   public static void setupTestClass() throws JAXBException, ParseException {
     XMLUnit.setIgnoreWhitespace(true);
     marshaller = JAXB_CONTEXT.createMarshaller();
@@ -1383,7 +1383,7 @@ public class CswFilterDelegateTest {
     return geoFilterStr;
   }
 
-  @Before
+  @BeforeEach
   public void preTest() throws JAXBException {
     writer = new StringWriter();
   }

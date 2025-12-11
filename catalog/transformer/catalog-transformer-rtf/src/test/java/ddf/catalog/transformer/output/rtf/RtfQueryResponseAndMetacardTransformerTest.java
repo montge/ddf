@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import javax.activation.MimeTypeParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RtfQueryResponseAndMetacardTransformerTest extends BaseTestConfiguration {
 

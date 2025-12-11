@@ -19,8 +19,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import ddf.security.liberty.paos.Response;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.xml.schema.XSBooleanValue;
 
 public class ResponseImplTest {
@@ -33,7 +33,7 @@ public class ResponseImplTest {
 
   private ResponseImpl response;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     response = new ResponseImpl(NAMESPACE_URI, ELEMENT_LOCAL_NAME, NAMESPACE_PREFIX);
   }

@@ -29,7 +29,7 @@ import org.apache.karaf.shell.api.console.Session;
 import org.apache.karaf.shell.api.console.SessionFactory;
 import org.apache.shiro.subject.ExecutionException;
 import org.codice.ddf.security.impl.Security;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;

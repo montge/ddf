@@ -79,15 +79,17 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 public class FileSystemStorageProviderTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -108,7 +110,7 @@ public class FileSystemStorageProviderTest {
 
   private FileSystemStorageProvider provider;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     baseDir = temporaryFolder.getRoot().getAbsolutePath();
     baseTmpDir = temporaryFolder.newFolder(FileSystemStorageProvider.DEFAULT_TMP).getAbsolutePath();
@@ -132,7 +134,7 @@ public class FileSystemStorageProviderTest {
     provider.setMimeTypeMapper(mapper);
   }
 
-  @After
+  @AfterEach
   public void clean() {
     System.clearProperty(SecurityConstants.KEYSET_DIR);
     System.clearProperty(SecurityConstants.ASSOCIATED_DATA_PATH);

@@ -47,8 +47,8 @@ import java.util.List;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.SortByImpl;
 import org.geotools.styling.UomOgcMapping;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.mockito.internal.util.collections.Sets;
@@ -71,7 +71,7 @@ public class SolrProviderSpatial {
 
   private static SolrCatalogProviderImpl provider;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     provider = SolrProviderTest.getProvider();
   }

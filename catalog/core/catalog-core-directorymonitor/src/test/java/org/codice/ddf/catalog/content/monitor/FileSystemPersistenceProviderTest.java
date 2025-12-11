@@ -30,11 +30,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class FileSystemPersistenceProviderTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -43,7 +45,7 @@ public class FileSystemPersistenceProviderTest {
 
   private String testMapName = "test-map";
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     persistenceProvider = new TestFileSystemPersistenceProvider(testMapName, temporaryFolder);
   }

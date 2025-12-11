@@ -23,8 +23,8 @@ import com.google.common.collect.Sets;
 import java.util.Collections;
 import java.util.Optional;
 import org.codice.ddf.spatial.ogc.csw.catalog.endpoint.transformer.CswActionTransformer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CswActionTransformerProviderTest {
 
@@ -34,7 +34,7 @@ public class CswActionTransformerProviderTest {
 
   private CswActionTransformerProviderImpl cswActionTransformerProvider;
 
-  @Before
+  @BeforeEach
   public void setup() {
     cswActionTransformerProvider = new CswActionTransformerProviderImpl();
   }

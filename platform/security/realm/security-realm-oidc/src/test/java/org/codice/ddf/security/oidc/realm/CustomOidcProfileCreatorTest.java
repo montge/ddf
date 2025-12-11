@@ -39,11 +39,11 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import org.apache.shiro.authc.AuthenticationException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.client.OidcClient;
@@ -51,7 +51,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 import org.pac4j.oidc.profile.OidcProfile;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CustomOidcProfileCreatorTest {
 
   private CustomOidcProfileCreator profileCreator;
@@ -61,7 +61,7 @@ public class CustomOidcProfileCreatorTest {
   @Mock private OidcClient oidcClient;
   @Mock private WebContext webContext;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
     gen.initialize(2048);

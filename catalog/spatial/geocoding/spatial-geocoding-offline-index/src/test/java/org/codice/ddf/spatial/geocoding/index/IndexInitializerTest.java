@@ -23,11 +23,13 @@ import java.util.concurrent.ExecutorService;
 import org.codice.ddf.security.impl.Security;
 import org.codice.ddf.spatial.geocoding.GeoEntryExtractor;
 import org.codice.ddf.spatial.geocoding.GeoEntryIndexer;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class IndexInitializerTest {
 
   @Rule public TemporaryFolder tempDir = new TemporaryFolder();
@@ -42,7 +44,7 @@ public class IndexInitializerTest {
 
   private File geoIndexDir;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     GeoEntryExtractor extractor = mock(GeoEntryExtractor.class);
     indexer = mock(GeoEntryIndexer.class);

@@ -58,10 +58,10 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.activation.MimeType;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ReliableResourceDownloaderTest {
   private static final String DOWNLOAD_ID = "123";
@@ -84,14 +84,14 @@ public class ReliableResourceDownloaderTest {
 
   private Metacard mockMetacard;
 
-  @BeforeClass
+  @BeforeAll
   public static void oneTimeSetup() {
     String workingDir = System.getProperty("user.dir");
     productCacheDirectory = workingDir + "/target/tests/product-cache";
     productInputFilename = workingDir + "/src/test/resources/foo_10_lines.txt";
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     downloaderConfig = new ReliableResourceDownloaderConfig();
     downloaderConfig.setEventListener(mock(DownloadsStatusEventListener.class));
@@ -189,7 +189,7 @@ public class ReliableResourceDownloaderTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   // Can't figure out how to throw IOExcetion from CountingOutputStream
   public void testClientOutputStreamException() throws Exception {
 

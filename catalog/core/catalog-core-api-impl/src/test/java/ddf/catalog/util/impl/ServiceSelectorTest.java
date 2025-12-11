@@ -29,8 +29,8 @@ import static org.mockito.Mockito.when;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.SortedSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -47,7 +47,7 @@ public class ServiceSelectorTest {
 
   private Calendar mockCalendar2;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.mockBundleContext = buildMockBundleContext();
     this.mockServiceReference1 = buildMockServiceReference(1, 101L);

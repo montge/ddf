@@ -32,15 +32,15 @@ import org.codice.ddf.cxf.client.SecureCxfClientFactory;
 import org.codice.ddf.security.Security;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.Csw;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswSourceConfiguration;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.BundleContext;
 
 /** Unit tests for CswSourceImpl */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CswSourceImplTest {
 
   private static final String CSW_URL = "http://example.com/csw";
@@ -68,7 +68,7 @@ public class CswSourceImplTest {
 
   private CswSourceImpl cswSource;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     filterBuilder = new GeotoolsFilterBuilder();
 

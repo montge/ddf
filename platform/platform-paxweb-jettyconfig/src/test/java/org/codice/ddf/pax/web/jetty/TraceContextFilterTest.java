@@ -25,17 +25,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.util.ThreadContext;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Ensure the trace context gets set during the lifetime of the filter, and is cleaned up after the
  * fact.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TraceContextFilterTest {
 
   @Mock private HttpServletRequest mockRequest;
@@ -50,7 +50,7 @@ public class TraceContextFilterTest {
 
   private static final String TRACE_ID = "trace-id";
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     traceContextFilter = new TraceContextFilter();
   }

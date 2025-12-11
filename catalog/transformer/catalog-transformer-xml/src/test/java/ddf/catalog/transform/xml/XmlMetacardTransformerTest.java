@@ -42,8 +42,8 @@ import org.codice.ddf.parser.xml.XmlParser;
 import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XmlMetacardTransformerTest {
 
@@ -51,7 +51,7 @@ public class XmlMetacardTransformerTest {
 
   private Map<String, Serializable> emptyArgs = Collections.EMPTY_MAP;
 
-  @Before
+  @BeforeEach
   public void setup() {
     Parser parser = new XmlParser();
     MetacardMarshaller metacardMarshaller =
@@ -59,7 +59,7 @@ public class XmlMetacardTransformerTest {
     transformer = new XmlMetacardTransformer(metacardMarshaller);
   }
 
-  @Before
+  @BeforeEach
   public void setupXpath() {
     Map<String, String> m = new HashMap<String, String>();
     m.put("m", "urn:catalog:metacard");

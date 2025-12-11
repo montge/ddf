@@ -62,9 +62,10 @@ import org.codice.ddf.test.common.configurators.FeatureOptionBuilder.FeatureOpti
 import org.codice.ddf.test.common.configurators.PortFinder;
 import org.codice.ddf.test.common.options.TestResourcesOptions;
 import org.codice.ddf.test.common.rules.ServiceRegistrationRule;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.opengis.filter.Filter;
@@ -82,6 +83,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class RestEndpointIT extends AbstractComponentTest {
@@ -132,7 +134,7 @@ public class RestEndpointIT extends AbstractComponentTest {
             .add("/catalog");
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     LOGGER.trace("setup");
 

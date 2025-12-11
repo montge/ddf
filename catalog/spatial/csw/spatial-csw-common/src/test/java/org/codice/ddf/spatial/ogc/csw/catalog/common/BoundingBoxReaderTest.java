@@ -23,16 +23,16 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Unit tests for BoundingBoxReader - handles coordinate transformations and WKT parsing */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BoundingBoxReaderTest {
 
   private static final String LOWER_CORNER_NODE = "LowerCorner";
@@ -46,7 +46,7 @@ public class BoundingBoxReaderTest {
 
   private WKTReader wktReader;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     wktReader = new WKTReader();
   }

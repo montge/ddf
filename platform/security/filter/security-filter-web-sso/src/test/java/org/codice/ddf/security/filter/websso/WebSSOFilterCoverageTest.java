@@ -53,14 +53,14 @@ import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.handler.api.HandlerResult.Status;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Comprehensive test coverage for WebSSOFilter edge cases and error handling. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WebSSOFilterCoverageTest {
 
   private WebSSOFilter filter;
@@ -76,7 +76,7 @@ public class WebSSOFilterCoverageTest {
   @Mock private AuthenticationHandler handler2;
   @Mock private ContextPolicy contextPolicy;
 
-  @Before
+  @BeforeEach
   public void setup() {
     filter = new WebSSOFilter();
     filter.setContextPolicyManager(contextPolicyManager);

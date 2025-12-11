@@ -34,15 +34,17 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.ResponseType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.parser.xml.XmlParser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class XacmlClientEnhancedTest {
 
   private static final String ACTION_CATEGORY =
@@ -60,14 +62,14 @@ public class XacmlClientEnhancedTest {
   private File policyDir;
   private SecurityLogger securityLogger;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     temporaryFolder.create();
     policyDir = temporaryFolder.newFolder("policies");
     securityLogger = mock(SecurityLogger.class);
   }
 
-  @After
+  @AfterEach
   public void cleanup() {
     temporaryFolder.delete();
   }

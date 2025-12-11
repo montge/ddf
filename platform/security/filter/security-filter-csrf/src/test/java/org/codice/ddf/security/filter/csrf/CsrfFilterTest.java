@@ -27,13 +27,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.AuthenticationFailureException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CsrfFilterTest {
 
   private static final String CSRF_HEADER = "X-Requested-With";
@@ -59,7 +59,7 @@ public class CsrfFilterTest {
 
   private CsrfFilter csrfFilter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // Set system property to enable CSRF filtering
     System.setProperty("csrf.enabled", "true");

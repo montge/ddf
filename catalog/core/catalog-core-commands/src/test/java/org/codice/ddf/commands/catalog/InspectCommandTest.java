@@ -29,7 +29,7 @@ import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.Result;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import ddf.catalog.operation.QueryResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InspectCommandTest extends CommandCatalogFrameworkCommon {
 

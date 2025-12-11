@@ -29,14 +29,16 @@ import org.eclipse.osgi.internal.permadmin.EquinoxSecurityManager;
 import org.eclipse.osgi.internal.permadmin.SecurityAdmin;
 import org.eclipse.osgi.storage.PermissionData;
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.condpermadmin.ConditionalPermissionAdmin;
 import org.osgi.service.condpermadmin.ConditionalPermissionInfo;
 
+@EnableRuleMigrationSupport
 public class PermissionActivatorTest {
   private static final String BUNDLE_1 = "bundle-1";
   private static final String BUNDLE_2 = "bundle-2";
@@ -48,7 +50,7 @@ public class PermissionActivatorTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     temporaryFolder.newFolder("security");
     System.setProperty("ddf.home", temporaryFolder.getRoot().getAbsolutePath());

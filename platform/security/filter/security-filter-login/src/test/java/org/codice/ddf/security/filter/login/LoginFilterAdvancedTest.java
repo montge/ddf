@@ -48,19 +48,19 @@ import org.codice.ddf.security.handler.HandlerResultImpl;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opensaml.core.config.InitializationService;
 
 /**
  * Advanced test suite for LoginFilter covering error handling, edge cases, and complex scenarios.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LoginFilterAdvancedTest {
 
   private static final String TEST_REQUEST_URI = "/secure/resource";
@@ -82,12 +82,12 @@ public class LoginFilterAdvancedTest {
   private LoginFilter loginFilter;
   private PrincipalHolder principalHolder;
 
-  @BeforeClass
+  @BeforeAll
   public static void initClass() throws Exception {
     InitializationService.initialize();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     loginFilter = new LoginFilter();
     loginFilter.setSecurityManager(securityManager);

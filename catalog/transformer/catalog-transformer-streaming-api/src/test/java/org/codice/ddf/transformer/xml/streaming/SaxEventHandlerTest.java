@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -38,7 +38,7 @@ public class SaxEventHandlerTest {
 
   private TestSaxEventHandler handler;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     handler = new TestSaxEventHandler();
   }

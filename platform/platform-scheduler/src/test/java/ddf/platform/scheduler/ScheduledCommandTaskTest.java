@@ -21,8 +21,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import org.codice.ddf.security.Security;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -40,7 +40,7 @@ public class ScheduledCommandTaskTest {
 
   private ScheduledCommandTask scheduledCommandTask;
 
-  @Before
+  @BeforeEach
   public void setUp() throws SchedulerException {
     scheduler = mock(Scheduler.class);
     security = mock(Security.class);

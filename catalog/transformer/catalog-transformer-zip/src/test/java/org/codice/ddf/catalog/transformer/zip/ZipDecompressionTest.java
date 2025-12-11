@@ -27,8 +27,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ZipDecompressionTest {
 
@@ -42,7 +42,7 @@ public class ZipDecompressionTest {
 
   private List<String> zipContentList = Arrays.asList("id1", "id2", "id3");
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     zipDecompression = new ZipDecompression();
     zipInputStream = getClass().getResourceAsStream(ZIP_FILE_NAME);

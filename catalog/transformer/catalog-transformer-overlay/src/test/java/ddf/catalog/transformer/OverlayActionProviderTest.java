@@ -22,15 +22,15 @@ import static org.junit.Assert.assertThrows;
 
 import ddf.action.Action;
 import ddf.catalog.data.impl.MetacardImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OverlayActionProviderTest {
   private static final String TRANSFORMER_ID = "overlay.thumbnail";
 
   private OverlayActionProvider actionProvider;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     actionProvider = new OverlayActionProvider(metacard -> true, TRANSFORMER_ID);
   }

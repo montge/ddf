@@ -22,8 +22,8 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.model.OperationResourceInfo;
 import org.apache.cxf.message.Message;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EndpointOperationInfoResourceComparatorTest {
 
@@ -75,7 +75,7 @@ public class EndpointOperationInfoResourceComparatorTest {
           + "    </ns10:Query>\n"
           + "</csw:secondOperation>";
 
-  @Before
+  @BeforeEach
   public void setUp() throws NoSuchMethodException {
     firstOperation = new OperationResourceInfo(getClass().getMethod(FIRST_OPERATION), null);
     secondOperation = new OperationResourceInfo(getClass().getMethod(SECOND_OPERATION), null);

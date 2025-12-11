@@ -39,8 +39,8 @@ import org.codice.ddf.platform.filter.AuthenticationFailureException;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.SAMLAuthenticationToken;
 import org.codice.ddf.security.saml.assertion.validator.SamlAssertionValidator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.w3c.dom.Element;
 
@@ -60,7 +60,7 @@ public class SamlRealmEnhancedTest {
 
   private SamlRealm samlRealm;
 
-  @Before
+  @BeforeEach
   public void setup() {
     openMocks(this);
     samlRealm = new SamlRealm();

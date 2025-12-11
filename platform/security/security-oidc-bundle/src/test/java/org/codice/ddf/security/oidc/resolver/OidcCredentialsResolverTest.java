@@ -62,12 +62,12 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -75,7 +75,7 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OidcCredentialsResolverTest {
 
   private static final String NONCE_SESSION_ATTRIBUTE = "session-attribute";
@@ -98,7 +98,7 @@ public class OidcCredentialsResolverTest {
   private HttpServer mockHttpServer;
   private String mockAccessTokenString;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
     gen.initialize(2048);
@@ -173,7 +173,7 @@ public class OidcCredentialsResolverTest {
         new OidcCredentialsResolver(configuration, oidcClient, oidcProviderMetadata, 5000, 5000);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (mockHttpServer != null) {
       mockHttpServer.stop(0);

@@ -44,14 +44,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ConfluenceInputTransformerTest {
 
   private ConfluenceInputTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setup() {
     AttributeInjector injector = mock(AttributeInjector.class);
     when(injector.injectAttributes(any(MetacardType.class)))

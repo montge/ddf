@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
 

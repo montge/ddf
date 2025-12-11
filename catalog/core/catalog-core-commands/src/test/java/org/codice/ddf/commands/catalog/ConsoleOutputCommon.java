@@ -14,26 +14,26 @@
 package org.codice.ddf.commands.catalog;
 
 import java.io.IOException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 
 public class ConsoleOutputCommon {
 
   protected static ConsoleOutput consoleOutput;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpConsoleOutput() {
     consoleOutput = new ConsoleOutput();
     consoleOutput.interceptSystemOut();
   }
 
-  @After
+  @AfterEach
   public void resetConsoleOutput() {
     consoleOutput.reset();
   }
 
-  @AfterClass
+  @AfterAll
   public static void closeConsoleOutput() throws IOException {
     consoleOutput.resetSystemOut();
     consoleOutput.closeBuffer();

@@ -30,17 +30,17 @@ import java.util.Hashtable;
 import java.util.Set;
 import org.apache.felix.cm.PersistenceManager;
 import org.codice.felix.cm.internal.ConfigurationPersistencePlugin;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DelegatingPersistenceManagerTest {
   private static final String TEST_PID = "org.codice.test.ServiceFactory";
 
@@ -75,7 +75,7 @@ public class DelegatingPersistenceManagerTest {
 
   private DelegatingPersistenceManager.PluginTrackerCustomizer pluginTrackerCustomizer;
 
-  @Before
+  @BeforeEach
   public void setup() {
     testProps.put(SERVICE_PID, TEST_PID);
     testProps.put(SOME_PROPERTY_KEY, SOME_PROPERTY_VALUE);

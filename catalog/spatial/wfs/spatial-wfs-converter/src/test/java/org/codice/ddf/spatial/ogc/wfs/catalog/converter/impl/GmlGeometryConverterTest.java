@@ -22,8 +22,8 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -35,7 +35,7 @@ public class GmlGeometryConverterTest {
 
   private GeometryFactory geometryFactory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     converter = new GmlGeometryConverter();
     geometryFactory = new GeometryFactory();

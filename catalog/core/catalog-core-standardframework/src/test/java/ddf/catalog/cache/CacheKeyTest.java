@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests that keys are unique and proper for use with a Cache implementation */
 public class CacheKeyTest {

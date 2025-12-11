@@ -33,14 +33,14 @@ import org.codice.ddf.platform.filter.http.HttpFilter;
 import org.codice.ddf.platform.filter.http.HttpFilterChain;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProxyHttpFilterChainTest {
 
   @Mock private HttpServletRequest mockRequest;
@@ -59,7 +59,7 @@ public class ProxyHttpFilterChainTest {
 
   private static final String TARGET = "/test/target";
 
-  @Before
+  @BeforeEach
   public void setup() {
     // Setup default behavior if needed
   }

@@ -29,15 +29,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import org.apache.commons.lang3.SystemUtils;
 import org.codice.ddf.commands.util.DigitalSignature;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-/** Tests the {@link IngestCommand} output. */
+/** Tests the {@EnableRuleMigrationSupport
+ * @link IngestCommand} output. */
 public class IngestCommandTest extends CommandCatalogFrameworkCommon {
 
   @Rule public TemporaryFolder testFolder = new TemporaryFolder();
@@ -46,7 +47,7 @@ public class IngestCommandTest extends CommandCatalogFrameworkCommon {
 
   private DigitalSignature verifier;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     this.verifier = mock(DigitalSignature.class);
 

@@ -22,13 +22,10 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests the behavior of {@link KeyValueParser}. */
-@RunWith(JUnit4.class)
 public class KeyValueParserTest {
 
   private static final List<String> TEST_CASES =
@@ -63,7 +60,7 @@ public class KeyValueParserTest {
 
   private KeyValueParser parser;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     parser = new KeyValueParser();
   }

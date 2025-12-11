@@ -31,12 +31,12 @@ import ddf.security.samlp.impl.SystemCrypto;
 import ddf.security.samlp.impl.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.Response;
@@ -45,7 +45,7 @@ import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.xmlsec.signature.Signature;
 import org.w3c.dom.Document;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthnResponseValidatorTest {
 
   @Mock private SimpleSign simpleSign;
@@ -68,14 +68,14 @@ public class AuthnResponseValidatorTest {
 
   private static SystemCrypto systemCrypto;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     EncryptionService encryptionService = mock(EncryptionService.class);
     systemCrypto =
         new SystemCrypto("encryption.properties", "signature.properties", encryptionService);
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     when(response.getStatus()).thenReturn(status);
     when(status.getStatusCode()).thenReturn(statusCode);

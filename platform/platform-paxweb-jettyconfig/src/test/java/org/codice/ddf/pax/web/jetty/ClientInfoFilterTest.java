@@ -24,17 +24,17 @@ import static org.mockito.Mockito.doThrow;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.util.ThreadContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Ensure our client info properties get set during the lifetime of the filter, and are cleaned up
  * after the fact.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClientInfoFilterTest {
   @Mock private HttpServletRequest mockRequest;
 
@@ -44,7 +44,7 @@ public class ClientInfoFilterTest {
 
   private ClientInfoFilter clientInfoFilter;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     clientInfoFilter = new ClientInfoFilter();
   }

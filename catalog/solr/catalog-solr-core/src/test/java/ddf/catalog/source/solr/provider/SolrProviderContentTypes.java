@@ -29,8 +29,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SolrProviderContentTypes {
 
@@ -52,7 +52,7 @@ public class SolrProviderContentTypes {
 
   private static SolrCatalogProviderImpl provider;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     provider = SolrProviderTest.getProvider();
   }

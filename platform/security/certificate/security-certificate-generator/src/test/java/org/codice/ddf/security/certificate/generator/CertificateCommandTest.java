@@ -32,14 +32,16 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNamesBuilder;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class CertificateCommandTest {
   private static final String[] SANS = new String[] {"IP:1.2.3.4", "DNS:A"};
 
@@ -101,7 +103,7 @@ public class CertificateCommandTest {
     validateSans(ksf, alias, withAdditionalSans);
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     final File systemKeystoreFile = temporaryFolder.newFile("serverKeystore.jks");
     final FileOutputStream systemKeyOutStream = new FileOutputStream(systemKeystoreFile);

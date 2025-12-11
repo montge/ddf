@@ -51,8 +51,8 @@ import org.codice.ddf.branding.BrandingRegistry;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class KmlEndpointTest {
 
@@ -92,7 +92,7 @@ public class KmlEndpointTest {
 
   private static String jetPath;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws IOException, URISyntaxException, SourceUnavailableException {
     when(mockUriInfo.getBaseUri()).thenReturn(new URI("http://example.com"));
 

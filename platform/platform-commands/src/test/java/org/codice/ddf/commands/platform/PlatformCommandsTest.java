@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.is;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.apache.karaf.shell.api.action.Action;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link PlatformCommands} class. */
 public class PlatformCommandsTest {

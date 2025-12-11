@@ -55,17 +55,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OidcTokenValidatorTest {
 
   private static final String NONCE_SESSION_ATTRIBUTE = "session-attribute";
@@ -78,7 +78,7 @@ public class OidcTokenValidatorTest {
   private Algorithm validAlgorithm;
   private Algorithm invalidAlgorithm;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     // Generate the RSA key pair
     KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");

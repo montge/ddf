@@ -26,17 +26,17 @@ import ddf.catalog.validation.impl.validator.PastDateValidator;
 import ddf.catalog.validation.impl.validator.PatternValidator;
 import ddf.catalog.validation.impl.validator.SizeValidator;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AttributeValidatorRegistryImplAdditionalTest {
 
   private AttributeValidatorRegistry registry;
 
-  @Before
+  @BeforeEach
   public void setup() {
     registry = new AttributeValidatorRegistryImpl();
   }

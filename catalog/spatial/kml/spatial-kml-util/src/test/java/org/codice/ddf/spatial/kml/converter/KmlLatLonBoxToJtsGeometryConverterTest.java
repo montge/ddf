@@ -24,14 +24,14 @@ import de.micromata.opengis.kml.v_2_2_0.LatLonBox;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
 public class KmlLatLonBoxToJtsGeometryConverterTest {
   private static LatLonBox testKmlLatLonBox;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream =
         KmlLatLonBoxToJtsGeometryConverterTest.class.getResourceAsStream("/kmlGroundOverlay.kml");

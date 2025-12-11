@@ -23,8 +23,8 @@ import static org.junit.Assert.assertThrows;
 import ddf.catalog.data.DefaultAttributeValueRegistry;
 import java.io.Serializable;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultAttributeValueRegistryImplTest {
   private static final String BASIC_METACARD_NAME = BASIC_METACARD.getName();
@@ -39,7 +39,7 @@ public class DefaultAttributeValueRegistryImplTest {
 
   private DefaultAttributeValueRegistry registry;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     registry = new DefaultAttributeValueRegistryImpl();
   }

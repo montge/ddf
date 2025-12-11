@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EnumerationValidatorTest {
   private static final String[] ENUMERATED_VALUES = {"hearts", "spades", "diamonds", "clubs"};

@@ -67,8 +67,8 @@ import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPeriod;
 import org.geotools.temporal.object.DefaultPosition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.FilterFactory;
 import org.opengis.temporal.Instant;
 import org.opengis.temporal.Period;
@@ -80,7 +80,7 @@ public class CatalogFrameworkQueryTest {
 
   private CatalogFrameworkImpl framework;
 
-  @Before
+  @BeforeEach
   public void initFramework() {
     MockMemoryProvider provider =
         new MockMemoryProvider(

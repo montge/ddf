@@ -28,11 +28,11 @@ import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.codice.ddf.branding.BrandingPlugin;
 import org.codice.ddf.branding.BrandingRegistry;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Enhanced tests for {@link PlatformUiConfiguration} class.
@@ -48,7 +48,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Edge cases and null handling
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PlatformUiConfigurationEnhancedTest {
 
   private static final int DEFAULT_TIMEOUT_MINUTES = 15;
@@ -71,7 +71,7 @@ public class PlatformUiConfigurationEnhancedTest {
 
   private PlatformUiConfiguration configuration;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     configuration = new PlatformUiConfiguration();
   }

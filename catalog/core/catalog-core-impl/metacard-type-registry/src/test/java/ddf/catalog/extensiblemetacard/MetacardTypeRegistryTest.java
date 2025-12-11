@@ -31,8 +31,8 @@ import ddf.catalog.data.impl.QualifiedMetacardTypeImpl;
 import ddf.catalog.data.metacardtype.MetacardTypeRegistryImpl;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.InvalidSyntaxException;
 
 public class MetacardTypeRegistryTest {
@@ -127,7 +127,7 @@ public class MetacardTypeRegistryTest {
 
   private static HashSet<AttributeDescriptor> qmtAttributes;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupMetacardTypeRegistry() throws Exception {
     mtr = MetacardTypeRegistryImpl.getInstance();
 

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.security.auth.x500.X500Principal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.service.condpermadmin.ConditionInfo;
 import sun.security.x509.X509CertImpl; // suppress checkstyle:IllegalImport required for testing

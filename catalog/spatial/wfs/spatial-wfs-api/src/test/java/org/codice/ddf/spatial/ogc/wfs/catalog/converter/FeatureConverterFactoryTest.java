@@ -24,14 +24,14 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FeatureConverterFactoryTest {
 
   private TestFeatureConverterFactory factory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     factory = new TestFeatureConverterFactory();
   }

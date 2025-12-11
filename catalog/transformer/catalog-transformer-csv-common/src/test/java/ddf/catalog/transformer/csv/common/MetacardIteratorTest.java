@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
 public class MetacardIteratorTest {
@@ -61,7 +61,7 @@ public class MetacardIteratorTest {
 
   private static final List<AttributeDescriptor> ATTRIBUTE_DESCRIPTOR_LIST = new ArrayList<>();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ATTRIBUTE_DESCRIPTOR_LIST.clear();
     METACARD_DATA_MAP.clear();

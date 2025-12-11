@@ -26,7 +26,7 @@ import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 
 public class ConfluenceFilterDelegateTest {

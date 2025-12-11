@@ -36,12 +36,14 @@ import java.util.Calendar;
 import java.util.Optional;
 import javax.activation.MimeType;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class ResourceCacheImplTest {
 
   private static final String SOURCE_ID = "ddf-1";
@@ -66,7 +68,7 @@ public class ResourceCacheImplTest {
 
   @Rule public TemporaryFolder testFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException, URISyntaxException {
     cachedMetacard = createMetacard(SOURCE_ID, METACARD_ID);
     notCachedMetacard = createMetacard(SOURCE_ID, NOT_CACHED_METACARD_ID);
@@ -82,7 +84,7 @@ public class ResourceCacheImplTest {
         new org.codice.ddf.catalog.resource.cache.impl.ResourceCacheImpl(resourceCache);
   }
 
-  @After
+  @AfterEach
   public void teardownTest() throws IOException {
     resourceCache.teardownCache();
   }

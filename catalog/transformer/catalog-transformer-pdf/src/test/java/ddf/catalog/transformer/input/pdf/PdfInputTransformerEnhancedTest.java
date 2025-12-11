@@ -42,13 +42,13 @@ import java.util.Calendar;
 import java.util.Optional;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.ServiceReference;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PdfInputTransformerEnhancedTest {
 
   private PdfInputTransformer pdfInputTransformer;
@@ -56,7 +56,7 @@ public class PdfInputTransformerEnhancedTest {
   private PDDocumentInformation documentInformation;
   private MetacardType metacardType;
 
-  @Before
+  @BeforeEach
   public void setup() {
     metacardType = mock(MetacardTypeImpl.class);
     when(metacardType.getName()).thenReturn("pdf");

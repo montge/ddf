@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.audit.SecurityLogger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PepInterceptorTest {
 

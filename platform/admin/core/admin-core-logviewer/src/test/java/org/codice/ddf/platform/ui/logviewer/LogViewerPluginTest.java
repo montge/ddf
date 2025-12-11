@@ -20,15 +20,15 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import org.codice.ddf.admin.application.plugin.AbstractApplicationPlugin;
 import org.codice.ddf.admin.application.plugin.ApplicationPlugin;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link LogViewerPlugin} class. */
 public class LogViewerPluginTest {
 
   private LogViewerPlugin plugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     plugin = new LogViewerPlugin();
   }

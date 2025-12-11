@@ -45,11 +45,13 @@ import java.util.concurrent.TimeUnit;
 import org.codice.ddf.catalog.resource.download.DownloadException;
 import org.codice.ddf.cxf.client.ClientBuilderFactory;
 import org.codice.ddf.cxf.client.impl.ClientBuilderFactoryImpl;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class DownloadsStatusEventListenerTest {
 
   private ReliableResourceDownloadManager testDownloadManager;
@@ -60,7 +62,7 @@ public class DownloadsStatusEventListenerTest {
 
   @Rule public TemporaryFolder testFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     testFolder.create();
     String productCacheDir = testFolder.newFolder("cache").toString();

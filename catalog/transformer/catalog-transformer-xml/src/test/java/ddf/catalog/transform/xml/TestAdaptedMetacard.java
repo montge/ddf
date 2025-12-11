@@ -26,8 +26,8 @@ import ddf.catalog.transformer.xml.adapter.AdaptedMetacard;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestAdaptedMetacard {
   private static final Attribute ID = new AttributeImpl(Core.ID, "metacard-id");
@@ -46,7 +46,7 @@ public class TestAdaptedMetacard {
 
   private int expectedDescriptorCount;
 
-  @Before
+  @BeforeEach
   public void setup() {
     metacard.setAttribute(ID);
     metacard.setAttribute(DOWNLOAD_URL);

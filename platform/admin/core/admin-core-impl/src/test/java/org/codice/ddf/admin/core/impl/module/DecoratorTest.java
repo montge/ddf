@@ -23,15 +23,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.codice.ddf.ui.admin.api.module.AdminModule;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class DecoratorTest {
 
   private AdminModule module;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     module = Mockito.mock(AdminModule.class);
   }

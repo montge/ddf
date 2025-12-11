@@ -26,8 +26,8 @@ import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.activation.MimetypesFileTypeMap;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.notification.Failure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class BinaryContentImplTest {
 
   private MimeType mimeType;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     content = new File("src/test/resources/data/i4ce.png");
     MimetypesFileTypeMap mimeMapper = new MimetypesFileTypeMap();

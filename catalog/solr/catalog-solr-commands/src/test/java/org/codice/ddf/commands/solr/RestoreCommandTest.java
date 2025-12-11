@@ -34,15 +34,15 @@ import org.apache.solr.client.solrj.SolrRequest;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.RequestStatusState;
 import org.apache.solr.common.util.NamedList;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RestoreCommandTest extends SolrCommandTest {
 
   private static final Pattern ASCII_COLOR_CODES_REGEX = Pattern.compile("\u001B\\[[;\\d]*m");
@@ -55,14 +55,14 @@ public class RestoreCommandTest extends SolrCommandTest {
 
   private File backupFile;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     setDdfHome();
     setDdfEtc();
     createDefaultMiniSolrCloudCluster();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     setupSolrClientType(SolrCommands.CLOUD_SOLR_CLIENT_TYPE);
     consoleOutput = new ConsoleOutput();
@@ -75,12 +75,12 @@ public class RestoreCommandTest extends SolrCommandTest {
     consoleOutput.reset();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     consoleOutput.resetSystemOut();
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() throws Exception {
     if (miniSolrCloud != null) {
       miniSolrCloud.getSolrClient().close();

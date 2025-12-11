@@ -36,8 +36,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enhanced comprehensive tests for StandardMetacardGroomerPlugin to increase coverage. Tests
@@ -48,7 +48,7 @@ public class StandardMetacardGroomerPluginEnhancedTest {
   private StandardMetacardGroomerPlugin plugin;
   private UuidGenerator uuidGenerator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     uuidGenerator = mock(UuidGenerator.class);
     when(uuidGenerator.generateUuid()).thenReturn(UUID.randomUUID().toString());

@@ -23,13 +23,10 @@ import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import org.codice.ddf.platform.io.internal.PersistenceStrategy;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class ConfigStrategyTest {
 
   private PersistenceStrategy strategy = new ConfigStrategy();
@@ -38,13 +35,13 @@ public class ConfigStrategyTest {
 
   private Dictionary<String, Object> data;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     outputStream = new ByteArrayOutputStream();
     data = new Hashtable<>();
   }
 
-  @After
+  @AfterEach
   public void after() throws Exception {
     outputStream.close();
   }

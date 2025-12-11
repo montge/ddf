@@ -24,11 +24,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.shiro.authz.Permission;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class KeyValuePermissionTest {
 
   @Test

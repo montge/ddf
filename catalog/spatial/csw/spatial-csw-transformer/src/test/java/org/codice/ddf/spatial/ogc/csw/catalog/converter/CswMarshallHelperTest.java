@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CswMarshallHelperTest {
 

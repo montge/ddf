@@ -63,9 +63,9 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.xml.sax.SAXException;
@@ -122,7 +122,7 @@ public class KMLTransformerImplTest {
 
   private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws IOException {
     metacardDate =
         new Date(
@@ -147,7 +147,7 @@ public class KMLTransformerImplTest {
             new KmlMarshaller());
   }
 
-  @Before
+  @BeforeEach
   public void setupXpath() {
     NamespaceContext ctx =
         new SimpleNamespaceContext(singletonMap("m", "http://www.opengis.net/kml/2.2"));

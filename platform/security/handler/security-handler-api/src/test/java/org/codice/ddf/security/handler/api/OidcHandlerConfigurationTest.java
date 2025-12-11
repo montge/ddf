@@ -17,16 +17,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.logout.OidcLogoutActionBuilder;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OidcHandlerConfigurationTest {
 
   @Mock private OidcConfiguration oidcConfiguration;
@@ -37,7 +37,7 @@ public class OidcHandlerConfigurationTest {
 
   private OidcHandlerConfiguration handlerConfiguration;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     handlerConfiguration =
         new OidcHandlerConfiguration() {

@@ -44,9 +44,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
@@ -81,7 +81,7 @@ public class SimpleSignTest {
 
   private String dsaCert;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() {
     try {
       InitializationService.initialize();
@@ -91,7 +91,7 @@ public class SimpleSignTest {
     Security.addProvider(new BouncyCastleProvider());
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
 
     encryptionService = mock(PasswordEncryptor.class);

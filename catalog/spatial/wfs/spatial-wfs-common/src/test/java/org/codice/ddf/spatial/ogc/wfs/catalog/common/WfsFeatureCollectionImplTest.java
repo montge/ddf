@@ -22,7 +22,7 @@ import ddf.catalog.data.Metacard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Unit tests for {@link WfsFeatureCollectionImpl}. */
 public class WfsFeatureCollectionImplTest {

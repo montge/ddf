@@ -21,10 +21,10 @@ import static org.hamcrest.Matchers.nullValue;
 import java.io.File;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests the {@link ConfigurationContext} interface and its contract.
@@ -40,14 +40,14 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Null safety for all operations
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConfigurationContextTest {
 
   private ConfigurationContext context;
   private static final String TEST_SERVICE_PID = "org.codice.ddf.test.service";
   private static final String TEST_FACTORY_PID = "org.codice.ddf.test.factory";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     context = new TestConfigurationContext(TEST_SERVICE_PID, TEST_FACTORY_PID);
   }

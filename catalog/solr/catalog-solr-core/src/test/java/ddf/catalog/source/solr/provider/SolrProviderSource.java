@@ -20,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.source.solr.SolrCatalogProviderImpl;
 import ddf.catalog.source.solr.SolrProviderTest;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class SolrProviderSource {
 
   private static SolrCatalogProviderImpl provider;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     provider = SolrProviderTest.getProvider();
   }

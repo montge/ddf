@@ -79,8 +79,8 @@ import org.apache.shiro.session.Session;
 import org.codice.ddf.security.token.storage.api.TokenInformation;
 import org.codice.ddf.security.token.storage.api.TokenInformationImpl;
 import org.codice.ddf.security.token.storage.api.TokenStorage;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class OAuthPluginTest {
@@ -99,7 +99,7 @@ public class OAuthPluginTest {
   private Algorithm validAlgorithm;
   private Algorithm invalidAlgorithm;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // Generate the RSA key pair to sign tokens
     KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");

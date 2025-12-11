@@ -44,8 +44,8 @@ import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
 import org.codice.ddf.spatial.ogc.wfs.catalog.metacardtype.registry.WfsMetacardTypeRegistry;
 import org.codice.ddf.spatial.ogc.wfs.featuretransformer.WfsMetadata;
 import org.codice.ddf.spatial.ogc.wfs.v110.catalog.common.Wfs11Constants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XStreamWfs11FeatureTransformerTest {
 
@@ -58,7 +58,7 @@ public class XStreamWfs11FeatureTransformerTest {
 
   private XStreamWfs11FeatureTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     transformer = new XStreamWfs11FeatureTransformer();
     transformer.setMetacardTypeRegistry(mockMetacardTypeRegistry());

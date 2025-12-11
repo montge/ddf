@@ -42,9 +42,9 @@ import org.codice.ddf.spatial.ogc.wfs.catalog.WfsFeatureCollection;
 import org.codice.ddf.spatial.ogc.wfs.featuretransformer.FeatureTransformationService;
 import org.codice.ddf.spatial.ogc.wfs.featuretransformer.FeatureTransformer;
 import org.codice.ddf.spatial.ogc.wfs.featuretransformer.WfsMetadata;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class FeatureTransformationServiceTest {
@@ -56,7 +56,7 @@ public class FeatureTransformationServiceTest {
 
   private List<FeatureTransformer> transformerList;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     setupTransformers();
     DefaultRegistry registry = new DefaultRegistry();
@@ -75,7 +75,7 @@ public class FeatureTransformationServiceTest {
     camelContext.start();
   }
 
-  @After
+  @AfterEach
   public void cleanup() throws Exception {
     this.camelContext.stop();
   }

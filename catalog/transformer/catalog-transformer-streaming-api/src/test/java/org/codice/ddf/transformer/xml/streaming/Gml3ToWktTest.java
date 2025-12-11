@@ -26,14 +26,14 @@ import ddf.catalog.validation.impl.ValidationExceptionImpl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Gml3ToWktTest {
 
   private TestGml3ToWkt converter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     converter = new TestGml3ToWkt();
   }

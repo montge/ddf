@@ -29,15 +29,15 @@ import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.LineString;
 
 public class KmlToJtsPolygonConverterTest {
 
   private static Polygon testKmlPolygon;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream = KmlToJtsPolygonConverterTest.class.getResourceAsStream("/kmlPolygon.kml");
 

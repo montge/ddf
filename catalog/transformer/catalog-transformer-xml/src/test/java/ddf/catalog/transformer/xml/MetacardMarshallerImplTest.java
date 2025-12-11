@@ -37,13 +37,13 @@ import java.util.Map;
 import java.util.Set;
 import org.codice.ddf.parser.Parser;
 import org.codice.ddf.parser.ParserConfigurator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MetacardMarshallerImplTest {
 
   @Mock private Parser parser;
@@ -56,7 +56,7 @@ public class MetacardMarshallerImplTest {
 
   private EscapingPrintWriter printWriter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(parser.configureParser(any(), any())).thenReturn(parserConfigurator);
     when(parserConfigurator.setHandler(any())).thenReturn(parserConfigurator);

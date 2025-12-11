@@ -35,8 +35,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class KmlInputTransformerTest {
 
@@ -53,7 +53,7 @@ public class KmlInputTransformerTest {
     metacardTypes.add(new ValidationAttributes());
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     kmlInputTransformer =
         new KmlInputTransformer(new MetacardTypeImpl("kmlMetacardType", metacardTypes));

@@ -61,15 +61,17 @@ import org.codice.ddf.itests.common.annotations.SkipUnstableTest;
 import org.codice.ddf.test.common.LoggingUtils;
 import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
-import org.junit.After;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerSuite;
 import org.osgi.framework.FrameworkUtil;
 
+@EnableRuleMigrationSupport
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 public class TestSpatial extends AbstractIntegrationTest {
@@ -438,7 +440,7 @@ public class TestSpatial extends AbstractIntegrationTest {
         .then(Action.success(), Action.stringContent(response));
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     clearCatalogAndWait();
   }

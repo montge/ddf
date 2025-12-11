@@ -41,15 +41,17 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.Message;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class ContentProducerTest {
 
   @Mock private ContentEndpoint mockEndpoint;
@@ -64,7 +66,7 @@ public class ContentProducerTest {
 
   private ContentProducer contentProducer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(mockUuidGenerator.generateUuid()).thenReturn(UUID.randomUUID().toString());
     when(mockEndpoint.getComponent()).thenReturn(mockContentComponent);

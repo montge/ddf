@@ -20,14 +20,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.codice.ddf.configuration.service.PlatformUiConfigurationService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link PlatformUiConfigurationEndpoint} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PlatformUiConfigurationEndpointTest {
 
   private static final String SAMPLE_JSON = "{\"config\":\"value\"}";
@@ -36,7 +36,7 @@ public class PlatformUiConfigurationEndpointTest {
 
   private PlatformUiConfigurationEndpoint endpoint;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     endpoint = new PlatformUiConfigurationEndpoint(configurationService);
   }

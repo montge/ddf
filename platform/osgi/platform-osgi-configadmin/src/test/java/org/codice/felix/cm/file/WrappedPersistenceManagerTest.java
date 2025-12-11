@@ -23,13 +23,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import org.apache.felix.cm.PersistenceManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WrappedPersistenceManagerTest {
   private static final String PID = "myPid";
 
@@ -37,7 +37,7 @@ public class WrappedPersistenceManagerTest {
 
   private WrappedPersistenceManager persistenceManager;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     persistenceManager = new WrappedPersistenceManager(mockPersistenceManager);
   }

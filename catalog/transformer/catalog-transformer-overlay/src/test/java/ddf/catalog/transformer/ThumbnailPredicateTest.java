@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import ddf.catalog.data.impl.MetacardImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ThumbnailPredicateTest {
   private final ThumbnailPredicate predicate = new ThumbnailPredicate();

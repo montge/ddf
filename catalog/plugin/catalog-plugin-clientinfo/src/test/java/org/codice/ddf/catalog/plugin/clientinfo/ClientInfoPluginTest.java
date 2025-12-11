@@ -32,15 +32,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.shiro.util.ThreadContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Ensure that client information is available to the catalog framework. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClientInfoPluginTest {
 
   private static final String CLIENT_INFO_KEY = "client-info";
@@ -71,7 +71,7 @@ public class ClientInfoPluginTest {
 
   private Map<String, Serializable> properties;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     testableValue = new Serializable() {};
     ThreadContext.put(CLIENT_INFO_KEY, testableValue);
@@ -79,7 +79,7 @@ public class ClientInfoPluginTest {
     properties = new HashMap<>();
   }
 
-  @After
+  @AfterEach
   public void cleanup() throws Exception {
     ThreadContext.remove(CLIENT_INFO_KEY);
   }

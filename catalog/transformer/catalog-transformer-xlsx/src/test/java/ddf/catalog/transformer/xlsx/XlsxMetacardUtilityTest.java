@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.UUID;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class XlsxMetacardUtilityTest {
 

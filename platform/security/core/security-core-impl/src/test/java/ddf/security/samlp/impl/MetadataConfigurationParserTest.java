@@ -36,9 +36,9 @@ import org.apache.http.impl.bootstrap.HttpServer;
 import org.apache.http.impl.bootstrap.ServerBootstrap;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -60,7 +60,7 @@ public class MetadataConfigurationParserTest {
   @Mock HttpRequestHandler handler;
   public static final String CACHE_DURATION_REGEX = "cacheDuration=\"\\w*\"";
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     System.setProperty("org.ops4j.pax.logging.DefaultServiceLog.level", "INFO");
     mocks = MockitoAnnotations.openMocks(this);
@@ -85,7 +85,7 @@ public class MetadataConfigurationParserTest {
     serverAddress = "localhost:" + server.getLocalPort();
   }
 
-  @After
+  @AfterEach
   public void after() throws Exception {
     System.clearProperty("org.ops4j.pax.logging.DefaultServiceLog.level");
     server.stop();

@@ -23,17 +23,17 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests for {@link SessionManagementService} interface contract. Uses a test implementation to
  * verify the interface behavior and contract expectations.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SessionManagementServiceTest {
 
   private static final String SESSION_EXPIRY = "1800000"; // 30 minutes in ms
@@ -45,7 +45,7 @@ public class SessionManagementServiceTest {
 
   private TestSessionManagementService sessionService;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     sessionService = new TestSessionManagementService();
     when(mockRequest.getSession(false)).thenReturn(mockSession);

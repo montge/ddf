@@ -16,8 +16,8 @@ package ddf.catalog.util.impl;
 import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MaskableImplTest {
 
@@ -31,7 +31,7 @@ public class MaskableImplTest {
 
   String shortName;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     id1 = UUID.randomUUID().toString();
     id2 = UUID.randomUUID().toString();

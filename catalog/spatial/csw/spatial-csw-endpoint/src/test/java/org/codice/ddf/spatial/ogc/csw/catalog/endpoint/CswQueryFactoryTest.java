@@ -92,8 +92,8 @@ import org.codice.ddf.spatial.ogc.csw.catalog.endpoint.transformer.CswRecordMap;
 import org.geotools.filter.AttributeExpressionImpl;
 import org.geotools.filter.LiteralExpressionImpl;
 import org.geotools.styling.UomOgcMapping;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -629,7 +629,7 @@ public class CswQueryFactoryTest {
     ogcTemporalQuery(Core.CREATED, filterObjectFactory.createPropertyIsLessThan(op), Before.class);
   }
 
-  @Ignore(
+  @Disabled(
       "TODO: the functions this test tests has been augmented to play well with the limited capabilities of the Solr provider.  "
           + "These tests and the functions they test should be reenabled and refactored after DDF-311 is addressed")
   @Test
@@ -641,7 +641,7 @@ public class CswQueryFactoryTest {
     ogcOrdTemporalQuery(filterObjectFactory.createPropertyIsLessThanOrEqualTo(op));
   }
 
-  @Ignore(
+  @Disabled(
       "TODO: the functions this test tests has been augmented to play well with the limited capabilities of the Solr provider.  "
           + "These tests and the functions they test should be reenabled and refactored after DDF-311 is addressed")
   @Test
@@ -654,7 +654,7 @@ public class CswQueryFactoryTest {
         Core.CREATED, filterObjectFactory.createPropertyIsGreaterThan(op), After.class);
   }
 
-  @Ignore(
+  @Disabled(
       "TODO: the functions this test tests has been augmented to play well with the limited capabilities of the Solr provider.  "
           + "These tests and the functions they test should be reenabled and refactored after DDF-311 is addressed")
   @Test

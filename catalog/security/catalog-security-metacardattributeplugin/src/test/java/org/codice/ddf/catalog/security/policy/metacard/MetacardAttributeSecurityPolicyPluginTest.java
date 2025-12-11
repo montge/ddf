@@ -34,8 +34,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MetacardAttributeSecurityPolicyPluginTest {
 
@@ -47,7 +47,7 @@ public class MetacardAttributeSecurityPolicyPluginTest {
 
   Metacard metacard2;
 
-  @Before
+  @BeforeEach
   public void setup() {
     metacard = new MetacardImpl();
     metacard.setAttribute(new AttributeImpl("parsed.security", Arrays.asList("A", "B", "C")));

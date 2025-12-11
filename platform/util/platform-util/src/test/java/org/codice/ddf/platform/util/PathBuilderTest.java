@@ -22,17 +22,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class PathBuilderTest {
   @Rule public TemporaryFolder tempDir = new TemporaryFolder();
 
   private ArrayList<String> pathTokens;
 
-  @Before
+  @BeforeEach
   public void setup() {
     Path pathToTemp = Paths.get(tempDir.getRoot().getAbsolutePath());
     pathTokens = new ArrayList<>();

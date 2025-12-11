@@ -27,15 +27,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.codice.ddf.commands.catalog.facade.CatalogFacade;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Comprehensive tests for RangeCommand */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RangeCommandTest {
 
   @Mock private CatalogFacade mockCatalog;
@@ -46,7 +46,7 @@ public class RangeCommandTest {
   private ByteArrayOutputStream outputStream;
   private PrintStream originalOut;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     rangeCommand =
         new RangeCommand() {
@@ -61,7 +61,7 @@ public class RangeCommandTest {
     System.setOut(new PrintStream(outputStream));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     System.setOut(originalOut);
     if (outputStream != null) {

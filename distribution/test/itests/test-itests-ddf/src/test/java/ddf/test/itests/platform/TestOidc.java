@@ -85,8 +85,8 @@ import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.codice.gsonsupport.GsonTypeAdapters;
 import org.json.simple.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -228,7 +228,7 @@ public class TestOidc extends AbstractIntegrationTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // Reset server
     server.clear();

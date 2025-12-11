@@ -18,14 +18,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LocalCountryCodeConverterTest {
 
   private LocalCountryCodeConverter localCountryCodeConverter = new LocalCountryCodeConverter();
 
-  @Before
+  @BeforeEach
   public void setup() {
     localCountryCodeConverter.setCountryCodeMappingsFile("fipsToIsoTest.properties");
   }

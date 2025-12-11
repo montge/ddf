@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Handles testing the different aspects of the applicationconfiguraitonplugin. */
 public class ApplicationConfigurationPluginTest {

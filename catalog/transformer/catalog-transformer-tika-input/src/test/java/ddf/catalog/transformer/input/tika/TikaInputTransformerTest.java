@@ -65,8 +65,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -140,7 +140,7 @@ public class TikaInputTransformerTest {
             new AssociationsAttributes()));
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     tikaInputTransformer =
         new TikaInputTransformer(bundleCtx, getMetacardType(COMMON_METACARDTYPE_NAME)) {

@@ -99,8 +99,8 @@ import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs20Constants;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs20FeatureCollection;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.source.reader.FeatureCollectionMessageBodyReaderWfs20;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -161,7 +161,7 @@ public class WfsSourceTest {
 
   private List<MetacardMapper> metacardMappers = new ArrayList<>();
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     try {
       jaxbContext = JAXBContext.newInstance("net.opengis.wfs.v_2_0_0");

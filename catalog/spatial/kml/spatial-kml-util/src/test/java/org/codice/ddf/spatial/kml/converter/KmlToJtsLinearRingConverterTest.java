@@ -21,14 +21,14 @@ import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.LinearRing;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import java.io.InputStream;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class KmlToJtsLinearRingConverterTest {
 
   private static LinearRing testKmlLinearRing;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream =
         KmlToJtsLinearRingConverterTest.class.getResourceAsStream("/kmlLinearRing.kml");

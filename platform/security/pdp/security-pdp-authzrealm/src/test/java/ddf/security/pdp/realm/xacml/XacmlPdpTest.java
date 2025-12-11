@@ -47,12 +47,13 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.codice.ddf.parser.xml.XmlParser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class XacmlPdpTest {
 
   private static final String STRING_DATA_TYPE = "http://www.w3.org/2001/XMLSchema#string";
@@ -132,7 +133,7 @@ public class XacmlPdpTest {
             mock(SecurityLogger.class));
   }
 
-  @After
+  @AfterEach
   public void destroy() {
     temporaryFolder.delete();
   }

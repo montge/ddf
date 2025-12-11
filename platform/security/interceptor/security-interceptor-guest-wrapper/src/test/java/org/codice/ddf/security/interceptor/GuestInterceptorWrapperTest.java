@@ -35,17 +35,17 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.phase.PhaseInterceptor;
 import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 /** Comprehensive test coverage for GuestInterceptorWrapper. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GuestInterceptorWrapperTest {
 
   private GuestInterceptorWrapper wrapper;
@@ -58,7 +58,7 @@ public class GuestInterceptorWrapperTest {
 
   @Mock private PhaseInterceptor guestInterceptor;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     wrapper = new TestableGuestInterceptorWrapper(bundleContext);
   }

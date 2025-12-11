@@ -19,8 +19,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.atMost;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AvailabilityTaskTest {
 
@@ -28,7 +28,7 @@ public class AvailabilityTaskTest {
 
   private AvailabilityTask task = new AvailabilityTask(1000, mockCommand, "Task");
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(mockCommand.isAvailable()).thenReturn(true);
   }

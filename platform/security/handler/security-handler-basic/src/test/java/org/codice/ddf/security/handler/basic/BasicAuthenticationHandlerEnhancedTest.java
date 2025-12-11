@@ -29,13 +29,13 @@ import javax.ws.rs.core.HttpHeaders;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.api.HandlerResult;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BasicAuthenticationHandlerEnhancedTest {
 
   @Mock private HttpServletRequest request;
@@ -46,7 +46,7 @@ public class BasicAuthenticationHandlerEnhancedTest {
 
   private BasicAuthenticationHandler handler;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     handler = new BasicAuthenticationHandler();
     when(request.getServletPath()).thenReturn("/services/catalog");

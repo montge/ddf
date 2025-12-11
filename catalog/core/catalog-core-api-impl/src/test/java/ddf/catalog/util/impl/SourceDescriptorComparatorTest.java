@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.source.impl.SourceDescriptorImpl;
 import java.util.Collections;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SourceDescriptorComparatorTest {
   private SourceDescriptorImpl firstSource;
@@ -30,7 +30,7 @@ public class SourceDescriptorComparatorTest {
 
   private SourceDescriptorImpl nullSource;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     firstSource = new SourceDescriptorImpl("aSource", null, Collections.emptyList());
     nextSource = new SourceDescriptorImpl("bSource", null, Collections.emptyList());

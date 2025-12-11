@@ -27,13 +27,15 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.List;
 import org.codice.junit.rules.RestoreSystemProperties;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+@EnableRuleMigrationSupport
 public class InputTransformerBootServiceFlagTest {
 
   private Bundle bundle;
@@ -43,7 +45,7 @@ public class InputTransformerBootServiceFlagTest {
   @Rule
   public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
 
-  @Before
+  @BeforeEach
   public void setup() {
     bundleContext = mock(BundleContext.class);
 

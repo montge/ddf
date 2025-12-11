@@ -37,12 +37,12 @@ import org.apache.solr.SolrTestCaseJ4;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.cloud.MiniSolrCloudCluster;
 import org.codice.solr.factory.impl.SolrCloudClientFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
   SolrProviderTemporal.class,
   SolrProviderUpdate.class
 })
+@EnableRuleMigrationSupport
 public class SolrProviderTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SolrProviderTest.class);
@@ -76,7 +77,7 @@ public class SolrProviderTest {
 
   public static final String MASKED_ID = "scp";
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() throws Exception {
     Path solrDataPath = Paths.get("target/test-classes/data");
     System.setProperty("ddf.home", solrDataPath.toString());
@@ -150,7 +151,7 @@ public class SolrProviderTest {
     Failsafe.with(retryPolicy).run(() -> deleteAll(provider));
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() throws Exception {
     System.clearProperty("ddf.home");
     System.clearProperty("pkiHandlerPrivateKeyPath");

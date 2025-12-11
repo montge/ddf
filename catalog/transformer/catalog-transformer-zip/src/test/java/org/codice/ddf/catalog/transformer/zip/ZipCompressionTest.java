@@ -44,15 +44,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ZipCompressionTest {
 
   private ZipCompression zipCompression;
@@ -67,7 +67,7 @@ public class ZipCompressionTest {
 
   @Mock private MetacardTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     List<ServiceReference> serviceReferences =
         ImmutableList.of(

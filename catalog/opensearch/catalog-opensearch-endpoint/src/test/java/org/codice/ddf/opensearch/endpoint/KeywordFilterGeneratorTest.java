@@ -19,21 +19,21 @@ import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.Filter;
 
 /** Tests for KeywordFilterGenerator */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class KeywordFilterGeneratorTest {
 
   private FilterBuilder filterBuilder;
 
   private KeywordFilterGenerator filterGenerator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     filterBuilder = new GeotoolsFilterBuilder();
     filterGenerator = new KeywordFilterGenerator(filterBuilder);

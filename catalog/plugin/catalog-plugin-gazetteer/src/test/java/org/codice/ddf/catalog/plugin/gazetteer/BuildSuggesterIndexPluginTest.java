@@ -41,14 +41,14 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link BuildSuggesterIndexPlugin} class. */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class BuildSuggesterIndexPluginTest {
 
   @Mock private ScheduledThreadPoolExecutor executor;
@@ -67,7 +67,7 @@ public class BuildSuggesterIndexPluginTest {
 
   private BuildSuggesterIndexPlugin plugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     plugin = new BuildSuggesterIndexPlugin(executor, buildSuggesterIndex);
     doReturn(scheduledFuture)

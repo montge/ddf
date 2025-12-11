@@ -43,16 +43,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.codice.ddf.catalog.solr.cache.CachePutPlugin;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SolrCacheTest {
 
   public static final String SOURCE_ID = "source-id";
@@ -73,7 +73,7 @@ public class SolrCacheTest {
 
   @Mock private CachePutPlugin mockCachePutPlugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     solrCache =
         new SolrCache(

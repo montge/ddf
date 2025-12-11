@@ -28,7 +28,7 @@ import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import java.util.Date;
 import org.geotools.filter.visitor.DefaultExpressionVisitor;
 import org.geotools.filter.visitor.DefaultFilterVisitor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;

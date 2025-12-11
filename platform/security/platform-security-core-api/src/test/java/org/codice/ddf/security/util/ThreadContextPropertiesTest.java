@@ -33,15 +33,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.server.Request;
 import org.hamcrest.CoreMatchers;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ThreadContextPropertiesTest {
 
   public static final String TRACE_CONTEXT_KEY = "trace-context";
@@ -70,7 +70,7 @@ public class ThreadContextPropertiesTest {
 
   @Mock private Request jettyRequest;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     when(mockRequest.getRemoteAddr()).thenReturn(MOCK_REMOTE_ADDRESS);
     when(mockRequest.getRemotePort()).thenReturn(Integer.parseInt(MOCK_REMOTE_PORT));
@@ -89,7 +89,7 @@ public class ThreadContextPropertiesTest {
     when(jettyRequest.getServletContext()).thenReturn(mockServletContext);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     ThreadContextProperties.removeClientInfo();
     ThreadContextProperties.removeTraceId();

@@ -35,8 +35,8 @@ import java.io.InputStream;
 import java.util.Optional;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PdfInputTransformerTest {
 
@@ -46,7 +46,7 @@ public class PdfInputTransformerTest {
 
   private PDDocumentInformation documentInformation;
 
-  @Before
+  @BeforeEach
   public void setup() {
     pdfInputTransformer =
         new PdfInputTransformer(

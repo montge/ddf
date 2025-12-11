@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.types.experimental.Extracted;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for data type constant interfaces to ensure all constants are properly defined and

@@ -24,14 +24,14 @@ import static org.mockito.Mockito.mock;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.xml.transform.ErrorListener;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TransformerPropertiesTest {
 
   private TransformerProperties transformerProperties;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     transformerProperties = new TransformerProperties();
   }

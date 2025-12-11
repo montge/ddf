@@ -39,18 +39,18 @@ import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Advanced test suite for AuthorizationFilter covering edge cases, error handling, and complex
  * permission scenarios.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthorizationFilterAdvancedTest {
 
   private static final String SECURE_PATH = "/secure/resource";
@@ -68,7 +68,7 @@ public class AuthorizationFilterAdvancedTest {
   private AuthorizationFilter authorizationFilter;
   private boolean filterChainCalled;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     authorizationFilter = new AuthorizationFilter(contextPolicyManager);
     authorizationFilter.setSecurityLogger(securityLogger);
@@ -76,7 +76,7 @@ public class AuthorizationFilterAdvancedTest {
     filterChainCalled = false;
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     ThreadContext.unbindSubject();
   }

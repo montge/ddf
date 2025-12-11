@@ -102,8 +102,8 @@ import org.codice.ddf.attachment.impl.AttachmentParserImpl;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.rest.api.CatalogServiceException;
 import org.codice.ddf.rest.service.AbstractCatalogService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -126,7 +126,7 @@ public class CatalogServiceImplTest {
 
   private AttributeRegistry attributeRegistry;
 
-  @Before
+  @BeforeEach
   public void setup() throws MimeTypeResolutionException {
     MimeTypeMapper mimeTypeMapper = mock(MimeTypeMapper.class);
     when(mimeTypeMapper.getMimeTypeForFileExtension("txt")).thenReturn("text/plain");

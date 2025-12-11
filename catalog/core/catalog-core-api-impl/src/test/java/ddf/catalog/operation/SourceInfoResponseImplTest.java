@@ -23,8 +23,8 @@ import ddf.catalog.util.impl.SourceDescriptorComparator;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SourceInfoResponseImplTest {
 
@@ -36,7 +36,7 @@ public class SourceInfoResponseImplTest {
 
   private SourceDescriptor lastSource;
 
-  @Before
+  @BeforeEach
   public void setup() {
     firstSource = new SourceDescriptorImpl("aSource", null, Collections.emptyList());
     nextSource = new SourceDescriptorImpl("BSource", null, Collections.emptyList());

@@ -24,19 +24,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClaimsParametersImplTest {
 
   private Principal principal;
   private Set<Principal> roles;
   private Map<String, Object> additionalProperties;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     principal = () -> "testUser";
     roles = new HashSet<>();

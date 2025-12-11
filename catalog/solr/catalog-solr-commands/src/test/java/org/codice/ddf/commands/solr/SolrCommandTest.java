@@ -33,9 +33,7 @@ import org.apache.solr.client.solrj.response.RequestStatusState;
 import org.apache.solr.cloud.MiniSolrCloudCluster;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.util.NamedList;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 
 public abstract class SolrCommandTest {
   protected static final String DEFAULT_ZK_HOSTS =
@@ -51,9 +49,9 @@ public abstract class SolrCommandTest {
 
   protected static final String DEFAULT_DDF_HOME = "/opt/ddf";
 
-  @Rule @ClassRule public static TemporaryFolder baseDir = new TemporaryFolder();
+  @TempDir protected static Path baseDir;
 
-  @Rule @ClassRule public static TemporaryFolder backupLocation = new TemporaryFolder();
+  @TempDir protected static Path backupLocationPath;
 
   protected ConsoleOutput consoleOutput;
 
@@ -64,11 +62,11 @@ public abstract class SolrCommandTest {
   protected static MiniSolrCloudCluster miniSolrCloud;
 
   protected static Path getBaseDirPath() {
-    return baseDir.getRoot().toPath();
+    return baseDir;
   }
 
   protected String getBackupLocation() {
-    return backupLocation.getRoot().getPath();
+    return backupLocationPath.toString();
   }
 
   protected static void setDdfHome() {

@@ -31,8 +31,8 @@ import java.util.List;
 import javax.activation.MimeTypeParseException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HtmlMetacardUtilityTest {
 
@@ -67,7 +67,7 @@ public class HtmlMetacardUtilityTest {
 
   private HtmlMetacardUtility htmlMetacardUtility;
 
-  @Before
+  @BeforeEach
   public void setup() {
     this.htmlMetacardUtility = new HtmlMetacardUtility();
 

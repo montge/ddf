@@ -41,12 +41,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.codice.ddf.security.token.storage.api.TokenInformation;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class FileSystemTokenStorageTest {
 
   @Rule public TemporaryFolder folder = new TemporaryFolder();
@@ -63,14 +65,14 @@ public class FileSystemTokenStorageTest {
   private FileSystemTokenStorage tokenStorage;
   private Crypter crypter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     crypter = mock(Crypter.class);
     tokenStorage = new FileSystemTokenStorage(crypter);
     tokenStorage.setBaseDirectory(folder.getRoot().getAbsolutePath());
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     folder.delete();
   }

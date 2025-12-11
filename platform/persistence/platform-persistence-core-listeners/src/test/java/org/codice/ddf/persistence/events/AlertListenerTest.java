@@ -32,8 +32,8 @@ import org.codice.ddf.persistence.PersistentStore;
 import org.codice.ddf.system.alerts.Alert;
 import org.codice.ddf.system.alerts.NoticePriority;
 import org.codice.ddf.system.alerts.SystemNotice;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.osgi.service.event.Event;
 
@@ -43,7 +43,7 @@ public class AlertListenerTest {
 
   private AlertListener alertListener;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     persistentStore = mock(PersistentStore.class);
 

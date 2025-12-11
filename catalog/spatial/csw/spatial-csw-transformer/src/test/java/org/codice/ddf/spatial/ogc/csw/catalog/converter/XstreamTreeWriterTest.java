@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 import com.thoughtworks.xstream.io.path.Path;
 import com.thoughtworks.xstream.io.path.PathTracker;
 import com.thoughtworks.xstream.io.path.PathTrackingWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class XstreamTreeWriterTest {
 

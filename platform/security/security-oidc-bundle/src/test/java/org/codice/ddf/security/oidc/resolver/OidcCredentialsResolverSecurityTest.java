@@ -52,12 +52,12 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.UUID;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
@@ -65,7 +65,7 @@ import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OidcCredentialsResolverSecurityTest {
 
   private static final int MOCK_SERVER_PORT = 18080;
@@ -91,7 +91,7 @@ public class OidcCredentialsResolverSecurityTest {
   private RSAPublicKey publicKey;
   private RSAPrivateKey privateKey;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // Generate RSA key for signing tokens
     KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
@@ -152,7 +152,7 @@ public class OidcCredentialsResolverSecurityTest {
     resolver = new OidcCredentialsResolver(oidcConfiguration, oidcClient, metadata, 5000, 5000);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (mockHttpServer != null) {
       mockHttpServer.stop(0);

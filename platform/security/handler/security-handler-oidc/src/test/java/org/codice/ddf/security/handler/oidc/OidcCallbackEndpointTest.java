@@ -30,13 +30,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OidcCallbackEndpointTest {
   private static final int HTTP_REDIRECT = Status.SEE_OTHER.getStatusCode();
 
@@ -48,7 +48,7 @@ public class OidcCallbackEndpointTest {
 
   private Response response;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     callbackEndpoint = new OidcCallbackEndpointWithMockClient(mock(SecurityLogger.class));
     callbackEndpoint.setRedirectUri("/logout");

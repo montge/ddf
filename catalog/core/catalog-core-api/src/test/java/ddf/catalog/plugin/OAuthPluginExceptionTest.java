@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link OAuthPluginException} class and its ErrorType enum. */
 public class OAuthPluginExceptionTest {

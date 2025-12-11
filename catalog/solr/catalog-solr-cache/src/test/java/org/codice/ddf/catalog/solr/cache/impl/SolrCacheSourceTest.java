@@ -36,8 +36,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SolrCacheSourceTest {
 
@@ -55,7 +55,7 @@ public class SolrCacheSourceTest {
 
   private List<Result> results;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     contentType = mock(ContentType.class);
     when(contentType.getName()).thenReturn("Content-Type");

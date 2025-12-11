@@ -57,8 +57,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.assertj.core.util.Lists;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
@@ -80,7 +80,7 @@ public class SortedQueryMonitorTest {
   private static final Date TEST_DATE_1 = new Date(11000);
   private static final Date TEST_DATE_2 = new Date(30000);
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     completionService = mock(CompletionService.class);
     queryRequest = mock(QueryRequest.class);

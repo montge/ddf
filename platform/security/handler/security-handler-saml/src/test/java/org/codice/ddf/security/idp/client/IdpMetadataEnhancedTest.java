@@ -25,8 +25,8 @@ import java.io.StringWriter;
 import java.time.Duration;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 
@@ -38,7 +38,7 @@ public class IdpMetadataEnhancedTest {
   private String metadataWithValidUntil;
   private String metadataWithBothTimestamps;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     idpMetadata = new IdpMetadata();
 

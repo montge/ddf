@@ -43,8 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PointOfContactUpdatePluginTest {
 
@@ -66,7 +66,7 @@ public class PointOfContactUpdatePluginTest {
 
   private Map<String, Metacard> existingMetacards;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     listOfUpdatedMetacards = getListOfUpdatedMetacards();
     updateRequestInput =

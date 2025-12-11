@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.ws.rs.WebApplicationException;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs20FeatureCollection;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FeatureCollectionMessageBodyReaderWfs20Test {
   /** Positive test case to assure valid objects are unmarshalled */

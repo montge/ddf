@@ -43,8 +43,8 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.stubbing.Answer;
 
@@ -64,7 +64,7 @@ public class RemoveCommandTest extends ConsoleOutputCommon {
 
   private int sizeOfDeleteRequest;
 
-  @Before
+  @BeforeEach
   public void setup() {
     metacardList = populateMetacardList(5);
     deleteResponse = mock(DeleteResponse.class);

@@ -23,7 +23,7 @@ import org.forgerock.opendj.ldap.requests.DigestMD5SASLBindRequest;
 import org.forgerock.opendj.ldap.requests.GSSAPISASLBindRequest;
 import org.forgerock.opendj.ldap.requests.PlainSASLBindRequest;
 import org.forgerock.opendj.ldap.requests.SimpleBindRequest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Comprehensive test harness for BindMethodChooser utility class.

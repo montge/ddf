@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import org.codice.ddf.persistence.PersistentStore.PersistenceType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PersistentStoreTest {
 

@@ -32,18 +32,18 @@ import java.util.HashSet;
 import java.util.Set;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Extended tests for AbstractMetacardActionProvider to increase code coverage to 80%+. These tests
  * focus on edge cases, error handling, and various metacard configurations.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractMetacardActionProviderExtendedTest {
 
   private static final String ACTION_ID = "test-action-id";
@@ -66,7 +66,7 @@ public class AbstractMetacardActionProviderExtendedTest {
 
   private String originalSiteName;
 
-  @Before
+  @BeforeEach
   public void setup() {
     // Save original system properties
     originalExternalHost = System.getProperty(SystemBaseUrl.EXTERNAL_HOST);
@@ -78,7 +78,7 @@ public class AbstractMetacardActionProviderExtendedTest {
     when(metacard.getTags()).thenReturn(Collections.singleton(Metacard.DEFAULT_TAG));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     // Restore original system properties
     if (originalExternalHost != null) {

@@ -40,13 +40,13 @@ import java.util.List;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FrameworkProducerTest {
 
   private static final String OPERATION_HEADER = "operation";
@@ -67,7 +67,7 @@ public class FrameworkProducerTest {
 
   private FrameworkProducer producer;
 
-  @Before
+  @BeforeEach
   public void setup() {
     producer = new FrameworkProducer(mockEndpoint, mockCatalogFramework);
     when(mockExchange.getIn()).thenReturn(mockMessage);

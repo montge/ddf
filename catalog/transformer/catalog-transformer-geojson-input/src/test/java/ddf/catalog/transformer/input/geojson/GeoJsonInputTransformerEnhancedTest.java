@@ -26,8 +26,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.codice.ddf.platform.util.SortedServiceList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enhanced comprehensive test harness for GeoJsonInputTransformer. Tests GeoJSON parsing, geometry
@@ -41,7 +41,7 @@ public class GeoJsonInputTransformerEnhancedTest {
 
   private GeoJsonInputTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     transformer = new GeoJsonInputTransformer();
     transformer.setInputTransformers(mock(SortedServiceList.class));

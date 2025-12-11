@@ -35,14 +35,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CatalogPolicyTest {
 
   CatalogPolicy policyPlugin;
 
-  @Before
+  @BeforeEach
   public void setup() {
     policyPlugin = new CatalogPolicy(new PermissionsImpl());
   }

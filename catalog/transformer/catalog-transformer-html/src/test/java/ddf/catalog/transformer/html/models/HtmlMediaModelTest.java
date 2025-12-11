@@ -19,7 +19,7 @@ import static org.junit.Assert.assertNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HtmlMediaModelTest {
 

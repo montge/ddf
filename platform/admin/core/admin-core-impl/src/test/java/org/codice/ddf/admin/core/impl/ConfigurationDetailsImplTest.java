@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.codice.ddf.admin.core.api.ConfigurationProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConfigurationDetailsImplTest {
 

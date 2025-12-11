@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assume.assumeTrue;
 
 import ch.qos.logback.classic.LoggerContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 /**

@@ -17,8 +17,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
 /** Tests for {@link WfsUriResolver} class. */
@@ -30,7 +30,7 @@ public class WfsUriResolverTest {
 
   private WfsUriResolver resolver;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     resolver = new WfsUriResolver();
   }

@@ -57,8 +57,8 @@ import java.util.stream.Collectors;
 import javax.activation.MimeType;
 import org.codice.ddf.catalog.sourcepoller.SourcePoller;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RemoteDeleteOperationsTest {
   DeleteOperations deleteOperations;
@@ -101,7 +101,7 @@ public class RemoteDeleteOperationsTest {
 
   UuidGenerator uuidGenerator;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     setUpMocks();
     setUpDeleteRequest();

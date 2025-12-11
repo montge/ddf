@@ -18,8 +18,8 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.jetty.websocket.api.Session;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link SessionPlugin} interface contract. Uses a test implementation to verify the
@@ -30,7 +30,7 @@ public class SessionPluginTest {
   private TestSessionPlugin sessionPlugin;
   private Session mockSession;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     sessionPlugin = new TestSessionPlugin();
     mockSession = mock(Session.class);

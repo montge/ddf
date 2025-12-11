@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ContextPolicyManager} interface contract. Uses a test implementation to verify
@@ -37,7 +37,7 @@ public class ContextPolicyManagerTest {
 
   private TestContextPolicyManager policyManager;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     policyManager = new TestContextPolicyManager();
   }

@@ -48,8 +48,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.solr.common.SolrInputDocument;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class DynamicSchemaResolverTest {
@@ -61,7 +61,7 @@ public class DynamicSchemaResolverTest {
 
   private DynamicSchemaResolver dynamicSchemaResolver;
 
-  @Before
+  @BeforeEach
   public void setup() {
     dynamicSchemaResolver = new DynamicSchemaResolver();
   }

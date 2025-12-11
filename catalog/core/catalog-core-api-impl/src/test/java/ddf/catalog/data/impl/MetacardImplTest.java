@@ -35,8 +35,8 @@ import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -61,7 +61,7 @@ public class MetacardImplTest {
 
   URI nsUri;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     Calendar c = Calendar.getInstance();
     createdDate = c.getTime();

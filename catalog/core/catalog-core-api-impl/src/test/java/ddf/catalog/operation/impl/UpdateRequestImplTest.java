@@ -36,18 +36,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link UpdateRequestImpl} class.
  *
  * <p>Tests all constructors, update entries, attribute names, and store IDs.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UpdateRequestImplTest {
 
   private static final String ID_1 = "id-123";
@@ -58,7 +58,7 @@ public class UpdateRequestImplTest {
 
   private Map<String, Serializable> properties;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     properties = new HashMap<>();
     properties.put("key1", "value1");

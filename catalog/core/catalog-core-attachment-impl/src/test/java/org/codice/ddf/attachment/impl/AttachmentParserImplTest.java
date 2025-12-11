@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.codice.ddf.attachment.AttachmentInfo;
 import org.codice.ddf.attachment.AttachmentParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttachmentParserImplTest {
 
@@ -36,7 +36,7 @@ public class AttachmentParserImplTest {
 
   private AttachmentParser attachmentParser;
 
-  @Before
+  @BeforeEach
   public void setup() throws MimeTypeResolutionException {
     MimeTypeMapper mimeTypeMapper = mock(MimeTypeMapper.class);
     when(mimeTypeMapper.getMimeTypeForFileExtension(TEXT_EXT)).thenReturn(TEXT_PLAIN);

@@ -51,17 +51,17 @@ import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.handler.api.HandlerResult.Status;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Advanced test suite for WebSSOFilter covering complex scenarios, error handling, and edge cases.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WebSSOFilterAdvancedTest {
 
   private static final String TEST_CONTEXT = "/secure/resource";
@@ -82,7 +82,7 @@ public class WebSSOFilterAdvancedTest {
 
   private WebSSOFilter webSSOFilter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     webSSOFilter = new WebSSOFilter();
     webSSOFilter.setContextPolicyManager(contextPolicyManager);

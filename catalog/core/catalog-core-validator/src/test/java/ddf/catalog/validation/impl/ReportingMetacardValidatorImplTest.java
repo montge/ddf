@@ -37,8 +37,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ReportingMetacardValidatorImplTest {
   private AttributeValidatorRegistry registry;
@@ -49,7 +49,7 @@ public class ReportingMetacardValidatorImplTest {
 
   private static final Date FUTURE_DATE = Date.from(Instant.now().plus(5, DAYS));
 
-  @Before
+  @BeforeEach
   public void setup() {
     registry = new AttributeValidatorRegistryImpl();
     validator = new ReportingMetacardValidatorImpl(registry);

@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.startsWith;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link Confluence} class. */
 public class ConfluenceTest {

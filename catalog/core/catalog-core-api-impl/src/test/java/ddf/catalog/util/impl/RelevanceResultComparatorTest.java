@@ -17,9 +17,9 @@ import static org.junit.Assert.assertEquals;
 
 import ddf.catalog.data.Result;
 import ddf.catalog.data.impl.ResultImpl;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.sort.SortOrder;
 
 public class RelevanceResultComparatorTest {
@@ -35,7 +35,7 @@ public class RelevanceResultComparatorTest {
 
   private Result nullResult;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     lowRelevance = new ResultImpl();
     lowRelevance.setRelevanceScore(new Double(Short.MAX_VALUE));
@@ -74,7 +74,7 @@ public class RelevanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testNullResults() {
     RelevanceResultComparator comparer = new RelevanceResultComparator(SortOrder.ASCENDING);
     assertEquals(-1, comparer.compare(lowRelevance, nullResult));
@@ -83,7 +83,7 @@ public class RelevanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testNullRelevance() {
     RelevanceResultComparator comparer = new RelevanceResultComparator(SortOrder.ASCENDING);
     assertEquals(-1, comparer.compare(lowRelevance, nullRelevance));
@@ -94,7 +94,7 @@ public class RelevanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testNegativeRelevance() {
     RelevanceResultComparator comparer = new RelevanceResultComparator(SortOrder.ASCENDING);
     assertEquals(1, comparer.compare(negativeRelevance, lowRelevance));
@@ -109,7 +109,7 @@ public class RelevanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testZeroRelevance() {
     RelevanceResultComparator comparer = new RelevanceResultComparator(SortOrder.ASCENDING);
     assertEquals(-1, comparer.compare(zeroRelevance, lowRelevance));

@@ -37,9 +37,9 @@ import java.io.InputStream;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Dispatch;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.config.InitializationException;
 import org.opensaml.core.config.InitializationService;
 import org.opensaml.saml.common.SignableSAMLObject;
@@ -78,12 +78,12 @@ public class AttributeQueryClientTest {
 
   private String cannedResponse;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws InitializationException {
     InitializationService.initialize();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     dispatch = mock(Dispatch.class);
     encryptionService = mock(EncryptionService.class);

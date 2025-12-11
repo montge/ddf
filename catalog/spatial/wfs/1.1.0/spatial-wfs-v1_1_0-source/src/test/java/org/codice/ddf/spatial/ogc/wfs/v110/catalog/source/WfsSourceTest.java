@@ -111,8 +111,8 @@ import org.codice.ddf.spatial.ogc.wfs.catalog.source.WfsUriResolver;
 import org.codice.ddf.spatial.ogc.wfs.v110.catalog.common.DescribeFeatureTypeRequest;
 import org.codice.ddf.spatial.ogc.wfs.v110.catalog.common.GetCapabilitiesRequest;
 import org.codice.ddf.spatial.ogc.wfs.v110.catalog.common.Wfs11Constants;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.opengis.filter.Filter;
@@ -285,7 +285,7 @@ public class WfsSourceTest {
 
   private boolean forceAllGeometryOperands = false;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     try {
       jaxbContext = JAXBContext.newInstance("net.opengis.wfs.v_1_1_0");

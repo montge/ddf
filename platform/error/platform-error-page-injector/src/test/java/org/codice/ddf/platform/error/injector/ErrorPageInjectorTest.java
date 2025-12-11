@@ -24,11 +24,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import javax.servlet.ServletContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
@@ -37,7 +37,7 @@ import org.osgi.framework.hooks.service.EventListenerHook;
 import org.osgi.framework.hooks.service.ListenerHook.ListenerInfo;
 
 /** Tests for {@link ErrorPageInjector} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ErrorPageInjectorTest {
 
   @Mock private ServiceEvent serviceEvent;
@@ -50,7 +50,7 @@ public class ErrorPageInjectorTest {
 
   private ErrorPageInjector injector;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     injector = new ErrorPageInjector();
   }

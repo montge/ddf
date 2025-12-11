@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.codice.ddf.activities.ActivityEvent.ActivityStatus;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ActivityEventTest {
 

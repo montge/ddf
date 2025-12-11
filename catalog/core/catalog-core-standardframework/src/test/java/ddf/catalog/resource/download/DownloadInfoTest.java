@@ -22,8 +22,8 @@ import static org.junit.Assert.assertThrows;
 import ddf.catalog.resource.download.DownloadManagerState.DownloadState;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DownloadInfoTest {
 
@@ -51,7 +51,7 @@ public class DownloadInfoTest {
 
   private Map<String, String> downloadStatusMap;
 
-  @Before
+  @BeforeEach
   public void setup() {
     downloadStatusMap = new HashMap<>();
     downloadStatusMap.put(DOWNLOAD_ID_KEY, DOWNLOAD_ID);

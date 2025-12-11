@@ -63,8 +63,8 @@ import org.codice.ddf.spatial.geocoding.GeoCodingConstants;
 import org.codice.ddf.spatial.geocoding.GeoEntryAttributes;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
@@ -88,7 +88,7 @@ public class CatalogFeatureIndexerTest {
 
   private Metacard exampleMetacard;
 
-  @Before
+  @BeforeEach
   public void setUp()
       throws SecurityServiceException, InvocationTargetException, FeatureExtractionException,
           UnsupportedQueryException, SourceUnavailableException, FederationException {

@@ -40,18 +40,18 @@ import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.apache.poi.xslf.usermodel.XSLFTextBox;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextRun;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PptxInputTransformerEnhancedTest {
 
   private InputTransformer mockInputTransformer;
   private PptxInputTransformer pptxInputTransformer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     mockInputTransformer = mock(InputTransformer.class);
     pptxInputTransformer = new PptxInputTransformer(mockInputTransformer);

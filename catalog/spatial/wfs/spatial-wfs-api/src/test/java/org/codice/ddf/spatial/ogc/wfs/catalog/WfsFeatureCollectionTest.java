@@ -22,14 +22,14 @@ import ddf.catalog.data.impl.MetacardImpl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class WfsFeatureCollectionTest {
 
   private List<Metacard> testMetacards;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testMetacards = new ArrayList<>();
     testMetacards.add(new MetacardImpl());

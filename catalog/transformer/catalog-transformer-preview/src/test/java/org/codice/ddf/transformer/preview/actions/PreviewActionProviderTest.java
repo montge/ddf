@@ -32,7 +32,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PreviewActionProviderTest {
   public static final String ACTION_PROVIDER_ID = "actionProviderId";

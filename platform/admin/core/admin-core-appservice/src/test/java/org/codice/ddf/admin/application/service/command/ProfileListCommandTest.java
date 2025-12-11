@@ -36,11 +36,13 @@ import org.apache.karaf.features.FeaturesService;
 import org.apache.karaf.features.internal.service.FeaturesServiceImpl;
 import org.codice.ddf.admin.application.service.ApplicationService;
 import org.codice.ddf.admin.application.service.impl.ApplicationServiceImpl;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class ProfileListCommandTest {
   private ApplicationService applicationService;
   private FeaturesService featuresService;
@@ -54,7 +56,7 @@ public class ProfileListCommandTest {
 
   private Path profilePath;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     ddfHome.newFolder("etc", "profiles");
     profilePath = Paths.get(ddfHome.getRoot().toString(), "etc", "profiles");

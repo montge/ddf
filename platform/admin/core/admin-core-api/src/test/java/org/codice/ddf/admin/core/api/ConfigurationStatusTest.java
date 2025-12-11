@@ -18,15 +18,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.util.HashMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link ConfigurationStatus} interface constants and default methods. */
 public class ConfigurationStatusTest {
 
   private TestConfigurationStatus status;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     status = new TestConfigurationStatus();
   }

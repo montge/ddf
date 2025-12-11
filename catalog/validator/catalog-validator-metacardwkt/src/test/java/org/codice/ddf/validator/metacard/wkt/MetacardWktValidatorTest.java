@@ -41,7 +41,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.codice.ddf.validator.wkt.WktValidator;
 import org.codice.ddf.validator.wkt.WktValidatorImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetacardWktValidatorTest {
 

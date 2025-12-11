@@ -59,8 +59,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
 public class MetacardValidityMarkerPluginTest {
@@ -104,7 +104,7 @@ public class MetacardValidityMarkerPluginTest {
 
   private List<String> enforcedMetacardValidators;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     metacardValidators = new ArrayList<>();
     enforcedMetacardValidators = new ArrayList<>();

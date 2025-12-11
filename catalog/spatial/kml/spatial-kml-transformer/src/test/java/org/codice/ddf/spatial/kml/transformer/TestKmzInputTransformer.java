@@ -28,7 +28,7 @@ import ddf.catalog.transform.CatalogTransformerException;
 import java.io.InputStream;
 import java.util.HashSet;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestKmzInputTransformer {
 

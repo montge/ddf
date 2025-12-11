@@ -31,8 +31,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.annotations.BeforeExam;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -58,7 +58,7 @@ public class TestSecurityAuditPlugin extends AbstractIntegrationTest {
     getSecurityPolicy().configureRestForGuest();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     clearCatalog();
   }

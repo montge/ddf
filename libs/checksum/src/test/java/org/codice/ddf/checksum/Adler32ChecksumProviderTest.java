@@ -26,14 +26,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.codice.ddf.checksum.impl.Adler32ChecksumProvider;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Adler32ChecksumProviderTest {
 
   private ChecksumProvider checksumProvider;
 
-  @Before
+  @BeforeEach
   public void intialize() {
     checksumProvider = new Adler32ChecksumProvider();
   }

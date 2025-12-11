@@ -32,14 +32,14 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Properties;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(value = MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class KeyStoreFileTest {
 
   public static final String BOGUS_FILENAME = "not_keystore.jks";
@@ -58,13 +58,13 @@ public class KeyStoreFileTest {
 
   private static Properties properties;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() {
     properties = System.getProperties();
     System.setProperty("javax.net.ssl.keyStoreType", "JKS");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     System.setProperties(properties);
   }
@@ -77,7 +77,7 @@ public class KeyStoreFileTest {
     return new File(resourcePath.getPath()).getPath();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     refreshKeyStoreFile();
   }

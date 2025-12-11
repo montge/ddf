@@ -22,11 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class MetacardBackupFileStorageTest {
 
   private static final String OUTPUT_PATH_TEMPLATE =
@@ -39,7 +41,7 @@ public class MetacardBackupFileStorageTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     metacardFileStorageRoute.setOutputPathTemplate(OUTPUT_PATH_TEMPLATE);
   }

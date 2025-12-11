@@ -30,16 +30,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class PollingPolicyFinderModuleTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -50,7 +52,7 @@ public class PollingPolicyFinderModuleTest {
 
   private Set<String> policyDirectories;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     temporaryFolder.create();
     policyDirectory = temporaryFolder.newFolder("policies");
@@ -58,7 +60,7 @@ public class PollingPolicyFinderModuleTest {
     policyDirectories.add(policyDirectory.getAbsolutePath());
   }
 
-  @After
+  @AfterEach
   public void cleanup() {
     temporaryFolder.delete();
   }

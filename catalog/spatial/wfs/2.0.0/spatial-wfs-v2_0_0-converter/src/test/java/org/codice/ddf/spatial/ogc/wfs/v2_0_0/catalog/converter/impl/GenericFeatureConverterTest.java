@@ -47,9 +47,8 @@ import org.codice.ddf.spatial.ogc.wfs.catalog.converter.impl.GmlGeometryConverte
 import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs20Constants;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs20FeatureCollection;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GenericFeatureConverterTest {
 
@@ -85,7 +84,7 @@ public class GenericFeatureConverterTest {
 
   private XStream xstream;
 
-  @Before
+  @BeforeEach
   public void before() {
     xstream = new XStream(new WstxDriver());
     allowTypes(xstream);

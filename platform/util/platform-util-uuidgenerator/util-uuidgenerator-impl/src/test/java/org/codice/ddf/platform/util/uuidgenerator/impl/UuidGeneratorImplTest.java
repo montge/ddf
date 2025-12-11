@@ -19,8 +19,8 @@ import static org.hamcrest.Matchers.is;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UuidGeneratorImplTest {
 
@@ -41,7 +41,7 @@ public class UuidGeneratorImplTest {
           "fc3f1798fe1766fbbcc39dcfcb232e6---1",
           "fc3f1798fe17166fbbcc39dcfcb2232e61234");
 
-  @Before
+  @BeforeEach
   public void setUp() {
     uuidGenerator = new UuidGeneratorImpl();
   }

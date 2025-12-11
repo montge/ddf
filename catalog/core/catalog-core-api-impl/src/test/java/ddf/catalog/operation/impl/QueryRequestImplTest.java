@@ -34,11 +34,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link QueryRequestImpl} class.
@@ -46,7 +46,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>Tests all constructors, getters, properties handling (from OperationImpl), and edge cases.
  * Also validates the Operation interface implementation.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QueryRequestImplTest {
 
   private static final String SOURCE_ID_1 = "source-1";
@@ -58,7 +58,7 @@ public class QueryRequestImplTest {
   private QueryRequestImpl queryRequest;
   private Map<String, Serializable> properties;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     properties = new HashMap<>();
     properties.put("key1", "value1");

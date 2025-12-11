@@ -42,8 +42,8 @@ import org.apache.commons.io.IOUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -71,7 +71,7 @@ public class GmdConverterTest {
           + "117.6433029174805 -30.91708374023438, 117.6454467773437 -30.91711044311523, 117.6484985351563 -30.92061042785645, "
           + "117.6504135131836 -30.92061042785645, 117.6504440307617 -30.91638946533203, 117.6552810668945 -30.92013931274414))";
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     XMLUnit.setIgnoreWhitespace(true);
     TimeZone zone = TimeZone.getTimeZone("UTC");

@@ -22,18 +22,18 @@ import static org.mockito.Mockito.when;
 import ddf.action.Action;
 import ddf.catalog.data.Metacard;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests for {@link AbstractMetacardActionProvider} class (deprecated).
  *
  * <p>Note: This class is deprecated but still needs test coverage.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractMetacardActionProviderTest {
 
   private static final String TEST_ID = "test-action-id";
@@ -47,7 +47,7 @@ public class AbstractMetacardActionProviderTest {
 
   private TestAbstractMetacardActionProvider actionProvider;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, HOST);
     System.setProperty("org.codice.ddf.system.siteName", SITE_NAME);

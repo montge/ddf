@@ -45,8 +45,8 @@ import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.temporal.TOverlapsImpl;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.opengis.filter.And;
 import org.opengis.filter.Filter;
@@ -117,7 +117,7 @@ public class OpenSearchFilterVisitorTest {
    */
   private static final String SPATIAL_ATTRIBUTE_NAME = Metacard.ANY_GEO;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     openSearchFilterVisitor = new OpenSearchFilterVisitor();
   }

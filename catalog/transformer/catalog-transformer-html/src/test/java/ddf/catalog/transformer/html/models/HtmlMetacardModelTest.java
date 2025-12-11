@@ -21,8 +21,8 @@ import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.data.types.Core;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HtmlMetacardModelTest {
 
@@ -30,7 +30,7 @@ public class HtmlMetacardModelTest {
 
   private List<String> coreList;
 
-  @Before
+  @BeforeEach
   public void setup() {
     coreList = new ArrayList<>();
     coreList.add(Core.TITLE);

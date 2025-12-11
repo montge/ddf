@@ -20,9 +20,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import ddf.security.encryption.EncryptionService;
 import ddf.security.permission.Permissions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -37,13 +37,13 @@ public class CswSourceConfigurationTest {
 
   private AutoCloseable mocks;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     mocks = MockitoAnnotations.openMocks(this);
     configuration = new CswSourceConfiguration(encryptionService, permissions);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     mocks.close();
   }

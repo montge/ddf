@@ -40,8 +40,8 @@ import java.util.TimeZone;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.temporal.object.DefaultPeriodDuration;
 import org.joda.time.DateTime;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class SolrProviderTemporal {
 
   private static SolrCatalogProviderImpl provider;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     provider = SolrProviderTest.getProvider();
   }

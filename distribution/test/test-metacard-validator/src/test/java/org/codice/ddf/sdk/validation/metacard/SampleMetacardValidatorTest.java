@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThrows;
 import com.google.common.collect.ImmutableSet;
 import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.validation.ValidationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SampleMetacardValidatorTest {
 

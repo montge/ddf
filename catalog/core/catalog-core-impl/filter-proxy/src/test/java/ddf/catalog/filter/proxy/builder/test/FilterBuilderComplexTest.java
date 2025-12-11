@@ -31,11 +31,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.geotools.filter.visitor.DefaultFilterVisitor;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.And;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterVisitor;
@@ -49,7 +49,7 @@ import org.opengis.filter.spatial.Intersects;
 import org.opengis.filter.temporal.During;
 
 /** Comprehensive tests for complex filter combinations (AND, OR, NOT with multiple criteria) */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FilterBuilderComplexTest {
 
   private static final String TITLE_ATTRIBUTE = "title";
@@ -61,7 +61,7 @@ public class FilterBuilderComplexTest {
 
   private FilterBuilder builder;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     builder = new GeotoolsFilterBuilder();
   }

@@ -24,8 +24,8 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Unit tests for GeoCoder interface and its implementation. */
 public class GeoCoderTest {
@@ -36,7 +36,7 @@ public class GeoCoderTest {
 
   private NearbyLocation mockNearbyLocation;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     geoCoder = createTestGeoCoder();
     mockGeoResult = mock(GeoResult.class);

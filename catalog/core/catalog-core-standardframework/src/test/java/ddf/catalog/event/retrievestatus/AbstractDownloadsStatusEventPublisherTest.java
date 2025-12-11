@@ -40,9 +40,9 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.activities.ActivityEvent;
 import org.codice.ddf.notifications.Notification;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -88,7 +88,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
 
   protected Event curEvent;
 
-  @BeforeClass
+  @BeforeAll
   public static void oneTimeSetup() {
     resourceResponse = mock(ResourceResponse.class);
     resourceRequest = mock(ResourceRequest.class);
@@ -111,7 +111,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
     when(resourceResponse.getRequest()).thenReturn(resourceRequest);
   }
 
-  @Before
+  @BeforeEach
   public void setUpTest() {
     eventAdmin = mock(EventAdmin.class);
     Mockito.doAnswer(
@@ -132,7 +132,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
     downloadIdentifier = UUID.randomUUID().toString();
   }
 
-  @After
+  @AfterEach
   public void tearDownTest() {
     // Remove the security from the thread after every test
     ThreadContext.unbindSecurityManager();

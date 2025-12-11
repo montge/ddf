@@ -24,7 +24,7 @@ import ddf.catalog.validation.impl.validator.PatternValidator;
 import ddf.catalog.validation.report.AttributeValidationReport;
 import java.util.Optional;
 import java.util.regex.PatternSyntaxException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PatternValidatorTest {
   private static final PatternValidator VALIDATOR =

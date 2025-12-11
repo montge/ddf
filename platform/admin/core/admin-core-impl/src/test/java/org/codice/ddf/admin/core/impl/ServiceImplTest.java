@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.codice.ddf.admin.core.api.ConfigurationDetails;
 import org.codice.ddf.admin.core.api.MetatypeAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ServiceImplTest {
 

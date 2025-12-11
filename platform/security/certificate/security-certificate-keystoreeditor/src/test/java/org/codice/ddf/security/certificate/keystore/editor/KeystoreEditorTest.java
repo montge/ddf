@@ -41,11 +41,13 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.core.AnyOf;
 import org.hamcrest.core.Is;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class KeystoreEditorTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -82,7 +84,7 @@ public class KeystoreEditorTest {
 
   String password = "changeit";
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     keyStoreFile = temporaryFolder.newFile("keystore.jks");
     trustStoreFile = temporaryFolder.newFile("truststore.jks");

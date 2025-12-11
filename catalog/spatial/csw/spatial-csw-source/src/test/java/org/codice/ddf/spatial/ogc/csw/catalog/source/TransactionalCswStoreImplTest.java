@@ -28,15 +28,15 @@ import java.util.function.Consumer;
 import org.codice.ddf.cxf.client.ClientBuilderFactory;
 import org.codice.ddf.security.Security;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswSourceConfiguration;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.BundleContext;
 
 /** Unit tests for TransactionalCswStoreImpl */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TransactionalCswStoreImplTest {
 
   private static final String CSW_URL = "http://example.com/csw";
@@ -58,7 +58,7 @@ public class TransactionalCswStoreImplTest {
 
   private TransactionalCswStoreImpl transactionalCswStore;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // Configure mock configuration
     when(mockConfiguration.getId()).thenReturn(SOURCE_ID);

@@ -20,14 +20,14 @@ import static org.hamcrest.Matchers.nullValue;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.PhotoOverlay;
 import java.io.InputStream;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Point;
 
 public class KmlPhotoOverlayToJtsPointConverterTest {
   private static PhotoOverlay testKmlPhotoOverlay;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream =
         KmlPhotoOverlayToJtsPointConverterTest.class.getResourceAsStream("/kmlPhotoOverlay.kml");

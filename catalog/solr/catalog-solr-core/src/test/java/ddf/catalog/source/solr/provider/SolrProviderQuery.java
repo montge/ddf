@@ -76,8 +76,8 @@ import org.geotools.util.factory.FactoryIteratorProvider;
 import org.geotools.util.factory.GeoTools;
 import org.joda.time.DateTime;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortOrder;
@@ -96,7 +96,7 @@ public class SolrProviderQuery {
 
   private static SolrCatalogProviderImpl provider;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     provider = SolrProviderTest.getProvider();
 

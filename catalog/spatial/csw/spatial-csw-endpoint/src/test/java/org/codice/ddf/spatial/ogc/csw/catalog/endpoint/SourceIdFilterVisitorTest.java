@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.codice.ddf.spatial.ogc.csw.catalog.endpoint.mappings.SourceIdFilterVisitor;
 import org.geotools.filter.FilterFactoryImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 
 public class SourceIdFilterVisitorTest {
@@ -41,7 +41,7 @@ public class SourceIdFilterVisitorTest {
 
   private Filter filterWithoutSourceIds;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     sourceIdFilter = new SourceIdFilterVisitor();
     filterBuilder = new GeotoolsFilterBuilder();

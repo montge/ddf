@@ -68,15 +68,17 @@ import org.codice.ddf.cxf.client.impl.ClientBuilderFactoryImpl;
 import org.codice.ddf.cxf.client.impl.ClientBuilderImpl;
 import org.codice.ddf.cxf.oauth.OAuthSecurity;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 public class URLResourceReaderTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(URLResourceReaderTest.class);
@@ -164,7 +166,7 @@ public class URLResourceReaderTest {
     return is;
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     MimeTypeResolver tikaResolver = new TikaMimeTypeResolver();
     this.customResolver = new CustomMimeTypeResolver();

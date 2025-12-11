@@ -46,8 +46,8 @@ import org.geotools.filter.spatial.DWithinImpl;
 import org.geotools.filter.spatial.IntersectsImpl;
 import org.geotools.filter.temporal.DuringImpl;
 import org.geotools.xml.filter.FilterTransformer;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
@@ -909,7 +909,7 @@ public class OpenSearchQueryTest {
   }
 
   @Test
-  // @Ignore
+  // @Disabled
   public void testOgcFilterEvaluateTemporalBetween() throws Exception {
     FilterFactory filterFactory = new FilterFactoryImpl();
 
@@ -1034,7 +1034,7 @@ public class OpenSearchQueryTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testOgcFilterEvaluateContextualLike() throws Exception {
     // String input = "abc_cat_dog_xyz";
     String input = "<ns1:thing xmlns:ns1=\"http://ddf.codice.org/mynamespace\">cat</ns1:thing>";

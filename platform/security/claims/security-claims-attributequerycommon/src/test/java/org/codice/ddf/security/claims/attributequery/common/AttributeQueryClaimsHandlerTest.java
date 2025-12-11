@@ -41,9 +41,9 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.config.InitializationException;
 import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
@@ -130,12 +130,12 @@ public class AttributeQueryClaimsHandlerTest {
     }
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws InitializationException {
     InitializationService.initialize();
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     signatureProperties = mock(Properties.class);
     encryptionProperties = mock(Properties.class);

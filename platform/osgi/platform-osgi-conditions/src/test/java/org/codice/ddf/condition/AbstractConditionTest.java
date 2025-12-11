@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.condpermadmin.Condition;
 
 /**
@@ -38,12 +38,12 @@ import org.osgi.service.condpermadmin.Condition;
  *   <li>Edge cases with empty and null condition arrays
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractConditionTest {
 
   private TestCondition testCondition;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testCondition = new TestCondition(true);
   }

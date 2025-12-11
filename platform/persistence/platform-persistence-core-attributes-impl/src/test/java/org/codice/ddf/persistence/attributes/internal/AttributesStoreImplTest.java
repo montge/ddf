@@ -33,8 +33,8 @@ import org.codice.ddf.persistence.PersistentItem;
 import org.codice.ddf.persistence.PersistentStore;
 import org.codice.ddf.persistence.PersistentStore.PersistenceType;
 import org.codice.ddf.persistence.attributes.AttributesStore;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class AttributesStoreImplTest {
@@ -61,7 +61,7 @@ public class AttributesStoreImplTest {
 
   private static final Long LONG_5 = 500L;
 
-  @Before
+  @BeforeEach
   public void setup() {
     attributesStore = new AttributesStoreImpl(persistentStore);
   }

@@ -28,14 +28,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class KmlToJtsCoordinateConverterTest {
 
   private static List<Coordinate> testKmlCoordinates;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream =
         KmlToJtsCoordinateConverterTest.class.getResourceAsStream("/kmlLinearRing.kml");

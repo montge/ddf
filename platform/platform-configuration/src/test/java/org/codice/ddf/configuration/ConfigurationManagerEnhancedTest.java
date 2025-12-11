@@ -34,12 +34,12 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -57,7 +57,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
  *   <li>Edge cases and error conditions
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConfigurationManagerEnhancedTest {
 
   private static final String TEST_PROTOCOL = "https";
@@ -79,7 +79,7 @@ public class ConfigurationManagerEnhancedTest {
 
   private List<ConfigurationWatcher> watchers;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     watchers = new ArrayList<>();
     watchers.add(mockWatcher);

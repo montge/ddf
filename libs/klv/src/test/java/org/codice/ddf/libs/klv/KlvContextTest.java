@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.codice.ddf.libs.klv.data.numerical.KlvDouble;
 import org.codice.ddf.libs.klv.data.numerical.KlvInt;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class KlvContextTest {
   @Test

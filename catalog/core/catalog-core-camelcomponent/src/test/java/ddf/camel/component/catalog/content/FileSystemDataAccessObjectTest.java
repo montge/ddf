@@ -27,14 +27,16 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class FileSystemDataAccessObjectTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -46,7 +48,7 @@ public class FileSystemDataAccessObjectTest {
   private static final String TEST_SUFFIX = ".ser";
   private static final String TEST_SUFFIX_REGEX = "\\.ser";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     fileSystemDataAccessObject = new FileSystemDataAccessObject();
     testDir = temporaryFolder.newFolder("testStore");

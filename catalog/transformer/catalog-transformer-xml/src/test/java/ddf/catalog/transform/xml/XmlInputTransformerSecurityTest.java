@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.codice.ddf.parser.xml.XmlParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enhanced security test harness for XmlInputTransformer. Tests XXE vulnerabilities, injection
@@ -43,7 +43,7 @@ public class XmlInputTransformerSecurityTest {
 
   private XmlInputTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     transformer = new XmlInputTransformer(new XmlParser());
   }

@@ -34,8 +34,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SaxEventHandlerUtilsTest {
 
@@ -45,7 +45,7 @@ public class SaxEventHandlerUtilsTest {
 
   private CoreAttributes coreAttributes = new CoreAttributes();
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() {
     CoreAttributes coreAttributes = new CoreAttributes();
     descriptors.add(coreAttributes.getAttributeDescriptor(CoreAttributes.ID));

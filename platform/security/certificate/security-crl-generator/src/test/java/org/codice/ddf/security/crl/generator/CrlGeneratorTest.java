@@ -41,20 +41,22 @@ import org.codice.ddf.cxf.client.impl.ClientBuilderImpl;
 import org.codice.ddf.cxf.oauth.OAuthSecurity;
 import org.codice.ddf.platform.util.properties.PropertiesLoader;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.osgi.service.event.EventAdmin;
 
+@EnableRuleMigrationSupport
 public class CrlGeneratorTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
   private static final String KEYSTORE_PASS_PROPERTY = "${javax.net.ssl.keyStorePassword}";
   private byte[] demEncodedCrl;
   private EventAdmin eventAdmin = mock(EventAdmin.class);
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     CrlGenerator.issuerEncryptionPropertiesLocation =
         getClass().getResource("/issuer/encryption.properties").getPath();

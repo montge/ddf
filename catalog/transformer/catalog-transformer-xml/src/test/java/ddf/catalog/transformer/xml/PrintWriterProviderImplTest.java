@@ -21,14 +21,14 @@ import static org.junit.Assert.fail;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.transformer.api.PrintWriter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PrintWriterProviderImplTest {
 
   private PrintWriterProviderImpl provider;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     provider = new PrintWriterProviderImpl();
   }

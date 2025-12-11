@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import ddf.catalog.pubsub.internal.PubSubConstants;
 import java.util.HashMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.event.Event;
 
 public class SimplePredicatesTest {

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import org.codice.ddf.catalog.content.monitor.util.BundleInfo;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.util.PathUtils;
@@ -57,7 +57,7 @@ public abstract class AbstractComponentTest {
         composite(bundleDependencies));
   }
 
-  @After
+  @AfterEach
   public void teardown() {
     serviceRegistrations.forEach(ServiceRegistration::unregister);
   }

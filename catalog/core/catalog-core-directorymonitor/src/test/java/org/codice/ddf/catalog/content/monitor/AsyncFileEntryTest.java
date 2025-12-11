@@ -25,11 +25,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class AsyncFileEntryTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -37,7 +39,7 @@ public class AsyncFileEntryTest {
   private File testFile;
   private File testDir;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     testFile = temporaryFolder.newFile("test.txt");
     testDir = temporaryFolder.newFolder("testDir");

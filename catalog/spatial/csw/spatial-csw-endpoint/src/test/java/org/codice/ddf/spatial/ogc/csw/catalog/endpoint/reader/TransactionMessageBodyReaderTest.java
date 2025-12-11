@@ -54,8 +54,8 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.transaction.CswTransactionRequest;
 import org.codice.ddf.spatial.ogc.csw.catalog.converter.CswRecordConverter;
 import org.codice.ddf.spatial.ogc.csw.catalog.endpoint.CswQueryFactoryTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TransactionMessageBodyReaderTest {
   private static final int COUNT = 100;
@@ -300,7 +300,7 @@ public class TransactionMessageBodyReaderTest {
 
   private AttributeRegistry registry = new AttributeRegistryImpl();
 
-  @Before
+  @BeforeEach
   public void setup() {
     cswRecordConverter = new CswRecordConverter(CswQueryFactoryTest.getCswMetacardType());
     new CoreAttributes().getAttributeDescriptors().stream().forEach(d -> registry.register(d));

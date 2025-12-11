@@ -24,14 +24,15 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.apache.karaf.system.SystemService;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for SecureBoot security component.
@@ -39,7 +40,8 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>This class tests the critical security logic that prevents DDF installations in insecure
  * directories (user home directories).
  */
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class SecureBootTest {
 
   private static final String DDF_HOME_PROPERTY = "ddf.home";
@@ -53,7 +55,7 @@ public class SecureBootTest {
   private String originalUserHome;
   private SecurityManager originalSecurityManager;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // Save original system properties
     originalDdfHome = System.getProperty(DDF_HOME_PROPERTY);
@@ -61,7 +63,7 @@ public class SecureBootTest {
     originalSecurityManager = System.getSecurityManager();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     // Restore original system properties
     restoreSystemProperty(DDF_HOME_PROPERTY, originalDdfHome);

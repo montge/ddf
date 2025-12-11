@@ -28,8 +28,8 @@ import org.apache.karaf.features.internal.service.FeaturesServiceImpl;
 import org.codice.ddf.admin.application.service.ApplicationService;
 import org.codice.ddf.admin.application.service.ApplicationServiceException;
 import org.codice.ddf.admin.application.service.impl.ApplicationServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.resolver.ResolutionException;
 
 public class AbstractProfileCommandTest {
@@ -40,7 +40,7 @@ public class AbstractProfileCommandTest {
 
   private AbstractProfileCommand abstractProfileCommand;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.applicationService = mock(ApplicationServiceImpl.class);
     this.featuresService = mock(FeaturesServiceImpl.class);

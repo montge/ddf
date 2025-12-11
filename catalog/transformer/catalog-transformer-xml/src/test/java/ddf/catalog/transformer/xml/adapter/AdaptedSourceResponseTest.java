@@ -32,7 +32,7 @@ import ddf.catalog.transformer.xml.binding.MetacardElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AdaptedSourceResponseTest {
 

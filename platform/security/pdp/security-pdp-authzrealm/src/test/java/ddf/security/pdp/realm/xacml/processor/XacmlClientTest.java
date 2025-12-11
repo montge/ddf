@@ -35,14 +35,16 @@ import oasis.names.tc.xacml._3_0.core.schema.wd_17.RequestType;
 import oasis.names.tc.xacml._3_0.core.schema.wd_17.ResponseType;
 import org.apache.commons.io.FileUtils;
 import org.codice.ddf.parser.xml.XmlParser;
-import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 public class XacmlClientTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(XacmlClientTest.class);
 
@@ -90,7 +92,7 @@ public class XacmlClientTest {
 
   private File tempDir;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() {
     try {
       projectHome = new File(".").getCanonicalFile().getPath();
@@ -455,7 +457,7 @@ public class XacmlClientTest {
         });
   }
 
-  @After
+  @AfterEach
   public void cleanup() throws IOException {
     if (tempDir != null && tempDir.exists()) {
       LOGGER.debug("Deleting directory: {}", tempDir);

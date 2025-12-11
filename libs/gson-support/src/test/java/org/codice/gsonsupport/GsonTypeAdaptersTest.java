@@ -23,8 +23,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GsonTypeAdaptersTest {
 
@@ -34,7 +34,7 @@ public class GsonTypeAdaptersTest {
     Date currentDate;
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     gson =
         new GsonBuilder()

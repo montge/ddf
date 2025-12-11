@@ -23,7 +23,7 @@ import com.google.common.collect.Sets;
 import ddf.catalog.data.InjectableAttribute;
 import java.util.Collections;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InjectableAttributeImplTest {
   @Test

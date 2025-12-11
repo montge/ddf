@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ColumnHeaderIteratorTest {
   private static final String[][] TEST_DATA = {
@@ -39,7 +39,7 @@ public class ColumnHeaderIteratorTest {
 
   private Map<String, String> aliasMap;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.attributeDescriptorList = new ArrayList<AttributeDescriptor>();
     this.aliasMap = new HashMap<>();

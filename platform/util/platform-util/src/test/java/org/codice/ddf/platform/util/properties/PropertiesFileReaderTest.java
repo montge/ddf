@@ -26,9 +26,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class PropertiesFileReaderTest {
@@ -46,7 +46,7 @@ public class PropertiesFileReaderTest {
 
   private PropertiesFileReader reader = new PropertiesFileReader();
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws Exception {
     File propertiesEmptyDirectory = testFolder.newFolder("empty");
     File propertiesTestDirectory = testFolder.newFolder("properties");

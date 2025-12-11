@@ -27,8 +27,8 @@ import com.google.common.base.VerifyException;
 import ddf.catalog.data.MetacardType;
 import java.util.Dictionary;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -49,7 +49,7 @@ public class WfsMetacardTypeRegistryTest {
 
   private MetacardType mockMetacardType;
 
-  @Before
+  @BeforeEach
   public void setup() {
     mockBundleContext = mock(BundleContext.class);
     mockServiceRegistration = mock(ServiceRegistration.class);

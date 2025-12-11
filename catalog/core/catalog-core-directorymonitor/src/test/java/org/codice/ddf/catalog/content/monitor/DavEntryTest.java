@@ -29,12 +29,9 @@ import java.util.Collections;
 import java.util.Date;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class DavEntryTest {
   private DavEntry entry;
 
@@ -42,7 +39,7 @@ public class DavEntryTest {
 
   private Sardine mockSardine;
 
-  @Before
+  @BeforeEach
   public void setup() {
     entry = new DavEntry("http://test");
     mockResource = mock(DavResource.class);

@@ -36,8 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.codice.ddf.security.handler.api.OidcHandlerConfiguration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.pac4j.core.exception.http.FoundAction;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -55,7 +55,7 @@ public class OidcLogoutActionProviderTest {
   private HttpServletResponse response;
   private Subject subject;
 
-  @Before
+  @BeforeEach
   public void setup() {
     oidcLogoutActionBuilder = mock(OidcLogoutActionBuilder.class);
     OidcHandlerConfiguration handlerConfiguration = mock(OidcHandlerConfiguration.class);

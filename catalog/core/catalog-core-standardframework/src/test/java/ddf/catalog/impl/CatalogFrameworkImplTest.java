@@ -176,10 +176,11 @@ import org.codice.ddf.catalog.sourcepoller.SourcePoller;
 import org.codice.ddf.catalog.sourcepoller.SourceStatus;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.geotools.filter.FilterFactoryImpl;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
@@ -192,6 +193,7 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 public class CatalogFrameworkImplTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(CatalogFrameworkImplTest.class);
 
@@ -255,7 +257,7 @@ public class CatalogFrameworkImplTest {
         }
       };
 
-  @Before
+  @BeforeEach
   public void setup()
       throws StopProcessingException, PluginExecutionException, URISyntaxException,
           FederationException, IOException, CatalogTransformerException, InterruptedException {
@@ -1277,7 +1279,7 @@ public class CatalogFrameworkImplTest {
   /**
    * Tests that the framework properly passes a delete by identifier request to the local provider.
    */
-  @Ignore
+  @Disabled
   @Test
   public void testDeleteByIdentifier() {
     // TODO create
@@ -1287,13 +1289,13 @@ public class CatalogFrameworkImplTest {
 
   // Start testing CatalogFramework
 
-  @Ignore
+  @Disabled
   @Test
   public void testFederateRead() {
     // TODO create
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testFederateReadWithFrameworkName() {
     // TODO create
@@ -1306,7 +1308,7 @@ public class CatalogFrameworkImplTest {
    * ResourceResponse with a null ResourceRequest.
    */
   @Test
-  @Ignore
+  @Disabled
   public void
       testGetResourceWhenNonNullResourceRequestExpectPostResourcePluginToReceiveResourceResponseWithNonNullResourceRequest()
           throws Exception {
@@ -1524,7 +1526,7 @@ public class CatalogFrameworkImplTest {
         });
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testFederateQueryWithFrameworkName() {
     // TODO create
@@ -2091,7 +2093,7 @@ public class CatalogFrameworkImplTest {
    *
    * @throws SourceUnavailableException
    */
-  @Ignore
+  @Disabled
   @Test
   public void testNoSitesAvailableFederatedQuery() {
     assertThrows(
@@ -2408,7 +2410,7 @@ public class CatalogFrameworkImplTest {
         });
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMetacardTransformWithBadShortname() {
     assertThrows(

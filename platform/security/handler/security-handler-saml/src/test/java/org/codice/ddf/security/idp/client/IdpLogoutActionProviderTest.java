@@ -30,8 +30,8 @@ import java.util.List;
 import junit.framework.Assert;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IdpLogoutActionProviderTest {
 
@@ -41,7 +41,7 @@ public class IdpLogoutActionProviderTest {
 
   private String nameIdTime = "nameId\n" + System.currentTimeMillis();
 
-  @Before
+  @BeforeEach
   public void setup() {
     encryptionService = mock(EncryptionService.class);
     when(encryptionService.encrypt(any(String.class))).thenReturn(nameIdTime);

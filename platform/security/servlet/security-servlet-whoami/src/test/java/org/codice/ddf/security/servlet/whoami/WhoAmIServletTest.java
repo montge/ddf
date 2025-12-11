@@ -33,15 +33,15 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link WhoAmIServlet} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WhoAmIServletTest {
 
   @Mock private SubjectOperations subjectOperations;
@@ -62,7 +62,7 @@ public class WhoAmIServletTest {
 
   private StringWriter responseWriter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     servlet = new WhoAmIServlet(subjectOperations);
 
@@ -73,7 +73,7 @@ public class WhoAmIServletTest {
     ThreadContext.bind(subject);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     ThreadContext.unbindSecurityManager();
     ThreadContext.unbindSubject();

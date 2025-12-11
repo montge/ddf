@@ -34,16 +34,18 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.UUID;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.cm.Configuration;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class ConfigurationContextImplTest {
   private static final String TEST_PID = "org.codice.test.ServiceFactory";
 
@@ -68,7 +70,7 @@ public class ConfigurationContextImplTest {
 
   private ConfigurationContextImpl context;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     testProps = new Hashtable<>();
     testProps.put("prop1", "value1");

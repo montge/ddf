@@ -35,9 +35,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DerivedContentActionProviderTest {
 
@@ -59,7 +59,7 @@ public class DerivedContentActionProviderTest {
 
   private static final String QUALIFIER_VALUE = "value";
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws URISyntaxException {
     actionUri =
         new URI("https://example.com/download?transform=resource&qualifier=" + QUALIFIER_VALUE);
@@ -67,7 +67,7 @@ public class DerivedContentActionProviderTest {
     actionProvider = new DerivedContentActionProvider(mockResourceActionProvider);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(metacard.getId()).thenReturn(CONTENT_ID);
     when(metacard.getAttribute(Metacard.DERIVED_RESOURCE_URI)).thenReturn(attribute);

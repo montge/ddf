@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link TokenStorage} interface contract. Uses a test implementation to verify the
@@ -41,7 +41,7 @@ public class TokenStorageTest {
 
   private TestTokenStorage tokenStorage;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     tokenStorage = new TestTokenStorage();
   }

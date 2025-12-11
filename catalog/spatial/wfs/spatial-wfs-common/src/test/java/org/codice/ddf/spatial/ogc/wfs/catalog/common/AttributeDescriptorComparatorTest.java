@@ -19,15 +19,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.AttributeDescriptor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Unit tests for {@link AttributeDescriptorComparator}. */
 public class AttributeDescriptorComparatorTest {
 
   private AttributeDescriptorComparator comparator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     comparator = new AttributeDescriptorComparator();
   }

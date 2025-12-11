@@ -20,8 +20,8 @@ import static org.junit.Assert.assertThrows;
 
 import java.io.InputStream;
 import org.apache.tika.exception.TikaException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TikaMetadataExtractorTest {
   private TikaMetadataExtractor tikaMetadataExtractor;
@@ -30,7 +30,7 @@ public class TikaMetadataExtractorTest {
 
   private InputStream stream = null;
 
-  @Before
+  @BeforeEach
   public void setup() {
     stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.txt");
   }

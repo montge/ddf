@@ -22,15 +22,16 @@ import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/** Unit tests for {@link CryptoPropertiesFileValidator} via SignaturePropertiesFileValidator */
-@RunWith(MockitoJUnitRunner.class)
+/** Unit tests for {@EnableRuleMigrationSupport
+ * @link CryptoPropertiesFileValidator} via SignaturePropertiesFileValidator */
+@ExtendWith(MockitoExtension.class)
 public class CryptoPropertiesFileValidatorTest {
 
   private static final String DEFAULT_PASSWORD = "changeit";
@@ -45,7 +46,7 @@ public class CryptoPropertiesFileValidatorTest {
   private SignaturePropertiesFileValidator validator;
   private Path propertiesPath;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     validator = new SignaturePropertiesFileValidator();
     propertiesPath = tempFolder.newFile("signature.properties").toPath();

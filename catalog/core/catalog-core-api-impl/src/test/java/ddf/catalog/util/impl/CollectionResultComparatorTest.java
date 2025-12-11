@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 import ddf.catalog.data.Result;
 import ddf.catalog.data.impl.ResultImpl;
 import java.util.Comparator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.sort.SortOrder;
 
 public class CollectionResultComparatorTest {

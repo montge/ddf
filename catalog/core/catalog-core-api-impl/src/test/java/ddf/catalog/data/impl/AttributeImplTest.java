@@ -23,13 +23,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeImplTest {
   AttributeImpl toTest;
 
-  @Before
+  @BeforeEach
   public void setup() {
     toTest = new AttributeImpl("id", UUID.randomUUID().toString());
   }

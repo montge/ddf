@@ -27,8 +27,8 @@ import ddf.catalog.data.Metacard;
 import ddf.catalog.data.types.Core;
 import java.util.Collections;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class DefaultMetacardTagsPluginTest {
@@ -37,7 +37,7 @@ public class DefaultMetacardTagsPluginTest {
 
   private Metacard metacard;
 
-  @Before
+  @BeforeEach
   public void setup() {
     metacard = mock(Metacard.class);
     setDefaultMetacardTags = new DefaultMetacardTagsPlugin();

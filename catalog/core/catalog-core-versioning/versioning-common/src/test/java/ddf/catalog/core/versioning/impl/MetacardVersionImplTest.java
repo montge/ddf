@@ -23,7 +23,7 @@ import ddf.catalog.core.versioning.MetacardVersion;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.impl.MetacardImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link MetacardVersionImpl} class static methods and type. */
 public class MetacardVersionImplTest {

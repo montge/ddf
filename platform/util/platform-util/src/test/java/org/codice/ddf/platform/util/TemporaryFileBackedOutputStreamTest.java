@@ -19,9 +19,9 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.io.ByteSource;
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TemporaryFileBackedOutputStreamTest {
 
@@ -31,12 +31,12 @@ public class TemporaryFileBackedOutputStreamTest {
 
   private TemporaryFileBackedOutputStream temporaryFileBackedOutputStream;
 
-  @Before
+  @BeforeEach
   public void setup() {
     temporaryFileBackedOutputStream = new TemporaryFileBackedOutputStream(1);
   }
 
-  @After
+  @AfterEach
   public void teardown() throws IOException {
     temporaryFileBackedOutputStream.close();
   }

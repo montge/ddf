@@ -25,7 +25,7 @@ import org.codice.ddf.libs.geo.util.GeospatialUtil;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.hamcrest.core.Is;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;

@@ -22,16 +22,16 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertiesLoaderTest {
 
   @Mock private Properties propertiesMock;
@@ -53,7 +53,7 @@ public class PropertiesLoaderTest {
 
   private static final PropertiesLoader PROPERTIES_LOADER = PropertiesLoader.getInstance();
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() throws Exception {
 
     // set up string to put in properties file
@@ -69,7 +69,7 @@ public class PropertiesLoaderTest {
     System.setProperty("value4", "value4value");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() throws Exception {
     System.clearProperty("value4");
   }

@@ -32,15 +32,17 @@ import java.nio.file.Path;
 import java.util.Map;
 import org.codice.ddf.security.token.storage.api.TokenInformation;
 import org.codice.ddf.security.token.storage.api.TokenInformation.TokenEntry;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class FileSystemTokenStorageSecurityTest {
 
   private static final String TEST_USER_ID = "test-user-123";
@@ -60,7 +62,7 @@ public class FileSystemTokenStorageSecurityTest {
   private FileSystemTokenStorage tokenStorage;
   private Path testDirectory;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testDirectory = tempFolder.newFolder("tokens").toPath();
 

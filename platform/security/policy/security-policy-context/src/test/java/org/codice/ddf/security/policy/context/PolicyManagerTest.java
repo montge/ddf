@@ -34,8 +34,8 @@ import org.codice.ddf.security.policy.context.attributes.ContextAttributeMapping
 import org.codice.ddf.security.policy.context.attributes.DefaultContextAttributeMapping;
 import org.codice.ddf.security.policy.context.impl.Policy;
 import org.codice.ddf.security.policy.context.impl.PolicyManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Test for PolicyManager */
 public class PolicyManagerTest {
@@ -97,7 +97,7 @@ public class PolicyManagerTest {
           .put("/x/y/z", Collections.singletonList(attributes[1]))
           .build();
 
-  @Before
+  @BeforeEach
   public void setup() {
     manager = new PolicyManager();
     manager.setSecurityLogger(mock(SecurityLogger.class));

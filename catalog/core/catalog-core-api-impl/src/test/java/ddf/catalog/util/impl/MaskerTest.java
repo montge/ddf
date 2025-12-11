@@ -17,8 +17,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MaskerTest {
 
@@ -30,7 +30,7 @@ public class MaskerTest {
 
   String data;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     unmaskedId = MaskerTest.class.getName();
     data = "JUnit:" + MaskerTest.class.getSimpleName();

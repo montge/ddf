@@ -22,7 +22,7 @@ import ddf.security.claims.ClaimsParameters;
 import java.security.Principal;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import javax.security.auth.x500.X500Principal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PropertyFileClaimsHandlerTest {
 

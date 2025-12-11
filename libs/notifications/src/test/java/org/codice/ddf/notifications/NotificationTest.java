@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Class of test methods for the {@link Notification} class. */
 public class NotificationTest {

@@ -41,8 +41,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Comprehensive test harness for Jackson deserialization security vulnerabilities.
@@ -66,7 +66,7 @@ public class JacksonDeserializationSecurityTest {
 
   private ObjectMapper objectMapper;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     objectMapper = MetacardTypeMapperFactory.newObjectMapper();
   }

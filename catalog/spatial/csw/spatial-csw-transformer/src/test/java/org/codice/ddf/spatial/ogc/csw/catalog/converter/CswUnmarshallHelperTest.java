@@ -33,8 +33,8 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswAxisOrder;
 import org.hamcrest.Matcher;
 import org.joda.time.LocalDate;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
 public class CswUnmarshallHelperTest {
@@ -51,7 +51,7 @@ public class CswUnmarshallHelperTest {
 
   private DateFormat dateFormat;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     matcherMap = new HashMap<>();

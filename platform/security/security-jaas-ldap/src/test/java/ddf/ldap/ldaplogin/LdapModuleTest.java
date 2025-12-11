@@ -71,13 +71,15 @@ import org.apache.karaf.jaas.boot.principal.UserPrincipal;
 import org.forgerock.opendj.ldap.Connection;
 import org.forgerock.opendj.ldap.ConnectionFactory;
 import org.forgerock.opendj.ldap.LdapException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.contrib.java.lang.system.ProvideSystemProperty;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 
+@EnableRuleMigrationSupport
 public class LdapModuleTest {
 
   public static final String USER_CN = "tstark";
@@ -98,7 +100,7 @@ public class LdapModuleTest {
 
   public LdapModuleTest() throws IOException {}
 
-  @Before
+  @BeforeEach
   public void startup() throws LdapException {
 
     server = TestServer.getInstance();
@@ -112,7 +114,7 @@ public class LdapModuleTest {
             new GenericObjectPool<>(new LdapConnectionPooledObjectFactory(ldapConnectionFactory)));
   }
 
-  @After
+  @AfterEach
   public void shutdown() {
     server.shutdown();
     server = null;
@@ -155,7 +157,7 @@ public class LdapModuleTest {
 
   // Unable to get the LDAP server to accept startTLS. Have tried with
   // Apache Directory Studio, an OpenDJ client, and ;an UnboundedID client.
-  @Ignore
+  @Disabled
   @Test
   public void testStartTlsWithLdap() throws LoginException {
     server.useSimpleAuth();

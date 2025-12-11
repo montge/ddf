@@ -33,14 +33,14 @@ import java.net.URL;
 import java.util.Collections;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractMetacardActionProviderTest {
 
   private static final String ACTION_ID = "id";
@@ -59,12 +59,12 @@ public class AbstractMetacardActionProviderTest {
 
   @Mock private Action action;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws MalformedURLException {
     url = new URL("https://localhost/action");
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     when(metacard.getId()).thenReturn(METACARD_ID);
     when(metacard.getSourceId()).thenReturn(SOURCE_ID);

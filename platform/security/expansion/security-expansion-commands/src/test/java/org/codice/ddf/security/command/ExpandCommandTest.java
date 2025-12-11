@@ -33,15 +33,15 @@ import java.util.List;
 import java.util.Set;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link ExpandCommand} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExpandCommandTest {
 
   @Mock private Expansion expansion;
@@ -52,7 +52,7 @@ public class ExpandCommandTest {
 
   private PrintStream originalOut;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     command = new ExpandCommand();
     outputStream = new ByteArrayOutputStream();
@@ -60,7 +60,7 @@ public class ExpandCommandTest {
     System.setOut(new PrintStream(outputStream));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     System.setOut(originalOut);
   }

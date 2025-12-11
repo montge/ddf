@@ -31,12 +31,12 @@ import org.codice.ddf.persistence.PersistenceException;
 import org.codice.ddf.persistence.PersistentItem;
 import org.codice.ddf.persistence.PersistentStore;
 import org.codice.ddf.persistence.PersistentStore.PersistenceType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.event.Event;
 
 /**
@@ -49,14 +49,14 @@ import org.osgi.service.event.Event;
  * during persistence - Null and empty property handling - IllegalArgumentException for missing
  * userId - Edge cases and boundary conditions
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class NotificationListenerTest {
 
   @Mock private PersistentStore mockPersistentStore;
 
   private NotificationListener notificationListener;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     notificationListener = new NotificationListener(mockPersistentStore);
   }

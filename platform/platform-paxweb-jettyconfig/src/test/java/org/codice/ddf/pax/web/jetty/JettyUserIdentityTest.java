@@ -21,7 +21,7 @@ import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 import javax.security.auth.Subject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JettyUserIdentityTest {
 

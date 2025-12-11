@@ -21,14 +21,14 @@ import ddf.catalog.data.Attribute;
 import ddf.catalog.data.impl.AttributeImpl;
 import ddf.catalog.transformer.xml.binding.StringElement;
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StringAdapterTest {
 
   private StringAdapter adapter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     adapter = new StringAdapter();
   }

@@ -32,7 +32,7 @@ import net.opengis.wcs.v_1_0_0.GetCapabilities;
 import net.opengis.wcs.v_1_0_0.GetCoverage;
 import net.opengis.wcs.v_1_0_0.WCSCapabilitiesType;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Unit tests for {@link Wcs} interface. */
 public class WcsTest {

@@ -35,10 +35,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link ProcessingDetailsImpl} class.
@@ -46,7 +46,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>Tests all constructors, getters, setters, equals/hashCode, and edge cases for processing
  * details used in catalog operations.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ProcessingDetailsImplTest {
 
   private static final String TEST_SOURCE_ID = "test-source-1";
@@ -57,7 +57,7 @@ public class ProcessingDetailsImplTest {
   private ProcessingDetailsImpl processingDetails;
   private Exception testException;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testException = new RuntimeException("Test exception");
     processingDetails = new ProcessingDetailsImpl();

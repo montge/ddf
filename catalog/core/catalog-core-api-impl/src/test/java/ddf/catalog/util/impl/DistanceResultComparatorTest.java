@@ -17,9 +17,9 @@ import static org.junit.Assert.assertEquals;
 
 import ddf.catalog.data.Result;
 import ddf.catalog.data.impl.ResultImpl;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.sort.SortOrder;
 
 public class DistanceResultComparatorTest {
@@ -35,7 +35,7 @@ public class DistanceResultComparatorTest {
 
   private Result nullResult;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     shortDistance = new ResultImpl();
     shortDistance.setDistanceInMeters(new Double(Short.MAX_VALUE));
@@ -74,7 +74,7 @@ public class DistanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testNullResults() {
     DistanceResultComparator comparer = new DistanceResultComparator(SortOrder.ASCENDING);
     assertEquals(-1, comparer.compare(shortDistance, nullResult));
@@ -83,7 +83,7 @@ public class DistanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testNullDistance() {
     DistanceResultComparator comparer = new DistanceResultComparator(SortOrder.ASCENDING);
     assertEquals(-1, comparer.compare(shortDistance, nullDistance));
@@ -94,7 +94,7 @@ public class DistanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testNegativeDistance() {
     DistanceResultComparator comparer = new DistanceResultComparator(SortOrder.ASCENDING);
     assertEquals(1, comparer.compare(negativeDistance, shortDistance));
@@ -109,7 +109,7 @@ public class DistanceResultComparatorTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testZeroDistance() {
     DistanceResultComparator comparer = new DistanceResultComparator(SortOrder.ASCENDING);
     assertEquals(-1, comparer.compare(zeroDistance, shortDistance));

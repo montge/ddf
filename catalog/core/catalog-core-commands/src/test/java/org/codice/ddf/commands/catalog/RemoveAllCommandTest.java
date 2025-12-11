@@ -44,8 +44,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.apache.karaf.shell.api.console.Session;
 import org.fusesource.jansi.Ansi;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RemoveAllCommandTest extends ConsoleOutputCommon {
 
@@ -65,7 +65,7 @@ public class RemoveAllCommandTest extends ConsoleOutputCommon {
 
   static final String RED_CONSOLE_COLOR = Ansi.ansi().fg(ERROR_COLOR).toString();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
 
     catalogFrameworkMock = mock(CatalogFramework.class);

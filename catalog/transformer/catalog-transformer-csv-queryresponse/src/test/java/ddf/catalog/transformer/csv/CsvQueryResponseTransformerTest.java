@@ -38,8 +38,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
 public class CsvQueryResponseTransformerTest {
@@ -68,7 +68,7 @@ public class CsvQueryResponseTransformerTest {
 
   private CsvQueryResponseTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     RESULT_LIST.clear();
     ATTRIBUTE_DESCRIPTOR_LIST.clear();

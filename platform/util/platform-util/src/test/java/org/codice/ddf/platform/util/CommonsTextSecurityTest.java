@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.lang.reflect.Method;
 import org.apache.commons.text.StringEscapeUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -35,17 +35,17 @@ import org.codice.ddf.persistence.PersistenceException;
 import org.codice.ddf.persistence.PersistentStore;
 import org.codice.ddf.system.alerts.Alert;
 import org.codice.ddf.system.alerts.SystemNotice;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AdminAlertImplTest {
 
   @Mock PersistentStore persistentStore;
@@ -60,7 +60,7 @@ public class AdminAlertImplTest {
 
   Map<String, Object> solrMap;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     adminAlert = new AdminAlertImpl(persistentStore, eventAdmin);
     adminAlert.setSubjectOperations(new SubjectUtils());
@@ -68,7 +68,7 @@ public class AdminAlertImplTest {
     solrMap.put(SystemNotice.SYSTEM_NOTICE_ID_KEY + "_txt", "myId");
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     ThreadContext.unbindSubject();
   }

@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.TimeZone;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;

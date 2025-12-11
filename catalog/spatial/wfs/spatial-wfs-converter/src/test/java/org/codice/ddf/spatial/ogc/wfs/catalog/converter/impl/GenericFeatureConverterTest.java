@@ -25,8 +25,8 @@ import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.data.impl.MetacardTypeImpl;
 import org.codice.ddf.libs.geo.util.GeospatialUtil;
 import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GenericFeatureConverterTest {
 
@@ -36,7 +36,7 @@ public class GenericFeatureConverterTest {
 
   private MetacardType metacardType;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     converter = new GenericFeatureConverter();
     metacardMapper = mock(MetacardMapper.class);

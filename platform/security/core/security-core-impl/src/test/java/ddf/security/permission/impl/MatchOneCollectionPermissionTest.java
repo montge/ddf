@@ -25,17 +25,17 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.permission.WildcardPermission;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MatchOneCollectionPermissionTest {
 
   private MatchOneCollectionPermission matchOnePermission;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // Empty setup, will create instances in each test
   }

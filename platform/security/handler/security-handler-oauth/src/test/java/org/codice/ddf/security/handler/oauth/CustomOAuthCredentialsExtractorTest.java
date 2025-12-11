@@ -25,16 +25,16 @@ import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import java.io.InputStreamReader;
 import java.util.Optional;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.oidc.credentials.OidcCredentials;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CustomOAuthCredentialsExtractorTest {
   private static final String CODE = "code";
   private static final String AUTHORIZATION = "Authorization";
@@ -48,7 +48,7 @@ public class CustomOAuthCredentialsExtractorTest {
 
   @Mock private WebContext mockWebContext;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     authorizationCode =
         CharStreams.toString(
@@ -67,7 +67,7 @@ public class CustomOAuthCredentialsExtractorTest {
     authorizationHeader = "Bearer " + accessToken;
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     extractor = new CustomOAuthCredentialsExtractor();
   }

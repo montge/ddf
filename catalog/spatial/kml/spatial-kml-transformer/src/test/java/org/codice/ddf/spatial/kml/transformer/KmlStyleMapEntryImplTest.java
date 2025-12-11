@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Unit tests for {@link KmlStyleMapEntryImpl}. */
 public class KmlStyleMapEntryImplTest {

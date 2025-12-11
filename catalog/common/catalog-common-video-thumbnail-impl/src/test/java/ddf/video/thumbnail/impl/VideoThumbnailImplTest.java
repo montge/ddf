@@ -35,11 +35,11 @@ import javax.activation.MimeTypeParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.After;
 import org.junit.Assume;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -64,12 +64,12 @@ public class VideoThumbnailImplTest {
     }
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     Assume.assumeFalse("Skip unit tests on Windows. See DDF-3503.", SystemUtils.IS_OS_WINDOWS);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     System.setProperty("ddf.home", SystemUtils.USER_DIR);
 
@@ -78,7 +78,7 @@ public class VideoThumbnailImplTest {
     videoThumbnailImpl = new VideoThumbnailImpl(Objects.requireNonNull(createMockBundleContext()));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     videoThumbnailImpl.destroy();
 

@@ -26,14 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import org.codice.ddf.security.logout.service.LogoutService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link LogoutEndpoint} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LogoutEndpointTest {
 
   @Mock private LogoutService logoutService;
@@ -44,7 +44,7 @@ public class LogoutEndpointTest {
 
   private LogoutEndpoint endpoint;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     endpoint = new LogoutEndpoint(logoutService);
   }

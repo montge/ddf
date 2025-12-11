@@ -39,19 +39,19 @@ import java.util.Map;
 import java.util.Set;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GeoJsonMetacardTransformerEnhancedTest {
 
   private static final JSONParser PARSER = new JSONParser();
 
   private GeoJsonMetacardTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     transformer = new GeoJsonMetacardTransformer();
   }

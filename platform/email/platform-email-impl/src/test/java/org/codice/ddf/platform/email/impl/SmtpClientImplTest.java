@@ -36,11 +36,11 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive unit tests for {@link SmtpClientImpl} class.
@@ -56,7 +56,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Security logging integration
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SmtpClientImplTest {
 
   private static final String TEST_HOST = "smtp.example.com";
@@ -71,7 +71,7 @@ public class SmtpClientImplTest {
 
   private SmtpClientImpl smtpClient;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(mockEncryptionService.decryptValue(anyString())).then(returnsFirstArg());
     smtpClient = new SmtpClientImpl(mockEncryptionService);

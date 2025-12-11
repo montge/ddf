@@ -23,7 +23,7 @@ import ddf.catalog.validation.impl.validator.ISO3CountryCodeValidator;
 import ddf.catalog.validation.report.AttributeValidationReport;
 import java.util.Arrays;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ISO3CountryCodeValidatorTest {
 

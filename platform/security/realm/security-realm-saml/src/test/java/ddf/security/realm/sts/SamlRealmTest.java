@@ -29,9 +29,9 @@ import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.SAMLAuthenticationToken;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.config.InitializationService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
 
 public class SamlRealmTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     InitializationService.initialize();
   }
@@ -86,7 +86,7 @@ public class SamlRealmTest {
     assertFalse(supports);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testDoGetAuthenticationInfoSAML()
       throws ParserConfigurationException, SAXException, IOException {
@@ -103,7 +103,7 @@ public class SamlRealmTest {
     assertNotNull(authenticationInfo.getPrincipals());
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testDoGetAuthenticationInfoBase() {
     SamlRealm realm = new SamlRealm();

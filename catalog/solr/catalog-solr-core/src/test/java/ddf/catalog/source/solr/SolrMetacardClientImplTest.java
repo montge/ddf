@@ -71,8 +71,8 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.util.NamedList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.opengis.filter.Filter;
@@ -105,7 +105,7 @@ public class SolrMetacardClientImplTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws UnsupportedQueryException, IOException, SolrServerException {
     client = mock(SolrClient.class);
     catalogFilterAdapter = mock(FilterAdapter.class);

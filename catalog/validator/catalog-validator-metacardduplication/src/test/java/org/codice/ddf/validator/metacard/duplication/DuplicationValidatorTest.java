@@ -53,16 +53,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.Filter;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DuplicationValidatorTest {
 
   @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -84,7 +84,7 @@ public class DuplicationValidatorTest {
 
   private Set tags = new HashSet<>(Arrays.asList(TAG1, TAG2));
 
-  @Before
+  @BeforeEach
   public void setup()
       throws UnsupportedQueryException, SourceUnavailableException, FederationException {
 

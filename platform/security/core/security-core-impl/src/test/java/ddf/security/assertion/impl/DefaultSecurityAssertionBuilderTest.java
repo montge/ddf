@@ -26,7 +26,7 @@ import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultSecurityAssertionBuilderTest {
 

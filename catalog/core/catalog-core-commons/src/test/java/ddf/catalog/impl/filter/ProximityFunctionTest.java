@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.expression.Expression;
 
 public class ProximityFunctionTest {

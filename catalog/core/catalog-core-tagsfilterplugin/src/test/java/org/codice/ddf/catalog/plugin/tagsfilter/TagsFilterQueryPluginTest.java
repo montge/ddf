@@ -35,8 +35,8 @@ import ddf.catalog.operation.QueryRequest;
 import ddf.catalog.source.CatalogProvider;
 import ddf.catalog.source.Source;
 import ddf.catalog.source.SourceCache;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.And;
 import org.opengis.filter.Filter;
 
@@ -55,7 +55,7 @@ public class TagsFilterQueryPluginTest {
 
   private Query query;
 
-  @Before
+  @BeforeEach
   public void setup() {
     CatalogProvider catProvider1 = mock(CatalogProvider.class);
     CatalogProvider catProvider2 = mock(CatalogProvider.class);

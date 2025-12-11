@@ -18,7 +18,7 @@ import static org.junit.Assert.assertFalse;
 
 import ddf.catalog.data.Metacard;
 import java.util.Arrays;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RealTimeGetDelegateTest {
 

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConfigurationWatcherImpTest {
 

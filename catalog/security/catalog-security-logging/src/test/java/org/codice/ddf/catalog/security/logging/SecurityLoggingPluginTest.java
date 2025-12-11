@@ -51,15 +51,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SecurityLoggingPluginTest {
 
   private SecurityLoggingPlugin plugin;
   private SecurityLogger securityLogger;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     plugin = new SecurityLoggingPlugin();
     securityLogger = mock(SecurityLogger.class);

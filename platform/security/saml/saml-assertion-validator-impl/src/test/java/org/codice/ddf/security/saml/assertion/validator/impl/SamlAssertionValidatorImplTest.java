@@ -38,9 +38,10 @@ import org.codice.ddf.platform.filter.AuthenticationFailureException;
 import org.codice.ddf.security.handler.SAMLAuthenticationToken;
 import org.codice.ddf.security.util.SAMLUtils;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.opensaml.core.config.InitializationService;
 import org.opensaml.core.xml.XMLObject;
@@ -86,6 +87,7 @@ import org.opensaml.xmlsec.signature.impl.X509SubjectNameBuilder;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.w3c.dom.Element;
 
+@EnableRuleMigrationSupport
 public class SamlAssertionValidatorImplTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -106,7 +108,7 @@ public class SamlAssertionValidatorImplTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     File signatureFile = temporaryFolder.newFile("signature.properties");
     File encryptionFile = temporaryFolder.newFile("encryption.properties");

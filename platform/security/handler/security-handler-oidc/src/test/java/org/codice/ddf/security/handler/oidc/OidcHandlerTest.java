@@ -36,19 +36,19 @@ import javax.servlet.http.HttpSession;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.handler.api.HandlerResult.Status;
 import org.codice.ddf.security.handler.api.OidcHandlerConfiguration;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class OidcHandlerTest {
   private static String accessTokenString;
   private static String authorizationCodeString;
@@ -69,7 +69,7 @@ public class OidcHandlerTest {
 
   private Map<String, String[]> parameterMap = new HashMap<>();
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     accessTokenString =
         CharStreams.toString(
@@ -96,7 +96,7 @@ public class OidcHandlerTest {
     state = new State(stateString);
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     // oidc client
     when(mockOidcClient.computeFinalCallbackUrl(any(WebContext.class)))

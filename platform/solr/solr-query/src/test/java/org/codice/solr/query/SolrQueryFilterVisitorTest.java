@@ -29,15 +29,15 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.common.util.NamedList;
 import org.geotools.filter.text.ecql.ECQL;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.Filter;
 import org.opengis.filter.Or;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SolrQueryFilterVisitorTest {
 
   @Mock private SolrClient solrClient;
@@ -46,7 +46,7 @@ public class SolrQueryFilterVisitorTest {
 
   private SolrQueryFilterVisitor solrVisitor;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     when(solrClient.request(any(), isNull())).thenReturn(namedList);
     solrVisitor = new SolrQueryFilterVisitor(solrClient, "alerts");

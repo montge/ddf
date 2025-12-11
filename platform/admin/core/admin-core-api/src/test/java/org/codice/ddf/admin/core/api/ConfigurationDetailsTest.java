@@ -19,15 +19,15 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link ConfigurationDetails} interface constants and default methods. */
 public class ConfigurationDetailsTest {
 
   private TestConfigurationDetails configDetails;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     configDetails = new TestConfigurationDetails();
   }

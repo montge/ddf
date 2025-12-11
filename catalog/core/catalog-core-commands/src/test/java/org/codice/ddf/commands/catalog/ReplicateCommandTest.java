@@ -49,8 +49,8 @@ import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.apache.karaf.shell.api.console.Session;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class ReplicateCommandTest extends ConsoleOutputCommon {
@@ -70,7 +70,7 @@ public class ReplicateCommandTest extends ConsoleOutputCommon {
 
   private ReplicateCommand replicateCommand;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     catalogFramework = mock(CatalogFramework.class);
     replicateCommand = new ReplicateCommand();

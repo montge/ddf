@@ -31,16 +31,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CacheBulkProcessorTest {
 
   @Captor ArgumentCaptor<Collection<Metacard>> capturedMetacards;
@@ -49,14 +49,14 @@ public class CacheBulkProcessorTest {
 
   @Mock private SolrCache mockSolrCache;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     cacheBulkProcessor =
         new CacheBulkProcessor(mockSolrCache, 1, TimeUnit.MILLISECONDS, CacheStrategy.ALL);
     cacheBulkProcessor.setBatchSize(10);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     cacheBulkProcessor.shutdown();
   }

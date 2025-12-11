@@ -37,8 +37,8 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.ws.addressing.Names;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -48,7 +48,7 @@ public class PepInterceptorActionsTest {
 
   private SecurityAssertion mockSecurityAssertion = mock(SecurityAssertion.class);
 
-  @Before
+  @BeforeEach
   public void setup() {
     interceptor = new PEPAuthorizingInterceptor(m -> mockSecurityAssertion);
     interceptor.setSecurityLogger(mock(SecurityLogger.class));

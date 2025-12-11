@@ -37,7 +37,7 @@ import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
 import org.codice.ddf.security.handler.AuthenticationTokenFactory;
 import org.codice.ddf.security.handler.api.HandlerResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PKIHandlerTest {
 

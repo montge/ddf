@@ -33,8 +33,8 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.temporal.object.DefaultInstant;
 import org.geotools.temporal.object.DefaultPeriod;
 import org.geotools.temporal.object.DefaultPosition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.opengis.filter.And;
 import org.opengis.filter.Filter;
@@ -54,7 +54,7 @@ public class SubscriptionFilterVisitorTest {
   private SubscriptionFilterVisitor visitor;
   private GeometryFactory geometryFactory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     filterFactory = CommonFactoryFinder.getFilterFactory2();
     visitor = new SubscriptionFilterVisitor();

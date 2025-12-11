@@ -25,11 +25,11 @@ import static org.mockito.Mockito.when;
 import ddf.security.samlp.SignatureException;
 import java.time.Duration;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.LogoutRequest;
@@ -41,7 +41,7 @@ import org.opensaml.xmlsec.signature.Signature;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class SamlValidatorTest {
 
   private static final String TEST_DESTINATION = "https://test.example.com/logout";
@@ -75,7 +75,7 @@ public class SamlValidatorTest {
 
   private SamlValidator.Builder builder;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     builder = new SamlValidator.Builder(simpleSign);
   }

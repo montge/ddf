@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 
 import ddf.security.audit.SecurityLogger;
 import ddf.security.principal.impl.GuestPrincipal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GuestAuthenticationTokenTest {
 

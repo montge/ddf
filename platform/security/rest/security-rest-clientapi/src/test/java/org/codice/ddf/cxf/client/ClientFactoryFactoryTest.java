@@ -33,13 +33,13 @@ import java.util.Map;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.message.Message;
 import org.codice.ddf.configuration.PropertyResolver;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClientFactoryFactoryTest {
 
   @Mock private ClientFactoryFactory clientFactoryFactory;
@@ -68,7 +68,7 @@ public class ClientFactoryFactoryTest {
   private static final Integer CONNECTION_TIMEOUT = 30000;
   private static final Integer RECEIVE_TIMEOUT = 60000;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     providers = Arrays.asList(new Object(), new Object());
     additionalParameters = new HashMap<>();

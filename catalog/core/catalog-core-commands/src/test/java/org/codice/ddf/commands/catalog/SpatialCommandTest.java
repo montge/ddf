@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.codice.ddf.commands.catalog.facade.CatalogFacade;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Comprehensive tests for SpatialCommand */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SpatialCommandTest extends ConsoleOutputCommon {
 
   @Mock private CatalogFacade mockCatalog;
@@ -41,7 +41,7 @@ public class SpatialCommandTest extends ConsoleOutputCommon {
 
   private SpatialCommand spatialCommand;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     spatialCommand =
         new SpatialCommand() {

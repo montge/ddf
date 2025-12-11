@@ -70,8 +70,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.support.DelegatingSubject;
 import org.codice.ddf.security.impl.Security;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.opengis.filter.FilterVisitor;
@@ -99,7 +99,7 @@ public class FilterPluginTest {
 
   DeleteResponse badDeleteResponse;
 
-  @Before
+  @BeforeEach
   public void setup() {
     AuthorizingRealm realm = mock(AuthorizingRealm.class);
 

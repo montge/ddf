@@ -61,9 +61,9 @@ import org.codice.ddf.itests.common.csw.mock.FederatedCswMockServer;
 import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -140,7 +140,7 @@ public class DdfCoreIT extends AbstractIntegrationTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     urlResourceReaderConfigurator = getUrlResourceReaderConfigurator();
 
@@ -150,7 +150,7 @@ public class DdfCoreIT extends AbstractIntegrationTest {
     cswServer.reset();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     clearCatalogAndWait();
     configureRestForGuest();

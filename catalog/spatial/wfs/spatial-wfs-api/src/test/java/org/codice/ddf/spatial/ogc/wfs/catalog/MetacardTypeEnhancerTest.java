@@ -22,14 +22,14 @@ import ddf.catalog.data.impl.AttributeDescriptorImpl;
 import ddf.catalog.data.impl.BasicTypes;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MetacardTypeEnhancerTest {
 
   private TestMetacardTypeEnhancer enhancer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     enhancer = new TestMetacardTypeEnhancer();
   }

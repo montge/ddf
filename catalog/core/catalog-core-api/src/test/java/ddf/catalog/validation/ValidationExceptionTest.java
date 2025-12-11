@@ -27,8 +27,8 @@ import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link ValidationException} abstract class. */
 public class ValidationExceptionTest {
@@ -41,7 +41,7 @@ public class ValidationExceptionTest {
 
   private Exception testCause;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testCause = new RuntimeException("Root cause");
   }

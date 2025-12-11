@@ -24,14 +24,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import org.codice.ddf.security.session.management.service.SessionManagementService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link SessionManagementEndpoint} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SessionManagementEndpointTest {
 
   @Mock private SessionManagementService sessionManagementService;
@@ -40,7 +40,7 @@ public class SessionManagementEndpointTest {
 
   private SessionManagementEndpoint endpoint;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     endpoint = new SessionManagementEndpoint(sessionManagementService);
   }

@@ -25,16 +25,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import org.codice.ddf.catalog.plugin.metacard.util.KeyValueParser;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Assert that {@link MetacardCondition}s behave properly, and maintain the component separation so
  * that they can be mocked out in other tests.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MetacardConditionTest {
 
   private static final Map<String, Serializable> CRITERIA = ImmutableMap.of("name", "bob jones");

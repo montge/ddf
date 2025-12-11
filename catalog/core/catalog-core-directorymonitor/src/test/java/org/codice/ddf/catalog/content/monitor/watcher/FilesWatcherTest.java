@@ -20,12 +20,14 @@ import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class FilesWatcherTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -33,12 +35,12 @@ public class FilesWatcherTest {
   private FilesWatcher watcher;
   private static final long TEST_POLL_TIME = 1; // 1 second for faster tests
 
-  @Before
+  @BeforeEach
   public void setUp() {
     watcher = new FilesWatcher(TEST_POLL_TIME);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (watcher != null) {
       watcher.destroy();

@@ -20,15 +20,15 @@ import static org.mockito.Mockito.doReturn;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.codice.ddf.ui.admin.api.module.AdminModule;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class ValidationDecoratorTest {
 
   private AdminModule module;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     module = Mockito.mock(AdminModule.class);
   }

@@ -36,13 +36,13 @@ import javax.management.ObjectName;
 import javax.management.StandardMBean;
 import org.codice.ddf.catalog.resource.cache.ResourceCacheServiceMBean;
 import org.codice.ddf.catalog.resource.download.ResourceDownloadMBean;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResourceDownloadTest {
   private static final String METACARD_ID = "57a4b894e13a455b8cccb87cec778b58";
 
@@ -60,7 +60,7 @@ public class ResourceDownloadTest {
 
   private ObjectName resourceDownloadObjectName;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     resourceDownloadObjectName = new ObjectName(ResourceDownloadMBean.OBJECT_NAME);
   }

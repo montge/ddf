@@ -68,8 +68,8 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.transformer.TransformerMana
 import org.codice.ddf.spatial.ogc.csw.catalog.converter.CswRecordConverter;
 import org.codice.ddf.spatial.ogc.csw.catalog.converter.CswTransformProvider;
 import org.codice.ddf.spatial.ogc.csw.catalog.converter.GetRecordsResponseConverter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class GetRecordsMessageBodyReaderTest {
@@ -80,7 +80,7 @@ public class GetRecordsMessageBodyReaderTest {
 
   private Permissions permissions = new PermissionsImpl();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(mockProvider.canConvert(any(Class.class))).thenReturn(true);
   }

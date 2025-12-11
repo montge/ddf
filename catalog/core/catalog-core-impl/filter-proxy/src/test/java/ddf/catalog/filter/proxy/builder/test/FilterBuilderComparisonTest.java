@@ -28,11 +28,11 @@ import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import java.util.Date;
 import org.geotools.filter.visitor.DefaultFilterVisitor;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterVisitor;
 import org.opengis.filter.PropertyIsGreaterThan;
@@ -41,13 +41,13 @@ import org.opengis.filter.PropertyIsLessThan;
 import org.opengis.filter.PropertyIsLessThanOrEqualTo;
 
 /** Comprehensive tests for FilterBuilder comparison operators (greater than, less than, etc.) */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FilterBuilderComparisonTest {
 
   private static final String TEST_ATTRIBUTE = "testAttribute";
   private FilterBuilder builder;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     builder = new GeotoolsFilterBuilder();
   }

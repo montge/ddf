@@ -21,8 +21,8 @@ import static org.hamcrest.Matchers.nullValue;
 import ddf.action.Action;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link ActionImpl} class. */
 public class ActionImplTest {
@@ -35,7 +35,7 @@ public class ActionImplTest {
   private URL testUrl;
   private ActionImpl action;
 
-  @Before
+  @BeforeEach
   public void setUp() throws MalformedURLException {
     testUrl = new URL(URL_STRING);
     action = new ActionImpl(PROVIDER_ID, TITLE, DESCRIPTION, testUrl);

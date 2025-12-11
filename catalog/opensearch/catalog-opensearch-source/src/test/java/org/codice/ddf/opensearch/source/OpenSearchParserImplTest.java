@@ -40,8 +40,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.ddf.opensearch.OpenSearchConstants;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -69,7 +69,7 @@ public class OpenSearchParserImplTest {
 
   private WebClient webClient;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     openSearchParser = new OpenSearchParserImpl();
     webClient = mock(WebClient.class);

@@ -16,8 +16,8 @@ package org.codice.ddf.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExceptionsTest {
   private Exception testCause;
@@ -26,7 +26,7 @@ public class ExceptionsTest {
 
   private String msg;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     causeMsg = "Bart";
     msg = "Doh!";

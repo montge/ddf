@@ -33,8 +33,8 @@ import java.io.Serializable;
 import java.util.Date;
 import org.codice.ddf.libs.geo.util.GeospatialUtil;
 import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AbstractFeatureConverterTest {
 
@@ -44,7 +44,7 @@ public class AbstractFeatureConverterTest {
 
   private MetacardMapper metacardMapper;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     converter = new TestableAbstractFeatureConverter();
     metacardType =

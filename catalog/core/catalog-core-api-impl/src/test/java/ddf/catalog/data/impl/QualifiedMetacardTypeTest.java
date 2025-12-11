@@ -21,8 +21,8 @@ import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.QualifiedMetacardType;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class QualifiedMetacardTypeTest {
 
@@ -42,7 +42,7 @@ public class QualifiedMetacardTypeTest {
 
   private static Set<AttributeDescriptor> qmtAttributes;
 
-  @BeforeClass
+  @BeforeAll
   public static void prepareTest() {
     qmtAttributes = new HashSet<AttributeDescriptor>();
 

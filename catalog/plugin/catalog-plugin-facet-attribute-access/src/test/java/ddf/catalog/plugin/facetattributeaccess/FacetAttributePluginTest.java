@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FacetAttributePluginTest {
 
@@ -47,7 +47,7 @@ public class FacetAttributePluginTest {
 
   private Map<String, Serializable> queryProperties;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     FacetWhitelistConfiguration config = new FacetWhitelistConfiguration();
     config.setFacetAttributeWhitelist(Arrays.asList(ATTR_1));

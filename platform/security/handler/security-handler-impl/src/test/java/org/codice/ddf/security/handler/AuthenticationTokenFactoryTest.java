@@ -26,17 +26,17 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 import javax.security.auth.x500.X500Principal;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthenticationTokenFactoryTest {
 
   private AuthenticationTokenFactory factory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     factory = new AuthenticationTokenFactory();
   }

@@ -43,14 +43,14 @@ import java.util.Set;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.codice.solr.factory.SolrClientFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link CatalogGazetteerForwardingPlugin} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CatalogGazetteerForwardingPluginTest {
 
   @Mock private SolrClientFactory solrClientFactory;
@@ -67,7 +67,7 @@ public class CatalogGazetteerForwardingPluginTest {
 
   private CatalogGazetteerForwardingPlugin plugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(solrClientFactory.newClient(COLLECTION_NAME)).thenReturn(solrClient);
     plugin = new CatalogGazetteerForwardingPlugin(solrClientFactory);

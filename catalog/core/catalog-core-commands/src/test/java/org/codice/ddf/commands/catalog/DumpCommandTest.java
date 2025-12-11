@@ -45,12 +45,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.codice.ddf.commands.util.DigitalSignature;
 import org.fusesource.jansi.Ansi;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
-/** Tests the {@link DumpCommand} output. */
+/** Tests the {@EnableRuleMigrationSupport
+ * @link DumpCommand} output. */
 public class DumpCommandTest extends CommandCatalogFrameworkCommon {
 
   static final String DEFAULT_CONSOLE_COLOR = Ansi.ansi().reset().toString();
@@ -61,7 +62,7 @@ public class DumpCommandTest extends CommandCatalogFrameworkCommon {
 
   private DigitalSignature signer;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     this.signer = mock(DigitalSignature.class);
 

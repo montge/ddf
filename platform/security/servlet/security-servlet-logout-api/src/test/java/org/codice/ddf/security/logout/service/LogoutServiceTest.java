@@ -23,17 +23,17 @@ import static org.mockito.Mockito.mock;
 import ddf.security.service.SecurityServiceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests for {@link LogoutService} interface contract. Uses a test implementation to verify the
  * interface behavior and contract expectations.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LogoutServiceTest {
 
   private static final String SAML_LOGOUT_ACTION =
@@ -47,7 +47,7 @@ public class LogoutServiceTest {
 
   private TestLogoutService logoutService;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     logoutService = new TestLogoutService();
   }

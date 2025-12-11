@@ -49,8 +49,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import org.geotools.filter.text.ecql.ECQL;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 
@@ -64,7 +64,7 @@ public class SeedCommandTest extends CommandCatalogFrameworkCommon {
 
   private Result resultMock;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     catalogFramework = mock(CatalogFramework.class);
     doReturn(mockResourceResponse())

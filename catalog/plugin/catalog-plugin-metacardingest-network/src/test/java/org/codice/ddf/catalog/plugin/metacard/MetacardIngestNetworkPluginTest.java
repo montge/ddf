@@ -42,16 +42,19 @@ import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.catalog.plugin.metacard.util.AttributeFactory;
 import org.codice.ddf.catalog.plugin.metacard.util.KeyValueParser;
 import org.codice.ddf.catalog.plugin.metacard.util.MetacardServices;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Ensure the rules and config options work correctly for any {@link MetacardIngestNetworkPlugin}.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class MetacardIngestNetworkPluginTest {
 
   private static final String CLIENT_INFO_KEY = "client-info";
@@ -88,7 +91,7 @@ public class MetacardIngestNetworkPluginTest {
 
   private MetacardIngestNetworkPlugin plugin;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
 
     metacards = new ArrayList<>();

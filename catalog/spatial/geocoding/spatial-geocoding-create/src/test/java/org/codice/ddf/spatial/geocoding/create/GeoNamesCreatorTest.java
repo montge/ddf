@@ -17,7 +17,7 @@ import static org.junit.Assert.assertThrows;
 
 import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.codice.ddf.spatial.geocoding.TestBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GeoNamesCreatorTest extends TestBase {
   private static final GeoNamesCreator GEONAMES_CREATOR = new GeoNamesCreator();

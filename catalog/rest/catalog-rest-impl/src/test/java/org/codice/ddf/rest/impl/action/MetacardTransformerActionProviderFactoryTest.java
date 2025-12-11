@@ -21,15 +21,15 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link MetacardTransformerActionProviderFactory} class. */
 public class MetacardTransformerActionProviderFactoryTest {
 
   private MetacardTransformerActionProviderFactory factory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     factory = new MetacardTransformerActionProviderFactory();
   }

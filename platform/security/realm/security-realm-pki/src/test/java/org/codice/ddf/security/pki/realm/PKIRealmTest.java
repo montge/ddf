@@ -46,8 +46,8 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.codice.ddf.security.handler.AuthenticationTokenType;
 import org.codice.ddf.security.handler.BaseAuthenticationToken;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class PKIRealmTest {
@@ -56,7 +56,7 @@ public class PKIRealmTest {
 
   @Mock private SubjectOperations subjectOperations;
 
-  @Before
+  @BeforeEach
   public void setup() {
     openMocks(this);
     pkiRealm = new PKIRealm();

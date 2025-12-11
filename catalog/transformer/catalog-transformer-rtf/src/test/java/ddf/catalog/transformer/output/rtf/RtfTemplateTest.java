@@ -21,15 +21,15 @@ import static org.hamcrest.Matchers.startsWith;
 
 import com.tutego.jrtf.Rtf;
 import ddf.catalog.data.Metacard;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RtfTemplateTest extends BaseTestConfiguration {
   private static final String METACARD_TITLE = "Test Metacard Title";
 
   private Metacard mockMetacard;
 
-  @Before
+  @BeforeEach
   public void setup() {
     mockMetacard = createMockMetacard(METACARD_TITLE);
   }

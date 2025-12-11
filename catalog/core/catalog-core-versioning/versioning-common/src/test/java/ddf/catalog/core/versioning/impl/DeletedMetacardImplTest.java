@@ -27,7 +27,7 @@ import ddf.catalog.data.impl.MetacardImpl;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link DeletedMetacardImpl} class static methods and type. */
 public class DeletedMetacardImplTest {

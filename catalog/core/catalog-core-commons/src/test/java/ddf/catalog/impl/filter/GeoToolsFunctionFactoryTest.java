@@ -21,8 +21,8 @@ import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.capability.FunctionName;
 import org.opengis.filter.expression.Expression;
 import org.opengis.filter.expression.Function;
@@ -30,7 +30,7 @@ import org.opengis.filter.expression.Function;
 public class GeoToolsFunctionFactoryTest {
   GeoToolsFunctionFactory toTest;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     toTest = new GeoToolsFunctionFactory();
   }

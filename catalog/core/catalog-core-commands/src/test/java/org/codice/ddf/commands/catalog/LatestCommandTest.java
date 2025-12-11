@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LatestCommandTest extends CommandCatalogFrameworkCommon {
 

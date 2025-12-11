@@ -33,8 +33,8 @@ import ddf.catalog.data.impl.InjectableAttributeImpl;
 import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.data.impl.MetacardTypeImpl;
 import java.util.Date;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeInjectorImplTest {
   private static final String NITF = "nitf";
@@ -70,7 +70,7 @@ public class AttributeInjectorImplTest {
 
   private AttributeInjectorImpl attributeInjector;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     AttributeRegistry attributeRegistry = new AttributeRegistryImpl();
     attributeInjector = new AttributeInjectorImpl(attributeRegistry);

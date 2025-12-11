@@ -37,15 +37,15 @@ import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AuthorizationFilterTest {
   private static final String PATH = "/path";
 
   private boolean sucess = false;
 
-  @Before
+  @BeforeEach
   public void setup() {
     sucess = false;
   }

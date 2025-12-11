@@ -25,7 +25,7 @@ import ddf.catalog.transformer.xml.adapter.MetacardTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetacardTypeAdapterTest {
   private static final String NULL_TYPE_NAME = null;

@@ -37,15 +37,15 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests spatial parameter handling in OpenSearchEndpoint */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OpenSearchEndpointSpatialTest {
 
   private static final String TEST_SITE_NAME = "TestSite";
@@ -64,7 +64,7 @@ public class OpenSearchEndpointSpatialTest {
 
   private OpenSearchEndpoint endpoint;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     filterBuilder = new GeotoolsFilterBuilder();
     endpoint = new OpenSearchEndpoint(mockFramework, filterBuilder);

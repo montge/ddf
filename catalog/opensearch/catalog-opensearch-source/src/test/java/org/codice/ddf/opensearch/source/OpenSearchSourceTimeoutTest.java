@@ -40,15 +40,15 @@ import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codice.ddf.cxf.client.ClientBuilderFactory;
 import org.codice.ddf.cxf.client.SecureCxfClientFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.Filter;
 
 /** Tests timeout and error handling for OpenSearchSource */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OpenSearchSourceTimeoutTest {
 
   private static final String SOURCE_ID = "TEST-TIMEOUT";
@@ -73,7 +73,7 @@ public class OpenSearchSourceTimeoutTest {
 
   private OpenSearchSource source;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     openSearchParser = new OpenSearchParserImpl();
     openSearchFilterVisitor = new OpenSearchFilterVisitor();

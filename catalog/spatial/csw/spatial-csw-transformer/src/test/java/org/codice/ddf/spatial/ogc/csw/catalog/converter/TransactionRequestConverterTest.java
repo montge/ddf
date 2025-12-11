@@ -50,8 +50,8 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.transaction.UpdateActionImp
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class TransactionRequestConverterTest {
@@ -94,7 +94,7 @@ public class TransactionRequestConverterTest {
 
   private AttributeRegistry mockRegistry = new AttributeRegistryImpl();
 
-  @Before
+  @BeforeEach
   public void setup() {
     cswRecordConverter = mock(Converter.class);
     when(cswRecordConverter.canConvert(any())).thenReturn(true);

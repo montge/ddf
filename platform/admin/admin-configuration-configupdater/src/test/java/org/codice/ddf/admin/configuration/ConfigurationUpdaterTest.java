@@ -37,17 +37,19 @@ import java.util.Set;
 import org.codice.ddf.admin.core.api.ConfigurationAdmin;
 import org.codice.ddf.platform.io.internal.PersistenceStrategy;
 import org.codice.felix.cm.internal.ConfigurationContext;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.metatype.AttributeDefinition;
 import org.osgi.service.metatype.ObjectClassDefinition;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class ConfigurationUpdaterTest {
   private static final String TEMP_FILE_EXT = "tmp";
 
@@ -84,7 +86,7 @@ public class ConfigurationUpdaterTest {
 
   private File fileB;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     fileA = temporaryFolder.newFile();
     fileB = temporaryFolder.newFile();

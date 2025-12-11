@@ -57,12 +57,14 @@ import org.codice.ddf.cxf.client.impl.SecureCxfClientFactoryImpl.AliasSelectorKe
 import org.codice.ddf.cxf.paos.PaosInInterceptor;
 import org.codice.ddf.cxf.paos.PaosOutInterceptor;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.w3c.dom.Element;
 
+@EnableRuleMigrationSupport
 public class SecureCxfClientFactoryTest {
 
   private static final String INSECURE_ENDPOINT = "http://some.url.com/query";
@@ -83,7 +85,7 @@ public class SecureCxfClientFactoryTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     systemKeystoreFile = temporaryFolder.newFile("serverKeystore.jks");
     FileOutputStream systemKeyOutStream = new FileOutputStream(systemKeystoreFile);

@@ -25,7 +25,7 @@ import ddf.security.assertion.SecurityAssertion;
 import ddf.security.audit.SecurityLogger;
 import org.apache.cxf.interceptor.security.AccessDeniedException;
 import org.apache.cxf.message.Message;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PepInterceptorNullAssertionTokenTest {
 

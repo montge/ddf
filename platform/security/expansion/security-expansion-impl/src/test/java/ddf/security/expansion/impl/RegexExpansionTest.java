@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RegexExpansionTest {
   public List<String[]> rulesList1 = new ArrayList<String[]>();
@@ -44,7 +44,7 @@ public class RegexExpansionTest {
 
   private String[] rule6 = new String[] {"\\A(AZ|VA|MD)\\z", "$0 USA"};
 
-  @Before
+  @BeforeEach
   public void setupData() {
     rulesList1.add(rule1);
     rulesList1.add(rule2);

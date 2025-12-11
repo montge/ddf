@@ -45,8 +45,8 @@ import java.util.UUID;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
 public class VideoThumbnailPluginTest {
@@ -75,7 +75,7 @@ public class VideoThumbnailPluginTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     videoThumbnail = mock(VideoThumbnail.class);
 

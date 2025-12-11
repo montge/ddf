@@ -29,8 +29,8 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FileSystemPersistenceProviderTest {
 
@@ -42,7 +42,7 @@ public class FileSystemPersistenceProviderTest {
 
   FileSystemDataAccessObject mockFileSystemDao;
 
-  @Before
+  @BeforeEach
   public void setup() {
     // mock out dao
     mockFileSystemDao = mock(FileSystemDataAccessObject.class);

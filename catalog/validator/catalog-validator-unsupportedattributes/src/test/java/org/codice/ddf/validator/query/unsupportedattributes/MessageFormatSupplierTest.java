@@ -24,8 +24,8 @@ import static org.mockito.Mockito.when;
 import ddf.platform.resource.bundle.locator.ResourceBundleLocator;
 import java.io.IOException;
 import java.util.ResourceBundle;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MessageFormatSupplierTest {
 
@@ -39,7 +39,7 @@ public class MessageFormatSupplierTest {
 
   private ResourceBundle resourceBundle;
 
-  @Before
+  @BeforeEach
   public void setup() {
     resourceBundleLocator = mock(ResourceBundleLocator.class);
     resourceBundle = mock(ResourceBundle.class);

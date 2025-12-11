@@ -26,11 +26,12 @@ import org.codice.ddf.test.common.DependencyVersionResolver;
 import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.codice.ddf.test.common.annotations.PaxExamRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
@@ -43,6 +44,7 @@ import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
+@EnableRuleMigrationSupport
 public class PaxExamRuleIT {
 
   private static final String FAILING_TEST_MESSAGE = "test failed";
@@ -94,7 +96,7 @@ public class PaxExamRuleIT {
     }
 
     @Test
-    @Ignore
+    @Disabled
     @SuppressWarnings("squid:S1607")
     public void ignoredTest() {}
   }
@@ -114,13 +116,13 @@ public class PaxExamRuleIT {
       ranBeforeExam = true;
     }
 
-    @Before
+    @BeforeEach
     public void before() {
       assertThat(ranBeforeExam).isTrue();
       assertThat(ranAfterExam).isFalse();
     }
 
-    @After
+    @AfterEach
     public void after() {
       assertThat(ranBeforeExam).isTrue();
       assertThat(ranAfterExam).isFalse();

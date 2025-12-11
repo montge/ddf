@@ -28,8 +28,8 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.codice.ddf.branding.BrandingPlugin;
 import org.codice.ddf.branding.impl.BrandingRegistryImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PlatformUiConfigurationTest {
 
@@ -37,7 +37,7 @@ public class PlatformUiConfigurationTest {
 
   private PlatformUiConfiguration configuration;
 
-  @Before
+  @BeforeEach
   public void setup() {
     configuration = new PlatformUiConfiguration();
   }

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 import org.codice.ddf.admin.insecure.defaults.service.Alert.Level;
 import org.codice.ddf.system.alerts.SystemNotice;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -43,7 +43,7 @@ public class InsecureDefaultsCollectorTest {
 
   private EventAdmin eventAdmin;
 
-  @Before
+  @BeforeEach
   public void setup() {
     eventAdmin = mock(EventAdmin.class);
   }

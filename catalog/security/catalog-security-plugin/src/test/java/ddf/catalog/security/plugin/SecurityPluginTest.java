@@ -49,8 +49,8 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ThreadContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SecurityPluginTest {
 
@@ -58,7 +58,7 @@ public class SecurityPluginTest {
 
   private SubjectIdentity subjectIdentity;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     subjectIdentity = mock(SubjectIdentity.class);
     when(subjectIdentity.getUniqueIdentifier(any())).thenReturn(TEST_USER);

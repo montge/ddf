@@ -34,20 +34,20 @@ import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.ServerAuthException;
 import org.eclipse.jetty.server.Request;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.mock.MockServiceReference;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class JettyAuthenticatorTest {
 
   private JettyAuthenticator jettyAuthenticator;
@@ -56,7 +56,7 @@ public class JettyAuthenticatorTest {
 
   private Set<ServiceReference<SecurityFilter>> registeredSecurityFilterServiceReferences;
 
-  @Before
+  @BeforeEach
   public void setup() throws InvalidSyntaxException {
     registeredSecurityFilterServiceReferences = new HashSet<>();
     bundleContext = mock(BundleContext.class);

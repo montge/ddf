@@ -34,13 +34,10 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.session.HouseKeeper;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class JettySessionManagementTest {
 
   private static Server server;
@@ -48,7 +45,7 @@ public class JettySessionManagementTest {
   private static final int SCAVENGE_INTERVAL_SECONDS = 3;
   private static final int MAX_INACTIVE_INTERVAL_SECONDS = 5;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     // To get the AccessRequestLog to log in the target folder
     System.setProperty("ddf.data", "target");
@@ -92,7 +89,7 @@ public class JettySessionManagementTest {
     port = connector.getLocalPort();
   }
 
-  @AfterClass
+  @AfterAll
   public static void stopJetty() {
     try {
       server.stop();

@@ -21,7 +21,7 @@ import ddf.catalog.data.impl.MetacardImpl;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetacardTemplateTest {
 

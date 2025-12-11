@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link TermFacetProperties} interface and its SortFacetsBy enum. */
 public class TermFacetPropertiesTest {

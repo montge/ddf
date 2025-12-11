@@ -46,17 +46,19 @@ import org.apache.solr.SolrTestCaseJ4;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.cloud.MiniSolrCloudCluster;
 import org.codice.solr.factory.impl.SolrCloudClientFactory;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.opengis.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 public class SolrProviderRealTimeQueryTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SolrProviderRealTimeQueryTest.class);
@@ -73,7 +75,7 @@ public class SolrProviderRealTimeQueryTest {
 
   public static final String MASKED_ID = "scp";
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() throws Exception {
     Path solrDataPath = Paths.get("target/test-classes/realtime");
     System.setProperty("ddf.home", solrDataPath.toString());
@@ -152,7 +154,7 @@ public class SolrProviderRealTimeQueryTest {
     Failsafe.with(retryPolicy).run(() -> deleteAll(provider));
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() throws Exception {
     System.clearProperty("ddf.home");
     System.clearProperty("pkiHandlerPrivateKeyPath");

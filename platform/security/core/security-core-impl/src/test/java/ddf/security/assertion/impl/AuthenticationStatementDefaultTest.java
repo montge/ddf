@@ -19,8 +19,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AuthenticationStatementDefaultTest {
 
@@ -30,7 +30,7 @@ public class AuthenticationStatementDefaultTest {
 
   private AuthenticationStatementDefault authenticationStatement;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     authenticationStatement = new AuthenticationStatementDefault();
   }

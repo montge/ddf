@@ -21,7 +21,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
 import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.geometry.primitive.Point;
 
 public class GeoResultCreatorTest {

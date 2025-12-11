@@ -24,8 +24,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DateTimeAdapterTest {
 
@@ -33,7 +33,7 @@ public class DateTimeAdapterTest {
 
   private DatatypeFactory datatypeFactory;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     adapter = new DateTimeAdapter();
     datatypeFactory = DatatypeFactory.newInstance();

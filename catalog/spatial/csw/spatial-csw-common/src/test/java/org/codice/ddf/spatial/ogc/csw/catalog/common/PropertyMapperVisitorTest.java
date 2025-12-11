@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.geotools.filter.AttributeExpressionImpl;
 import org.geotools.filter.FilterFactoryImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.expression.PropertyName;
 
 public class PropertyMapperVisitorTest {

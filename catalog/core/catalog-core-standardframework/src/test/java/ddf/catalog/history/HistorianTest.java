@@ -80,8 +80,8 @@ import java.util.concurrent.Callable;
 import org.apache.shiro.subject.ExecutionException;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.security.Security;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class HistorianTest {
@@ -104,7 +104,7 @@ public class HistorianTest {
 
   private UuidGenerator uuidGenerator;
 
-  @Before
+  @BeforeEach
   public void setup() {
     historian = new Historian();
 

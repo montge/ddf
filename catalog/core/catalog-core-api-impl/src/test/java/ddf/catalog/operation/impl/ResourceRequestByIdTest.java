@@ -23,16 +23,16 @@ import ddf.catalog.operation.ResourceRequest;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link ResourceRequestById} class.
  *
  * <p>Tests all constructors, getters, and properties handling.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResourceRequestByIdTest {
 
   private static final String RESOURCE_ID = "resource-123";

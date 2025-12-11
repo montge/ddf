@@ -44,9 +44,9 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.border.BevelBorder;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SolrProviderExtensibleMetacards {
 
@@ -91,12 +91,12 @@ public class SolrProviderExtensibleMetacards {
 
   private static SolrCatalogProviderImpl provider;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     provider = SolrProviderTest.getProvider();
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws IngestException, UnsupportedQueryException {
     deleteAll(provider);
 

@@ -30,8 +30,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import org.codice.ddf.persistence.PersistentStore;
 import org.codice.ddf.system.alerts.SystemNotice;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.osgi.service.event.Event;
 
@@ -45,7 +45,7 @@ public class SolrAppenderTest {
 
   private SolrAppender solrAppender;
 
-  @Before
+  @BeforeEach
   public void setup() {
     persistentStore = mock(PersistentStore.class);
     executorService = mock(ScheduledExecutorService.class);

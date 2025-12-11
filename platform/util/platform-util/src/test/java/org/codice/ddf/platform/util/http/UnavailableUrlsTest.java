@@ -24,13 +24,15 @@ import static org.hamcrest.core.IsNot.not;
 import java.net.HttpURLConnection;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.contrib.java.lang.system.ProvideSystemProperty;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+@EnableRuleMigrationSupport
 public class UnavailableUrlsTest {
 
   private static final String MAX_TIMEOUT_SECONDS = "300";
@@ -47,7 +49,7 @@ public class UnavailableUrlsTest {
 
   private ScheduledExecutorService scheduler;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     scheduler = Mockito.mock(ScheduledExecutorService.class);
   }

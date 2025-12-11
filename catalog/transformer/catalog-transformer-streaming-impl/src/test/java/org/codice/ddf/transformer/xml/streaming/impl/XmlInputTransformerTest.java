@@ -43,7 +43,7 @@ import org.codice.ddf.transformer.xml.streaming.SaxEventHandler;
 import org.codice.ddf.transformer.xml.streaming.SaxEventHandlerFactory;
 import org.codice.ddf.transformer.xml.streaming.lib.SaxEventHandlerDelegate;
 import org.codice.ddf.transformer.xml.streaming.lib.XmlInputTransformer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.gml2.GMLHandler;
 import org.xml.sax.Attributes;

@@ -15,14 +15,14 @@ package ddf.catalog.impl.filter;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class SpatialDistanceFilterTest {
   public SpatialDistanceFilter toTest;
 
   @Test
-  @Ignore
+  @Disabled
   public void testCreateFromEmptyInput() {
     // should this never happen? What should be done in this case?
     toTest = new SpatialDistanceFilter("", "", "");
@@ -30,7 +30,7 @@ public class SpatialDistanceFilterTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testCreateFromNonDigitCoordinates() {
     // should this never happen? What should be done in this case?
     toTest = new SpatialDistanceFilter("foo", "bar", "baz");
@@ -53,7 +53,7 @@ public class SpatialDistanceFilterTest {
 
   // What is going on here?
   @Test
-  @Ignore
+  @Disabled
   public void testCreateFromValidStringCoordinates() {
     toTest = new SpatialDistanceFilter("14", "91", "100");
     assertEquals("POINT(14 91)", toTest.geometryWkt); // comes back as expected:<POINT(14[ 91])>

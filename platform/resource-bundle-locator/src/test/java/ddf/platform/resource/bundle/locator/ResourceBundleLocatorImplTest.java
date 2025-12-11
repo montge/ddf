@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ResourceBundleLocatorImplTest {
 
@@ -31,14 +31,14 @@ public class ResourceBundleLocatorImplTest {
 
   private static final String TEST_BASE_NAME = "TestResourceBundle";
 
-  @Before
+  @BeforeEach
   public void setup() {
     System.setProperty("ddf.home", "");
     this.resourceBundleLocator = new ResourceBundleLocatorImpl();
     resourceBundleLocator.setResourceBundleBaseDir("src/test/resources/");
   }
 
-  @After
+  @AfterEach
   public void cleanup() {
     System.clearProperty("ddf.home");
   }

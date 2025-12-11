@@ -51,8 +51,8 @@ import org.codice.ddf.libs.klv.data.numerical.KlvUnsignedShort;
 import org.codice.ddf.libs.klv.data.raw.KlvBytes;
 import org.codice.ddf.libs.klv.data.set.KlvLocalSet;
 import org.codice.ddf.libs.klv.data.text.KlvString;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class KlvDecoderTest {
   private static final String UAS_DATALINK_LOCAL_SET_UNIVERSAL_KEY =
@@ -114,7 +114,7 @@ public class KlvDecoderTest {
 
   private static final Set<KlvDataElement> DATA_ELEMENTS = new HashSet<>();
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     // The test KLV is a UAS Datalink Local Set (MISB ST 0601).
     EXPECTED_VALUES.put(TIMESTAMP, 1245257585099653L);

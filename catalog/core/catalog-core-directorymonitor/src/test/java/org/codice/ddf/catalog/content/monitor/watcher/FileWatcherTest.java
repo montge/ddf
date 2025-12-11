@@ -23,11 +23,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.function.Consumer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class FileWatcherTest {
 
   @Test

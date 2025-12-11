@@ -37,8 +37,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Enhanced security and edge case test harness for CSV transformers. Tests CSV injection, special
@@ -54,7 +54,7 @@ public class CsvTransformerSecurityTest {
 
   private CsvMetacardTransformer metacardTransformer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     queryResponseTransformer = new CsvQueryResponseTransformer();
     metacardTransformer = new CsvMetacardTransformer();

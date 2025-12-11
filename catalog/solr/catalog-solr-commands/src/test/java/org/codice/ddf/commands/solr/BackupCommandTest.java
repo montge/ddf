@@ -37,16 +37,16 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.RequestStatusState;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.util.NamedList;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BackupCommandTest extends SolrCommandTest {
 
   private static final String INVALID_COLLECTION_NAME = "myInvalidCollection";
@@ -64,7 +64,7 @@ public class BackupCommandTest extends SolrCommandTest {
 
   @Mock SolrClient mockSolrClient;
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() throws Exception {
     setDdfHome();
     setDdfEtc();
@@ -72,7 +72,7 @@ public class BackupCommandTest extends SolrCommandTest {
     addDocument("1");
   }
 
-  @AfterClass
+  @AfterAll
   public static void afterClass() throws Exception {
     if (miniSolrCloud != null) {
       miniSolrCloud.getSolrClient().close();
@@ -80,14 +80,14 @@ public class BackupCommandTest extends SolrCommandTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     setupSolrClientType(SolrCommands.CLOUD_SOLR_CLIENT_TYPE);
     consoleOutput = new ConsoleOutput();
     consoleOutput.interceptSystemOut();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     consoleOutput.resetSystemOut();
   }

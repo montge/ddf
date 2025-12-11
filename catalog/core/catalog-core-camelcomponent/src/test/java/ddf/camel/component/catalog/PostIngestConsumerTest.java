@@ -31,8 +31,8 @@ import org.apache.camel.ExtendedCamelContext;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.spi.ExchangeFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -65,7 +65,7 @@ public class PostIngestConsumerTest {
 
   private PostIngestConsumer postIngestConsumer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(mockEndpoint.getComponent()).thenReturn(mockCatalogComponent);
     when(mockCatalogComponent.getBundleContext()).thenReturn(mockBundleContext);

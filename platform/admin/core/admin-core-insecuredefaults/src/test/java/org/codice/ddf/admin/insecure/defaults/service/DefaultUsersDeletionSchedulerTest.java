@@ -41,13 +41,15 @@ import org.apache.camel.spi.RouteController;
 import org.apache.karaf.jaas.modules.BackingEngine;
 import org.apache.karaf.jaas.modules.BackingEngineFactory;
 import org.apache.karaf.jaas.modules.properties.PropertiesBackingEngineFactory;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
+@EnableRuleMigrationSupport
 public class DefaultUsersDeletionSchedulerTest {
 
   private Path path;
@@ -57,7 +59,7 @@ public class DefaultUsersDeletionSchedulerTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     temporaryFolder.create();
     context = mock(DefaultCamelContext.class);
@@ -68,7 +70,7 @@ public class DefaultUsersDeletionSchedulerTest {
     DefaultUsersDeletionScheduler.setUsersPropertiesFilePath(path);
   }
 
-  @After
+  @AfterEach
   public void cleanup() throws IOException {
     temporaryFolder.delete();
   }

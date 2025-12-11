@@ -25,8 +25,8 @@ import java.io.StringReader;
 import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.event.Event;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -35,7 +35,7 @@ public class XPathPredicateTest {
 
   private DocumentBuilderFactory factory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);

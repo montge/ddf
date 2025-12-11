@@ -32,25 +32,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link CreateRequestImpl} class.
  *
  * <p>Tests all constructors, getters, store IDs, and properties handling.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CreateRequestImplTest {
 
   @Mock private Metacard mockMetacard;
 
   private Map<String, Serializable> properties;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     properties = new HashMap<>();
     properties.put("key1", "value1");

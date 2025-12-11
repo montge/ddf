@@ -24,14 +24,14 @@ import de.micromata.opengis.kml.v_2_2_0.Model;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import java.io.InputStream;
 import java.util.Collections;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Point;
 
 public class KmlModelToJtsPointConverterTest {
   private static Model testKmlModel;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream = KmlModelToJtsPointConverterTest.class.getResourceAsStream("/kmlModel.kml");
 

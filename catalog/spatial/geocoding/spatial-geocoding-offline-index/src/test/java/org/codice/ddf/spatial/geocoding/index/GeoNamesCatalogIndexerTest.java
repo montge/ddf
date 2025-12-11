@@ -49,9 +49,9 @@ import org.codice.ddf.spatial.geocoding.GeoEntryAttributes;
 import org.codice.ddf.spatial.geocoding.GeoEntryCreator;
 import org.codice.ddf.spatial.geocoding.ProgressCallback;
 import org.codice.ddf.spatial.geocoding.extract.GeoNamesFileExtractor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class GeoNamesCatalogIndexerTest {
@@ -99,7 +99,7 @@ public class GeoNamesCatalogIndexerTest {
 
   private UuidGenerator uuidGenerator;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
 
     geoEntryCreator = mock(GeoEntryCreator.class);
@@ -134,7 +134,7 @@ public class GeoNamesCatalogIndexerTest {
             Collections.singletonList(catalogProvider));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     File goodFile = new File(GOOD_FILE_PATH + ".processed");
     if (goodFile.exists()) {

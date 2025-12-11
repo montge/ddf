@@ -21,8 +21,8 @@ import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.AttributeDescriptor;
 import java.util.Arrays;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CsvAttributeDescriptorComparatorTest {
   private CsvAttributeDescriptorComparator comparator;
@@ -35,7 +35,7 @@ public class CsvAttributeDescriptorComparatorTest {
 
   private AttributeDescriptor nonExistendAttribute2;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     String[] columnNames = {"columnC", "columnB", "columnA", "columnD"};
     this.attribute1 = buildAttribute(columnNames[0]);

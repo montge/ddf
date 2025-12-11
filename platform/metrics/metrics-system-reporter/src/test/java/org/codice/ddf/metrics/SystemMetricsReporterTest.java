@@ -27,11 +27,11 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -40,7 +40,7 @@ public class SystemMetricsReporterTest {
   private SimpleMeterRegistry meterRegistry;
   private SystemMetricsReporter underTest;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     // Set system properties before any tests run to ensure they're available
     // when the meter registry is initialized
@@ -48,7 +48,7 @@ public class SystemMetricsReporterTest {
     System.setProperty("org.codice.ddf.system.hostname", "test-host");
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // Clear any existing registries
     Metrics.globalRegistry.getRegistries().forEach(Metrics.globalRegistry::remove);
@@ -57,7 +57,7 @@ public class SystemMetricsReporterTest {
     Metrics.addRegistry(meterRegistry);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (meterRegistry != null) {
       Metrics.removeRegistry(meterRegistry);

@@ -27,11 +27,11 @@ import java.io.InputStream;
 import java.util.Optional;
 import javax.imageio.ImageIO;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test harness for PdfThumbnailGeneratorImpl. Tests thumbnail generation, image
@@ -40,19 +40,19 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>COVERAGE REQUIREMENTS: - Valid PDF thumbnail generation - Empty PDF handling - Multi-page PDF
  * handling - Image scaling verification - Error condition handling - Resource cleanup
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PdfThumbnailGeneratorImplTest {
 
   private PdfThumbnailGeneratorImpl generator;
 
   private PDDocument testDocument;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     generator = new PdfThumbnailGeneratorImpl();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     if (testDocument != null) {
       testDocument.close();

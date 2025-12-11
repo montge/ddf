@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MetacardTypeAdapterTest {
 
   private MetacardTypeAdapter adapter;
@@ -44,7 +44,7 @@ public class MetacardTypeAdapterTest {
 
   private List<MetacardType> metacardTypes;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     mockMetacardType1 = mock(MetacardType.class);
     when(mockMetacardType1.getName()).thenReturn("custom.type.1");

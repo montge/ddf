@@ -22,9 +22,9 @@ import java.io.IOException;
 import javax.ws.rs.WebApplicationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.ws.commons.schema.XmlSchema;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class XmlSchemaMessageBodyReaderTest {
 
@@ -32,7 +32,7 @@ public class XmlSchemaMessageBodyReaderTest {
 
   private static BufferedInputStream schemaXml;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     ser =
         new BufferedInputStream(
@@ -45,7 +45,7 @@ public class XmlSchemaMessageBodyReaderTest {
     schemaXml.mark(1000);
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDown() {
     IOUtils.closeQuietly(ser);
   }

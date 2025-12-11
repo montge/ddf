@@ -16,7 +16,7 @@ package ddf.measure;
 import static ddf.measure.Distance.LinearUnit;
 import static org.junit.Assert.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LinearUnitTest {
 

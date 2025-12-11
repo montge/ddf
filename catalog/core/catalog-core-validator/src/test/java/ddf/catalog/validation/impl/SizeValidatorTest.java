@@ -26,7 +26,7 @@ import ddf.catalog.validation.report.AttributeValidationReport;
 import java.util.HashMap;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SizeValidatorTest {
 

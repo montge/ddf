@@ -30,12 +30,12 @@ import org.codice.ddf.persistence.PersistenceException;
 import org.codice.ddf.persistence.PersistentItem;
 import org.codice.ddf.persistence.PersistentStore;
 import org.codice.ddf.persistence.PersistentStore.PersistenceType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.event.Event;
 
 /**
@@ -49,14 +49,14 @@ import org.osgi.service.event.Event;
  * progress, user, category, bytes, downloadId) - Error handling during persistence - Null and
  * missing property handling - Edge cases and boundary conditions
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ActivityListenerTest {
 
   @Mock private PersistentStore mockPersistentStore;
 
   private ActivityListener activityListener;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     activityListener = new ActivityListener(mockPersistentStore);
   }

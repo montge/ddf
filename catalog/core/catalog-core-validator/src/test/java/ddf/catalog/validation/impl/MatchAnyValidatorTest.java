@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MatchAnyValidatorTest {
 
@@ -72,7 +72,7 @@ public class MatchAnyValidatorTest {
 
   private EnumerationValidator countryCodeEnumerationValidator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     patternValidator = new PatternValidator(COUNTRY_CODE_PATTERN);
     enumerationValidator = new EnumerationValidator(VALID_ENUMERATIONS, false);

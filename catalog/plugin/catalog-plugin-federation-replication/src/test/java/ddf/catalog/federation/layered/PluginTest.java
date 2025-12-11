@@ -48,9 +48,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 import org.apache.cxf.endpoint.Server;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class PluginTest {
 
@@ -67,7 +67,7 @@ public class PluginTest {
 
   private static Metacard metacard;
 
-  @Before
+  @BeforeEach
   public void setup() {
     // given
     plugin = new RestReplicatorPlugin(ENDPOINT_ADDRESS);
@@ -96,7 +96,7 @@ public class PluginTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testUpdateNullRequest()
       throws PluginExecutionException, IngestException, SourceUnavailableException {
     // given
@@ -114,7 +114,7 @@ public class PluginTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testUpdate()
       throws PluginExecutionException, IngestException, SourceUnavailableException {
     // given
@@ -136,7 +136,7 @@ public class PluginTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testCreateNullParent()
       throws PluginExecutionException, IngestException, SourceUnavailableException {
     // given
@@ -152,7 +152,7 @@ public class PluginTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testCreateNullTransformer()
       throws PluginExecutionException, IngestException, SourceUnavailableException {
     // given
@@ -181,7 +181,7 @@ public class PluginTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testCreate()
       throws PluginExecutionException, CatalogTransformerException, IOException, IngestException,
           SourceUnavailableException {
@@ -200,7 +200,7 @@ public class PluginTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testDelete()
       throws PluginExecutionException, CatalogTransformerException, IOException, IngestException,
           SourceUnavailableException {
@@ -219,7 +219,7 @@ public class PluginTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testParentAddress() {
     // given
     plugin.setParentAddress(null);

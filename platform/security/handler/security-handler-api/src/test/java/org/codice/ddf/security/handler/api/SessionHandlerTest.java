@@ -22,18 +22,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SessionHandlerTest {
 
   private SessionHandler sessionHandler;
   private Map<String, Set<String>> activeSessions;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     activeSessions = new HashMap<>();
     sessionHandler =

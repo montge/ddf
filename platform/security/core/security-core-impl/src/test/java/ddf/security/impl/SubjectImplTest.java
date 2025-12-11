@@ -23,7 +23,7 @@ import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.support.DelegatingSubject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Checks each of the SubjectImpl constructors to verify that they are correctly passed the

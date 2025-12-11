@@ -37,14 +37,14 @@ import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
 import org.codice.ddf.security.handler.AuthenticationTokenFactory;
 import org.codice.ddf.security.handler.api.HandlerResult;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Test certificate validation and revocation checking for PKIHandler. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PKIHandlerCertificateValidationTest {
 
   private PKIHandler handler;
@@ -59,7 +59,7 @@ public class PKIHandlerCertificateValidationTest {
   @Mock private X509Certificate[] certificates;
   @Mock private AuthenticationToken authToken;
 
-  @Before
+  @BeforeEach
   public void setup() {
     handler = new PKIHandler();
     handler.tokenFactory = tokenFactory;

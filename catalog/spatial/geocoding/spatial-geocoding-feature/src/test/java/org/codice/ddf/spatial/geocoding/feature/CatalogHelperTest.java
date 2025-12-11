@@ -20,8 +20,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import ddf.catalog.operation.Query;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 
 /** Unit tests for CatalogHelper class. */
@@ -31,7 +31,7 @@ public class CatalogHelperTest {
 
   private FilterBuilder filterBuilder;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     filterBuilder = new GeotoolsFilterBuilder();
     catalogHelper = new CatalogHelper(filterBuilder);

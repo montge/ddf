@@ -19,8 +19,8 @@ import static org.junit.Assert.assertThrows;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.operation.impl.QueryImpl;
 import org.geotools.filter.FilterFactoryImpl;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 
@@ -35,7 +35,7 @@ public class QueryImplTest {
   private static Filter filter2 = null;
 
   /** Create the filter2 one time to use for all of the tests */
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
 
     FilterFactory filterFactory = new FilterFactoryImpl();

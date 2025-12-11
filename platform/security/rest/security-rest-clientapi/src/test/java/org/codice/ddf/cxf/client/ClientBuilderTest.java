@@ -30,13 +30,13 @@ import java.util.Map;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.message.Message;
 import org.codice.ddf.configuration.PropertyResolver;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClientBuilderTest {
 
   @Mock private ClientBuilder<TestService> clientBuilder;
@@ -51,7 +51,7 @@ public class ClientBuilderTest {
 
   private Map<String, String> additionalOauthParams;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     entityProviders = Arrays.asList(new Object(), new Object());
     additionalOauthParams = new HashMap<>();

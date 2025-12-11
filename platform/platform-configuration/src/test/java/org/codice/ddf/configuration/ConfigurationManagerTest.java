@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 public class ConfigurationManagerTest {
@@ -52,7 +52,7 @@ public class ConfigurationManagerTest {
 
   Map<String, String> config2;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     key = ConfigurationManagerTest.class.getSimpleName() + "Key";
     mockWatcher = new MockConfigurationWatcher();

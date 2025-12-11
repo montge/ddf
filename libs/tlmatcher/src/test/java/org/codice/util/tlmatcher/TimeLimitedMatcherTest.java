@@ -21,13 +21,13 @@ import static org.junit.Assert.assertThrows;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.util.tlmatcher.TimeLimitedMatcher.TimeoutException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TimeLimitedMatcherTest {
   private Pattern pattern;
 
-  @Before
+  @BeforeEach
   public void setup() {
     pattern = Pattern.compile("a(b[c|d])\\d*;");
   }

@@ -59,8 +59,8 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the class {@link StandardMetacardGroomerPlugin}
@@ -84,7 +84,7 @@ public class MetacardGroomerPluginTest {
 
   private StandardMetacardGroomerPlugin plugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     uuidGenerator = mock(UuidGenerator.class);
     when(uuidGenerator.generateUuid()).thenReturn(UUID.randomUUID().toString());

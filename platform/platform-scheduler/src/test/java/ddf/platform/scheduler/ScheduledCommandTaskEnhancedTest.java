@@ -29,12 +29,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.codice.ddf.security.Security;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -57,7 +57,7 @@ import org.quartz.TriggerKey;
  *   <li>Error handling during scheduling operations
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ScheduledCommandTaskEnhancedTest {
 
   @Mock private Scheduler mockScheduler;
@@ -66,7 +66,7 @@ public class ScheduledCommandTaskEnhancedTest {
 
   private ScheduledCommandTask scheduledTask;
 
-  @Before
+  @BeforeEach
   public void setUp() throws SchedulerException {
     scheduledTask = new ScheduledCommandTask(mockScheduler, mockJobFactory);
     verify(mockScheduler).setJobFactory(mockJobFactory);

@@ -21,8 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StraightExpansionImplTest {
 
@@ -67,7 +67,7 @@ public class StraightExpansionImplTest {
 
   private String rule4Str = "VP:";
 
-  @Before
+  @BeforeEach
   public void setupData() {
     rulesList1.add(rule1a);
     rulesList1.add(rule1b);

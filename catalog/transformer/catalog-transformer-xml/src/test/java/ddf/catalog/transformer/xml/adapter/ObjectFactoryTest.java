@@ -18,14 +18,14 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ObjectFactoryTest {
 
   private ObjectFactory factory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     factory = new ObjectFactory();
   }

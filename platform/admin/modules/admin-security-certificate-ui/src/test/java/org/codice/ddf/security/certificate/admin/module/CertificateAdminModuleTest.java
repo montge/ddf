@@ -20,15 +20,15 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import org.codice.ddf.admin.application.plugin.AbstractApplicationPlugin;
 import org.codice.ddf.admin.application.plugin.ApplicationPlugin;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link CertificateAdminModule} class. */
 public class CertificateAdminModuleTest {
 
   private CertificateAdminModule module;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     module = new CertificateAdminModule();
   }

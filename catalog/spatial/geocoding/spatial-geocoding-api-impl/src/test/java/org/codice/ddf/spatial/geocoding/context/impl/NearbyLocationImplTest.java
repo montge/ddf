@@ -19,7 +19,7 @@ import static org.hamcrest.core.Is.is;
 import java.text.NumberFormat;
 import java.util.Locale;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.spatial4j.context.SpatialContext;
 import org.locationtech.spatial4j.shape.Point;
 import org.locationtech.spatial4j.shape.impl.PointImpl;

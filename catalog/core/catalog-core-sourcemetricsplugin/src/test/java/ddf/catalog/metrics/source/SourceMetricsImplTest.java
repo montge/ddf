@@ -45,8 +45,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SourceMetricsImplTest {
 
@@ -54,7 +54,7 @@ public class SourceMetricsImplTest {
 
   private MeterRegistry meterRegistry;
 
-  @Before
+  @BeforeEach
   public void init() {
     meterRegistry = new SimpleMeterRegistry();
     Metrics.addRegistry(meterRegistry);

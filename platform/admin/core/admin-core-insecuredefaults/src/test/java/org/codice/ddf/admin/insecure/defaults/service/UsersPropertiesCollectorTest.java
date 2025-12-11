@@ -22,13 +22,15 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.Instant;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.service.event.EventAdmin;
 
+@EnableRuleMigrationSupport
 public class UsersPropertiesCollectorTest {
 
   private UsersPropertiesCollector collector;
@@ -37,7 +39,7 @@ public class UsersPropertiesCollectorTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     eventAdmin = mock(EventAdmin.class);
     scheduler = mock(DefaultUsersDeletionScheduler.class);
@@ -78,7 +80,7 @@ public class UsersPropertiesCollectorTest {
     verify(scheduler, times(1)).deleteScheduledDeletions();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     temporaryFolder.delete();
   }

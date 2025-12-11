@@ -39,14 +39,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class QueryResponsePostProcessorImplTest {
 
   private static final String URL1 = "https://localhost/abc";
@@ -83,7 +83,7 @@ public class QueryResponsePostProcessorImplTest {
 
   private QueryResponsePostProcessor queryResponsePostProcessor;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     uris[0] = new URI("content:abc");
     urls[0] = new URL(URL1);

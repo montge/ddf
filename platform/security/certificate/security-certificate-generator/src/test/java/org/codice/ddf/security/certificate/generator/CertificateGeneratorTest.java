@@ -22,17 +22,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class CertificateGeneratorTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   File systemKeystoreFile = null;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
 
     systemKeystoreFile = temporaryFolder.newFile("serverKeystore.jks");

@@ -35,7 +35,7 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PepInterceptorInvalidSubjectTest {
 

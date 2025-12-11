@@ -31,8 +31,8 @@ import org.codice.ddf.spatial.geocoder.GeoResult;
 import org.codice.ddf.spatial.geocoder.GeoResultCreator;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GeoCoderServiceImplTest {
 
@@ -48,7 +48,7 @@ public class GeoCoderServiceImplTest {
 
   private JSONParser jsonParser = new JSONParser(JSONParser.MODE_JSON_SIMPLE);
 
-  @Before
+  @BeforeEach
   public void setUp() throws GeoEntryQueryException {
     this.mockGeoCoderFactory = buildMockGeoCoderFactory();
     this.mockGeoCoder = buildMockGeoCoder();

@@ -20,8 +20,8 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link EncryptionService} interface contract. Uses a test implementation to verify the
@@ -35,7 +35,7 @@ public class EncryptionServiceTest {
 
   private TestEncryptionService encryptionService;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     encryptionService = new TestEncryptionService();
   }

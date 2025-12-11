@@ -25,8 +25,8 @@ import static org.mockito.Mockito.when;
 import net.opengis.cat.csw.v_2_0_2.GetRecordsType;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.endpoint.CswSubscriptionEndpoint;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CswSubscriptionConfigFactoryTest {
 
@@ -40,7 +40,7 @@ public class CswSubscriptionConfigFactoryTest {
 
   private String filterXml;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
 
     subscriptionService = mock(CswSubscriptionEndpoint.class);

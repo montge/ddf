@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThrows;
 
 import ddf.catalog.operation.impl.SourceProcessingDetailsImpl;
 import java.util.Collections;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SourceProcessingDetailsImplTest {
 

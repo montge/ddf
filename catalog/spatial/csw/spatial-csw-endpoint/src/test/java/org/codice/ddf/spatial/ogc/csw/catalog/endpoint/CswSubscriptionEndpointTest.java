@@ -67,9 +67,10 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswException;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.GetRecordsRequest;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.transformer.TransformerManager;
 import org.codice.ddf.spatial.ogc.csw.catalog.endpoint.event.CswSubscription;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -81,6 +82,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
+@EnableRuleMigrationSupport
 public class CswSubscriptionEndpointTest {
   private static final ch.qos.logback.classic.Logger CSW_LOGGER =
       (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(CswEndpoint.class);
@@ -147,7 +149,7 @@ public class CswSubscriptionEndpointTest {
 
   private SecurityManager securityManager;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     systemKeystoreFile = temporaryFolder.newFile("serverKeystore.jks");
     FileOutputStream systemKeyOutStream = new FileOutputStream(systemKeystoreFile);

@@ -39,7 +39,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.Office;
 import org.apache.tika.metadata.TIFF;
 import org.apache.tika.metadata.TikaCoreProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetacardCreatorTest {
   @Test

@@ -62,8 +62,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.GmdConstants;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class GmdTransformerTest {
@@ -75,7 +75,7 @@ public class GmdTransformerTest {
 
   private static MetacardType gmdMetacardType;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     gmdMetacardType = getGmdMetacardType();
     gmdTransformer = new GmdTransformer(gmdMetacardType);

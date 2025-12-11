@@ -27,15 +27,16 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/** Extended unit tests for {@link KeystoreValidator} to increase coverage */
-@RunWith(MockitoJUnitRunner.class)
+/** Extended unit tests for {@EnableRuleMigrationSupport
+ * @link KeystoreValidator} to increase coverage */
+@ExtendWith(MockitoExtension.class)
 public class KeystoreValidatorExtendedTest {
 
   private static final String DEFAULT_KEYSTORE_PASSWORD = "changeit";
@@ -49,7 +50,7 @@ public class KeystoreValidatorExtendedTest {
   private Path keystorePath;
   private Path blacklistKeystorePath;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     System.setProperty(SecurityConstants.KEYSTORE_TYPE, "JKS");
 

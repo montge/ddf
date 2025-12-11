@@ -30,14 +30,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PrometheusMetricsEndpointTest {
 
   @Mock private HttpServletRequest mockRequest;
@@ -50,7 +50,7 @@ public class PrometheusMetricsEndpointTest {
 
   private PrintWriter printWriter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     stringWriter = new StringWriter();
     printWriter = new PrintWriter(stringWriter);
@@ -59,7 +59,7 @@ public class PrometheusMetricsEndpointTest {
     underTest = new PrometheusMetricsEndpoint();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (printWriter != null) {
       printWriter.close();

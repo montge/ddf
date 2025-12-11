@@ -46,13 +46,13 @@ import java.util.Optional;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsConstants;
 import org.codice.ddf.spatial.ogc.wfs.catalog.metacardtype.registry.WfsMetacardTypeRegistry;
 import org.codice.ddf.spatial.ogc.wfs.featuretransformer.WfsMetadata;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HandlebarsWfsFeatureTransformerTest {
 
   private static final String EXPECTED_FEATURE_TYPE =
@@ -80,7 +80,7 @@ public class HandlebarsWfsFeatureTransformerTest {
   private InputStream inputStream;
   private HandlebarsWfsFeatureTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setup() {
     setupWfsMetadata();
     setupMetacardTypeRegistry();

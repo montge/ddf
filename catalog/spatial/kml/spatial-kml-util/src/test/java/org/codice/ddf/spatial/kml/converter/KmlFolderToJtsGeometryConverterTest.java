@@ -25,8 +25,8 @@ import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import java.io.InputStream;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryCollection;
 
@@ -34,7 +34,7 @@ public class KmlFolderToJtsGeometryConverterTest {
 
   private static Folder testKmlFolder;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream =
         KmlFolderToJtsGeometryConverterTest.class.getResourceAsStream("/kmlFolder.kml");

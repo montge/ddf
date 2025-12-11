@@ -26,14 +26,14 @@ import ddf.catalog.operation.impl.SourceResponseImpl;
 import ddf.catalog.transform.CatalogTransformerException;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XlsxQueryResponseTransformerTest {
 
   private XlsxQueryResponseTransformer xlsxQueryResponseTransformer;
 
-  @Before
+  @BeforeEach
   public void setup() {
     xlsxQueryResponseTransformer = new XlsxQueryResponseTransformer();
   }

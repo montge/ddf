@@ -38,14 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link HistorianPolicyPlugin} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class HistorianPolicyPluginTest {
 
   @Mock private Query query;
@@ -62,7 +62,7 @@ public class HistorianPolicyPluginTest {
 
   private Metacard regularMetacard;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     plugin = new HistorianPolicyPlugin();
     properties = new HashMap<>();

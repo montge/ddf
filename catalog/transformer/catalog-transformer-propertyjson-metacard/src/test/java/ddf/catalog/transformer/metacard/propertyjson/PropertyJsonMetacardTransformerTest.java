@@ -46,8 +46,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Comprehensive test harness for PropertyJsonMetacardTransformer. Tests JSON serialization, data
@@ -62,7 +62,7 @@ public class PropertyJsonMetacardTransformerTest {
 
   private static final Gson GSON = new Gson();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     transformer = new PropertyJsonMetacardTransformer();
   }

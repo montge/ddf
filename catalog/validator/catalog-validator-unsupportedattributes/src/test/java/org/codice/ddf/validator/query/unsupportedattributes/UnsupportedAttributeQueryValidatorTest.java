@@ -32,8 +32,8 @@ import ddf.catalog.validation.violation.QueryValidationViolation.Severity;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class UnsupportedAttributeQueryValidatorTest {
@@ -44,7 +44,7 @@ public class UnsupportedAttributeQueryValidatorTest {
 
   private Supplier<String> messageFormatSupplier = (Supplier<String>) Mockito.mock(Supplier.class);
 
-  @Before
+  @BeforeEach
   public void setup() {
     Mockito.when(messageFormatSupplier.get())
         .thenReturn("The field \"{attribute}\" is not supported by the {sources} Source(s)");

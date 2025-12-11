@@ -49,16 +49,16 @@ import org.codice.ddf.security.handler.BaseAuthenticationToken;
 import org.codice.ddf.security.handler.HandlerResultImpl;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opensaml.core.config.InitializationService;
 
 /** Additional test coverage for LoginFilter exception handling and edge cases. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LoginFilterSecurityExceptionTest {
 
   private LoginFilter loginFilter;
@@ -73,12 +73,12 @@ public class LoginFilterSecurityExceptionTest {
   @Mock private BaseAuthenticationToken authenticationTokenMock;
   @Mock private X509Certificate[] x509Certificates;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     InitializationService.initialize();
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     loginFilter = new LoginFilter();
     loginFilter.setSecurityManager(securityManagerMock);

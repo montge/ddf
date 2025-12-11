@@ -25,8 +25,8 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.codice.ddf.parser.ParserConfigurator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XmlParserConfiguratorTest {
   private ParserConfigurator pc;
@@ -35,7 +35,7 @@ public class XmlParserConfiguratorTest {
 
   private XmlAdapter testAdapter;
 
-  @Before
+  @BeforeEach
   public void setup() {
     pc = new XmlParserConfigurator();
 

@@ -21,14 +21,14 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.ServiceReference;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class ServiceComparatorTest {
 
   private ServiceComparator comparator;
@@ -37,7 +37,7 @@ public class ServiceComparatorTest {
 
   @Mock private ServiceReference ref2;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     comparator = new ServiceComparator();
   }

@@ -43,8 +43,8 @@ import org.apache.commons.io.IOUtils;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.handler.api.HandlerResult.Status;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IdpHandlerTest {
 
@@ -73,7 +73,7 @@ public class IdpHandlerTest {
 
   private static final String LOCATION = "test";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     encryptionService = mock(EncryptionService.class);
     systemCrypto =

@@ -24,15 +24,16 @@ import java.nio.file.Paths;
 import org.codice.ddf.admin.configurator.ConfiguratorException;
 import org.codice.ddf.admin.configurator.Operation;
 import org.codice.ddf.admin.configurator.Result;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/** Unit tests for {@link ConfigOperation} */
-@RunWith(MockitoJUnitRunner.class)
+/** Unit tests for {@EnableRuleMigrationSupport
+ * @link ConfigOperation} */
+@ExtendWith(MockitoExtension.class)
 public class ConfigOperationTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -40,7 +41,7 @@ public class ConfigOperationTest {
   private ConfigOperation.Actions actions;
   private Path testFilePath;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     actions = new ConfigOperation.Actions();
     testFilePath = tempFolder.newFile("test-config.cfg").toPath();

@@ -43,10 +43,10 @@ import org.codice.ddf.security.handler.HandlerResultImpl;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opensaml.core.config.InitializationService;
@@ -77,12 +77,12 @@ public class LoginFilterTest {
   @Mock private SessionFactory sessionFactory;
   @Mock private ContextPolicyManager contextPolicyManager;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() throws Exception {
     InitializationService.initialize();
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     mocks = MockitoAnnotations.openMocks(this);
 
@@ -123,7 +123,7 @@ public class LoginFilterTest {
     when(contextPolicyManager.getSessionAccess()).thenReturn(true);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     mocks.close();
   }

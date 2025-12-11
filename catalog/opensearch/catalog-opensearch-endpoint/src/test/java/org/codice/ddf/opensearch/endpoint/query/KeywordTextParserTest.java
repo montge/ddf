@@ -26,8 +26,8 @@ import java.util.Map;
 import org.codice.ddf.opensearch.endpoint.ASTNode;
 import org.codice.ddf.opensearch.endpoint.KeywordFilterGenerator;
 import org.codice.ddf.opensearch.endpoint.KeywordTextParser;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 import org.parboiled.Parboiled;
 import org.parboiled.errors.ErrorUtils;
@@ -184,7 +184,7 @@ public class KeywordTextParserTest {
   }
 
   // We have been using this for debugging purposes, its not meant to be a test.
-  @Ignore
+  @Disabled
   @Test
   public void trace() {
     Map<String, String> inputToOutput = new LinkedHashMap<>();

@@ -27,15 +27,15 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link SecurityLoggerOutInterceptor} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SecurityLoggerOutInterceptorTest {
 
   @Mock private SubjectOperations subjectOperations;
@@ -48,14 +48,14 @@ public class SecurityLoggerOutInterceptorTest {
 
   private SecurityLoggerOutInterceptor interceptor;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     interceptor = new SecurityLoggerOutInterceptor();
     interceptor.setSubjectOperations(subjectOperations);
     interceptor.setSecurityLogger(securityLogger);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     ThreadContext.unbindSubject();
   }

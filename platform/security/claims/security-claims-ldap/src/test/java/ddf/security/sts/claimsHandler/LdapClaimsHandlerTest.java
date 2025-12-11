@@ -45,8 +45,8 @@ import org.forgerock.opendj.ldap.responses.BindResult;
 import org.forgerock.opendj.ldap.responses.SearchResultEntry;
 import org.forgerock.opendj.ldif.ConnectionEntryReader;
 import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LdapClaimsHandlerTest {
 
@@ -81,7 +81,7 @@ public class LdapClaimsHandlerTest {
 
   ClaimsParameters claimsParameters;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     claimsParameters = mock(ClaimsParameters.class);
     when(claimsParameters.getPrincipal()).thenReturn(new UserPrincipal(USER_DN));

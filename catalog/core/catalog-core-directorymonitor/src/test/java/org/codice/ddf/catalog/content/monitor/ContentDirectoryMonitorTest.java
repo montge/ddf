@@ -46,15 +46,14 @@ import org.apache.camel.test.junit4.ExchangeTestSupport;
 import org.apache.commons.io.FileUtils;
 import org.codice.ddf.security.impl.Security;
 import org.codice.junit.rules.RestoreSystemProperties;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
+@EnableRuleMigrationSupport
 public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
   private static final String PROTOCOL = "file://";
 
@@ -82,7 +81,7 @@ public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
   @Rule
   public final RestoreSystemProperties restoreSystemProperties = new RestoreSystemProperties();
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     monitoredDirectory = temporaryFolder.newFolder("inbox");
     monitoredDirectoryPath = monitoredDirectory.getCanonicalPath();
@@ -98,7 +97,7 @@ public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
     monitor = createContentDirectoryMonitor();
   }
 
-  @After
+  @AfterEach
   public void destroy() throws Exception {
     monitor.destroy(0);
     camelContext.stop();

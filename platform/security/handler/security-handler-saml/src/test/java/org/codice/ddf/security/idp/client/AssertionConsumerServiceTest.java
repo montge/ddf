@@ -48,11 +48,11 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opensaml.saml.saml2.core.StatusCode;
@@ -96,7 +96,7 @@ public class AssertionConsumerServiceTest {
   @Mock private SecurityAssertion securityAssertion;
   @Mock private ContextPolicyManager contextPolicyManager;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     System.setProperty("org.codice.ddf.system.rootContext", "/services");
 
@@ -116,7 +116,7 @@ public class AssertionConsumerServiceTest {
             Charsets.UTF_8);
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     mocks = MockitoAnnotations.openMocks(this);
 
@@ -163,7 +163,7 @@ public class AssertionConsumerServiceTest {
     assertionConsumerService.setSamlSecurity(new SamlSecurity());
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     mocks.close();
   }
@@ -195,7 +195,7 @@ public class AssertionConsumerServiceTest {
         is(HttpStatus.SC_INTERNAL_SERVER_ERROR));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testPostSamlResponseDoubleSignature() throws Exception {
     cannedResponse =
@@ -477,7 +477,7 @@ public class AssertionConsumerServiceTest {
   We cannot assume the presence of the SingleLogout Service
   DDF-1605
    */
-  @Ignore
+  @Disabled
   @Test
   public void testRetrieveMetadata() throws Exception {
     Response response = assertionConsumerService.retrieveMetadata();

@@ -65,8 +65,8 @@ import org.codice.ddf.platform.session.api.HttpSessionInvalidator;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.security.jaxrs.impl.SamlSecurity;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.config.InitializationService;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.Issuer;
@@ -124,7 +124,7 @@ public class LogoutRequestServiceTest {
     return db.parse(LogoutRequestServiceTest.class.getResourceAsStream(resourceName));
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws ParserConfigurationException, SAXException, IOException {
     simpleSign = mock(SimpleSign.class);
     idpMetadata = mock(IdpMetadata.class);

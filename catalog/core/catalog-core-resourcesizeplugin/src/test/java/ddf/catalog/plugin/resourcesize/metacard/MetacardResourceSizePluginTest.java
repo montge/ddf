@@ -32,7 +32,7 @@ import ddf.catalog.operation.QueryResponse;
 import ddf.catalog.resource.data.ReliableResource;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetacardResourceSizePluginTest {
 

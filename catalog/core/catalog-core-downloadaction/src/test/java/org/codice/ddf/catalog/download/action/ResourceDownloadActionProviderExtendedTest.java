@@ -29,18 +29,18 @@ import java.util.Set;
 import org.codice.ddf.catalog.resource.cache.ResourceCacheServiceMBean;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Extended tests for ResourceDownloadActionProvider to increase code coverage to 80%+. These tests
  * focus on edge cases, resource caching scenarios, and various metacard configurations.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResourceDownloadActionProviderExtendedTest {
 
   private static final String ACTION_PROVIDER_ID = "download-action";
@@ -67,7 +67,7 @@ public class ResourceDownloadActionProviderExtendedTest {
 
   private String originalSiteName;
 
-  @Before
+  @BeforeEach
   public void setup() {
     // Save original system properties
     originalExternalHost = System.getProperty(SystemBaseUrl.EXTERNAL_HOST);
@@ -96,7 +96,7 @@ public class ResourceDownloadActionProviderExtendedTest {
     when(metacard.getTags()).thenReturn(Collections.singleton(Metacard.DEFAULT_TAG));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     // Restore original system properties
     if (originalExternalHost != null) {

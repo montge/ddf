@@ -60,12 +60,12 @@ import org.codice.ddf.spatial.geocoding.GeoEntryAttributes;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.codice.ddf.spatial.geocoding.Suggestion;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GazetteerQueryCatalogTest {
 
   private static final int RADIUS_IN_KM = 100;
@@ -94,7 +94,7 @@ public class GazetteerQueryCatalogTest {
 
   private CatalogFramework catalogFramework;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     catalogFramework = mock(CatalogFramework.class);
     QueryResponse queryResponse = generateQueryResponseFromMetacard(generateGeoNamesMetacard());

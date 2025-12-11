@@ -66,9 +66,9 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -108,7 +108,7 @@ public class XmlResponseQueueTransformerTest {
 
   private Parser parser;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupTestClass() {
 
     // makes xpaths easier to write when prefixes are declared beforehand.
@@ -120,7 +120,7 @@ public class XmlResponseQueueTransformerTest {
     XMLUnit.setXpathNamespaceContext(ctx);
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws MimeTypeParseException {
     parser = new XmlParser();
     PrintWriterProvider printWriterProvider = new PrintWriterProviderImpl();

@@ -47,8 +47,8 @@ import org.geotools.filter.AttributeExpressionImpl;
 import org.geotools.filter.IsEqualsToImpl;
 import org.geotools.filter.LikeFilterImpl;
 import org.geotools.filter.LiteralExpressionImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.mockito.ArgumentCaptor;
 import org.opengis.feature.simple.SimpleFeature;
@@ -73,7 +73,7 @@ public class CatalogFeatureQueryableTest {
 
   private CatalogFeatureQueryable catalogFeatureQueryable;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     catalogHelper = new CatalogHelper(FILTER_BUILDER);
     catalogFramework = mock(CatalogFramework.class);

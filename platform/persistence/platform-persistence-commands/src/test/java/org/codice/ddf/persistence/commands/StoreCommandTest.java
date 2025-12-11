@@ -42,11 +42,12 @@ import org.apache.karaf.shell.api.console.Session;
 import org.codice.ddf.persistence.PersistenceException;
 import org.codice.ddf.persistence.PersistentStore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 
-/** Tests the {@link StoreListCommand} output. */
+/** Tests the {@EnableRuleMigrationSupport
+ * @link StoreListCommand} output. */
 public class StoreCommandTest extends ConsoleOutputCommon {
 
   String dateKey = "key" + DATE_SUFFIX;

@@ -100,8 +100,8 @@ import org.joda.time.DateTimeUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +145,7 @@ public class WfsFilterDelegateTest {
 
   private FeatureMetacardType mockFeatureMetacardType = mock(FeatureMetacardType.class);
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     XMLUnit.setNormalizeWhitespace(true);
     XMLUnit.setIgnoreWhitespace(true);

@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MetacardBackupS3StorageTest {
 
@@ -45,7 +45,7 @@ public class MetacardBackupS3StorageTest {
 
   private MetacardS3StorageRoute s3StorageProvider = new MetacardS3StorageRoute(camelContext);
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     s3StorageProvider.setObjectTemplate(OBJECT_TEMPLATE);
     s3StorageProvider.setS3Bucket(BUCKET);

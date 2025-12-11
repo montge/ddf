@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SecurityAuditPluginTest {
 
@@ -44,7 +44,7 @@ public class SecurityAuditPluginTest {
   private String auditMessageFormat =
       "Attribute %s on metacard %s with value(s) %s was updated to value(s) %s";
 
-  @Before
+  @BeforeEach
   public void setup() {
     List<String> auditAttributes = new ArrayList<>();
     auditAttributes.add(Metacard.TITLE);

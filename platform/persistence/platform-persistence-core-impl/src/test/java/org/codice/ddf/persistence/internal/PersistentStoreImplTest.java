@@ -43,15 +43,15 @@ import org.apache.solr.common.util.NamedList;
 import org.codice.ddf.persistence.PersistenceException;
 import org.codice.ddf.persistence.PersistentItem;
 import org.codice.solr.factory.SolrClientFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PersistentStoreImplTest {
 
   @Mock private SolrClientFactory solrClientFactory;
@@ -64,7 +64,7 @@ public class PersistentStoreImplTest {
 
   @Captor private ArgumentCaptor<SolrParams> solrParamsArgumentCaptor;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     when(solrClientFactory.newClient(any())).thenReturn(solrClient);
     when(solrClient.ping()).thenReturn(pingResponse);

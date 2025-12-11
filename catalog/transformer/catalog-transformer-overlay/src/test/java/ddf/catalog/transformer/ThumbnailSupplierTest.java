@@ -20,7 +20,7 @@ import ddf.catalog.data.impl.MetacardImpl;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ThumbnailSupplierTest {
   private final ThumbnailSupplier supplier = new ThumbnailSupplier();

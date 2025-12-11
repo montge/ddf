@@ -29,8 +29,8 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ContentUriAccessPluginTest {
 
@@ -48,7 +48,7 @@ public class ContentUriAccessPluginTest {
 
   private ContentUriAccessPlugin contentUriAccessPlugin;
 
-  @Before
+  @BeforeEach
   public void setup() {
     input = mock(UpdateRequest.class);
     updateCard = mock(Metacard.class);

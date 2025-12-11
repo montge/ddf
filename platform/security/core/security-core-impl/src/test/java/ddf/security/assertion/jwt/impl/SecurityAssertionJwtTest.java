@@ -35,14 +35,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.karaf.jaas.boot.principal.RolePrincipal;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.oidc.profile.OidcProfile;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SecurityAssertionJwtTest {
 
   private static final String TEST_ISSUER = "https://test-issuer.example.com";
@@ -55,7 +55,7 @@ public class SecurityAssertionJwtTest {
   private Map<String, Object> attributes;
   private List<String> usernameAttributeList;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     attributes = new HashMap<>();
     usernameAttributeList = Arrays.asList(PREFERRED_USERNAME, EMAIL);

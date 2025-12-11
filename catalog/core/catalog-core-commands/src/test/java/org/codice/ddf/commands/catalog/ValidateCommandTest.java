@@ -41,16 +41,18 @@ import java.util.concurrent.Callable;
 import org.apache.karaf.shell.api.console.Session;
 import org.codice.ddf.commands.catalog.validation.ValidatePrinter;
 import org.codice.ddf.security.Security;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class ValidateCommandTest {
 
   @Rule public TemporaryFolder testFolder = new TemporaryFolder();
@@ -71,7 +73,7 @@ public class ValidateCommandTest {
 
   @Mock Session session;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     // mock out validators
     // good validator will mock out passing validation

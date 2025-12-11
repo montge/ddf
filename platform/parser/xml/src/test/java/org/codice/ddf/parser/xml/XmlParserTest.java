@@ -41,8 +41,8 @@ import org.codice.ddf.parser.ParserConfigurator;
 import org.codice.ddf.parser.ParserException;
 import org.codice.ddf.parser.xml.domain.ChildElement;
 import org.codice.ddf.parser.xml.domain.MotherElement;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -57,7 +57,7 @@ public class XmlParserTest {
 
   private ChildElement leia;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     parser = new XmlParser();
 

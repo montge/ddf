@@ -37,8 +37,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import org.codice.ddf.parser.xml.XmlParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class XmlInputTransformerTest {
 
   private XmlInputTransformer xit;
 
-  @Before
+  @BeforeEach
   public void setup() {
     xit = new XmlInputTransformer(new XmlParser());
   }

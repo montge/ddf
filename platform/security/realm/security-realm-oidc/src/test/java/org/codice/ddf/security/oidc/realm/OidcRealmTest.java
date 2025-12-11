@@ -62,8 +62,8 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.codice.ddf.security.handler.OidcAuthenticationToken;
 import org.codice.ddf.security.handler.SAMLAuthenticationToken;
 import org.codice.ddf.security.handler.api.OidcHandlerConfiguration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.oidc.client.OidcClient;
@@ -81,7 +81,7 @@ public class OidcRealmTest {
   private Algorithm validAlgorithm;
   private Algorithm invalidAlgorithm;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     realm = new OidcRealm();
 

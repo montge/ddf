@@ -47,8 +47,8 @@ import org.codice.ddf.admin.core.api.Metatype;
 import org.codice.ddf.admin.core.api.Service;
 import org.codice.ddf.admin.core.impl.ServiceImpl;
 import org.codice.ddf.opensearch.source.OpenSearchSource;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -74,7 +74,7 @@ public class AdminPollerTest {
 
   private static final String MAP_ENTRY_ACTION_URL = "url";
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     metacard1 = new MetacardImpl();

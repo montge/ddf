@@ -82,9 +82,9 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswRecordCollection;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.transformer.TransformerManager;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -106,7 +106,7 @@ public class GetRecordsResponseConverterTest {
 
   private TransformerManager mockInputManager = mock(TransformerManager.class);
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(mockProvider.canConvert(any(Class.class))).thenReturn(true);
   }
@@ -365,7 +365,7 @@ public class GetRecordsResponseConverterTest {
     assertThat(metacards.size(), is(1));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetBrief()
       throws UnsupportedEncodingException, JAXBException {
@@ -413,7 +413,7 @@ public class GetRecordsResponseConverterTest {
     assertThat(resultsType.getRecordSchema(), is(CswConstants.CSW_OUTPUT_SCHEMA));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetSummary()
       throws UnsupportedEncodingException, JAXBException {
@@ -461,7 +461,7 @@ public class GetRecordsResponseConverterTest {
     assertThat(resultsType.getRecordSchema(), is(CswConstants.CSW_OUTPUT_SCHEMA));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetFull()
       throws UnsupportedEncodingException, JAXBException {
@@ -509,7 +509,7 @@ public class GetRecordsResponseConverterTest {
     assertThat(resultsType.getRecordSchema(), is(CswConstants.CSW_OUTPUT_SCHEMA));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionHits() throws UnsupportedEncodingException, JAXBException {
     final int totalResults = 5;
@@ -550,7 +550,7 @@ public class GetRecordsResponseConverterTest {
     assertThat(resultsType.getRecordSchema(), is(CswConstants.CSW_OUTPUT_SCHEMA));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetElements()
       throws UnsupportedEncodingException, JAXBException {
@@ -603,7 +603,7 @@ public class GetRecordsResponseConverterTest {
     assertThat(resultsType.getRecordSchema(), is(CswConstants.CSW_OUTPUT_SCHEMA));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetFirstPage()
       throws UnsupportedEncodingException, JAXBException {
@@ -616,7 +616,7 @@ public class GetRecordsResponseConverterTest {
     getRecords(maxRecords, startPosition, totalResults, expectedNext, expectedReturn);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetMiddlePage()
       throws UnsupportedEncodingException, JAXBException {
@@ -629,7 +629,7 @@ public class GetRecordsResponseConverterTest {
     getRecords(maxRecords, startPosition, totalResults, expectedNext, expectedReturn);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetLastPage()
       throws UnsupportedEncodingException, JAXBException {
@@ -642,7 +642,7 @@ public class GetRecordsResponseConverterTest {
     getRecords(maxRecords, startPosition, totalResults, expectedNext, expectedReturn);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionGetAllOnePage()
       throws UnsupportedEncodingException, JAXBException {
@@ -655,7 +655,7 @@ public class GetRecordsResponseConverterTest {
     getRecords(maxRecords, startPosition, totalResults, expectedNext, expectedReturn);
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionById() throws UnsupportedEncodingException, JAXBException {
     final int totalResults = 2;
@@ -690,7 +690,7 @@ public class GetRecordsResponseConverterTest {
     assertThat(response, not(nullValue()));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void testMarshalRecordCollectionFullXml()
       throws UnsupportedEncodingException, JAXBException {

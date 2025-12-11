@@ -25,7 +25,7 @@ import ddf.catalog.validation.impl.validator.RangeValidator;
 import ddf.catalog.validation.report.AttributeValidationReport;
 import java.math.BigDecimal;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RangeValidatorTest {
   @Test

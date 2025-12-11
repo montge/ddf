@@ -33,8 +33,8 @@ import java.io.InputStream;
 import java.util.Collections;
 import javax.activation.MimeType;
 import org.apache.camel.Message;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class InputTransformerProducerTest {
@@ -57,7 +57,7 @@ public class InputTransformerProducerTest {
 
   private MimeTypeMapper mimeTypeMapper;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     message = mock(Message.class);
 

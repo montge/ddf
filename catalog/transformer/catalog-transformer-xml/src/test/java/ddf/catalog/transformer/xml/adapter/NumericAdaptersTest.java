@@ -25,7 +25,7 @@ import ddf.catalog.transformer.xml.binding.FloatElement;
 import ddf.catalog.transformer.xml.binding.IntElement;
 import ddf.catalog.transformer.xml.binding.LongElement;
 import ddf.catalog.transformer.xml.binding.ShortElement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NumericAdaptersTest {
 

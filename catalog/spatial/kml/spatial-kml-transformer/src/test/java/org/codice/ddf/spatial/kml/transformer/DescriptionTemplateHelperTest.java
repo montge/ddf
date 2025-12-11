@@ -42,8 +42,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class DescriptionTemplateHelperTest {
 
@@ -61,7 +61,7 @@ public class DescriptionTemplateHelperTest {
 
   private static DescriptionTemplateHelper helper;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws MalformedURLException {
     mockActionProvider = mock(ActionProvider.class);
     mockAction = mock(Action.class);

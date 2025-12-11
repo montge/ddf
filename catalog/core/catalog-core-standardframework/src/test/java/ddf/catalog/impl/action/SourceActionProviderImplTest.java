@@ -23,8 +23,8 @@ import ddf.action.Action;
 import ddf.catalog.source.Source;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SourceActionProviderImplTest {
 
@@ -32,7 +32,7 @@ public class SourceActionProviderImplTest {
 
   private SourceActionProviderImpl sourceActionProvider;
 
-  @Before
+  @BeforeEach
   public void setup() {
     sourceActionProvider = new SourceActionProviderImpl(PROVIDER_ID);
   }

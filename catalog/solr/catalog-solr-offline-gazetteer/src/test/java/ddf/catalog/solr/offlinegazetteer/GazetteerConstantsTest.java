@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import ddf.catalog.data.types.Core;
 import ddf.catalog.data.types.Location;
 import org.codice.ddf.spatial.geocoding.GeoEntryAttributes;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link GazetteerConstants} class. */
 public class GazetteerConstantsTest {

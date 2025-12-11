@@ -20,15 +20,15 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.net.URI;
 import org.codice.ddf.ui.admin.api.module.AdminModule;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link InstallerModule} class. */
 public class InstallerModuleTest {
 
   private InstallerModule module;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     module = new InstallerModule();
   }

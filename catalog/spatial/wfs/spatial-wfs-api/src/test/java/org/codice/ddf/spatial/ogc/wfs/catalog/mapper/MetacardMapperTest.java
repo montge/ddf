@@ -20,14 +20,14 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MetacardMapperTest {
 
   private TestMetacardMapper mapper;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     mapper = new TestMetacardMapper();
   }

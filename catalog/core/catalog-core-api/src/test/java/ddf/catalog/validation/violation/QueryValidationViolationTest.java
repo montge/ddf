@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link QueryValidationViolation} interface and its Severity enum. */
 public class QueryValidationViolationTest {

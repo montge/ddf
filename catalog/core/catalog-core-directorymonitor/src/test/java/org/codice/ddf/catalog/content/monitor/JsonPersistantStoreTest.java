@@ -20,12 +20,14 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.io.File;
 import java.io.IOException;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class JsonPersistantStoreTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -33,14 +35,14 @@ public class JsonPersistantStoreTest {
   private JsonPersistantStore store;
   private String originalDataPath;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     originalDataPath = System.getProperty("ddf.home");
     System.setProperty("ddf.home", temporaryFolder.getRoot().getAbsolutePath());
     store = new JsonPersistantStore("testStore");
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (originalDataPath != null) {
       System.setProperty("ddf.home", originalDataPath);

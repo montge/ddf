@@ -45,8 +45,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MetacardValidityFilterPluginTest {
 
@@ -67,7 +67,7 @@ public class MetacardValidityFilterPluginTest {
 
   private MetacardValidityFilterPlugin metacardValidityFilterPlugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     filterAdapter = new GeotoolsFilterAdapterImpl();
     filterBuilder = new GeotoolsFilterBuilder();

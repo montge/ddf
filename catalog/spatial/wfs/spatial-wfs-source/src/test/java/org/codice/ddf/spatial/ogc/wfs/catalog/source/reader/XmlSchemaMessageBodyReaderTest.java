@@ -26,8 +26,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.MessageBodyReader;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link XmlSchemaMessageBodyReader} class. */
 public class XmlSchemaMessageBodyReaderTest {
@@ -43,7 +43,7 @@ public class XmlSchemaMessageBodyReaderTest {
 
   private XmlSchemaMessageBodyReader reader;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     reader = new XmlSchemaMessageBodyReader();
   }

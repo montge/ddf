@@ -25,7 +25,7 @@ import javax.ws.rs.core.HttpHeaders;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.phase.Phase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PaosOutInterceptorTest {
   @Test

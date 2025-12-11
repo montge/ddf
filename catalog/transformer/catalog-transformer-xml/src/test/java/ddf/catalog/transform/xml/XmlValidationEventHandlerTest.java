@@ -21,8 +21,8 @@ import static org.mockito.Mockito.when;
 
 import ddf.catalog.transformer.xml.XmlValidationEventHandler;
 import javax.xml.bind.ValidationEvent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XmlValidationEventHandlerTest {
 
@@ -30,7 +30,7 @@ public class XmlValidationEventHandlerTest {
 
   XmlValidationEventHandler xmlValidationEventHandler = new XmlValidationEventHandler();
 
-  @Before
+  @BeforeEach
   public void setup() {}
 
   @Test

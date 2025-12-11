@@ -43,15 +43,17 @@ import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.codice.ddf.parser.xml.XmlParser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class XacmlPdpEnhancedTest {
 
   private static final String USER_NAME = "TestUser";
@@ -64,7 +66,7 @@ public class XacmlPdpEnhancedTest {
   private SecurityLogger securityLogger;
   private File policyDir;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException, PdpException {
     temporaryFolder.create();
     policyDir = temporaryFolder.newFolder("policies");
@@ -80,7 +82,7 @@ public class XacmlPdpEnhancedTest {
             policyDir.getAbsolutePath(), new XmlParser(), new ArrayList<>(), securityLogger);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     temporaryFolder.delete();
   }

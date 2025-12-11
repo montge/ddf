@@ -36,14 +36,14 @@ import java.util.function.BiFunction;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.io.ParseException;
 
 public class OverlayMetacardTransformerTest {
   private OverlayMetacardTransformer transformer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     final BiFunction<Metacard, Map<String, Serializable>, Optional<BufferedImage>> supplier =
         (metacard, arguments) -> {

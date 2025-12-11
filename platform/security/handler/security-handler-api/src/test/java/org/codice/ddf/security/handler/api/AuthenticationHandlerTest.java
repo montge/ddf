@@ -31,17 +31,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests for {@link AuthenticationHandler} interface contract. Uses mock implementations to verify
  * the interface behavior and contract expectations.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthenticationHandlerTest {
 
   private static final String TEST_AUTH_TYPE = "BASIC";
@@ -56,7 +56,7 @@ public class AuthenticationHandlerTest {
 
   @Mock private HandlerResult mockHandlerResult;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     when(mockHandler.getAuthenticationType()).thenReturn(TEST_AUTH_TYPE);
   }

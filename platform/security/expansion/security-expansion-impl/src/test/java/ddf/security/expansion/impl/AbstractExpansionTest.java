@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Test the methods of the abstract class here (using instances of StraightExpansionImpl. */
 public class AbstractExpansionTest {
@@ -76,7 +76,7 @@ public class AbstractExpansionTest {
 
   private String ruleBogus3 = "xyz:123:456:789:10";
 
-  @Before
+  @BeforeEach
   public void setupData() {
     rulesList1.add(rule1a);
     rulesList1.add(rule1b);

@@ -53,8 +53,8 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswException;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswSubscribe;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.transformer.TransformerManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.osgi.framework.InvalidSyntaxException;
 
@@ -94,7 +94,7 @@ public class SendEventTest {
 
   private Subject subject;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     System.setProperty("ddf.home", ".");
     callbackURI = new URL("https://localhost:12345/services/csw/subscription/event");

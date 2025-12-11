@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ddf.catalog.data.ContentType;
 import ddf.catalog.data.ContentTypeImpl;
@@ -40,7 +40,7 @@ public class ContentTypeFilterDelegateTest {
     private final List<ContentType> contentTypeVideo =
             Arrays.asList((ContentType) new ContentTypeImpl(MOCK_TYPE_VIDEO, ""));
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 

@@ -43,15 +43,15 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for {@link WhoAmI} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class WhoAmITest {
 
   private static final String TEST_NAME = "testuser";
@@ -71,12 +71,12 @@ public class WhoAmITest {
 
   @Mock private SecurityManager securityManager;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ThreadContext.bind(securityManager);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     ThreadContext.unbindSecurityManager();
     ThreadContext.unbindSubject();

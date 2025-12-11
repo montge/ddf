@@ -29,12 +29,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class DavAlterationObserverTest {
   private DavEntry parent;
 
@@ -50,7 +47,7 @@ public class DavAlterationObserverTest {
 
   private EntryAlterationListener mockListener;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     parent = new DavEntry("http://test");
     DavEntry child1 = parent.newChildInstance("child1");

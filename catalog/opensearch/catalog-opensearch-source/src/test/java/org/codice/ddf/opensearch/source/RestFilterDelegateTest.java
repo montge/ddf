@@ -24,20 +24,20 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Tests for RestFilterDelegate */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RestFilterDelegateTest {
 
   private RestUrl restUrl;
 
   private RestFilterDelegate delegate;
 
-  @Before
+  @BeforeEach
   public void setUp() throws MalformedURLException, URISyntaxException {
     restUrl = RestUrl.newInstance("http://localhost:8181/services/catalog/query");
     delegate = new RestFilterDelegate(restUrl);

@@ -22,9 +22,9 @@ import static org.hamcrest.Matchers.nullValue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link EnvListCommand} class. */
 public class EnvListCommandTest {
@@ -33,14 +33,14 @@ public class EnvListCommandTest {
   private ByteArrayOutputStream outputStream;
   private EnvListCommand command;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     command = new EnvListCommand();
     outputStream = new ByteArrayOutputStream();
     System.setOut(new PrintStream(outputStream));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     System.setOut(originalOut);
   }

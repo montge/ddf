@@ -24,10 +24,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.codice.ddf.catalog.resource.cache.ResourceCacheServiceMBean;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mock;
@@ -97,7 +96,7 @@ public class ResourceDownloadActionProviderCanHandleTest {
         });
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     mocks = MockitoAnnotations.openMocks(this);
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, "localhost");
@@ -115,7 +114,7 @@ public class ResourceDownloadActionProviderCanHandleTest {
         };
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     mocks.close();
   }

@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Test for the default ContextAttributeMapping implementation. */
 public class DefaultContextAttributeMappingTest {
@@ -37,7 +37,7 @@ public class DefaultContextAttributeMappingTest {
 
   DefaultContextAttributeMapping controlMapping;
 
-  @Before
+  @BeforeEach
   public void setup() {
     List<KeyValuePermission> userPerms = new ArrayList<KeyValuePermission>();
     userPerms.add(new KeyValuePermissionImpl("role", Arrays.asList("admin")));

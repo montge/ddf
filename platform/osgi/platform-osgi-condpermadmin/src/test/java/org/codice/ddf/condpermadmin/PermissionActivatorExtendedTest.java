@@ -24,18 +24,19 @@ import java.io.FileWriter;
 import org.eclipse.osgi.internal.permadmin.EquinoxSecurityManager;
 import org.eclipse.osgi.internal.permadmin.SecurityAdmin;
 import org.eclipse.osgi.storage.PermissionData;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.condpermadmin.ConditionalPermissionAdmin;
 
-/** Extended unit tests for {@link PermissionActivator} to increase coverage */
-@RunWith(MockitoJUnitRunner.class)
+/** Extended unit tests for {@EnableRuleMigrationSupport
+ * @link PermissionActivator} to increase coverage */
+@ExtendWith(MockitoExtension.class)
 public class PermissionActivatorExtendedTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -45,7 +46,7 @@ public class PermissionActivatorExtendedTest {
   private PermissionActivatorForTest activator;
   private File securityDir;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     activator = new PermissionActivatorForTest();
     securityDir = tempFolder.newFolder("security");

@@ -19,14 +19,14 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 
 import org.codice.ddf.security.Security;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ServiceStoreTest {
 
   private ServiceStore serviceStore;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     serviceStore = ServiceStore.getInstance();
     serviceStore.setObject(new CommandJob(mock(Security.class)));

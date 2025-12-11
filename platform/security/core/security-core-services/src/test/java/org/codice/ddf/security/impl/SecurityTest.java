@@ -36,9 +36,9 @@ import java.net.URISyntaxException;
 import java.security.PrivilegedAction;
 import java.util.concurrent.Callable;
 import org.apache.shiro.subject.ExecutionException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -59,7 +59,7 @@ public class SecurityTest {
 
   @Mock private Callable<String> callable;
 
-  @Before
+  @BeforeEach
   public void setup() throws URISyntaxException {
     System.setProperty("karaf.local.roles", "admin,local");
     security = new Security();
@@ -80,7 +80,7 @@ public class SecurityTest {
     security.setSecurityLogger(mock(SecurityLogger.class));
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     mocks.close();
   }

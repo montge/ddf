@@ -32,13 +32,13 @@ import ddf.security.encryption.EncryptionService;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.shiro.subject.Subject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdpLogoutActionProviderEnhancedTest {
 
   @Mock private EncryptionService encryptionService;
@@ -49,7 +49,7 @@ public class IdpLogoutActionProviderEnhancedTest {
 
   private IdpLogoutActionProvider idpLogoutActionProvider;
 
-  @Before
+  @BeforeEach
   public void setup() {
     System.setProperty("org.codice.ddf.system.rootContext", "/services");
 

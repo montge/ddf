@@ -24,7 +24,7 @@ import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import ddf.catalog.source.UnsupportedQueryException;
 import java.util.Date;
 import java.util.Set;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 
 public class AttributeExtractorTest {

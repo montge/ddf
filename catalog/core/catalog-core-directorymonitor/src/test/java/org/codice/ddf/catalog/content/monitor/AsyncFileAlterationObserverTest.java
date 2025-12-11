@@ -38,17 +38,16 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import org.apache.camel.spi.Synchronization;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 
-@RunWith(JUnit4.class)
+@EnableRuleMigrationSupport
 public class AsyncFileAlterationObserverTest {
 
   private static String dummyData = "The duck may swim on the lake...";
@@ -111,7 +110,7 @@ public class AsyncFileAlterationObserverTest {
     return gson.fromJson(json, AsyncFileEntry.class);
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
 
     store = Mockito.mock(ObjectPersistentStore.class);

@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 
 import ddf.catalog.data.Metacard;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetacardMapperImplTest {
 

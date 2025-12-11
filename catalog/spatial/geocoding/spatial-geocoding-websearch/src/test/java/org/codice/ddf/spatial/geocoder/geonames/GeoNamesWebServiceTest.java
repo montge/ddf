@@ -37,8 +37,8 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.spatial4j.shape.Point;
 
 public class GeoNamesWebServiceTest {
@@ -81,7 +81,7 @@ public class GeoNamesWebServiceTest {
 
   private GeoNamesWebService webServiceSpy;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.webService = new GeoNamesWebService();
     this.webServiceSpy = spy(webService);

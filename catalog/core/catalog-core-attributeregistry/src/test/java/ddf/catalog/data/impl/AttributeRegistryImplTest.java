@@ -26,13 +26,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeRegistryImplTest {
   private AttributeRegistryImpl registry;
 
-  @Before
+  @BeforeEach
   public void setup() {
     registry = new AttributeRegistryImpl();
     registry.registerMetacardType(generateMetacardType());

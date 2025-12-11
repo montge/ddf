@@ -64,8 +64,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 
 public class CatalogMetricsTest {
@@ -81,7 +81,7 @@ public class CatalogMetricsTest {
 
   private CatalogMetrics catalogMetrics;
 
-  @Before
+  @BeforeEach
   public void setup() {
     meterRegistry = new SimpleMeterRegistry();
     Metrics.addRegistry(meterRegistry);

@@ -28,11 +28,11 @@ import ddf.action.MultiActionProvider;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Enhanced tests for {@link ActionRegistryImpl} class.
@@ -48,7 +48,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Duplicate action handling
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class ActionRegistryImplEnhancedTest {
 
   private static final String SUBJECT = "test-subject";
@@ -70,7 +70,7 @@ public class ActionRegistryImplEnhancedTest {
 
   private ActionRegistryImpl registry;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     registry = new ActionRegistryImpl();
 

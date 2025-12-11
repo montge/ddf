@@ -56,8 +56,8 @@ import java.util.Set;
 import java.util.UUID;
 import org.geotools.filter.FilterFactoryImpl;
 import org.joda.time.DateTime;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 
@@ -65,7 +65,7 @@ public class SolrProviderCreate {
 
   private static SolrCatalogProviderImpl provider;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     provider = SolrProviderTest.getProvider();
   }

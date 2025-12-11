@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.Optional;
 import org.codice.ddf.catalog.sourcepoller.SourcePoller;
 import org.codice.ddf.catalog.sourcepoller.SourceStatus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SourceOperationsTest {
 

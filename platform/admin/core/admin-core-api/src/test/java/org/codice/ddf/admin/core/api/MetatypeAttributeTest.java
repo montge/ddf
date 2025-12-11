@@ -19,15 +19,15 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.util.HashMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link MetatypeAttribute} interface constants and default methods. */
 public class MetatypeAttributeTest {
 
   private TestMetatypeAttribute attribute;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     attribute = new TestMetatypeAttribute();
   }

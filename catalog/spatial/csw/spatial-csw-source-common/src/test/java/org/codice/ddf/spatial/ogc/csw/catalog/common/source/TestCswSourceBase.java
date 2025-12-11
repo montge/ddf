@@ -77,8 +77,8 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswJAXBElementProvider;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswRecordCollection;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.GetCapabilitiesRequest;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -236,7 +236,7 @@ public class TestCswSourceBase {
           + "    </csw:Query>\n"
           + "</csw:GetRecords>";
 
-  @BeforeClass
+  @BeforeAll
   public static void init() {
     // The magic setting - besides ignoring whitespace, this setting configures XMLUnit to
     // treat namespaces that are equivalent but that use different prefixes to be considered
@@ -256,7 +256,7 @@ public class TestCswSourceBase {
         };
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     ServiceReference ref = mock(ServiceReference.class);
     ServiceReference[] serviceRefs = new ServiceReference[] {ref};

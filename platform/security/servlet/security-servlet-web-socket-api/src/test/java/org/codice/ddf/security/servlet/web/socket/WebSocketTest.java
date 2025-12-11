@@ -19,8 +19,8 @@ import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import org.eclipse.jetty.websocket.api.Session;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link WebSocket} interface contract. Uses a test implementation to verify the
@@ -35,7 +35,7 @@ public class WebSocketTest {
   private TestWebSocket webSocket;
   private Session mockSession;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     webSocket = new TestWebSocket();
     mockSession = mock(Session.class);

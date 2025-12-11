@@ -25,14 +25,14 @@ import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import org.codice.ddf.checksum.impl.Sha256ChecksumProvider;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Sha256ChecksumProviderTest {
 
   private ChecksumProvider checksumProvider;
 
-  @Before
+  @BeforeEach
   public void intialize() {
     checksumProvider = new Sha256ChecksumProvider();
   }

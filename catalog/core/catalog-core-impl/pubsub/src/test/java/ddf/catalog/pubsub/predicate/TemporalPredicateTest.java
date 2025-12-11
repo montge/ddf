@@ -29,8 +29,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.event.Event;
 
 public class TemporalPredicateTest {
@@ -41,7 +41,7 @@ public class TemporalPredicateTest {
   private Date dateBeforeRange;
   private Date dateAfterRange;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Calendar cal = Calendar.getInstance();
     cal.set(2023, Calendar.JANUARY, 1, 0, 0, 0);

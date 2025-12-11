@@ -23,10 +23,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -38,6 +39,7 @@ import org.junit.rules.TemporaryFolder;
  * Empty properties files - Missing/invalid properties files - Properties inheritance (extends
  * Properties) - File path validation - Edge cases and error handling
  */
+@EnableRuleMigrationSupport
 public class PropertiesWrapperTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -45,13 +47,13 @@ public class PropertiesWrapperTest {
   private File testPropertiesFile;
   private String testPropertiesPath;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     testPropertiesFile = tempFolder.newFile("test.properties");
     testPropertiesPath = testPropertiesFile.getAbsolutePath();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     testPropertiesFile = null;
     testPropertiesPath = null;

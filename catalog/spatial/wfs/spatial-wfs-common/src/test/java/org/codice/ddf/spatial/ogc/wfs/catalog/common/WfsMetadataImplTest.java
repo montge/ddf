@@ -20,8 +20,8 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Collections;
 import org.codice.ddf.spatial.ogc.wfs.featuretransformer.WfsMetadata;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class WfsMetadataImplTest {
 
@@ -33,7 +33,7 @@ public class WfsMetadataImplTest {
 
   private WfsMetadata<FeatureMetacardType> testWfsMetadata;
 
-  @Before
+  @BeforeEach
   public void setup() {
     WfsMetadataImpl<FeatureMetacardType> testWfsMetadataImpl =
         new WfsMetadataImpl<FeatureMetacardType>(

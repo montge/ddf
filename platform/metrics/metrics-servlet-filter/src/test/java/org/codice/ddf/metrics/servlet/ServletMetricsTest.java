@@ -34,9 +34,9 @@ import javax.servlet.AsyncListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.http.HttpFilterChain;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -65,7 +65,7 @@ public class ServletMetricsTest {
 
   private AutoCloseable mocks;
 
-  @Before
+  @BeforeEach
   public void before() throws Exception {
     mocks = MockitoAnnotations.openMocks(this);
 
@@ -84,7 +84,7 @@ public class ServletMetricsTest {
     when(mockResponse.getStatus()).thenReturn(DEFAULT_STATUS);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     mocks.close();
   }

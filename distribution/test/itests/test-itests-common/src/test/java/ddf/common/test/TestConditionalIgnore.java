@@ -23,14 +23,16 @@ import java.util.List;
 import org.codice.ddf.itests.common.annotations.ConditionalIgnoreRule;
 import org.codice.ddf.itests.common.annotations.ConditionalIgnoreRule.ConditionalIgnore;
 import org.codice.ddf.itests.common.annotations.SkipUnstableTest;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
+@EnableRuleMigrationSupport
 public class TestConditionalIgnore {
 
   public static class AnnotatedTest {
@@ -59,7 +61,7 @@ public class TestConditionalIgnore {
 
   private SkippedTestsCollector skippedTestsCollector;
 
-  @Before
+  @BeforeEach
   public void setup() {
     core = new JUnitCore();
     skippedTestsCollector = new SkippedTestsCollector();

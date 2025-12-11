@@ -50,8 +50,8 @@ import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.support.DelegatingSubject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -61,7 +61,7 @@ public class OperationPluginTest {
 
   Subject subject;
 
-  @Before
+  @BeforeEach
   public void setup() {
     plugin = new OperationPlugin();
     plugin.setPermissions(new PermissionsImpl());

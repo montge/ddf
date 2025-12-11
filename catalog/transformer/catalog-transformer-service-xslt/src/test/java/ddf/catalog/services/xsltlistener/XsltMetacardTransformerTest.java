@@ -33,13 +33,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -51,7 +52,8 @@ import org.osgi.framework.BundleContext;
  * attacks - XSLT script injection - Resource exhaustion via recursive templates - Information
  * disclosure via system property access
  */
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class XsltMetacardTransformerTest {
 
   private XsltMetacardTransformer transformer;
@@ -89,7 +91,7 @@ public class XsltMetacardTransformerTest {
           + "  </xsl:template>\n"
           + "</xsl:stylesheet>";
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     when(mockBundle.getBundleContext()).thenReturn(mockBundleContext);
   }

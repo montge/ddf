@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class AdminDocsModuleTest {
@@ -31,7 +31,7 @@ public class AdminDocsModuleTest {
 
   public static File mockDdfHome;
 
-  @BeforeClass
+  @BeforeAll
   public static void beforeClass() throws IOException {
     tempFolder = new TemporaryFolder();
     tempFolder.create();

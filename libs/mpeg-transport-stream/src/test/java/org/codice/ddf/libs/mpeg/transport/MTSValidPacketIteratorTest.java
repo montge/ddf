@@ -21,16 +21,16 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.taktik.mpegts.MTSPacket;
 import org.taktik.mpegts.sources.ResettableMTSSource;
 
 /** Validate the behavior of {@link MTSValidPacketIterator}. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MTSValidPacketIteratorTest {
 
   @Mock private ResettableMTSSource mockSource;
@@ -41,7 +41,7 @@ public class MTSValidPacketIteratorTest {
 
   private MTSValidPacketIterator packetIterator;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     packetIterator = new MTSValidPacketIterator(mockSource);
     mockedValidPackets = new ArrayList<>();

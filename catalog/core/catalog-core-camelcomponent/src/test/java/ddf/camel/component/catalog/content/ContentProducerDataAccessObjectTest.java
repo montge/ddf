@@ -60,17 +60,19 @@ import org.apache.camel.component.file.GenericFileMessage;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.map.HashedMap;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class ContentProducerDataAccessObjectTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private ContentProducerDataAccessObject contentProducerDataAccessObject;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     UuidGenerator uuidGenerator = mock(UuidGenerator.class);
     when((uuidGenerator.generateUuid())).thenReturn(UUID.randomUUID().toString());

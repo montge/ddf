@@ -22,8 +22,8 @@ import java.lang.management.ManagementFactory;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 public class BasicMBeanTest {
 
@@ -31,7 +31,7 @@ public class BasicMBeanTest {
 
   private TestMBeanImpl testMBean;
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     if (testMBean != null) {
       try {

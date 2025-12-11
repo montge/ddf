@@ -15,7 +15,7 @@ package org.codice.ddf.admin.application.service;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ApplicationServiceExceptionTest {
 

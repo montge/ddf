@@ -36,15 +36,15 @@ import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Additional comprehensive test coverage for AuthorizationFilter. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthorizationFilterCoverageTest {
 
   private AuthorizationFilter filter;
@@ -57,7 +57,7 @@ public class AuthorizationFilterCoverageTest {
   @Mock private Subject subject;
   @Mock private ContextPolicy contextPolicy;
 
-  @Before
+  @BeforeEach
   public void setup() {
     filter = new AuthorizationFilter(contextPolicyManager);
     filter.setSecurityLogger(securityLogger);
@@ -66,7 +66,7 @@ public class AuthorizationFilterCoverageTest {
     when(request.getRequestURI()).thenReturn("/test/resource");
   }
 
-  @After
+  @AfterEach
   public void cleanup() {
     ThreadContext.unbindSubject();
   }

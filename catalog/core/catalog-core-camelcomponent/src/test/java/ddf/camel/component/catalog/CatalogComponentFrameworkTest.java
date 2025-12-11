@@ -49,8 +49,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.junit4.CamelTestSupport;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.springframework.util.Assert;
 
@@ -119,7 +119,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
 
   private static CatalogFramework catalogFramework;
 
-  @BeforeClass
+  @BeforeAll
   public static void oneTimeSetup() throws Exception {
     metacard1 = new MetacardImpl();
     metacard1.setMetadata(SAMPLE_METACARD_CONTENT1);

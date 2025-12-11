@@ -60,8 +60,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.codice.ddf.catalog.resource.download.DownloadException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ResourceOperationsTest {
   ResourceOperations resourceOperations;
@@ -106,7 +106,7 @@ public class ResourceOperationsTest {
 
   String resourceName;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     setUpFrameworkProperties();
     setUpResourceOperationsAndMocks();

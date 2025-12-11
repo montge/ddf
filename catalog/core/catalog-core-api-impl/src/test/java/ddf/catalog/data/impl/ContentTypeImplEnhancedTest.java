@@ -23,10 +23,10 @@ import static org.hamcrest.Matchers.nullValue;
 import ddf.catalog.data.ContentType;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Enhanced comprehensive test suite for {@link ContentTypeImpl} class.
@@ -34,7 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>Tests all constructors, getters, setters, equals/hashCode contract, and edge cases for content
  * type metadata used throughout the catalog.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ContentTypeImplEnhancedTest {
 
   private static final String CONTENT_TYPE_NAME = "nitf";
@@ -44,7 +44,7 @@ public class ContentTypeImplEnhancedTest {
   private ContentTypeImpl contentType;
   private URI namespace;
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     namespace = new URI(NAMESPACE_STRING);
     contentType = new ContentTypeImpl();

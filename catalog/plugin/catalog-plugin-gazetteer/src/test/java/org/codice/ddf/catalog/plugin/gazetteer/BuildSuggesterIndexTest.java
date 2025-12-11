@@ -38,17 +38,17 @@ import ddf.catalog.source.SourceUnavailableException;
 import ddf.catalog.source.UnsupportedQueryException;
 import java.io.Serializable;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.Filter;
 
 /** Tests for {@link BuildSuggesterIndex} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BuildSuggesterIndexTest {
 
   @Mock private CatalogFramework catalogFramework;
@@ -65,7 +65,7 @@ public class BuildSuggesterIndexTest {
 
   private BuildSuggesterIndex buildSuggesterIndex;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     when(filterBuilder.attribute(anyString())).thenReturn(attributeBuilder);
     when(attributeBuilder.text(anyString())).thenReturn(filter);

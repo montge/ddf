@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThrows;
 
 import java.net.URISyntaxException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Comprehensive tests for RestUrl query parameter building */
 public class RestUrlTest {

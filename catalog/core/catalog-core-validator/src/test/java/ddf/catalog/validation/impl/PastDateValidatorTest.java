@@ -25,7 +25,7 @@ import ddf.catalog.validation.report.AttributeValidationReport;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PastDateValidatorTest {
   private static final PastDateValidator VALIDATOR = PastDateValidator.getInstance();

@@ -30,9 +30,9 @@ import org.apache.commons.io.FileUtils;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.LoggingUtils;
 import org.codice.ddf.test.common.annotations.BeforeExam;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -68,13 +68,13 @@ public class TestSolrCommands extends AbstractIntegrationTest {
     }
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     cleanUpBackups(CATALOG_CORE_NAME);
   }
 
   // TODO: Turn on this test once DDF-3340 is complete
-  @Ignore
+  @Disabled
   @Test
   public void testSolrBackupCommand() {
     String output = console.runCommand(BACKUP_COMMAND);
@@ -82,7 +82,7 @@ public class TestSolrCommands extends AbstractIntegrationTest {
   }
 
   // TODO: Turn on this test once DDF-3340 is complete
-  @Ignore
+  @Disabled
   @Test
   public void testSolrBackupBadCoreName() {
     String coreName = "blah";
@@ -93,7 +93,7 @@ public class TestSolrCommands extends AbstractIntegrationTest {
   }
 
   // TODO: Turn on this test once DDF-3340 is complete
-  @Ignore
+  @Disabled
   @Test
   public void testSolrBackupNumToKeep() throws InterruptedException {
     int numToKeep = 2;

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.service.condpermadmin.Condition;
 import org.osgi.service.condpermadmin.ConditionInfo;

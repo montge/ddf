@@ -21,11 +21,11 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 
 import org.codice.ddf.security.Security;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.Job;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -43,7 +43,7 @@ import org.quartz.spi.TriggerFiredBundle;
  *   <li>Null safety for job creation
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommandJobFactoryTest {
 
   @Mock private Security mockSecurity;
@@ -54,7 +54,7 @@ public class CommandJobFactoryTest {
 
   private CommandJobFactory factory;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     factory = new CommandJobFactory(mockSecurity);
   }

@@ -85,8 +85,8 @@ import org.codice.ddf.cxf.client.impl.ClientBuilderImpl;
 import org.codice.ddf.cxf.oauth.OAuthSecurity;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.jdom2.Element;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.opengis.filter.Filter;
 import org.osgi.framework.Bundle;
@@ -400,7 +400,7 @@ public class OpenSearchSourceTest {
     return IOUtils.toInputStream(response, StandardCharsets.UTF_8);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     response = mock(Response.class);
 

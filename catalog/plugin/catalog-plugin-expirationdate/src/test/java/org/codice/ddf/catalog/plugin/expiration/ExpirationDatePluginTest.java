@@ -36,13 +36,13 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ExpirationDatePluginTest {
 
   private static final String DATE_FORMAT = "MM-dd-yyyy HH:mm:ss.SSS";
@@ -62,7 +62,7 @@ public class ExpirationDatePluginTest {
 
   @Mock private CreateRequest mockCreateRequest;
 
-  @Before
+  @BeforeEach
   public void setup() {
     expirationDatePlugin = new ExpirationDatePlugin();
     expirationDatePlugin.setOffsetFromCreatedDate(DAYS);

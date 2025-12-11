@@ -40,7 +40,7 @@ import org.forgerock.opendj.ldap.SearchResultReferenceIOException;
 import org.forgerock.opendj.ldap.responses.BindResult;
 import org.forgerock.opendj.ldap.responses.SearchResultEntry;
 import org.forgerock.opendj.ldif.ConnectionEntryReader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RoleClaimsHandlerTest {
   public static final String USER_CN = "tstark";

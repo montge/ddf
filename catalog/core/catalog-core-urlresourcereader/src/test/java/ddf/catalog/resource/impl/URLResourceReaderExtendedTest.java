@@ -50,17 +50,17 @@ import org.apache.shiro.subject.Subject;
 import org.codice.ddf.cxf.client.ClientBuilder;
 import org.codice.ddf.cxf.client.ClientBuilderFactory;
 import org.codice.ddf.cxf.client.SecureCxfClientFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Extended tests for URLResourceReader to increase code coverage to 80%+. These tests focus on edge
  * cases, error handling, OAuth configuration, and various resource retrieval scenarios.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class URLResourceReaderExtendedTest {
 
   private static final String HTTP_SCHEME = "http";
@@ -91,7 +91,7 @@ public class URLResourceReaderExtendedTest {
 
   private URLResourceReader resourceReader;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     resourceReader = new URLResourceReader(mimeTypeMapper, clientBuilderFactory);
 

@@ -25,7 +25,7 @@ import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsException;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsInvalidEntityException;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsNullResponseException;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WfsResponseExceptionMapperTest {
 

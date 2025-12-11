@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.codice.ddf.platform.util.properties.PropertiesFileReader;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class GuestClaimsHandlerExtTest {
@@ -43,7 +43,7 @@ public class GuestClaimsHandlerExtTest {
 
   private static String availableClaimsFilePath;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() throws Exception {
     File availableClaimsFile = testFolder.newFile("attributeMap.properties");
     try (InputStream is =

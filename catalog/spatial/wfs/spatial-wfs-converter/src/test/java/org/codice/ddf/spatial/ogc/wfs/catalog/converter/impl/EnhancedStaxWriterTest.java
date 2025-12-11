@@ -23,8 +23,8 @@ import java.io.StringWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnhancedStaxWriterTest {
 
@@ -32,7 +32,7 @@ public class EnhancedStaxWriterTest {
 
   private NoNameCoder nameCoder;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     qnameMap = new QNameMap();
     nameCoder = new NoNameCoder();

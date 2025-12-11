@@ -24,9 +24,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class KeystoreValidatorTest {
 
@@ -81,13 +81,13 @@ public class KeystoreValidatorTest {
 
   private static Properties properties;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     properties = System.getProperties();
     System.setProperty(SecurityConstants.KEYSTORE_TYPE, "JKS");
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     System.setProperties(properties);
   }

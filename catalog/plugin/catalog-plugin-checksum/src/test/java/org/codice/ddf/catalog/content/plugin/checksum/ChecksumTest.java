@@ -40,8 +40,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.codice.ddf.checksum.ChecksumProvider;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ChecksumTest {
   private ChecksumProvider mockChecksumProvider;
@@ -56,7 +56,7 @@ public class ChecksumTest {
 
   private static final String SAMPLE_CHECKSUM_VALUE = "324D54D92B2D97471F9F4624596EA9F5";
 
-  @Before
+  @BeforeEach
   public void initialize() throws IOException, NoSuchAlgorithmException {
     mockChecksumProvider = mock(ChecksumProvider.class);
 

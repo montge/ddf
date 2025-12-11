@@ -39,8 +39,8 @@ import org.codice.ddf.branding.BrandingPlugin;
 import org.codice.ddf.branding.BrandingRegistry;
 import org.codice.ddf.branding.impl.BrandingRegistryImpl;
 import org.hamcrest.MatcherAssert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class LandingPageTest {
 
@@ -56,7 +56,7 @@ public class LandingPageTest {
 
   private static ResourceBundleLocator resourceBundleLocator;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupLandingPage() throws IOException {
     BrandingPlugin brandingPlugin = mock(BrandingPlugin.class);
     when(brandingPlugin.getBase64FavIcon()).thenReturn("");

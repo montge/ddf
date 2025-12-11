@@ -104,11 +104,12 @@ import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.json.simple.JSONObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -121,6 +122,7 @@ import org.osgi.service.cm.Configuration;
 import org.w3c.dom.Node;
 
 /** Tests the Catalog framework components. Includes helper methods at the Catalog level. */
+@EnableRuleMigrationSupport
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 public class TestCatalog extends AbstractIntegrationTest {
@@ -172,12 +174,12 @@ public class TestCatalog extends AbstractIntegrationTest {
             XML_RECORD_RESOURCE_PATH + "/SimpleXmlNoDecMetacard", ImmutableMap.of("uri", uri));
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     urlResourceReaderConfigurator = getUrlResourceReaderConfigurator();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws IOException {
     urlResourceReaderConfigurator.setUrlResourceReaderRootDirs(
         DEFAULT_URL_RESOURCE_READER_ROOT_RESOURCE_DIRS);
@@ -1359,7 +1361,7 @@ public class TestCatalog extends AbstractIntegrationTest {
   }
 
   @Test
-  @Ignore("Until DDF-4117 is addressed")
+  @Disabled("Until DDF-4117 is addressed")
   public void testMetacardIngestNetworkPlugin() throws Exception {
 
     /* MATCHERS
@@ -1773,7 +1775,7 @@ public class TestCatalog extends AbstractIntegrationTest {
   }
 
   // Is this test bad??
-  @Ignore
+  @Disabled
   @Test
   public void testIngestXmlNoExtension() throws Exception {
     final String TMP_PREFIX = "tcdm_";
@@ -2163,7 +2165,7 @@ public class TestCatalog extends AbstractIntegrationTest {
     }
   }
 
-  @Ignore("Ignored until DDF-1571 is addressed")
+  @Disabled("Ignored until DDF-1571 is addressed")
   @Test
   public void persistLargeObjectToWorkspace() throws Exception {
     persistToWorkspace(40000);
@@ -2480,7 +2482,7 @@ public class TestCatalog extends AbstractIntegrationTest {
   }
 
   // TODO: Turn on this test once DDF-3340 is complete
-  @Ignore
+  @Disabled
   @Test
   public void testSolrSimilarityConfiguration() throws Exception {
     getServiceManager().startFeature(true, "catalog-solr-solrclient");

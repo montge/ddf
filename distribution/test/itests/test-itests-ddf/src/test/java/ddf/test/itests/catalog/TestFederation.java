@@ -96,10 +96,11 @@ import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.glassfish.grizzly.http.Method;
 import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
@@ -113,6 +114,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Tests Federation aspects. */
+@EnableRuleMigrationSupport
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 public class TestFederation extends AbstractIntegrationTest {
@@ -320,7 +322,7 @@ public class TestFederation extends AbstractIntegrationTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
 
     getCatalogBundle().setDownloadRetryDelayInSeconds(1);
@@ -340,7 +342,7 @@ public class TestFederation extends AbstractIntegrationTest {
     cswServer.reset();
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
 
     clearCatalog();

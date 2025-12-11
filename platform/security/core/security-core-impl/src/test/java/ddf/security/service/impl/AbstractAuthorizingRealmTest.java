@@ -44,14 +44,14 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.Permission;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.ServiceReference;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractAuthorizingRealmTest {
 
   private static final String SAML_ROLE =
@@ -67,7 +67,7 @@ public class AbstractAuthorizingRealmTest {
 
   @Mock private Expansion expansionService;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     realm = new TestAuthorizingRealm();
   }

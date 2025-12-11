@@ -31,8 +31,8 @@ import java.util.Collections;
 import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HtmlQueryResponseTransformerTest {
 
@@ -42,7 +42,7 @@ public class HtmlQueryResponseTransformerTest {
 
   private static final List<HtmlExportCategory> EMPTY_CATEGORY_LIST = Collections.emptyList();
 
-  @Before
+  @BeforeEach
   public void setup() {
     htmlTransformer = new HtmlQueryResponseTransformer(EMPTY_CATEGORY_LIST);
   }

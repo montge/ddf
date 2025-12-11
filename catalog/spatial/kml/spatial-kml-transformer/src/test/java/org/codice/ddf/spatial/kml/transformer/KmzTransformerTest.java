@@ -33,13 +33,13 @@ import java.util.zip.ZipInputStream;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class KmzTransformerTest {
 
   private KmzTransformer kmzTransformer;
@@ -54,7 +54,7 @@ public class KmzTransformerTest {
 
   @Mock private SourceResponse mockSourceResponse;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException, MimeTypeParseException {
     kmzTransformer = new KmzTransformer(kmlTransformer);
     kmzMimetype = new MimeType("application/vnd.google-earth.kmz");

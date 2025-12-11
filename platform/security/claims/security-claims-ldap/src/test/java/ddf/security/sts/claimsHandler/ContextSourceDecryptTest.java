@@ -24,11 +24,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.security.encryption.EncryptionService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test harness for ContextSourceDecrypt LDAP password decryption utility.
@@ -40,7 +40,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * handling - Empty and null password handling - Multiple password set operations -
  * EncryptionService lifecycle
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ContextSourceDecryptTest {
 
   private static final String ENCRYPTED_PASSWORD = "ENC(abc123xyz)";
@@ -51,7 +51,7 @@ public class ContextSourceDecryptTest {
 
   private ContextSourceDecrypt contextSourceDecrypt;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     contextSourceDecrypt = new ContextSourceDecrypt();
   }

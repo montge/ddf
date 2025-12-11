@@ -21,12 +21,12 @@ import static org.junit.Assert.assertThrows;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DigitalSignatureTest {
 
   private static final String KEYSTORE_TYPE = "JKS";
@@ -41,7 +41,7 @@ public class DigitalSignatureTest {
 
   private DigitalSignature digitalSignature;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE);
     InputStream inputStream = DigitalSignatureTest.class.getResourceAsStream("/keystore.jks");

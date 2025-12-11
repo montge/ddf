@@ -55,8 +55,8 @@ import org.apache.shiro.subject.Subject;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.xml.schema.XSString;
 
 /** Tests out the SubjectUtils class */
@@ -74,7 +74,7 @@ public class SubjectUtilsTest {
 
   SubjectUtils subjectUtils;
 
-  @Before
+  @BeforeEach
   public void setup()
       throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
     try (InputStream systemKeyStream =

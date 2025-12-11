@@ -23,19 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
 import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.primitive.Point;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GeoResultTest {
 
   private GeoResult geoResult;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     geoResult = new GeoResult();
   }

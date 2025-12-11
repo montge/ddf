@@ -34,8 +34,8 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class LogoutServiceImplTest {
 
@@ -43,7 +43,7 @@ public class LogoutServiceImplTest {
 
   private static SecurityManager sm;
 
-  @BeforeClass
+  @BeforeAll
   public static void initialize() {
     sessionFactory = mock(SessionFactory.class);
     HttpSession httpSession = mock(HttpSession.class);

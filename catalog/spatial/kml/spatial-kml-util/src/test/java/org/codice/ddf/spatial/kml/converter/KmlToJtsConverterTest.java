@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import java.io.InputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
 public class KmlToJtsConverterTest {

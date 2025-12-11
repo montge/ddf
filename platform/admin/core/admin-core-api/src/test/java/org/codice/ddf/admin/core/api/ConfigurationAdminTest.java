@@ -16,7 +16,7 @@ package org.codice.ddf.admin.core.api;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link ConfigurationAdmin} interface constants. */
 public class ConfigurationAdminTest {

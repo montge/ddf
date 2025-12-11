@@ -69,9 +69,9 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -146,14 +146,14 @@ public class AtomTransformerTest {
     }
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     System.clearProperty(SystemInfo.ORGANIZATION);
     System.clearProperty(SystemInfo.SITE_NAME);
     System.clearProperty(SystemInfo.VERSION);
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setupTestClass() {
 
     // makes xpaths easier to write when prefixes are declared beforehand.

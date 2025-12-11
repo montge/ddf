@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 
 import ddf.catalog.data.Result;
 import ddf.catalog.event.EventProcessor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Test class for {@link Constants} to validate all constant values are properly defined */
 public class ConstantsTest {

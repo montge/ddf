@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests the {@link ConfigurationPersistencePlugin} interface and its contract.
@@ -42,14 +42,14 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Null safety for contexts and PIDs
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class ConfigurationPersistencePluginTest {
 
   @Mock private ConfigurationContext mockContext;
 
   private ConfigurationPersistencePlugin plugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     plugin = new TestConfigurationPersistencePlugin();
   }

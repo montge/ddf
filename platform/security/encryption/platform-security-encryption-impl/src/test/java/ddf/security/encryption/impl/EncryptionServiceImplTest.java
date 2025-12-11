@@ -30,9 +30,9 @@ import ddf.security.SecurityConstants;
 import ddf.security.encryption.crypter.Crypter.CrypterException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class EncryptionServiceImplTest {
 
   private static final TemporaryFolder TEMPORARY_FOLDER = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     TEMPORARY_FOLDER.create();
     String keysetHome = TEMPORARY_FOLDER.newFolder("keysets").getAbsolutePath();
@@ -53,7 +53,7 @@ public class EncryptionServiceImplTest {
         associatedDataHome.concat("/associatedData.properties"));
   }
 
-  @After
+  @AfterEach
   public void cleanUp() throws Exception {
     TEMPORARY_FOLDER.delete();
     System.clearProperty(SecurityConstants.KEYSET_DIR);

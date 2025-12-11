@@ -22,7 +22,7 @@ import java.io.ByteArrayInputStream;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CswResponseExceptionMapperTest {
 

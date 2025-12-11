@@ -33,8 +33,8 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opensaml.core.xml.schema.XSString;
 
 public class SubjectIdentityTest {
@@ -43,7 +43,7 @@ public class SubjectIdentityTest {
 
   private SubjectIdentityImpl subjectIdentity;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     subjectIdentity = new SubjectIdentityImpl(new SubjectUtils());
   }

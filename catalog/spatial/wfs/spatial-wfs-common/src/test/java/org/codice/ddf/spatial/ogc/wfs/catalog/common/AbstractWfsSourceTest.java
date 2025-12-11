@@ -38,8 +38,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AbstractWfsSourceTest {
   private AbstractWfsSource wfsSource;
@@ -49,7 +49,7 @@ public class AbstractWfsSourceTest {
   private static final String DISTANCE_SORT_PROPERTY = "myDistanceSortProperty";
   private List<MetacardMapper> mappers;
 
-  @Before
+  @BeforeEach
   public void setup() {
     wfsSource = new TestWfsSource();
     mappers = new ArrayList<>();

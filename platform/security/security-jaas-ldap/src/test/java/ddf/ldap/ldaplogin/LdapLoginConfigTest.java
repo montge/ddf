@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.Properties;
 import org.apache.karaf.jaas.config.JaasRealm;
 import org.apache.karaf.jaas.config.impl.Module;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -53,7 +53,7 @@ public class LdapLoginConfigTest {
   private static final String LDAP_URL_2 = "ldaps://ldap2:1636";
 
   /** Sets up a new context and JaasRealm before each test. */
-  @Before
+  @BeforeEach
   public void setUp() {
     context = mock(BundleContext.class);
     jaasRealm = mock(ServiceRegistration.class);

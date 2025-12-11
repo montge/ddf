@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Expansion} interface contract. Uses a test implementation to verify the
@@ -39,7 +39,7 @@ public class ExpansionTest {
 
   private TestExpansion expansion;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     expansion = new TestExpansion();
   }

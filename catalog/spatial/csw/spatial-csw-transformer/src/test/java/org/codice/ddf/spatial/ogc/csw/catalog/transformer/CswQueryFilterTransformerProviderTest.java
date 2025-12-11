@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.xml.namespace.QName;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -45,7 +45,7 @@ public class CswQueryFilterTransformerProviderTest extends CswQueryFilterTransfo
   private ServiceReference<QueryFilterTransformer> serviceReference;
 
   @SuppressWarnings("unchecked")
-  @Before
+  @BeforeEach
   public void setUp() {
     transformer = mock(QueryFilterTransformer.class);
     serviceReference = mock(ServiceReference.class);

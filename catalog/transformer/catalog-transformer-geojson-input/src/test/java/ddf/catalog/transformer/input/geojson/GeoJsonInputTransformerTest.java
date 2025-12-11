@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.stream.Stream;
 import org.codice.ddf.platform.util.SortedServiceList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -236,7 +236,7 @@ public class GeoJsonInputTransformerTest {
         + "}";
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     transformer = new GeoJsonInputTransformer();
   }

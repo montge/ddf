@@ -26,10 +26,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test harness for PDDocumentGeneratorImpl. Tests PDF document loading, error
@@ -38,12 +38,12 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>COVERAGE REQUIREMENTS: - Valid PDF loading - Invalid/malformed PDF handling - Empty input
  * handling - Null input handling - Resource cleanup verification
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PDDocumentGeneratorImplTest {
 
   private PDDocumentGeneratorImpl generator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     generator = new PDDocumentGeneratorImpl();
   }

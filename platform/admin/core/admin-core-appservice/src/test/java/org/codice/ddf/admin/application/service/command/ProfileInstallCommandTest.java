@@ -39,10 +39,11 @@ import org.apache.karaf.features.internal.service.FeaturesServiceImpl;
 import org.codice.ddf.admin.application.service.ApplicationService;
 import org.codice.ddf.admin.application.service.impl.ApplicationServiceImpl;
 import org.codice.ddf.security.Security;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -50,6 +51,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.resolver.ResolutionException;
 
+@EnableRuleMigrationSupport
 public class ProfileInstallCommandTest {
 
   private static final EnumSet NO_AUTO_REFRESH =
@@ -65,7 +67,7 @@ public class ProfileInstallCommandTest {
 
   private Path profilePath;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     ddfHome.newFolder("etc", "profiles");
     profilePath = Paths.get(ddfHome.getRoot().toString(), "etc", "profiles");
@@ -102,7 +104,7 @@ public class ProfileInstallCommandTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testInstallValidExtraProfile() throws Exception {
     profileInstallCommand.profileName = "devProfile";
     profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
@@ -110,7 +112,7 @@ public class ProfileInstallCommandTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testInstallValidExtraProfileWithDuplicates() throws Exception {
     profileInstallCommand.profileName = "profileWithDuplicates";
     profileInstallCommand.doExecute(applicationService, featuresService, bundleService);

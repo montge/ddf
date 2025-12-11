@@ -56,13 +56,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.subject.Subject;
 import org.codice.ddf.admin.core.api.Service;
 import org.codice.ddf.ui.admin.api.module.AdminModule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -75,7 +75,7 @@ import org.osgi.service.metatype.MetaTypeService;
 import org.osgi.service.metatype.ObjectClassDefinition;
 
 /* Using MockitoJUnitRunner.Silent due to inconsistent "unnecessary stubbing" errors */
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
 public class AdminConsoleServiceTest {
 
   private static final String GUEST_CLAIMS_CONFIG_PID = "ddf.security.guest.realm";
@@ -134,7 +134,7 @@ public class AdminConsoleServiceTest {
 
   private MBeanServer testServer;
 
-  @Before
+  @BeforeEach
   public void setupMethod() throws NotCompliantMBeanException {
     testConfig = mock(Configuration.class);
     org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
@@ -166,7 +166,7 @@ public class AdminConsoleServiceTest {
     configAdmin.setMBeanServer(testServer);
   }
 
-  @After
+  @AfterEach
   public void setupAfter() {
     testServer = mock(MBeanServer.class);
 

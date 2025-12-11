@@ -54,11 +54,11 @@ import org.codice.ddf.cxf.client.impl.ClientBuilderImpl;
 import org.codice.ddf.cxf.oauth.OAuthSecurity;
 import org.codice.ddf.security.jaxrs.SamlSecurity;
 import org.codice.ddf.security.ocsp.checker.OcspChecker.OcspCheckerException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -107,7 +107,7 @@ public class OcspCheckerTest {
   private final ArgumentMatcher<URI> inUnknownList = unknownEndpoints::contains;
   private final ArgumentMatcher<URI> inBrokenList = brokenEndpoints::contains;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     // truststore.jks contains CA_CERT
     URL truststoreUrl = OcspCheckerTest.class.getClassLoader().getResource("truststore.jks");
@@ -121,7 +121,7 @@ public class OcspCheckerTest {
     notTrustedCertBc = getBouncyCastleCertificate(notTrustedCertX509);
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     mocks = MockitoAnnotations.openMocks(this);
 
@@ -184,12 +184,12 @@ public class OcspCheckerTest {
     when(factory.<WebClient>getClientBuilder()).thenReturn(clientBuilder);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     mocks.close();
   }
 
-  @AfterClass
+  @AfterAll
   public static void cleanupClass() {
     System.clearProperty(SecurityConstants.TRUSTSTORE_PATH);
     System.clearProperty(SecurityConstants.TRUSTSTORE_PASSWORD);

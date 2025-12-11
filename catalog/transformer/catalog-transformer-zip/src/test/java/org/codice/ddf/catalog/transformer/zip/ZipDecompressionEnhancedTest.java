@@ -30,18 +30,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ZipDecompressionEnhancedTest {
 
   private ZipDecompression zipDecompression;
   private Map<String, Serializable> arguments;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     zipDecompression = new ZipDecompression();
     arguments = new HashMap<>();

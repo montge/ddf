@@ -92,8 +92,8 @@ import javax.activation.MimeType;
 import org.codice.ddf.catalog.sourcepoller.SourcePoller;
 import org.codice.ddf.catalog.sourcepoller.SourceStatus;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FanoutCatalogFrameworkTest {
   private static final String OLD_SOURCE_ID = "oldSourceId";
@@ -112,7 +112,7 @@ public class FanoutCatalogFrameworkTest {
 
   private UuidGenerator uuidGenerator;
 
-  @Before
+  @BeforeEach
   public void initFramework() {
 
     ArrayList<PostIngestPlugin> postIngestPlugins = new ArrayList<PostIngestPlugin>();

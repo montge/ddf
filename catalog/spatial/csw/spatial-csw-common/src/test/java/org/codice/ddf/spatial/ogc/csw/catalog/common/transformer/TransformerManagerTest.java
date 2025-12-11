@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 import ddf.catalog.transform.InputTransformer;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -66,7 +66,7 @@ public class TransformerManagerTest {
 
   private static MockTransformerManager manager;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     ServiceReference serviceRefA = mock(ServiceReference.class);
     ServiceReference serviceRefB = mock(ServiceReference.class);

@@ -30,17 +30,19 @@ import ddf.security.SecurityConstants;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import org.apache.felix.cm.PersistenceManager;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class EncryptingPersistenceManagerTest {
   private static final String PID = "my_pid";
 
@@ -66,7 +68,7 @@ public class EncryptingPersistenceManagerTest {
 
   @Mock private PersistenceManager mockManager;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     String keysetHome = temporaryFolder.newFolder("keysets").getAbsolutePath();
     String associatedDataHome = temporaryFolder.newFolder("etc").getAbsolutePath();
@@ -76,7 +78,7 @@ public class EncryptingPersistenceManagerTest {
         associatedDataHome.concat("/associatedData.properties"));
   }
 
-  @After
+  @AfterEach
   public void cleanup() throws Exception {
     System.clearProperty(SecurityConstants.KEYSET_DIR);
     System.clearProperty(SecurityConstants.ASSOCIATED_DATA_PATH);

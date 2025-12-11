@@ -32,17 +32,19 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.codice.ddf.commands.catalog.facade.CatalogFacade;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Comprehensive tests for ExportCommand */
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class ExportCommandTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -58,7 +60,7 @@ public class ExportCommandTest {
   private PrintStream originalOut;
   private File exportDirectory;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     exportDirectory = tempFolder.newFolder("export");
 
@@ -76,7 +78,7 @@ public class ExportCommandTest {
     System.setOut(new PrintStream(outputStream));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     System.setOut(originalOut);
     if (outputStream != null) {

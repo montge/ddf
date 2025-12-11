@@ -30,21 +30,21 @@ import static org.mockito.Mockito.when;
 import ddf.security.SecurityConstants;
 import ddf.security.encryption.crypter.Crypter;
 import ddf.security.encryption.crypter.Crypter.CrypterException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EncryptionServiceImplEnhancedTest {
 
   private static final TemporaryFolder TEMPORARY_FOLDER = new TemporaryFolder();
 
   private EncryptionServiceImpl encryptionService;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     TEMPORARY_FOLDER.create();
     String keysetHome = TEMPORARY_FOLDER.newFolder("keysets").getAbsolutePath();
@@ -56,7 +56,7 @@ public class EncryptionServiceImplEnhancedTest {
     encryptionService = new EncryptionServiceImpl();
   }
 
-  @After
+  @AfterEach
   public void cleanUp() throws Exception {
     TEMPORARY_FOLDER.delete();
     System.clearProperty(SecurityConstants.KEYSET_DIR);

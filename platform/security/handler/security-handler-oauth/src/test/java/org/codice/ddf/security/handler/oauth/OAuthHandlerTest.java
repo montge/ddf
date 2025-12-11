@@ -30,15 +30,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.handler.api.HandlerResult.Status;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.oidc.credentials.OidcCredentials;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OAuthHandlerTest {
   private static String accessTokenString;
   private static String authorizationCodeString;
@@ -50,7 +50,7 @@ public class OAuthHandlerTest {
   @Mock private HttpServletResponse mockResponse;
   @Mock private Enumeration<String> mockHeaderNames;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
     accessTokenString =
         CharStreams.toString(
@@ -65,7 +65,7 @@ public class OAuthHandlerTest {
                     .getResourceAsStream("authorizationCode.txt")));
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     // request
     when(mockRequest.getMethod()).thenReturn("POST");

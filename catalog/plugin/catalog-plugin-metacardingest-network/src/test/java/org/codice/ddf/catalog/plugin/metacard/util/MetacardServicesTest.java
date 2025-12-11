@@ -29,13 +29,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.DatatypeConverter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Validate all the helpers within the {@link MetacardServices} utility operations class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MetacardServicesTest {
 
   private static final String METACARD_TITLE = "Metacard Title";
@@ -48,7 +48,7 @@ public class MetacardServicesTest {
 
   private MetacardServices metacardServices;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     attributeFactory = new AttributeFactory();
     metacardServices = new MetacardServices();

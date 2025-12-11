@@ -20,8 +20,8 @@ import ddf.catalog.data.types.Validation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValidationQueryDelegateTest {
 
@@ -29,7 +29,7 @@ public class ValidationQueryDelegateTest {
 
   private ValidationQueryDelegate warningsDelegate;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     errorsDelegate = new ValidationQueryDelegate(Validation.VALIDATION_ERRORS);
     warningsDelegate = new ValidationQueryDelegate(Validation.VALIDATION_WARNINGS);

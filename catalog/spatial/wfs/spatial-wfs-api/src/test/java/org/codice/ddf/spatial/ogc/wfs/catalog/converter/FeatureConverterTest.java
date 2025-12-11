@@ -25,8 +25,8 @@ import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.data.impl.MetacardTypeImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FeatureConverterTest {
 
@@ -34,7 +34,7 @@ public class FeatureConverterTest {
 
   private MetacardType metacardType;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     converter = new TestFeatureConverter();
     metacardType =

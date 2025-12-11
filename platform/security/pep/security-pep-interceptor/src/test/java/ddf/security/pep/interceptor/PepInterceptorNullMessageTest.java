@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 
 import ddf.security.audit.SecurityLogger;
 import org.apache.cxf.interceptor.security.AccessDeniedException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PepInterceptorNullMessageTest {
 

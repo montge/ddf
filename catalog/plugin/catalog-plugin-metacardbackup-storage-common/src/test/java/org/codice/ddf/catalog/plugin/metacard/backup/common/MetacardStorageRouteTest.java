@@ -34,8 +34,8 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.Predicate;
 import org.apache.camel.model.RoutesDefinition;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class MetacardStorageRouteTest {
@@ -45,7 +45,7 @@ public class MetacardStorageRouteTest {
 
   private static final List<String> DEFAULT_TAGS = Arrays.asList("resource");
 
-  @Before
+  @BeforeEach
   public void setUp() {
     RoutesDefinition mockRoutesDefinition = mock(RoutesDefinition.class);
     when(storageRoute.getRouteCollection()).thenReturn(mockRoutesDefinition);

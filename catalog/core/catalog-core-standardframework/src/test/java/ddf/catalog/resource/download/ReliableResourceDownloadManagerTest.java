@@ -64,11 +64,12 @@ import javax.activation.MimeTypeParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.catalog.resource.download.DownloadException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.MethodRule;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
@@ -78,6 +79,7 @@ import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 public class ReliableResourceDownloadManagerTest {
   public static final int MONITOR_PERIOD = 5;
 
@@ -151,7 +153,7 @@ public class ReliableResourceDownloadManagerTest {
 
   private DownloadStatusInfoImpl downloadStatusInfo;
 
-  @BeforeClass
+  @BeforeAll
   public static void oneTimeSetup() throws IOException {
     String workingDir = System.getProperty("user.dir");
     productCacheDirectory = workingDir + "/target/tests/product-cache";
@@ -161,7 +163,7 @@ public class ReliableResourceDownloadManagerTest {
     expectedFileContents = FileUtils.readFileToString(productInputFile);
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     resourceCache = mock(ResourceCacheImpl.class);
     when(resourceCache.getProductCacheDirectory()).thenReturn(productCacheDirectory);
@@ -244,7 +246,7 @@ public class ReliableResourceDownloadManagerTest {
   }
 
   @Test
-  // @Ignore
+  // @Disabled
   public void testDownloadWithoutCaching() throws Exception {
     mis = new MockInputStream(productInputFilename);
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
@@ -270,7 +272,7 @@ public class ReliableResourceDownloadManagerTest {
   }
 
   @Test
-  // @Ignore
+  // @Disabled
   public void testDownloadWithCaching() throws Exception {
     mis = new MockInputStream(productInputFilename);
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
@@ -308,7 +310,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  // @Ignore
+  // @Disabled
   public void testDownloadWithCachingDifferentChunkSizes() throws Exception {
     mis = new MockInputStream(productInputFilename);
     Metacard metacard = getMockMetacard(EXPECTED_METACARD_ID, EXPECTED_METACARD_SOURCE_ID);
@@ -345,7 +347,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   public void testStoreWithInputStreamRecoverableErrorCachingDisabled() throws Exception {
 
     mis = new MockInputStream(productInputFilename);
@@ -373,7 +375,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   public void testStoreWithInputStreamRecoverableErrorCachingEnabled() throws Exception {
 
     mis = new MockInputStream(productInputFilename);
@@ -408,7 +410,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  // @Ignore
+  // @Disabled
   public void testStoreWithTimeoutExceptionCachingEnabled() throws Exception {
 
     mis = new MockInputStream(productInputFilename);
@@ -441,7 +443,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   public void testClientCancelProductDownloadCachingContinues() throws Exception {
 
     mis = new MockInputStream(productInputFilename);
@@ -476,7 +478,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   public void testClientCancelProductDownloadCachingStops() throws Exception {
 
     mis = new MockInputStream(productInputFilename, true);
@@ -514,7 +516,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   public void testRetryAttemptsExhaustedDuringProductDownload() throws Exception {
 
     mis = new MockInputStream(productInputFilename);
@@ -547,7 +549,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   public void testNetworkConnectionDroppedDuringProductDownload() throws Exception {
 
     mis = new MockInputStream(productInputFilename);
@@ -580,7 +582,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   public void testCacheFileExceptionDuringProductDownload() throws Exception {
 
     // Need the product InputStream (MockInputStream) to read slower so that client has time to
@@ -625,7 +627,7 @@ public class ReliableResourceDownloadManagerTest {
    * @throws Exception
    */
   @Test
-  @Ignore
+  @Disabled
   // Currently Ignored because cannot figure out how to get FileBackedOutputStream (FBOS) to throw
   // exception
   // during product download - this test successfully closes the FBOS, but the

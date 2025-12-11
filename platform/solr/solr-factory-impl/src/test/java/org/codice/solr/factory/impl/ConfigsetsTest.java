@@ -24,12 +24,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class ConfigsetsTest {
 
   private static final String TEST_COLLECTION_NAME = "test";
@@ -40,7 +42,7 @@ public class ConfigsetsTest {
 
   private Configsets configsets;
 
-  @Before
+  @BeforeEach
   public void beforeTest() throws Exception {
     tempLocation = tempFolder.newFolder();
     configsets = new Configsets(tempLocation.toPath());
@@ -53,7 +55,7 @@ public class ConfigsetsTest {
     assertThat(defaultConf.listFiles().length, is(Configsets.SOLR_CONFIG_FILES.size()));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void getMissingCollectionButGetDefaultInstead() {
     Path collectionLocation = configsets.get(TEST_COLLECTION_NAME);
@@ -62,7 +64,7 @@ public class ConfigsetsTest {
         endsWith(File.separator + "default" + File.separator + "conf"));
   }
 
-  @Ignore
+  @Disabled
   @Test
   public void getCollection() {
     tempLocation.toPath().resolve(Paths.get(TEST_COLLECTION_NAME, "conf")).toFile().mkdirs();

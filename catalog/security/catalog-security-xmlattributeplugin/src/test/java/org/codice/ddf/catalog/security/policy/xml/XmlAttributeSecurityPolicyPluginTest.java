@@ -34,8 +34,8 @@ import java.util.Map;
 import java.util.Set;
 import junit.framework.Assert;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.filter.Filter;
 
 public class XmlAttributeSecurityPolicyPluginTest {
@@ -88,7 +88,7 @@ public class XmlAttributeSecurityPolicyPluginTest {
 
   private XmlAttributeSecurityPolicyPlugin plugin;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     metacard.setMetadata(TEST_METADATA);
     plugin = new XmlAttributeSecurityPolicyPlugin();

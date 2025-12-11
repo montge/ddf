@@ -40,16 +40,18 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class UsersAttributesFileClaimsHandlerTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setup() {
     System.setProperty("ddf.home", "testdir");
   }

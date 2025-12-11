@@ -33,11 +33,11 @@ import org.apache.karaf.features.Feature;
 import org.apache.karaf.features.FeaturesService;
 import org.codice.ddf.sync.installer.api.SynchronizedInstaller;
 import org.codice.ddf.sync.installer.api.SynchronizedInstallerException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -46,7 +46,7 @@ import org.osgi.service.cm.ConfigurationEvent;
 import org.osgi.util.tracker.ServiceTracker;
 
 /** Tests for {@link SynchronizedInstallerImpl} class. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SynchronizedInstallerImplTest {
 
   private static final String TEST_PID = "test.service.pid";
@@ -71,7 +71,7 @@ public class SynchronizedInstallerImplTest {
 
   private SynchronizedInstallerImpl installer;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     installer =
         new SynchronizedInstallerImpl(bundleContext, configAdmin, featuresService, bundleService);

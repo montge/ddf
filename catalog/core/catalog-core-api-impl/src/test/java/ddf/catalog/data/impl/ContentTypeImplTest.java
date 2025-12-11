@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public class ContentTypeImplTest {
 
   String testVersion;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testName = "JunitTest";
     testVersion = "1.2.3";

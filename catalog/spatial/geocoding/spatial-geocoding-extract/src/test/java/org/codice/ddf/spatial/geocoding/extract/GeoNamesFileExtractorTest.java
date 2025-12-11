@@ -44,8 +44,8 @@ import org.codice.ddf.spatial.geocoding.GeoNamesRemoteDownloadException;
 import org.codice.ddf.spatial.geocoding.ProgressCallback;
 import org.codice.ddf.spatial.geocoding.TestBase;
 import org.codice.ddf.spatial.geocoding.create.GeoNamesCreator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -66,7 +66,7 @@ public class GeoNamesFileExtractorTest extends TestBase {
 
   private static final String URL = "http://example.com";
 
-  @Before
+  @BeforeEach
   public void setUp() {
     geoNamesFileExtractor = Mockito.spy(new GeoNamesFileExtractor());
     geoNamesFileExtractor.setGeoEntryCreator(new GeoNamesCreator());

@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.imageio.spi.IIORegistry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Jpeg2000ThumbnailConverterTest {
   private final Jpeg2000ThumbnailConverter jpeg2000ThumbnailConverter =

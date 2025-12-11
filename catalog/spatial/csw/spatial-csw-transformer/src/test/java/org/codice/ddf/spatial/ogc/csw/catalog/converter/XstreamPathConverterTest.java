@@ -32,8 +32,8 @@ import java.util.Set;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XstreamPathConverterTest {
 
@@ -77,7 +77,7 @@ public class XstreamPathConverterTest {
 
   private DataHolder argumentHolder;
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     QNameMap qmap = new QNameMap();

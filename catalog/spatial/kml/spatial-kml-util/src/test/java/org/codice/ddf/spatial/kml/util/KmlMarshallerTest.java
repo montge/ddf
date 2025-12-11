@@ -32,15 +32,15 @@ import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class KmlMarshallerTest {
 
   private KmlMarshaller kmlMarshaller;
 
-  @Before
+  @BeforeEach
   public void setup() {
     setupXpath();
     kmlMarshaller = new KmlMarshaller();

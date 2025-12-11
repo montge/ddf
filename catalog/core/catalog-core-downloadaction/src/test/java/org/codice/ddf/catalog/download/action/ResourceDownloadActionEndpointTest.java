@@ -28,12 +28,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.codice.ddf.catalog.resource.download.DownloadToLocalSiteException;
 import org.codice.ddf.catalog.resource.download.ResourceDownloadMBean;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResourceDownloadActionEndpointTest {
 
   private static final String METACARD_ID = "57a4b894e13a455b8cccb87cec778b58";

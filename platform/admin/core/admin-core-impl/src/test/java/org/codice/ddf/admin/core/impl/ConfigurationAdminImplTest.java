@@ -40,8 +40,8 @@ import org.apache.shiro.subject.Subject;
 import org.codice.ddf.admin.core.api.ConfigurationStatus;
 import org.codice.ddf.admin.core.api.Service;
 import org.codice.ddf.ui.admin.api.plugin.ConfigurationAdminPlugin;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -109,7 +109,7 @@ public class ConfigurationAdminImplTest {
 
   private ServiceReference testRef1;
 
-  @Before
+  @BeforeEach
   public void setUpBasic() {
     testConfigAdmin = mock(ConfigurationAdmin.class);
     configurationAdminImpl = getConfigurationAdminImpl(testConfigAdmin, new ArrayList<>());

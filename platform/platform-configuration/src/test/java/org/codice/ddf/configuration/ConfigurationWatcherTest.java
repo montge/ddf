@@ -19,10 +19,10 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Tests the {@link ConfigurationWatcher} interface and its callback mechanism.
@@ -37,12 +37,12 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Thread safety of configuration watchers
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConfigurationWatcherTest {
 
   private TestConfigurationWatcher watcher;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     watcher = new TestConfigurationWatcher();
   }

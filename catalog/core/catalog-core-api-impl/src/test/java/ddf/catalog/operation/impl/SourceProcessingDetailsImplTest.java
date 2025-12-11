@@ -28,10 +28,10 @@ import ddf.catalog.operation.SourceProcessingDetails;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link SourceProcessingDetailsImpl} class.
@@ -39,7 +39,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>Tests constructors, getters, setters, equals/hashCode, and edge cases for source processing
  * details.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SourceProcessingDetailsImplTest {
 
   private static final String WARNING_1 = "Warning: Connection slow";
@@ -48,7 +48,7 @@ public class SourceProcessingDetailsImplTest {
 
   private SourceProcessingDetailsImpl details;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     details = new SourceProcessingDetailsImpl();
   }

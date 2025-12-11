@@ -23,25 +23,25 @@ import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link ResultImpl} class.
  *
  * <p>Tests all constructors, getters, setters, and edge cases for the Result implementation.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ResultImplTest {
 
   @Mock private Metacard mockMetacard;
 
   private ResultImpl result;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     result = new ResultImpl();
   }

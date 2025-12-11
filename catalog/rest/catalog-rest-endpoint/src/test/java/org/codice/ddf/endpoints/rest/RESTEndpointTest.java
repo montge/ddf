@@ -53,7 +53,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.codice.ddf.attachment.impl.AttachmentParserImpl;
 import org.codice.ddf.rest.service.impl.CatalogServiceImpl;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RESTEndpointTest {
 

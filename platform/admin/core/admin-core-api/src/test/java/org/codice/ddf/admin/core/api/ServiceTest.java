@@ -20,15 +20,15 @@ import static org.hamcrest.Matchers.nullValue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link Service} interface constants and default methods. */
 public class ServiceTest {
 
   private TestService service;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     service = new TestService();
   }

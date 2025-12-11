@@ -21,7 +21,7 @@ import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.HashSet;
 import javax.security.auth.Subject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.service.condpermadmin.ConditionInfo;
 

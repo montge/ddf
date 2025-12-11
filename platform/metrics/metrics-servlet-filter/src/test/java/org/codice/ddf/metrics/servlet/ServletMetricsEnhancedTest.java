@@ -35,13 +35,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.http.HttpFilterChain;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Enhanced tests for {@link ServletMetrics} focusing on coverage and edge cases.
@@ -58,7 +58,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *   <li>Micrometer integration
  * </ul>
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ServletMetricsEnhancedTest {
 
   private static final String LATENCY_METRIC = "ddf.platform.http.latency";
@@ -72,7 +72,7 @@ public class ServletMetricsEnhancedTest {
   private ServletMetrics servletMetrics;
   private SimpleMeterRegistry meterRegistry;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     servletMetrics = new ServletMetrics();
     meterRegistry = new SimpleMeterRegistry();
@@ -84,7 +84,7 @@ public class ServletMetricsEnhancedTest {
     when(mockResponse.getStatus()).thenReturn(200);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     Metrics.globalRegistry.clear();
   }

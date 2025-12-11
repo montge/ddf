@@ -33,9 +33,9 @@ import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -54,7 +54,7 @@ public class AuthorizationFilterPermissionsTest {
   @Mock private Subject subject;
   @Mock private ContextPolicy contextPolicy;
 
-  @Before
+  @BeforeEach
   public void setup() {
     mocks = MockitoAnnotations.openMocks(this);
 
@@ -68,7 +68,7 @@ public class AuthorizationFilterPermissionsTest {
     ThreadContext.bind(subject);
   }
 
-  @After
+  @AfterEach
   public void cleanup() throws Exception {
     ThreadContext.unbindSubject();
     mocks.close();

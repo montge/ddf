@@ -34,8 +34,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.security.token.storage.api.TokenStorage;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LogoutServletTest {
   private LocalLogoutServlet localLogoutServlet;
@@ -48,7 +48,7 @@ public class LogoutServletTest {
 
   private PrintWriter printWriter;
 
-  @Before
+  @BeforeEach
   public void testsetup() throws Exception {
     localLogoutServlet =
         new MockLocalLogoutServlet(mock(TokenStorage.class), "/logout", mock(SecurityLogger.class));

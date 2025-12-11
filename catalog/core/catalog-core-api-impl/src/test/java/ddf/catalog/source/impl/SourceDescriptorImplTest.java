@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 
 import ddf.action.Action;
 import java.util.Collections;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SourceDescriptorImplTest {
 

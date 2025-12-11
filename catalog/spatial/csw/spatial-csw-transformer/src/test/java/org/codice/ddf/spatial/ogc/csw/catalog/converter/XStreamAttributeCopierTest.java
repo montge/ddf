@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -78,7 +78,7 @@ public class XStreamAttributeCopierTest {
 
   private HierarchicalStreamReader reader;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException, XmlPullParserException {
     reader =
         new XppReader(

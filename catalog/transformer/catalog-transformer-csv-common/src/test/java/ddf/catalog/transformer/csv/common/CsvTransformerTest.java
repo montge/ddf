@@ -45,8 +45,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CsvTransformerTest {
 
@@ -78,7 +78,7 @@ public class CsvTransformerTest {
           new ImmutableTriple<Object, Object, Object>(
               "attribute8", "BINARY", BasicTypes.BINARY_TYPE));
 
-  @Before
+  @BeforeEach
   public void setup() {
     ATTRIBUTE_DESCRIPTOR_LIST.clear();
     buildMetacardDataMap();

@@ -52,9 +52,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.codice.ddf.platform.util.StandardThreadFactoryBuilder;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
+@EnableRuleMigrationSupport
 public class CatalogBackupPluginTest {
 
   private static final String[] METACARD_IDS = {

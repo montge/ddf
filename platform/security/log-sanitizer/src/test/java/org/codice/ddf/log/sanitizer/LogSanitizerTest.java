@@ -17,9 +17,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for {@link LogSanitizer}.
@@ -38,7 +38,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * <p>This test suite validates all sanitization behaviors including null handling, whitespace
  * character replacement, HTML escaping, and proper toString() delegation.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LogSanitizerTest {
 
   /**

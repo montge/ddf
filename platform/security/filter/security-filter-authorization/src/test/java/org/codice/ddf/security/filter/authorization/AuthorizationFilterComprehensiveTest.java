@@ -33,14 +33,14 @@ import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthorizationFilterComprehensiveTest {
 
   private static final String ADMIN_PATH = "/admin/console";
@@ -60,7 +60,7 @@ public class AuthorizationFilterComprehensiveTest {
 
   private AuthorizationFilter authzFilter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     authzFilter = new AuthorizationFilter(contextPolicyManager);
     authzFilter.setSecurityLogger(securityLogger);
@@ -71,7 +71,7 @@ public class AuthorizationFilterComprehensiveTest {
     ThreadContext.bind(subject);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     ThreadContext.unbindSecurityManager();
     ThreadContext.unbindSubject();

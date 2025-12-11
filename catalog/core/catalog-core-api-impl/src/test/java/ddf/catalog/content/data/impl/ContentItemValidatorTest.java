@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 import ddf.catalog.content.data.ContentItem;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ContentItemValidatorTest {
 

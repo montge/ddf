@@ -25,7 +25,7 @@ import org.apache.abdera.model.Entry;
 import org.custommonkey.xmlunit.NamespaceContext;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.locationtech.jts.io.WKTReader;
 
 public abstract class AbstractTestCompositeGeometry {
@@ -34,7 +34,7 @@ public abstract class AbstractTestCompositeGeometry {
 
   protected WKTReader reader = new WKTReader();
 
-  @BeforeClass
+  @BeforeAll
   public static void setupTestClass() {
     HashMap map = new HashMap();
     map.put("gml", "http://www.opengis.net/gml");

@@ -35,14 +35,14 @@ import org.apache.commons.io.FileUtils;
 import org.codice.ddf.admin.core.api.SystemPropertyDetails;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.configuration.SystemInfo;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SystemPropertiesAdminTest {
 
   @Mock private GuestClaimsHandlerExt mockGuestClaimsHandlerExt;
@@ -55,7 +55,7 @@ public class SystemPropertiesAdminTest {
 
   File userAttrsFile = null;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     TemporaryFolder temporaryFolder = new TemporaryFolder();
     temporaryFolder.create();

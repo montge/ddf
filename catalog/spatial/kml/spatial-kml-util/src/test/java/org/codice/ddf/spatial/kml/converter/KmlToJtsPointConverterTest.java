@@ -21,13 +21,13 @@ import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Point;
 import java.io.InputStream;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class KmlToJtsPointConverterTest {
   private static Point testKmlPoint;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() {
     InputStream stream = KmlToJtsPointConverterTest.class.getResourceAsStream("/kmlPoint.kml");
 

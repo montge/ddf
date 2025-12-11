@@ -20,8 +20,8 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import java.io.IOException;
 import java.util.Base64;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DdfBrandingPluginTest {
 
@@ -45,7 +45,7 @@ public class DdfBrandingPluginTest {
 
   private static String favIcon = "/ddf/favicon.png";
 
-  @Before
+  @BeforeEach
   public void setupDdfBrandingPlugin() {
     ddfBrandingPlugin = new DdfBrandingPlugin(propertiesFilePath);
   }

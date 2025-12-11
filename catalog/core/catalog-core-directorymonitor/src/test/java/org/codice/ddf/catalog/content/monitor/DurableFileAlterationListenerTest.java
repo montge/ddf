@@ -33,16 +33,18 @@ import org.apache.camel.spi.Synchronization;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.codice.ddf.catalog.content.monitor.watcher.FilesWatcher;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@EnableRuleMigrationSupport
+@ExtendWith(MockitoExtension.class)
 public class DurableFileAlterationListenerTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -63,7 +65,7 @@ public class DurableFileAlterationListenerTest {
 
   private File testFile;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     testFile = temporaryFolder.newFile("test-file.txt");
 

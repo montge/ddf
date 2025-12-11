@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThrows;
 
 import java.lang.reflect.Field;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link GeoFormatException} class. */
 public class GeoFormatExceptionTest {

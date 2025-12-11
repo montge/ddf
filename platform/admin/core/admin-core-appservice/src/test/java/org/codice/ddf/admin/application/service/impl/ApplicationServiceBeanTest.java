@@ -68,11 +68,12 @@ import org.codice.ddf.admin.core.impl.ServiceImpl;
 import org.codice.ddf.sync.installer.api.SynchronizedInstaller;
 import org.codice.mockito.StackCaptor;
 import org.hamcrest.io.FileMatchers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -84,6 +85,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@EnableRuleMigrationSupport
 public class ApplicationServiceBeanTest {
   private static final String TEST_FEATURE_DESCRIPTION =
       "Mock Feature for ApplicationServiceBean tests";
@@ -130,7 +132,7 @@ public class ApplicationServiceBeanTest {
 
   private Path ddfBin;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testAppService = mock(ApplicationServiceImpl.class);
     testConfigAdminExt = mock(ConfigurationAdmin.class);
@@ -154,7 +156,7 @@ public class ApplicationServiceBeanTest {
     ddfBin = testFolder.newFolder("bin").toPath().toRealPath(LinkOption.NOFOLLOW_LINKS);
   }
 
-  @After
+  @AfterEach
   public void tearDown() throws Exception {
     System.getProperties().remove(RESTART_JVM);
     System.getProperties().remove(WRAPPER_KEY);
@@ -266,7 +268,7 @@ public class ApplicationServiceBeanTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testInstallFeatureCallIsPrivileged() throws Exception {
     ApplicationServiceBean serviceBean = newApplicationServiceBean();
     serviceBean.installFeature("profile-name");

@@ -29,13 +29,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import org.codice.ddf.configuration.SystemBaseUrl;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ViewMetacardActionProviderTest extends AbstractActionProviderTest {
 
   private static final String ACTION_PROVIDER_ID = "actionID";
@@ -50,7 +50,7 @@ public class ViewMetacardActionProviderTest extends AbstractActionProviderTest {
 
   private ViewMetacardActionProvider actionProvider;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, "localhost");
 

@@ -17,14 +17,14 @@ import static org.mockito.Mockito.spy;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AccessRequestLogTest {
 
   @Mock private Request mockRequest;
@@ -35,13 +35,13 @@ public class AccessRequestLogTest {
 
   private static final String ACCESS_LOG_PROPERTY = "org.codice.ddf.http.access.log.enabled";
 
-  @Before
+  @BeforeEach
   public void setup() {
     // Save original property value
     originalPropertyValue = System.getProperty(ACCESS_LOG_PROPERTY);
   }
 
-  @After
+  @AfterEach
   public void cleanup() {
     // Restore original property value
     if (originalPropertyValue != null) {

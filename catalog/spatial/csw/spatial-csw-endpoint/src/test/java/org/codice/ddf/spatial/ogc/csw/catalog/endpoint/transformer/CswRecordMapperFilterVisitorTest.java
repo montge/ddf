@@ -41,9 +41,9 @@ import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.UomOgcMapping;
 import org.hamcrest.Matchers;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -93,7 +93,7 @@ public class CswRecordMapperFilterVisitorTest {
 
   private static AttributeRegistryImpl attributeRegistry;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() throws Exception {
     factory = new FilterFactoryImpl();
 
@@ -380,7 +380,7 @@ public class CswRecordMapperFilterVisitorTest {
     assertThat(duplicate.getExpression2(), is(val));
   }
 
-  @Ignore("not supported by solr provider")
+  @Disabled("not supported by solr provider")
   @Test
   public void testVisitPropertyIsGreaterThanOrEqualToTemporal() {
     Expression val = factory.literal(new Date());
@@ -441,7 +441,7 @@ public class CswRecordMapperFilterVisitorTest {
     assertThat(duplicate.getExpression2(), is(val));
   }
 
-  @Ignore("not supported by solr provider")
+  @Disabled("not supported by solr provider")
   @Test
   public void testVisitPropertyIsLessThanOrEqualToTemporal() {
     Expression val = factory.literal(new Date());

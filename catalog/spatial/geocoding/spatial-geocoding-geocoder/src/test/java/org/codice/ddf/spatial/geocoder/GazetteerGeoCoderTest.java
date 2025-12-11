@@ -33,8 +33,8 @@ import org.codice.ddf.spatial.geocoding.GeoEntryQueryable;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
 import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
 import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.geometry.primitive.Point;
 
 public class GazetteerGeoCoderTest {
@@ -66,7 +66,7 @@ public class GazetteerGeoCoderTest {
 
   private GeoEntryQueryable geoEntryQueryable;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     gazetteerGeoCoder = new GazetteerGeoCoder();
     geoEntryQueryable = mock(GeoEntryQueryable.class);

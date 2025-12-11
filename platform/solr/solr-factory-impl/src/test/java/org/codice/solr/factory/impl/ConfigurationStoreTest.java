@@ -17,14 +17,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.core.Is.is;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ConfigurationStoreTest {
 
   private ConfigurationStore store;
 
-  @Before
+  @BeforeEach
   public void beforeTests() {
     store = ConfigurationStore.getInstance();
   }

@@ -19,10 +19,10 @@ import static org.junit.Assert.assertThrows;
 
 import ddf.security.SecurityConstants;
 import java.util.Properties;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ZipValidatorTest {
 
@@ -65,18 +65,18 @@ public class ZipValidatorTest {
   private static final String MODIFIED_EXISTING_FILE_ZIP_PATH =
       ZipCompressionTest.class.getClassLoader().getResource(MODIFIED_EXISTING_FILE_ZIP).getPath();
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpBeforeClass() {
     properties = System.getProperties();
     System.setProperty(SecurityConstants.KEYSTORE_TYPE, "jks");
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownAfterClass() {
     System.setProperties(properties);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     zipValidator = new ZipValidator();
     zipValidator.setSignaturePropertiesPath(

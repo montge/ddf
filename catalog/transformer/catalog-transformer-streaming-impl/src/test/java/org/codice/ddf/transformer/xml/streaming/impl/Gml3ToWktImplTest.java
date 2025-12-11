@@ -21,12 +21,9 @@ import static org.junit.Assert.assertThrows;
 import ddf.catalog.validation.ValidationException;
 import java.io.InputStream;
 import org.codice.ddf.transformer.xml.streaming.Gml3ToWkt;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@RunWith(JUnit4.class)
 public class Gml3ToWktImplTest {
 
   private Gml3ToWkt gtw;
@@ -41,7 +38,7 @@ public class Gml3ToWktImplTest {
         x, y);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     gtw = Gml3ToWktImpl.newGml3ToWkt();
   }

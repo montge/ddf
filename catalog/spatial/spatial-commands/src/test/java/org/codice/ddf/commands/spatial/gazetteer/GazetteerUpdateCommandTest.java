@@ -39,15 +39,15 @@ import org.codice.ddf.spatial.geocoding.GeoEntryIndexer;
 import org.codice.ddf.spatial.geocoding.GeoEntryIndexingException;
 import org.codice.ddf.spatial.geocoding.GeoNamesRemoteDownloadException;
 import org.codice.ddf.spatial.geocoding.ProgressCallback;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GazetteerUpdateCommandTest {
   private ConsoleInterceptor consoleInterceptor;
 
   private GazetteerUpdateCommand gazetteerUpdateCommand;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     consoleInterceptor = new ConsoleInterceptor();
     consoleInterceptor.interceptSystemOut();

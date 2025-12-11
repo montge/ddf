@@ -45,7 +45,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.codice.ddf.spatial.ogc.wfs.catalog.MetacardTypeEnhancer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FeatureMetacardTypeTest {
 

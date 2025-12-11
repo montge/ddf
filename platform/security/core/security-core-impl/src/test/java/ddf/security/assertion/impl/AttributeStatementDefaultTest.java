@@ -23,14 +23,14 @@ import static org.junit.Assert.assertThrows;
 
 import ddf.security.assertion.Attribute;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeStatementDefaultTest {
 
   private AttributeStatementDefault attributeStatement;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     attributeStatement = new AttributeStatementDefault();
   }

@@ -24,18 +24,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.AuthenticationFailureException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Comprehensive test suite for CsrfFilter covering advanced scenarios, edge cases, and error
  * handling.
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CsrfFilterComprehensiveTest {
 
   private static final String CSRF_HEADER = "X-Requested-With";
@@ -59,7 +59,7 @@ public class CsrfFilterComprehensiveTest {
 
   private CsrfFilter csrfFilter;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     // Set system properties for CSRF configuration
     System.setProperty("csrf.enabled", "true");
@@ -71,7 +71,7 @@ public class CsrfFilterComprehensiveTest {
     csrfFilter.init();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     System.clearProperty("csrf.enabled");
     System.clearProperty("csrf.trustedAuthorities");

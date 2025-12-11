@@ -27,7 +27,7 @@ import ddf.catalog.data.types.Media;
 import ddf.catalog.data.types.Topic;
 import ddf.catalog.data.types.Validation;
 import ddf.catalog.data.types.Version;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TypeAttributesTest {
 

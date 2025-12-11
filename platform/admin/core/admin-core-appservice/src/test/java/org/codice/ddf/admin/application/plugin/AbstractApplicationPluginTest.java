@@ -31,8 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Comprehensive test harness for AbstractApplicationPlugin base class.
@@ -68,7 +68,7 @@ public class AbstractApplicationPluginTest {
     }
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     plugin = new TestApplicationPlugin();
   }

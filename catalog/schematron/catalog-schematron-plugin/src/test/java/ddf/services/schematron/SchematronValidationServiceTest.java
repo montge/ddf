@@ -33,19 +33,21 @@ import java.util.ArrayList;
 import java.util.Optional;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
+@EnableRuleMigrationSupport
 public class SchematronValidationServiceTest {
 
   private static File fileWithSpaces;
 
   @Rule public TemporaryFolder testFolder = new TemporaryFolder();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     URL src = SchematronValidationServiceTest.class.getClassLoader().getResource("dog_legs.sch");
     fileWithSpaces =

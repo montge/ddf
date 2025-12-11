@@ -16,7 +16,7 @@ package ddf.geo.formatter;
 import static org.junit.Assert.assertThrows;
 
 import java.io.StringReader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 

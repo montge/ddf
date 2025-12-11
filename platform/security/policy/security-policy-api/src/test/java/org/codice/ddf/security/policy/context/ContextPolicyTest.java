@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.codice.ddf.security.policy.context.attributes.ContextAttributeMapping;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ContextPolicy} interface contract. Uses a test implementation to verify the
@@ -44,7 +44,7 @@ public class ContextPolicyTest {
 
   private TestContextPolicy contextPolicy;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     contextPolicy = new TestContextPolicy(TEST_CONTEXT_PATH);
   }

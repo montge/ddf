@@ -60,15 +60,15 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import org.geotools.filter.NullFilterImpl;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.opengis.filter.sort.SortBy;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SortedFederationStrategyTest {
 
   private static final long LONG_TIMEOUT = 1000;
@@ -96,7 +96,7 @@ public class SortedFederationStrategyTest {
 
   ArgumentCaptor<QueryResponseImpl> responseArgumentCaptor;
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
 
     queryExecutor = MoreExecutors.newDirectExecutorService();

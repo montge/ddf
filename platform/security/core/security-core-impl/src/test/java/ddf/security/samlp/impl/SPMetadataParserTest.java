@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.IOUtils;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SPMetadataParserTest {
 
@@ -57,7 +57,7 @@ public class SPMetadataParserTest {
   private static final String SOAP_ACS_URL = "https://localhost:8993/services/saml/sso/soap";
   private static String certificate;
 
-  @BeforeClass
+  @BeforeAll
   public static void setupClass() throws Exception {
 
     // read Certificate file into certificate

@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** Tests for {@link MetacardVersion} interface constants and Action enum. */
 public class MetacardVersionTest {

@@ -19,7 +19,7 @@ import static org.hamcrest.core.Is.is;
 import java.io.UnsupportedEncodingException;
 import org.codice.ddf.libs.klv.data.Klv;
 import org.codice.ddf.libs.klv.data.text.KlvEncodingDetectedString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class KlvEncodingDetectedStringTest {
   private String testString = "USA";

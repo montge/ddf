@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Arrays;
 import java.util.List;
 import org.codice.ddf.admin.core.api.MetatypeAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MetatypeImplTest {
 

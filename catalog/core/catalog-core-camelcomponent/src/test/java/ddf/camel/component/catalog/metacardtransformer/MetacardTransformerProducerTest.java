@@ -29,8 +29,8 @@ import java.util.Collection;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -62,7 +62,7 @@ public class MetacardTransformerProducerTest {
 
   private Collection transformerReferences = new ArrayList<>();
 
-  @Before
+  @BeforeEach
   public void setUp() throws InvalidSyntaxException {
     transformerReferences.add(mockServiceReference);
 

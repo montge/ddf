@@ -41,8 +41,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.codice.ddf.platform.util.SortedServiceList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
@@ -316,7 +316,7 @@ public class GeoJsonExtensibleTest {
         + "}";
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     transformer = new GeoJsonInputTransformer();
     transformer.setMetacardTypes(prepareMetacardTypes());

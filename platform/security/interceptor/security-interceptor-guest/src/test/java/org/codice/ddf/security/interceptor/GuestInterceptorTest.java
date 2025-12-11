@@ -44,15 +44,15 @@ import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.security.handler.GuestAuthenticationToken;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Comprehensive test coverage for GuestInterceptor to achieve 85%+ coverage. */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GuestInterceptorTest {
 
   private GuestInterceptor interceptor;
@@ -65,7 +65,7 @@ public class GuestInterceptorTest {
   @Mock private PrincipalCollection principalCollection;
   @Mock private SecurityAssertion securityAssertion;
 
-  @Before
+  @BeforeEach
   public void setup() {
     interceptor = new GuestInterceptor(securityManager);
     interceptor.setSecurityLogger(securityLogger);
