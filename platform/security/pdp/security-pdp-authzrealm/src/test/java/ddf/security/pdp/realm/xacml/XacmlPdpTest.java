@@ -16,8 +16,8 @@ package ddf.security.pdp.realm.xacml;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import ddf.security.audit.SecurityLogger;
@@ -49,6 +49,7 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.codice.ddf.parser.xml.XmlParser;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
@@ -115,7 +116,7 @@ public class XacmlPdpTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-  @Before()
+  @BeforeEach
   public void setup() throws PdpException, IOException {
     temporaryFolder.create();
     File policy = temporaryFolder.newFile("policy.xml");
