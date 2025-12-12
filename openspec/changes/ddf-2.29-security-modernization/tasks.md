@@ -84,12 +84,21 @@
 ## Phase 3: Core Library Upgrades
 
 ### 3.1 Apache CXF 4.x
-- [ ] 3.1.1 Review CXF 3.x -> 4.x migration guide
-- [ ] 3.1.2 Update CXF dependencies
-- [ ] 3.1.3 Migrate JAX-RS annotations
-- [ ] 3.1.4 Migrate JAX-WS annotations
-- [ ] 3.1.5 Test all REST endpoints
-- [ ] 3.1.6 Test CSW/WFS SOAP services
+- [x] 3.1.1 Review CXF 3.x -> 4.x migration guide ✅ (2025-12-12)
+- [ ] 3.1.2 Update CXF dependencies ⏸️ **BLOCKED** - OSGi/Karaf support removed
+- [ ] 3.1.3 Migrate JAX-RS annotations ⏸️ **BLOCKED**
+- [ ] 3.1.4 Migrate JAX-WS annotations ⏸️ **BLOCKED**
+- [ ] 3.1.5 Test all REST endpoints ⏸️ **BLOCKED**
+- [ ] 3.1.6 Test CSW/WFS SOAP services ⏸️ **BLOCKED**
+
+**Critical Finding (2025-12-12):**
+- ⛔ **CXF 4.x removed OSGi support** - Blueprint extension, Karaf features.xml eliminated
+- DDF runs on Apache Karaf (OSGi container) - cannot upgrade without OSGi support
+- **JIRA CXF-9086**: "Bring back OSGi support" - proposed `cxf-karaf` repository (like camel-karaf)
+- **Timeline:** Q2 2025 estimated for cxf-karaf availability
+- **Current CXF:** 3.6.8 (latest with OSGi support)
+- **Strategy:** Wait for cxf-karaf, then migrate CXF → then Jakarta
+- **Tracking:** https://issues.apache.org/jira/browse/CXF-9086
 
 ### 3.2 Apache Camel Upgrade
 - [ ] 3.2.1 Review Camel 3.18 -> 3.22 migration guide
@@ -176,9 +185,10 @@
 2. ~~OWASP suppression file (reduces noise)~~ ✅ Already comprehensive
 3. ~~Hazelcast decision (removes 4 CVEs)~~ ✅ **REMOVED**
 4. ~~Jakarta transformation setup~~ ✅ OpenRewrite verified, migration plan created
-5. **CXF 4.x upgrade** ← **NEXT** (unblocks Jakarta migration)
-6. Jakarta namespace migration (after CXF 4.x)
-7. Core library upgrades (fixes remaining CVEs)
+5. ~~CXF 4.x upgrade~~ ⏸️ **BLOCKED** (OSGi removed, waiting for cxf-karaf Q2 2025)
+6. Security test coverage expansion ← **CURRENT** (unblocked work)
+7. Non-blocking dependency upgrades
+8. Jakarta namespace migration (after CXF 4.x + cxf-karaf)
 
 ### Commands
 ```bash
