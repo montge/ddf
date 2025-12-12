@@ -14,6 +14,7 @@
 package org.codice.ddf.security.idp.client;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -70,9 +71,9 @@ public class IdpLogoutActionProviderTest {
     Action action =
         idpLogoutActionProvider.getAction(
             ImmutableMap.of(SecurityConstants.SECURITY_SUBJECT, subject));
-    Assert.assertTrue(
-        "Expected the encrypted nameId and time",
-        action.getUrl().getQuery().contains(URLEncoder.encode(nameIdTime)));
+    assertTrue(
+        action.getUrl().getQuery().contains(URLEncoder.encode(nameIdTime)),
+        "Expected the encrypted nameId and time");
   }
 
   @Test

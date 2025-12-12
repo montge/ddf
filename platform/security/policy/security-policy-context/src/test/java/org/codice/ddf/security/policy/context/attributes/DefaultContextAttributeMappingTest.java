@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.security.policy.context.attributes;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ddf.security.permission.KeyValueCollectionPermission;
 import ddf.security.permission.KeyValuePermission;
@@ -63,12 +63,12 @@ public class DefaultContextAttributeMappingTest {
 
     boolean controlImply = userPermissions.implies(controlMapping.getAttributePermission());
 
-    Assert.assertEquals(true, roleImply);
+    assertEquals(true, roleImply);
 
-    Assert.assertEquals(false, roleImply2);
+    assertEquals(false, roleImply2);
 
-    Assert.assertEquals(true, controlsImply);
+    assertEquals(true, controlsImply);
 
-    Assert.assertEquals(false, controlImply);
+    assertEquals(false, controlImply);
   }
 }

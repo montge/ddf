@@ -13,7 +13,7 @@
  */
 package ddf.security.pdp.realm.test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -105,7 +105,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(true, permitted);
+      assertEquals(true, permitted);
     }
   }
 
@@ -118,7 +118,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(true, permitted);
+      assertEquals(true, permitted);
     }
   }
 
@@ -131,7 +131,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(true, permitted);
+      assertEquals(true, permitted);
     }
   }
 
@@ -144,7 +144,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(false, permitted);
+      assertEquals(false, permitted);
     }
   }
 
@@ -157,7 +157,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(true, permitted);
+      assertEquals(true, permitted);
     }
   }
 
@@ -171,7 +171,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(true, permitted);
+      assertEquals(true, permitted);
     }
   }
 
@@ -217,7 +217,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(true, permitted);
+      assertEquals(true, permitted);
     }
   }
 
@@ -236,7 +236,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(false, permitted);
+      assertEquals(false, permitted);
     }
   }
 
@@ -269,7 +269,7 @@ public class AuthzRealmTest {
     boolean[] permittedArray = testRealm.isPermitted(mockSubjectPrincipal, permissionList);
 
     for (boolean permitted : permittedArray) {
-      Assert.assertEquals(true, permitted);
+      assertEquals(true, permitted);
     }
   }
 

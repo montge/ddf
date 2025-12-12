@@ -13,7 +13,10 @@
  */
 package org.codice.ddf.catalog.security.policy.xml;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -102,26 +105,26 @@ public class XmlAttributeSecurityPolicyPluginTest {
 
   @Test
   public void testMetadataParse() {
-    Assert.assertNull(metacard.getSecurity());
+    assertNull(metacard.getSecurity());
 
     Map<String, Set<String>> stringSetMap = plugin.parseSecurityMetadata(metacard);
     Collection<Set<String>> vals = stringSetMap.values();
     Iterator<Set<String>> iterator = vals.iterator();
     Set<String> list = iterator.next();
-    Assert.assertTrue(list.contains("high"));
-    Assert.assertTrue(list.contains("med"));
-    Assert.assertTrue(list.contains("low"));
-    Assert.assertTrue(list.contains("up"));
+    assertTrue(list.contains("high"));
+    assertTrue(list.contains("med"));
+    assertTrue(list.contains("low"));
+    assertTrue(list.contains("up"));
 
     list = iterator.next();
-    Assert.assertTrue(list.size() == 3);
-    Assert.assertTrue(list.contains("A"));
-    Assert.assertTrue(list.contains("B"));
-    Assert.assertTrue(list.contains("C"));
+    assertTrue(list.size() == 3);
+    assertTrue(list.contains("A"));
+    assertTrue(list.contains("B"));
+    assertTrue(list.contains("C"));
 
     list = iterator.next();
-    Assert.assertTrue(list.size() == 1);
-    Assert.assertTrue(list.contains("USA"));
+    assertTrue(list.size() == 1);
+    assertTrue(list.contains("USA"));
 
     // Test same element, result should be default and the same element
     metacard = new MetacardImpl();
@@ -132,12 +135,12 @@ public class XmlAttributeSecurityPolicyPluginTest {
     vals = stringSetMap.values();
     iterator = vals.iterator();
     list = iterator.next();
-    Assert.assertTrue(list.size() == 5);
-    Assert.assertTrue(list.contains("USA"));
-    Assert.assertTrue(list.contains("CAN"));
-    Assert.assertTrue(list.contains("GBR"));
-    Assert.assertTrue(list.contains("DEN"));
-    Assert.assertTrue(list.contains("AUS"));
+    assertTrue(list.size() == 5);
+    assertTrue(list.contains("USA"));
+    assertTrue(list.contains("CAN"));
+    assertTrue(list.contains("GBR"));
+    assertTrue(list.contains("DEN"));
+    assertTrue(list.contains("AUS"));
   }
 
   @Test
@@ -145,19 +148,19 @@ public class XmlAttributeSecurityPolicyPluginTest {
     MetacardImpl m = new MetacardImpl();
     plugin.parseSecurityMetadata(m);
 
-    Assert.assertNotNull(plugin.getXmlElements());
-    Assert.assertNotNull(plugin.getSecurityAttributeIntersections());
-    Assert.assertNotNull(plugin.getSecurityAttributeUnions());
+    assertNotNull(plugin.getXmlElements());
+    assertNotNull(plugin.getSecurityAttributeIntersections());
+    assertNotNull(plugin.getSecurityAttributeUnions());
   }
 
   @Test
   public void testCaseSensitivity() {
     plugin.setXmlElements(Arrays.asList("Title", "Creator", "Security"));
     Map<String, Set<String>> stringSetMap = plugin.parseSecurityMetadata(metacard);
-    Assert.assertTrue(stringSetMap.isEmpty());
+    assertTrue(stringSetMap.isEmpty());
     plugin.setXmlElements(Arrays.asList("title", "creator", "security"));
     stringSetMap = plugin.parseSecurityMetadata(metacard);
-    Assert.assertFalse(stringSetMap.isEmpty());
+    assertFalse(stringSetMap.isEmpty());
   }
 
   @Test
