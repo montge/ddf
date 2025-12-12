@@ -199,7 +199,7 @@
         <!-- BEGIN: GeoTools dependencies -->
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-opengis</artifactId>
+            <artifactId>gt-api</artifactId>
             <version>${org.geotools.version}</version>
         </dependency>
         <dependency>
