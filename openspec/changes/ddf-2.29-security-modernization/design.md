@@ -2,21 +2,30 @@
 
 ## Hazelcast Strategy
 
-### Options
-1. **Remove Hazelcast** - If clustering is not actively used
-2. **Upgrade to Hazelcast 5.x** - Major API changes, significant effort
+### Decision: REMOVED ✅ (2025-12-12)
 
-### Analysis
-- Hazelcast 3.12.10 is EOL with 4 CVEs (1 CRITICAL RCE)
-- Usage in DDF: Session clustering, cache distribution
-- Question: Is multi-node clustering actively required?
+Hazelcast was completely removed from DDF.
 
-### Recommendation
-If clustering is not a hard requirement, **REMOVE Hazelcast**:
-- Eliminates 4 CVEs immediately
-- Reduces complexity
-- Use local caching (Caffeine) instead
-- Re-add clustering if/when needed with modern solution
+### Analysis Performed
+- Hazelcast 5.3.5 was only used for local file-based persistence
+- No distributed clustering features were used
+- Only 2 Java files imported Hazelcast (`FileSystemPersistenceProvider` in 2 modules)
+- A `PersistenceStore` interface already existed as replacement
+
+### Implementation
+1. Removed Hazelcast imports from `FileSystemPersistenceProvider` (2 modules)
+2. Changed implementation to use `PersistenceStore` interface
+3. Removed Hazelcast dependency from 4 pom.xml files:
+   - catalog-core-directorymonitor
+   - catalog-core-camelcomponent
+   - catalog-core-resourcestatusplugin (unused dependency)
+   - catalog-core-resourcesizeplugin (unused dependency)
+
+### Impact
+- **Vulnerabilities reduced:** 1798 → 1177 (621 fewer)
+- **Critical CVEs reduced:** 6 → 4
+- **Functionality:** No change - local persistence still works
+- **Code removed:** ~30 lines, no behavioral changes
 
 ---
 

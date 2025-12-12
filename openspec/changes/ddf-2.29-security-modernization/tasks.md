@@ -1,5 +1,8 @@
 # DDF 2.29 Security & Modernization Tasks
 
+**Status:** In Progress (Last updated: 2025-12-12)
+**Vulnerabilities:** 1177 (4 critical, 107 high) - down from 1798
+
 ## Phase 1: Security Hardening
 
 ### 1.1 Vulnerability Triage
@@ -10,9 +13,9 @@
 - [ ] 1.1.5 Verify Zookeeper 3.9.2 CVE status
 
 ### 1.2 Critical Dependency Upgrades
-- [ ] 1.2.1 Hazelcast: Evaluate removal vs upgrade to 5.x
-- [ ] 1.2.2 If removing Hazelcast: identify replacement strategy
-- [ ] 1.2.3 If upgrading Hazelcast: plan API migration
+- [x] 1.2.1 Hazelcast: Evaluate removal vs upgrade to 5.x ✅ **REMOVED** (2025-12-12)
+- [x] 1.2.2 If removing Hazelcast: identify replacement strategy ✅ PersistenceStore interface
+- [x] 1.2.3 If upgrading Hazelcast: plan API migration ✅ N/A (removed)
 - [ ] 1.2.4 Apache Batik 1.14 -> 1.17+
 - [ ] 1.2.5 Netty transitive dependency upgrade to 4.1.114
 - [ ] 1.2.6 Protobuf transitive dependency upgrade
