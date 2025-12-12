@@ -38,12 +38,13 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.security.handler.api.OidcHandlerConfiguration;
-import org.pac4j.core.context.CallContext;
+import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.exception.http.WithLocationAction;
 import org.pac4j.core.http.ajax.DefaultAjaxRequestResolver;
 import org.pac4j.jee.context.JEEContext;
-import org.pac4j.jee.context.session.JEESessionStoreFactory;
+import org.pac4j.jee.context.session.JEESessionStore;
 import org.pac4j.oidc.logout.OidcLogoutActionBuilder;
 import org.pac4j.oidc.profile.OidcProfile;
 import org.slf4j.Logger;
@@ -119,8 +120,7 @@ public class OidcLogoutActionProvider implements ActionProvider {
           handlerConfiguration.getOidcLogoutActionBuilder();
       logoutActionBuilder.setAjaxRequestResolver(
           new DefaultAjaxRequestResolver() {
-            @Override
-            public boolean isAjax(final CallContext ctx) {
+            public boolean isAjax(final WebContext ctx) {
               return false;
             }
           });
@@ -132,13 +132,10 @@ public class OidcLogoutActionProvider implements ActionProvider {
         urlBuilder.addParameter(PREV_URL, prevUrl);
       }
 
+      SessionStore sessionStore = new JEESessionStore();
       RedirectionAction logoutAction =
           logoutActionBuilder
-              .getLogoutAction(
-                  new CallContext(
-                      jeeContext, JEESessionStoreFactory.INSTANCE.newSessionStore(null)),
-                  oidcProfile,
-                  urlBuilder.build().toString())
+              .getLogoutAction(jeeContext, sessionStore, oidcProfile, urlBuilder.build().toString())
               .orElse(null);
 
       if (logoutAction instanceof WithLocationAction) {

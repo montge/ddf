@@ -28,18 +28,16 @@ import org.codice.ddf.security.handler.api.AuthenticationHandler;
 import org.codice.ddf.security.handler.api.HandlerResult;
 import org.codice.ddf.security.handler.api.HandlerResult.Status;
 import org.codice.ddf.security.handler.api.OidcHandlerConfiguration;
-import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.RedirectionAction;
 import org.pac4j.core.http.callback.QueryParameterCallbackUrlResolver;
 import org.pac4j.core.util.Pac4jConstants;
 import org.pac4j.jee.context.JEEContext;
-import org.pac4j.jee.context.session.JEESessionStoreFactory;
+import org.pac4j.jee.context.session.JEESessionStore;
 import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.credentials.OidcCredentials;
-import org.pac4j.oidc.credentials.extractor.OidcCredentialsExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,21 +195,17 @@ public class OidcHandler implements AuthenticationHandler {
     }
     oidcClient.setCallbackUrlResolver(new QueryParameterCallbackUrlResolver());
 
-    OidcCredentialsExtractor oidcExtractor =
-        new OidcCredentialsExtractor(oidcClient.getConfiguration(), oidcClient);
-    return (OidcCredentials)
-        oidcExtractor
-            .extract(
-                new CallContext(jeeContext, JEESessionStoreFactory.INSTANCE.newSessionStore(null)))
-            .orElse(null);
+    // In pac4j 5.x, use getCredentials() method instead of OidcCredentialsExtractor
+    SessionStore sessionStore = new JEESessionStore();
+    return (OidcCredentials) oidcClient.getCredentials(jeeContext, sessionStore).orElse(null);
   }
 
   private HandlerResult redirectForCredentials(
       OidcClient oidcClient, JEEContext jeeContext, String requestUrl) {
-    SessionStore sessionStore = JEESessionStoreFactory.INSTANCE.newSessionStore(null);
+    SessionStore sessionStore = new JEESessionStore();
     sessionStore.set(jeeContext, Pac4jConstants.REQUESTED_URL, requestUrl);
     Optional<RedirectionAction> redirectionAction =
-        oidcClient.getRedirectionAction(new CallContext(jeeContext, sessionStore));
+        oidcClient.getRedirectionAction(jeeContext, sessionStore);
     if (!redirectionAction.isPresent()) {
       LOGGER.debug("No redirect action found. Returning NO_ACTION instead");
       return noActionResult;

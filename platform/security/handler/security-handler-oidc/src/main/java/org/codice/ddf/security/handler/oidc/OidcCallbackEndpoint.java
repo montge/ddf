@@ -28,7 +28,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.pac4j.jee.context.JEEContext;
-import org.pac4j.jee.context.session.JEESessionStoreFactory;
+import org.pac4j.jee.context.session.JEESessionStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,7 @@ public class OidcCallbackEndpoint {
     JEEContext jeeContext = new JEEContext(request, response);
 
     this.securityLogger.audit("Logging out");
-    JEESessionStoreFactory.INSTANCE.newSessionStore(null).destroySession(jeeContext);
+    new JEESessionStore().destroySession(jeeContext);
 
     String localLogout = SystemBaseUrl.EXTERNAL.constructUrl("/logout/local");
     WebClient webClient = getWebClient(localLogout);
