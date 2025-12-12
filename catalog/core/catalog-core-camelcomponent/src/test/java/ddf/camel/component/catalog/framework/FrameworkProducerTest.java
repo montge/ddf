@@ -20,6 +20,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ddf.camel.component.catalog.CatalogEndpoint;
 import ddf.catalog.CatalogFramework;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.impl.MetacardImpl;
@@ -37,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +51,7 @@ public class FrameworkProducerTest {
 
   private static final String OPERATION_HEADER = "operation";
 
-  @Mock private Endpoint mockEndpoint;
+  @Mock private CatalogEndpoint mockEndpoint;
 
   @Mock private CatalogFramework mockCatalogFramework;
 

@@ -13,7 +13,6 @@
  */
 package ddf.camel.component.catalog;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
@@ -183,8 +182,8 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (FailedToCreateProducerException e) {
       LOGGER.error("Failed to create producer", e);
       assertTrue(
-          e.getCause() instanceof IllegalArgumentException,
-          "Should be an IllegalArgumentException exception");
+          "Should be an IllegalArgumentException exception",
+          e.getCause() instanceof IllegalArgumentException);
       assertEquals(
           "Unable to create producer for context path [unknown]", e.getCause().getMessage());
     }
@@ -199,7 +198,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (Exception e) {
       LOGGER.error("Failed testInvalidContextPathForProducer2", e);
       assertTrue(
-          e instanceof IllegalArgumentException, "Should be an IllegalArgumentException exception");
+          "Should be an IllegalArgumentException exception", e instanceof IllegalArgumentException);
       assertEquals("Unable to create producer for context path [unknown]", e.getMessage());
     }
   }
@@ -218,7 +217,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (Exception e) {
       LOGGER.error("Failed testInvalidContextPathForConsumer", e);
       assertTrue(
-          e instanceof IllegalArgumentException, "Should be an IllegalArgumentException exception");
+          "Should be an IllegalArgumentException exception", e instanceof IllegalArgumentException);
       assertEquals("Unable to create consumer for context path [unknown]", e.getMessage());
     }
   }
@@ -243,7 +242,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull(transformer, "InputTransformer for text/xml;id=identity not found");
+    assertNotNull("InputTransformer for text/xml;id=identity not found", transformer);
 
     // Attempt to transform the XML input into a Metacard
     try {
@@ -277,7 +276,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull(transformer, "InputTransformer for text/xml;id=identity not found");
+    assertNotNull("InputTransformer for text/xml;id=identity not found", transformer);
 
     // Attempt to transform the XML input into a Metacard
     try {
@@ -321,7 +320,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull(transformer, "InputTransformer for mimeType=text/xml&id=identity not found");
+    assertNotNull("InputTransformer for mimeType=text/xml&id=identity not found", transformer);
 
     // Transform the XML input into a Metacard
     Metacard metacard = transformer.transform(input);
