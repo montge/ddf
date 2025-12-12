@@ -120,7 +120,6 @@
                             COM.newmonics.PercClassLoader;resolution:=optional,
                             android.os;resolution:=optional,
                             com.fasterxml.jackson.annotation;resolution:=optional,
-                            com.hazelcast.license.util;resolution:=optional,
                             org.apache.logging.log4j.core;resolution:=optional,
                             org.apache.logging.log4j.core.config;resolution:=optional,
                             org.apache.openejb.*;resolution:=optional,

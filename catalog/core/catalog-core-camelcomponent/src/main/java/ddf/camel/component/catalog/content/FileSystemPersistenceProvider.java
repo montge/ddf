@@ -13,8 +13,6 @@
  */
 package ddf.camel.component.catalog.content;
 
-import com.hazelcast.map.MapLoader;
-import com.hazelcast.map.MapStore;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
@@ -27,11 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hazelcast persistence provider implementation of @MapLoader and @MapStore to serialize and
- * persist Java objects stored in Hazelcast cache to disk.
+ * File-based persistence provider implementation to serialize and persist Java objects to disk.
+ * This implementation stores objects under DDF_HOME/data/ directory.
  */
-public class FileSystemPersistenceProvider
-    implements MapLoader<String, Object>, MapStore<String, Object> {
+public class FileSystemPersistenceProvider implements PersistenceStore<String, Object> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(FileSystemPersistenceProvider.class);
 
@@ -57,8 +54,8 @@ public class FileSystemPersistenceProvider
   }
 
   /**
-   * Retrieve root directory of all persisted Hazelcast objects for this cache. The path is relative
-   * to containing bundle, i.e., DDF install directory.
+   * Retrieve root directory of all persisted objects. The path is relative to containing bundle,
+   * i.e., DDF install directory.
    *
    * @return the path to root directory where serialized objects will be persisted
    */
@@ -67,9 +64,9 @@ public class FileSystemPersistenceProvider
   }
 
   /**
-   * Path to where persisted Hazelcast objects will be stored to disk.
+   * Path to where persisted objects will be stored to disk.
    *
-   * @return
+   * @return the full path to the map storage directory
    */
   String getMapStorePath() {
     return Paths.get(getPersistencePath(), mapName).toString() + File.separator;
@@ -106,9 +103,7 @@ public class FileSystemPersistenceProvider
 
   @Override
   public Object load(String key) {
-    // Not implemented because the Hazelcast data grid is all in cache,
-    // so we will never have something persisted that is
-    // not in memory and want to avoid a performance hit on the file system
+    // Return null for lazy loading - use loadFromPersistence for explicit reads
     return null;
   }
 

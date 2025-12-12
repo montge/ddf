@@ -49,11 +49,6 @@
             <artifactId>activities</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>${hazelcast.version}</version>
-        </dependency>
-        <dependency>
             <groupId>ddf.lib</groupId>
             <artifactId>common-system</artifactId>
             <version>${project.version}</version>
@@ -71,7 +66,6 @@
                         <Embed-Dependency>
                             notifications,
                             activities,
-                            hazelcast;scope=runtime|compile,
                             catalog-core-api-impl;scope=!test
                         </Embed-Dependency>
                         <Private-Package>
@@ -108,7 +102,6 @@
                             COM.newmonics.PercClassLoader;resolution:=optional,
                             android.os;resolution:=optional,
                             com.fasterxml.jackson.annotation;resolution:=optional,
-                            com.hazelcast.license.util;resolution:=optional,
                             org.apache.logging.log4j.core;resolution:=optional,
                             org.apache.logging.log4j.core.config;resolution:=optional,
                             org.apache.openejb.*;resolution:=optional,

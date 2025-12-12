@@ -18,9 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Interface for storing and loading objects to persistent storage. This interface replaces the
- * former Hazelcast MapLoader and MapStore interfaces with a local implementation that does not
- * require Hazelcast as a dependency.
+ * Interface for storing and loading objects to persistent storage.
  *
  * @param <K> the key type
  * @param <V> the value type
