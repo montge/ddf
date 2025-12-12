@@ -267,7 +267,7 @@ public class SolrProviderUpdate {
           // Cardinals is unique to the document
           assertTrue(newCard.getMetadata().contains("Cardinals"));
 
-          assertTrue("50L".equals(newCard.getResourceSize()));
+          assertTrue("50L".equals(newCard.getResourceSize()), "Resource size should be 50L");
 
           assertEquals(uri2, newCard.getResourceURI().toString());
 

@@ -814,8 +814,8 @@ public class UsernamePasswordRealmTest {
     assertNotNull(assertion.getNotBefore());
     assertNotNull(assertion.getNotOnOrAfter());
     assertTrue(
-        "NotOnOrAfter should be after NotBefore",
-        assertion.getNotOnOrAfter().after(assertion.getNotBefore()));
+        assertion.getNotOnOrAfter().after(assertion.getNotBefore()),
+        "NotOnOrAfter should be after NotBefore");
   }
 
   @Test

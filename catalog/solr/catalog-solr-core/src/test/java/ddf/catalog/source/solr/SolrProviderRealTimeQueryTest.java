@@ -310,7 +310,7 @@ public class SolrProviderRealTimeQueryTest {
         createResponse.getCreatedMetacards().stream().map(m -> m.getId()).findFirst();
 
     assertTrue(
-        "Metacard creation failed for metacard with title: " + metacardTitle, id.isPresent());
+        id.isPresent(), "Metacard creation failed for metacard with title: " + metacardTitle);
 
     // Verify the result is actually visible (searchable) in Solr using a real time query by ID.
     queryAndVerifyCount(
@@ -371,7 +371,7 @@ public class SolrProviderRealTimeQueryTest {
         createResponse.getCreatedMetacards().stream().map(m -> m.getId()).findFirst();
 
     assertTrue(
-        "Metacard creation failed for metacard with title: " + metacardTitle, id.isPresent());
+        id.isPresent(), "Metacard creation failed for metacard with title: " + metacardTitle);
 
     // Verify the result is actually visible (searchable) in Solr using a real time query by ID.
     queryAndVerifyCount(

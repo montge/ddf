@@ -120,7 +120,7 @@ public class SolrProviderTemporal {
 
       LOGGER.debug("RESULT returned: {}", content);
       String metadata = content.getMetacard().getMetadata();
-      assertTrue("Testing if contents has term [" + term + "]", metadata.contains(term));
+      assertTrue(metadata.contains(term), "Testing if contents has term [" + term + "]");
     }
   }
 

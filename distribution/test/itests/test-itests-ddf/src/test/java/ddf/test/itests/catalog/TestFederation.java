@@ -922,8 +922,8 @@ public class TestFederation extends AbstractIntegrationTest {
         endpoint.getEndpointProperties().get(CatalogEndpointImpl.URL_BINDING_NAME_KEY);
 
     assertTrue(
-        "Catalog endpoint url binding name: '" + urlBindingName + "' is expected.",
-        expectedEndpoints.contains(urlBindingName));
+        expectedEndpoints.contains(urlBindingName),
+        "Catalog endpoint url binding name: '" + urlBindingName + "' is expected.");
   }
 
   @Test

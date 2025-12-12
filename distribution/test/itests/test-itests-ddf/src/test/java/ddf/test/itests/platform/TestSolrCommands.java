@@ -109,8 +109,8 @@ public class TestSolrCommands extends AbstractIntegrationTest {
     console.runCommand(command);
     Set<File> secondBackupDirSet = waitForBackupDirsToBeCreated(CATALOG_CORE_NAME, 2, 2);
     assertTrue(
-        "Unexpected backup directories found on pass 2.",
-        secondBackupDirSet.containsAll(firstBackupDirSet));
+        secondBackupDirSet.containsAll(firstBackupDirSet),
+        "Unexpected backup directories found on pass 2.");
 
     // On run 3, backup C is created (backup A is deleted and backups B and C remain).
     console.runCommand(command);
@@ -129,8 +129,8 @@ public class TestSolrCommands extends AbstractIntegrationTest {
 
     secondBackupDirSet.removeAll(firstBackupDirSet);
     assertTrue(
-        "Unexpected backup directories found on pass 3.",
-        thirdBackupDirSet.containsAll(secondBackupDirSet));
+        thirdBackupDirSet.containsAll(secondBackupDirSet),
+        "Unexpected backup directories found on pass 3.");
   }
 
   private Set<File> waitFor(String coreName, Predicate<Set<File>> predicate)

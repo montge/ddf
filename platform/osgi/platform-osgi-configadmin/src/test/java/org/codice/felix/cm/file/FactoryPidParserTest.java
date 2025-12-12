@@ -25,7 +25,7 @@ public class FactoryPidParserTest {
   public void parseFactoryPidInCreateFactoryConfigurationFormat() {
     final var uuid = UUID.randomUUID();
     final var parsed = FactoryPidParser.parseFactoryParts("org.codice.FactoryService." + uuid);
-    assertTrue("The Optional should not be empty.", parsed.isPresent());
+    assertTrue(parsed.isPresent(), "The Optional should not be empty.");
     assertThat(parsed.get().factoryPid(), is("org.codice.FactoryService"));
     assertThat(parsed.get().serviceName(), is(uuid.toString()));
   }
@@ -34,7 +34,7 @@ public class FactoryPidParserTest {
   public void parseFactoryPidInGetFactoryConfigurationFormat() {
     final var name = "foobar";
     final var parsed = FactoryPidParser.parseFactoryParts("org.codice.FactoryService~" + name);
-    assertTrue("The Optional should not be empty.", parsed.isPresent());
+    assertTrue(parsed.isPresent(), "The Optional should not be empty.");
     assertThat(parsed.get().factoryPid(), is("org.codice.FactoryService"));
     assertThat(parsed.get().serviceName(), is(name));
   }
@@ -42,12 +42,12 @@ public class FactoryPidParserTest {
   @Test
   public void parseNullFactoryPid() {
     final var parsed = FactoryPidParser.parseFactoryParts(null);
-    assertTrue("The Optional should be empty.", parsed.isEmpty());
+    assertTrue(parsed.isEmpty(), "The Optional should be empty.");
   }
 
   @Test
   public void parseNonFactoryPid() {
     final var parsed = FactoryPidParser.parseFactoryParts("org.codice.Service");
-    assertTrue("The Optional should be empty.", parsed.isEmpty());
+    assertTrue(parsed.isEmpty(), "The Optional should be empty.");
   }
 }

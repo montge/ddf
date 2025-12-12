@@ -132,8 +132,8 @@ public class SolrProviderSpatial {
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
-          "Wrong record, Flagstaff keyword was not found.",
-          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE));
+          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE),
+          "Wrong record, Flagstaff keyword was not found.");
       LOGGER.info("Distance to Flagstaff: {}", r.getDistanceInMeters());
       // assertTrue(r.getDistanceInMeters() != null);
     }
@@ -156,13 +156,13 @@ public class SolrProviderSpatial {
 
       if (i == 0) {
         assertTrue(
-            "Grabbed the wrong record.",
-            result.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE));
+            result.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE),
+            "Grabbed the wrong record.");
       }
       if (i == 1) {
         assertTrue(
-            "Grabbed the wrong record - should be Show Low.",
-            result.getMetacard().getMetadata().contains("Show Low"));
+            result.getMetacard().getMetadata().contains("Show Low"),
+            "Grabbed the wrong record - should be Show Low.");
       }
     }
 
@@ -268,14 +268,14 @@ public class SolrProviderSpatial {
         2,
         sourceResponse.getResults().size());
     assertTrue(
-        "Flagstaff record was not first in ascending order.",
         sourceResponse
                 .getResults()
                 .get(0)
                 .getMetacard()
                 .getMetadata()
                 .indexOf(Library.FLAGSTAFF_QUERY_PHRASE)
-            > 0);
+            > 0,
+        "Flagstaff record was not first in ascending order.");
 
     // Descending
     SortBy sortby =
@@ -289,14 +289,14 @@ public class SolrProviderSpatial {
         2,
         sourceResponse.getResults().size());
     assertTrue(
-        "Flagstaff record was not last in descending order.",
         sourceResponse
                 .getResults()
                 .get(1)
                 .getMetacard()
                 .getMetadata()
                 .indexOf(Library.FLAGSTAFF_QUERY_PHRASE)
-            > 0);
+            > 0,
+        "Flagstaff record was not last in descending order.");
 
     // Using WKT polygon
     positiveFilter =
@@ -492,8 +492,8 @@ public class SolrProviderSpatial {
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
-          "Wrong record, Flagstaff keyword was not found.",
-          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE));
+          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE),
+          "Wrong record, Flagstaff keyword was not found.");
     }
   }
 
@@ -519,8 +519,8 @@ public class SolrProviderSpatial {
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
-          "Wrong record, Flagstaff keyword was not found.",
-          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE));
+          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE),
+          "Wrong record, Flagstaff keyword was not found.");
     }
 
     // POSITIVE - Clockwise Orientation
@@ -535,8 +535,8 @@ public class SolrProviderSpatial {
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
-          "Wrong record, Flagstaff keyword was not found.",
-          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE));
+          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE),
+          "Wrong record, Flagstaff keyword was not found.");
     }
 
     // NEGATIVE
@@ -572,8 +572,8 @@ public class SolrProviderSpatial {
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
-          "Wrong record, Flagstaff keyword was not found.",
-          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE));
+          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE),
+          "Wrong record, Flagstaff keyword was not found.");
     }
   }
 
@@ -639,8 +639,8 @@ public class SolrProviderSpatial {
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
-          "Wrong record, Flagstaff keyword was not found.",
-          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE));
+          r.getMetacard().getMetadata().contains(Library.FLAGSTAFF_QUERY_PHRASE),
+          "Wrong record, Flagstaff keyword was not found.");
     }
   }
 

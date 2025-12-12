@@ -183,8 +183,8 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (FailedToCreateProducerException e) {
       LOGGER.error("Failed to create producer", e);
       assertTrue(
-          "Should be an IllegalArgumentException exception",
-          e.getCause() instanceof IllegalArgumentException);
+          e.getCause() instanceof IllegalArgumentException,
+          "Should be an IllegalArgumentException exception");
       assertEquals(
           "Unable to create producer for context path [unknown]", e.getCause().getMessage());
     }
@@ -199,7 +199,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (Exception e) {
       LOGGER.error("Failed testInvalidContextPathForProducer2", e);
       assertTrue(
-          "Should be an IllegalArgumentException exception", e instanceof IllegalArgumentException);
+          e instanceof IllegalArgumentException, "Should be an IllegalArgumentException exception");
       assertEquals("Unable to create producer for context path [unknown]", e.getMessage());
     }
   }
@@ -218,7 +218,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (Exception e) {
       LOGGER.error("Failed testInvalidContextPathForConsumer", e);
       assertTrue(
-          "Should be an IllegalArgumentException exception", e instanceof IllegalArgumentException);
+          e instanceof IllegalArgumentException, "Should be an IllegalArgumentException exception");
       assertEquals("Unable to create consumer for context path [unknown]", e.getMessage());
     }
   }

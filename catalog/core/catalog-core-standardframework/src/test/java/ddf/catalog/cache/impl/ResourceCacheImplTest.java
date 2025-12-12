@@ -149,7 +149,7 @@ public class ResourceCacheImplTest {
     MetacardImpl metacard1 = generateMetacard();
     ReliableResource cachedResource = new ReliableResource("key", "", null, null, metacard);
     assertFalse(
-        "cache should be noop", resourceCache.validateCacheEntry(cachedResource, metacard1));
+        resourceCache.validateCacheEntry(cachedResource, metacard1), "cache should be noop");
   }
 
   @Test
@@ -233,8 +233,8 @@ public class ResourceCacheImplTest {
             "name",
             cachedMetacard));
     assertFalse(
-        "cache should be noop",
-        resourceCache.containsValid(cachedResourceMetacardKey, latestMetacard));
+        resourceCache.containsValid(cachedResourceMetacardKey, latestMetacard),
+        "cache should be noop");
     assertTrue(cachedResourceFile.exists(), "cache should be noop");
   }
 

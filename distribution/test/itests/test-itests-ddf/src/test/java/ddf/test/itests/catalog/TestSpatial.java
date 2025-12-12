@@ -471,14 +471,14 @@ public class TestSpatial extends AbstractIntegrationTest {
       int expectedResults = (maxSize <= ingestCount) ? maxSize : ingestCount;
 
       assertTrue(
-          "The responses contained a different number of matches; expected " + ingestCount,
           hasExpectedMatchCount(
-              cswResponse, new ExpectedResultPair(ResultType.COUNT, ingestCount + "")));
+              cswResponse, new ExpectedResultPair(ResultType.COUNT, ingestCount + "")),
+          "The responses contained a different number of matches; expected " + ingestCount);
 
       assertTrue(
-          "The responses contained a different result count; expected " + expectedResults,
           hasExpectedResultCount(
-              cswResponse, new ExpectedResultPair(ResultType.COUNT, expectedResults + "")));
+              cswResponse, new ExpectedResultPair(ResultType.COUNT, expectedResults + "")),
+          "The responses contained a different result count; expected " + expectedResults);
     }
   }
 
@@ -830,13 +830,13 @@ public class TestSpatial extends AbstractIntegrationTest {
       throws Exception {
     if (expectedValues[0].type == ResultType.COUNT) {
       assertTrue(
-          "The responses contained a different count",
-          hasExpectedResultCount(queryResult, expectedValues[0]));
+          hasExpectedResultCount(queryResult, expectedValues[0]),
+          "The responses contained a different count");
     } else if (expectedValues[0].type == ResultType.TITLE) {
       // assertion done within the method
       hasExpectedMetacardsReturned(queryResult, expectedValues);
     } else {
-      assertTrue("The expected values are an invalid type", false);
+      assertTrue(false, "The expected values are an invalid type");
     }
   }
 
@@ -852,8 +852,8 @@ public class TestSpatial extends AbstractIntegrationTest {
 
     for (int i = 0; i < expectedValues.length; i++) {
       assertTrue(
-          "Metacard: " + expectedValues[i].value + " not found in result.",
-          testPassed = queryResult.contains(metacardIds.get(expectedValues[i].value)));
+          testPassed = queryResult.contains(metacardIds.get(expectedValues[i].value)),
+          "Metacard: " + expectedValues[i].value + " not found in result.");
     }
     return testPassed;
   }

@@ -181,7 +181,7 @@ public class LogoutRequestServiceTest {
     Response response = logoutRequestService.sendLogoutRequest(encryptedNameIdWithTime);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     assertTrue(
-        "Expected logout url of " + logoutUrl, response.getEntity().toString().contains(logoutUrl));
+        response.getEntity().toString().contains(logoutUrl), "Expected logout url of " + logoutUrl);
   }
 
   @Test
@@ -198,8 +198,8 @@ public class LogoutRequestServiceTest {
     Response response = logoutRequestService.sendLogoutRequest(encryptedNameIdWithTime);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     assertTrue(
-        "Expected logout url of " + postLogoutUrl,
-        response.getEntity().toString().contains(postLogoutUrl));
+        response.getEntity().toString().contains(postLogoutUrl),
+        "Expected logout url of " + postLogoutUrl);
   }
 
   @Test
@@ -216,7 +216,7 @@ public class LogoutRequestServiceTest {
                 LOGOUT_PAGE_TIMEOUT)
             .replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
@@ -234,7 +234,7 @@ public class LogoutRequestServiceTest {
     insertLogoutRequest();
     String msg = LogoutRequestService.UNABLE_TO_DECRYPT_LOGOUT_REQUEST.replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
@@ -250,7 +250,7 @@ public class LogoutRequestServiceTest {
         "The identity provider does not support either POST or Redirect bindings."
             .replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
@@ -297,8 +297,8 @@ public class LogoutRequestServiceTest {
         logoutRequestService.postLogoutRequest(encodedSamlRequest, null, relayState);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     assertTrue(
-        "Expected logout url of " + postLogoutUrl,
-        response.getEntity().toString().contains(postLogoutUrl));
+        response.getEntity().toString().contains(postLogoutUrl),
+        "Expected logout url of " + postLogoutUrl);
   }
 
   @Test
@@ -374,7 +374,7 @@ public class LogoutRequestServiceTest {
     assertEquals(Response.Status.SEE_OTHER.getStatusCode(), response.getStatus());
     String msg = UNABLE_TO_PARSE_LOGOUT_REQUEST.replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
@@ -410,8 +410,8 @@ public class LogoutRequestServiceTest {
         logoutRequestService.postLogoutRequest(null, encodedSamlResponse, relayState);
     assertEquals(Response.Status.SEE_OTHER.getStatusCode(), response.getStatus());
     assertTrue(
-        "Expected a successful logout message",
-        response.getLocation().toString().contains("logged+out+successfully."));
+        response.getLocation().toString().contains("logged+out+successfully."),
+        "Expected a successful logout message");
   }
 
   @Test
@@ -430,7 +430,7 @@ public class LogoutRequestServiceTest {
     assertEquals(Response.Status.SEE_OTHER.getStatusCode(), response.getStatus());
     String msg = LogoutRequestService.UNABLE_TO_PARSE_LOGOUT_RESPONSE.replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
@@ -452,8 +452,8 @@ public class LogoutRequestServiceTest {
             deflatedSamlRequest, null, relayState, SIGNATURE_ALGORITHM, SIGNATURE);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     assertTrue(
-        "Expected logout url of " + redirectLogoutUrl,
-        response.getEntity().toString().contains(redirectLogoutUrl));
+        response.getEntity().toString().contains(redirectLogoutUrl),
+        "Expected logout url of " + redirectLogoutUrl);
   }
 
   private void insertLogoutRequest() throws XMLStreamException, LogoutSecurityException {
@@ -483,7 +483,7 @@ public class LogoutRequestServiceTest {
     assertEquals(Response.Status.SEE_OTHER.getStatusCode(), response.getStatus());
     String msg = LogoutRequestService.UNABLE_TO_PARSE_LOGOUT_REQUEST.replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
@@ -515,7 +515,7 @@ public class LogoutRequestServiceTest {
     String msg = UNABLE_TO_VALIDATE_LOGOUT_REQUEST.replaceAll(" ", "+");
 
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
