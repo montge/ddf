@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ddf.catalog.data.Metacard;
 import ddf.catalog.operation.impl.QueryImpl;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
 
 /** @author willisod */
 public class QueryImplTest {
@@ -62,7 +62,7 @@ public class QueryImplTest {
 
   /**
    * Test method for {@link
-   * ddf.catalog.operation.impl.QueryImpl#QueryImpl(org.opengis.filter.Filter)} .
+   * ddf.catalog.operation.impl.QueryImpl#QueryImpl(org.geotools.api.filter.Filter)} .
    */
   @Test
   public void testQueryImplFilter() {
@@ -80,7 +80,7 @@ public class QueryImplTest {
 
   /**
    * Test method for {@link
-   * ddf.catalog.operation.impl.QueryImpl#setFilter(org.opengis.filter.Filter)} .
+   * ddf.catalog.operation.impl.QueryImpl#setFilter(org.geotools.api.filter.Filter)} .
    */
   @Test
   public void testSetFilter() {

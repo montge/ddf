@@ -12,11 +12,16 @@
  *
  **/
 -->
-
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-    <service id="ErrorPageInjector"  interface="org.osgi.framework.hooks.service.EventListenerHook">
-        <bean class="org.codice.ddf.platform.error.injector.ErrorPageInjector" init-method="init" />
-    </service>
+    <bean id="requiredAttributesRegistry" class="ddf.catalog.data.requiredattributes.RequiredAttributesRegistryImpl"/>
+    <reference-list id="requiredAttributesList"
+                    interface="ddf.catalog.data.RequiredAttributes"
+                    availability="optional">
+        <reference-listener ref="requiredAttributesRegistry" bind-method="bind"
+                            unbind-method="unbind"/>
+    </reference-list>
+
+    <service ref="requiredAttributesRegistry" interface="ddf.catalog.data.RequiredAttributesRegistry"/>
 
 </blueprint>

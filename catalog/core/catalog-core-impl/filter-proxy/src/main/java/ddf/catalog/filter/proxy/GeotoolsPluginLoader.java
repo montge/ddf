@@ -13,9 +13,20 @@
  */
 package ddf.catalog.filter.proxy;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.geotools.api.data.DataAccessFactory;
+import org.geotools.api.feature.FeatureFactory;
+import org.geotools.api.feature.type.FeatureTypeFactory;
+import org.geotools.api.filter.FilterFactory;
+import org.geotools.api.filter.expression.Function;
+import org.geotools.api.referencing.crs.CRSAuthorityFactory;
+import org.geotools.api.referencing.crs.CRSFactory;
+import org.geotools.api.referencing.cs.CSFactory;
+import org.geotools.api.referencing.datum.DatumFactory;
+import org.geotools.api.referencing.operation.MathTransformFactory;
 import org.geotools.feature.type.FeatureTypeFactoryImpl;
 import org.geotools.filter.FilterFactoryImpl;
 import org.geotools.filter.FunctionExpression;
@@ -23,11 +34,8 @@ import org.geotools.filter.FunctionFactory;
 import org.geotools.filter.expression.PropertyAccessorFactory;
 import org.geotools.filter.function.DefaultFunctionFactory;
 import org.geotools.filter.function.PropertyExistsFunction;
-import org.geotools.geometry.jts.spatialschema.PositionFactoryImpl;
-import org.geotools.geometry.jts.spatialschema.geometry.aggregate.JTSAggregateFactory;
-import org.geotools.geometry.jts.spatialschema.geometry.complex.JTSComplexFactory;
-import org.geotools.geometry.jts.spatialschema.geometry.geometry.JTSGeometryFactory;
-import org.geotools.geometry.jts.spatialschema.geometry.primitive.PrimitiveFactoryImpl;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.referencing.crs.DefaultProjectedCRS;
 import org.geotools.referencing.factory.ReferencingObjectFactory;
 import org.geotools.referencing.factory.gridshift.ClasspathGridShiftLocator;
 import org.geotools.referencing.factory.gridshift.GridShiftLocator;
@@ -35,24 +43,15 @@ import org.geotools.referencing.operation.MathTransformProvider;
 import org.geotools.util.ConverterFactory;
 import org.geotools.util.factory.FactoryIteratorProvider;
 import org.geotools.util.factory.GeoTools;
-import org.opengis.feature.FeatureFactory;
-import org.opengis.feature.type.FeatureTypeFactory;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.expression.Function;
-import org.opengis.geometry.PositionFactory;
-import org.opengis.geometry.aggregate.AggregateFactory;
-import org.opengis.geometry.complex.ComplexFactory;
-import org.opengis.geometry.coordinate.GeometryFactory;
-import org.opengis.geometry.primitive.PrimitiveFactory;
-import org.opengis.referencing.crs.CRSAuthorityFactory;
-import org.opengis.referencing.crs.CRSFactory;
 
 public class GeotoolsPluginLoader {
 
   public GeotoolsPluginLoader() {
     GeoTools.addClassLoader(DefaultFunctionFactory.class.getClassLoader());
-    GeoTools.addClassLoader(PositionFactoryImpl.class.getClassLoader());
     GeoTools.addClassLoader(CRSFactory.class.getClassLoader());
+    GeoTools.addClassLoader(CSFactory.class.getClassLoader());
+    GeoTools.addClassLoader(DefaultGeographicCRS.class.getClassLoader());
+    GeoTools.addClassLoader(DefaultProjectedCRS.class.getClassLoader());
     GeoTools.addFactoryIteratorProvider(
         new FactoryIteratorProvider() {
           @Override
@@ -303,16 +302,6 @@ public class GeotoolsPluginLoader {
                       new org.geotools.filter.function.BoundedByFunction(),
                       new org.geotools.filter.function.DateDifferenceFunction(),
                       new org.geotools.filter.function.JsonPointerFunction());
-            } else if (PositionFactory.class.isAssignableFrom(aClass)) {
-              return (Iterator<T>) Collections.singletonList(new PositionFactoryImpl()).iterator();
-            } else if (ComplexFactory.class.isAssignableFrom(aClass)) {
-              return (Iterator<T>) Collections.singletonList(new JTSComplexFactory()).iterator();
-            } else if (AggregateFactory.class.isAssignableFrom(aClass)) {
-              return (Iterator<T>) Collections.singletonList(new JTSAggregateFactory()).iterator();
-            } else if (GeometryFactory.class.isAssignableFrom(aClass)) {
-              return (Iterator<T>) Collections.singletonList(new JTSGeometryFactory()).iterator();
-            } else if (PrimitiveFactory.class.isAssignableFrom(aClass)) {
-              return (Iterator<T>) Collections.singletonList(new PrimitiveFactoryImpl()).iterator();
             } else if (GridShiftLocator.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
                   Collections.singletonList(new ClasspathGridShiftLocator()).iterator();
@@ -439,17 +428,36 @@ public class GeotoolsPluginLoader {
             } else if (CRSAuthorityFactory.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
                   List.of(
-                      new org.geotools.referencing.factory.epsg.FactoryUsingWKT(),
-                      new org.geotools.referencing.factory.epsg.LongitudeFirstFactory(),
-                      new org.geotools.referencing.factory.epsg.CartesianAuthorityFactory(),
-                      new org.geotools.referencing.factory.wms.AutoCRSFactory(),
-                      new org.geotools.referencing.factory.wms.WebCRSFactory(),
-                      new org.geotools.referencing.factory.URN_AuthorityFactory(),
-                      new org.geotools.referencing.factory.HTTP_AuthorityFactory(),
-                      new org.geotools.referencing.factory.HTTP_URI_AuthorityFactory());
+                          new org.geotools.referencing.factory.epsg.FactoryUsingWKT(),
+                          new org.geotools.referencing.factory.epsg.LongitudeFirstFactory(),
+                          new org.geotools.referencing.factory.epsg.CartesianAuthorityFactory(),
+                          new org.geotools.referencing.factory.wms.AutoCRSFactory(),
+                          new org.geotools.referencing.factory.wms.WebCRSFactory(),
+                          new org.geotools.referencing.factory.URN_AuthorityFactory(),
+                          new org.geotools.referencing.factory.HTTP_AuthorityFactory(),
+                          new org.geotools.referencing.factory.HTTP_URI_AuthorityFactory())
+                      .iterator();
+            } else if (CSFactory.class.isAssignableFrom(aClass)) {
+              return (Iterator<T>)
+                  Collections.singletonList(new ReferencingObjectFactory()).iterator();
             } else if (CRSFactory.class.isAssignableFrom(aClass)) {
               return (Iterator<T>)
                   Collections.singletonList(new ReferencingObjectFactory()).iterator();
+            } else if (DataAccessFactory.class.isAssignableFrom(aClass)) {
+              return (Iterator<T>)
+                  Arrays.asList(new org.geotools.data.shapefile.ShapefileDataStoreFactory())
+                      .iterator();
+            } else if (DatumFactory.class.isAssignableFrom(aClass)) {
+              return (Iterator<T>)
+                  Arrays.asList(
+                          new org.geotools.referencing.factory.ReferencingObjectFactory(),
+                          new org.geotools.referencing.factory.DatumAliases())
+                      .iterator();
+            } else if (MathTransformFactory.class.isAssignableFrom(aClass)) {
+              return (Iterator<T>)
+                  Arrays.asList(
+                          new org.geotools.referencing.operation.DefaultMathTransformFactory())
+                      .iterator();
             } else {
               return null;
             }

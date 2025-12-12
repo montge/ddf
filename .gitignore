@@ -18,11 +18,13 @@ package-lock.json
 atlassian-ide-plugin.xml
 *.sonar-ide.properties
 **/webapp/css/styles.css
+ddf-deplist.out
 platform/solr/**/overlays
 distribution/docs/src/main/resources/content/**/.asciidoctor
 distribution/docs/src/main/resources/content/**/*.png
 **/bin
 *.factorypath
+*.dylib
 # JMeter Related files to ignore
 jmeter.log
 *.jmx.log
@@ -54,3 +56,6 @@ venv/
 
 # Local AI-generated content and scratch files
 .local/
+
+**/.java-version
+.m2

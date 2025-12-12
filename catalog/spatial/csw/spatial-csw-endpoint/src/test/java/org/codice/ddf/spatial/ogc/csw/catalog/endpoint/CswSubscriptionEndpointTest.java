@@ -27,7 +27,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ch.qos.logback.classic.Level;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.event.EventProcessor;
 import ddf.catalog.event.Subscription;
@@ -79,13 +78,10 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 @EnableRuleMigrationSupport
 public class CswSubscriptionEndpointTest {
-  private static final ch.qos.logback.classic.Logger CSW_LOGGER =
-      (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(CswEndpoint.class);
 
   private static final String RESPONSE_HANDLER_URL = "https://somehost:12345/test";
 
@@ -320,7 +316,6 @@ public class CswSubscriptionEndpointTest {
 
   @Test
   public void testCreateRecordsSubscriptionPOST() throws Exception {
-    CSW_LOGGER.setLevel(Level.DEBUG);
     GetRecordsRequest getRecordsRequest = createDefaultGetRecordsRequest();
     getRecordsRequest.setResponseHandler(RESPONSE_HANDLER_URL);
     Response response =
@@ -328,7 +323,6 @@ public class CswSubscriptionEndpointTest {
     AcknowledgementType createAck = (AcknowledgementType) response.getEntity();
     assertThat(createAck, notNullValue());
     assertThat(createAck.getRequestId(), notNullValue());
-    CSW_LOGGER.setLevel(Level.INFO);
     verify(mockContext)
         .registerService(
             eq(Subscription.class.getName()), any(Subscription.class), any(Dictionary.class));

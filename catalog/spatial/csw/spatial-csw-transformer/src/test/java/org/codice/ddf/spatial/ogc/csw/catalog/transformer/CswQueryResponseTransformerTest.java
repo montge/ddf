@@ -70,11 +70,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswConstants;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswJAXBElementProvider;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.transformer.TransformerManager;
+import org.geotools.api.filter.Filter;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.opengis.filter.Filter;
 
 public class CswQueryResponseTransformerTest {
   private CswQueryResponseTransformer transformer;

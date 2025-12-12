@@ -101,7 +101,7 @@ public class CustomOAuthCredentialsExtractorTest {
 
     credentials = extractor.getOauthCredentialsAsOidcCredentials(mockWebContext);
 
-    assertThat(credentials.getCode().getValue(), is(authorizationCode));
+    assertThat(credentials.toAuthorizationCode().getValue(), is(authorizationCode));
     assertNull(credentials.getAccessToken());
   }
 
@@ -115,7 +115,7 @@ public class CustomOAuthCredentialsExtractorTest {
     credentials = extractor.getOauthCredentialsAsOidcCredentials(mockWebContext);
 
     assertNull(credentials.getCode());
-    assertThat(credentials.getAccessToken().getValue(), is(accessToken.toString()));
+    assertThat(credentials.toAccessToken().getValue(), is(accessToken.toString()));
   }
 
   @Test
@@ -128,7 +128,7 @@ public class CustomOAuthCredentialsExtractorTest {
     credentials = extractor.getOauthCredentialsAsOidcCredentials(mockWebContext);
 
     assertNull(credentials.getCode());
-    assertThat(credentials.getAccessToken().getValue(), is(accessToken.toString()));
+    assertThat(credentials.toAccessToken().getValue(), is(accessToken.toString()));
   }
 
   @Test
@@ -141,8 +141,8 @@ public class CustomOAuthCredentialsExtractorTest {
 
     credentials = extractor.getOauthCredentialsAsOidcCredentials(mockWebContext);
 
-    assertThat(credentials.getCode().getValue(), is(authorizationCode));
-    assertThat(credentials.getAccessToken().getValue(), is(accessToken.toString()));
+    assertThat(credentials.toAuthorizationCode().getValue(), is(authorizationCode));
+    assertThat(credentials.toAccessToken().getValue(), is(accessToken.toString()));
   }
 
   @Test

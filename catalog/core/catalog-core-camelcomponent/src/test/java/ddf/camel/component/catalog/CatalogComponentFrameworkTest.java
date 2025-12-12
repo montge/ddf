@@ -213,7 +213,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -232,7 +232,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -251,7 +251,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -272,7 +272,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -293,7 +293,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -496,7 +496,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -516,7 +516,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -537,7 +537,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -627,7 +627,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -645,7 +645,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -726,7 +726,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -750,7 +750,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -806,7 +806,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -828,7 +828,7 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 
   @Test
@@ -849,6 +849,6 @@ public class CatalogComponentFrameworkTest extends CamelTestSupport {
       threwException = true;
     }
 
-    Assert.isTrue(threwException);
+    Assert.isTrue(threwException, "did not throw CamelExecutionException");
   }
 }

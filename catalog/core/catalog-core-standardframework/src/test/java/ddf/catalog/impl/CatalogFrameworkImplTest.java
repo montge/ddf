@@ -175,6 +175,8 @@ import org.apache.shiro.util.ThreadContext;
 import org.codice.ddf.catalog.sourcepoller.SourcePoller;
 import org.codice.ddf.catalog.sourcepoller.SourceStatus;
 import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
+import org.geotools.api.filter.Filter;
+import org.geotools.api.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryImpl;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
@@ -185,8 +187,6 @@ import org.junit.rules.MethodRule;
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
 import org.mockito.ArgumentCaptor;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -2484,7 +2484,9 @@ public class CatalogFrameworkImplTest {
     results.add(result);
 
     QueryResponse queryResponse = mock(QueryResponse.class);
+    QueryRequest queryRequest = mock(QueryRequest.class);
     when(queryResponse.getResults()).thenReturn(results);
+    when(queryResponse.getRequest()).thenReturn(queryRequest);
     FederationStrategy strategy = mock(FederationStrategy.class);
     when(strategy.federate(isA(federatedSources.getClass()), isA(QueryRequest.class)))
         .thenReturn(queryResponse);

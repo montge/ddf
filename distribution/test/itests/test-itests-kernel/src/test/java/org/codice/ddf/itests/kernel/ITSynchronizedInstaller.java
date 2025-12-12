@@ -14,6 +14,7 @@
 package org.codice.ddf.itests.kernel;
 
 import static org.awaitility.Awaitility.await;
+import static org.codice.ddf.test.common.configurators.KarafOptions.overridePaxExamJUnitHamcrest;
 import static org.codice.ddf.test.common.options.DebugOptions.defaultDebuggingOptions;
 import static org.codice.ddf.test.common.options.DistributionOptions.kernelDistributionOption;
 import static org.codice.ddf.test.common.options.FeatureOptions.addBootFeature;
@@ -25,6 +26,8 @@ import static org.codice.ddf.test.common.options.TestResourcesOptions.getTestRes
 import static org.codice.ddf.test.common.options.TestResourcesOptions.includeTestResources;
 import static org.codice.ddf.test.common.options.VmOptions.defaultVmOptions;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.options;
@@ -38,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.apache.karaf.features.FeaturesService;
@@ -100,11 +102,12 @@ public class ITSynchronizedInstaller {
         defaultDebuggingOptions(),
         defaultPortsOptions(),
         defaultLogging(),
+        overridePaxExamJUnitHamcrest(),
         logLevelOption("org.codice.ddf.test", "TRACE"),
         logLevelOption("org.codice.ddf.sync.installer.impl", "TRACE"),
         includeTestResources(),
         addFeatureRepo(FeatureUtilities.toFeatureRepo(TEST_FEATURE_PATH)),
-        addBootFeature(TestUtilitiesFeatures.testCommon(), TestUtilitiesFeatures.hamcrestAll(), TestUtilitiesFeatures.awaitility()));
+        addBootFeature(TestUtilitiesFeatures.testCommon(), TestUtilitiesFeatures.awaitility()));
   }
 
   @BeforeExam
@@ -144,7 +147,7 @@ public class ITSynchronizedInstaller {
         syncInstaller.createManagedFactoryService(
             ExampleMSFInstance.FACTORY_PID, props, getExampleBundleLocation());
 
-    assertThat(getServices(ExampleMSFInstance.class).size(), is(1));
+    assertThat(getServices(ExampleMSFInstance.class), hasSize(1));
     assertThat(
         getServiceReference(ExampleMSFInstance.class).getProperty(SERVICE_PID),
         is(createdConfig.getPid()));
@@ -157,7 +160,7 @@ public class ITSynchronizedInstaller {
         syncInstaller.createManagedFactoryService(
             ExampleMSFInstance.FACTORY_PID, new HashMap<>(), getExampleBundleLocation());
 
-    assertThat(getServices(ExampleMSFInstance.class).size(), is(1));
+    assertThat(getServices(ExampleMSFInstance.class), hasSize(1));
     assertThat(
         getServiceReference(ExampleMSFInstance.class).getProperty(SERVICE_PID),
         is(createdConfig.getPid()));
@@ -185,7 +188,7 @@ public class ITSynchronizedInstaller {
         syncInstaller.createManagedFactoryService(
             ExampleMSFInstance.FACTORY_PID, new Hashtable<>(), getExampleBundleLocation());
 
-    assertThat(getServices(ExampleMSFInstance.class).size(), is(1));
+    assertThat(getServices(ExampleMSFInstance.class), hasSize(1));
     assertThat(
         getServiceReference(ExampleMSFInstance.class).getProperty(SERVICE_PID),
         is(createdConfig.getPid()));
@@ -198,7 +201,7 @@ public class ITSynchronizedInstaller {
     syncInstaller.updateManagedService(
         createdConfig.getPid(), newProps, getExampleBundleLocation());
 
-    assertThat(getServices(ExampleMSFInstance.class).size(), is(1));
+    assertThat(getServices(ExampleMSFInstance.class), hasSize(1));
     assertThat(
         getServiceReference(ExampleMSFInstance.class).getProperty(SERVICE_PID),
         is(createdConfig.getPid()));
@@ -224,7 +227,7 @@ public class ITSynchronizedInstaller {
             throw new RuntimeException(e);
           }
         };
-    Future future = Executors.newSingleThreadExecutor().submit(runnable);
+    Future<?> future = Executors.newSingleThreadExecutor().submit(runnable);
 
     try {
       reg = bundleContext.registerService(ExampleService.class, new ExampleService(null), props);
@@ -244,7 +247,7 @@ public class ITSynchronizedInstaller {
   @Test
   public void uninstallFeatures() throws Exception {
     syncInstaller.uninstallFeatures(EXAMPLE_FEATURE);
-    assertThat(!featuresService.isInstalled(featuresService.getFeature(EXAMPLE_FEATURE)), is(true));
+    assertThat(featuresService.isInstalled(featuresService.getFeature(EXAMPLE_FEATURE)), is(false));
   }
 
   @Test
@@ -260,7 +263,7 @@ public class ITSynchronizedInstaller {
           }
         };
 
-    Future future = Executors.newSingleThreadExecutor().submit(runnable);
+    Future<?> future = Executors.newSingleThreadExecutor().submit(runnable);
     testBundle.start();
     await().atMost(Duration.ONE_MINUTE).until(future::isDone);
   }
@@ -291,19 +294,19 @@ public class ITSynchronizedInstaller {
           }
         };
 
-    Future future = Executors.newSingleThreadExecutor().submit(runnable);
+    Future<?> future = Executors.newSingleThreadExecutor().submit(runnable);
     testBundle.start();
     await().atMost(Duration.ONE_MINUTE).until(future::isDone);
   }
 
   private void deleteAllExampleMSFServices() throws IOException, InvalidSyntaxException {
     configurations(
-            String.format(
-                "(%s=%s)", ConfigurationAdmin.SERVICE_FACTORYPID, ExampleMSFInstance.FACTORY_PID))
+        String.format(
+            "(%s=%s)", ConfigurationAdmin.SERVICE_FACTORYPID, ExampleMSFInstance.FACTORY_PID))
         .forEach(this::deleteServiceConfig);
     await()
         .atMost(Duration.ONE_MINUTE)
-        .until(() -> getServices(ExampleMSFInstance.class).isEmpty());
+        .until(() -> getServices(ExampleMSFInstance.class), is(empty()));
   }
 
   private void deleteServiceConfig(org.osgi.service.cm.Configuration config) {
@@ -350,6 +353,6 @@ public class ITSynchronizedInstaller {
         .getServiceReferences(clazz, null)
         .stream()
         .map(bundleContext::getService)
-        .collect(Collectors.toList());
+        .toList();
   }
 }
