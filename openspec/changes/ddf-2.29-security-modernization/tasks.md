@@ -104,11 +104,12 @@
 - **Tracking:** https://issues.apache.org/jira/browse/CXF-9086
 
 ### 3.2 Apache Camel Upgrade
-- [ ] 3.2.1 Review Camel 3.18 -> 3.22 migration guide
-- [ ] 3.2.2 Update Camel dependencies
-- [ ] 3.2.3 Fix route compatibility issues
+- [x] 3.2.1 Review Camel 3.18 -> 3.22 migration guide ✅ Already at 3.22.4 (final 3.x EOL)
+- [x] 3.2.2 Update Camel dependencies ✅ Already at 3.22.4
+- [x] 3.2.3 Fix route compatibility issues ✅ N/A
 - [ ] 3.2.4 Test catalog:// component
 - [ ] 3.2.5 Test directory monitor routes
+- [ ] 3.2.6 Plan Camel 4.x upgrade (requires Jakarta EE) ⏸️ **BLOCKED** on CXF 4.x
 
 ### 3.3 Logback 1.4.x
 - [ ] 3.3.1 Update SLF4J to 2.x
