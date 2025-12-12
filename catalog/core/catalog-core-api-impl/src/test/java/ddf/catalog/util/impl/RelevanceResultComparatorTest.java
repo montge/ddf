@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import ddf.catalog.data.Result;
 import ddf.catalog.data.impl.ResultImpl;
+import org.geotools.api.filter.sort.SortOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.opengis.filter.sort.SortOrder;
 
 public class RelevanceResultComparatorTest {
   private ResultImpl lowRelevance;

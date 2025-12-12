@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.geotools.api.filter.expression.Expression;
 import org.junit.jupiter.api.Test;
-import org.opengis.filter.expression.Expression;
 
 @Deprecated
 public class FuzzyFunctionTest {

@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
+import org.geotools.api.filter.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.opengis.filter.Filter;
 
 /** Tests for KeywordFilterGenerator */
 @ExtendWith(MockitoExtension.class)

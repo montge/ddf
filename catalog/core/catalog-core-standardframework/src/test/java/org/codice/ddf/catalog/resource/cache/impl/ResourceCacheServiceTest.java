@@ -38,13 +38,13 @@ import javax.management.ObjectName;
 import javax.management.StandardMBean;
 import org.codice.ddf.catalog.resource.cache.ResourceCache;
 import org.codice.ddf.catalog.resource.cache.ResourceCacheServiceMBean;
+import org.geotools.api.filter.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.opengis.filter.Filter;
 
 @ExtendWith(MockitoExtension.class)
 public class ResourceCacheServiceTest {

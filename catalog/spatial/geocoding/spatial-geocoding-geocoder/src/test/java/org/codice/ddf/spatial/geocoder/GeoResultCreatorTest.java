@@ -19,10 +19,10 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.codice.ddf.spatial.geocoding.GeoEntry;
+import org.geotools.api.geometry.primitive.Point;
 import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
 import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
 import org.junit.jupiter.api.Test;
-import org.opengis.geometry.primitive.Point;
 
 public class GeoResultCreatorTest {
   private void verifyGeoResult(

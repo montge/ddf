@@ -20,9 +20,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import ddf.catalog.operation.Query;
+import org.geotools.api.filter.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opengis.filter.Filter;
 
 /** Unit tests for CatalogHelper class. */
 public class CatalogHelperTest {

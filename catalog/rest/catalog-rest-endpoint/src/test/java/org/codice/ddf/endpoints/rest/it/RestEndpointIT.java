@@ -62,13 +62,13 @@ import org.codice.ddf.test.common.configurators.FeatureOptionBuilder.FeatureOpti
 import org.codice.ddf.test.common.configurators.PortFinder;
 import org.codice.ddf.test.common.options.TestResourcesOptions;
 import org.codice.ddf.test.common.rules.ServiceRegistrationRule;
+import org.geotools.api.filter.Filter;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
-import org.opengis.filter.Filter;
 import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;

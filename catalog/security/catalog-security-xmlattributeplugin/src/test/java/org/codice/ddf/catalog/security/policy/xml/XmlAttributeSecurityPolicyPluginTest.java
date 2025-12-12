@@ -36,10 +36,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.geotools.api.filter.Filter;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opengis.filter.Filter;
 
 public class XmlAttributeSecurityPolicyPluginTest {
   private static final String TEST_METADATA =

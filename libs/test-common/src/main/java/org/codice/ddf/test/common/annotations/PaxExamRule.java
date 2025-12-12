@@ -17,7 +17,8 @@ import static org.junit.Assert.fail;
 
 import java.lang.annotation.Annotation;
 import org.codice.ddf.test.common.LoggingUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.FrameworkMethod;

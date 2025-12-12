@@ -39,7 +39,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class RtfQueryResponseAndMetacardTransformer
     implements MetacardTransformer, QueryResponseTransformer {

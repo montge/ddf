@@ -59,6 +59,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
+import org.geotools.api.filter.sort.SortBy;
 import org.geotools.filter.NullFilterImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.opengis.filter.sort.SortBy;
 
 @ExtendWith(MockitoExtension.class)
 public class SortedFederationStrategyTest {

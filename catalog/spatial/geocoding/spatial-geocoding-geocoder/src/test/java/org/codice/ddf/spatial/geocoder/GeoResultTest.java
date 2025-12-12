@@ -21,14 +21,14 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.geotools.api.geometry.DirectPosition;
+import org.geotools.api.geometry.primitive.Point;
 import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
 import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.opengis.geometry.DirectPosition;
-import org.opengis.geometry.primitive.Point;
 
 @ExtendWith(MockitoExtension.class)
 public class GeoResultTest {
