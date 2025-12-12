@@ -9,7 +9,7 @@
 - [ ] 1.1.1 Run fresh OWASP dependency-check scan
 - [ ] 1.1.2 Create suppression file for false positives
 - [ ] 1.1.3 Document test-only dependencies to suppress
-- [ ] 1.1.4 Verify GeoTools 31.6 CVE-2025-30220 applicability
+- [x] 1.1.4 GeoTools CVE-2025-30220 ✅ Fixed in 34.1 upgrade
 - [ ] 1.1.5 Verify Zookeeper 3.9.2 CVE status
 
 ### 1.2 Critical Dependency Upgrades
@@ -29,7 +29,7 @@
 ### 1.3 Security Test Coverage
 - [ ] 1.3.1 security-core-impl tests (46.88% -> 80%)
 - [ ] 1.3.2 security-core-services tests (45.77% -> 80%)
-- [ ] 1.3.3 security-handler-impl tests (13.84% -> 80%)
+- [x] 1.3.3 security-handler-impl tests (13.84% -> 80%) ✅ **98.2%** instruction coverage (2025-12-12)
 - [ ] 1.3.4 platform-security-core-api tests (35.01% -> 80%)
 - [x] 1.3.5 security-filter-csrf tests (0% -> 80%) ✅ 99.1% instruction, 88.5% branch, 98.6% line coverage
 - [x] 1.3.6 catalog-security-logging tests (0% -> 80%) ✅ **Already at 100%** - 45 tests, full coverage
