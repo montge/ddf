@@ -45,13 +45,18 @@
 - [ ] 2.1.4 Validate transformed artifacts work in OSGi
 
 ### 2.2 Core Namespace Migration
-- [ ] 2.2.1 Identify all javax.servlet usages
-- [ ] 2.2.2 Identify all javax.ws.rs usages
-- [ ] 2.2.3 Identify all javax.xml.bind usages
+- [x] 2.2.1 Identify all javax.servlet usages ✅ **334 occurrences in 127 files** (2025-12-12)
+- [x] 2.2.2 Identify all javax.ws.rs usages ✅ **421 occurrences in 129 files** (2025-12-12)
+- [x] 2.2.3 Identify all javax.xml.bind usages ✅ **195 occurrences in 89 files** (2025-12-12)
 - [ ] 2.2.4 Create migration plan per module
 - [ ] 2.2.5 Migrate platform/security modules first
 - [ ] 2.2.6 Migrate catalog modules
 - [ ] 2.2.7 Migrate remaining modules
+
+**Additional Analysis (2025-12-12):**
+- javax.annotation: 82 occurrences in 77 files
+- javax.inject: 11 occurrences in 11 files
+- **Total: ~1,043 javax imports requiring migration**
 
 ### 2.3 Spring 6.x Upgrade
 - [ ] 2.3.1 Review Spring 5.3 -> 6.0 migration guide
@@ -153,10 +158,10 @@
 ## Quick Reference
 
 ### Priority Order
-1. Security test coverage (enables safe refactoring)
-2. OWASP suppression file (reduces noise)
-3. Hazelcast decision (removes 4 CVEs)
-4. Jakarta transformation setup (unblocks upgrades)
+1. ~~Security test coverage (enables safe refactoring)~~ ✅ Major progress
+2. ~~OWASP suppression file (reduces noise)~~ ✅ Already comprehensive
+3. ~~Hazelcast decision (removes 4 CVEs)~~ ✅ **REMOVED**
+4. Jakarta transformation setup (unblocks upgrades) ← **CURRENT**
 5. Core library upgrades (fixes remaining CVEs)
 
 ### Commands
