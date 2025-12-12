@@ -26,23 +26,33 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.CatalogFramework;
+import ddf.catalog.content.StorageProvider;
+import ddf.catalog.content.operation.ReadStorageResponse;
 import ddf.catalog.data.AttributeRegistry;
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
 import ddf.catalog.data.impl.MetacardImpl;
+import ddf.catalog.federation.FederationException;
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
+import ddf.catalog.operation.ProcessingDetails;
 import ddf.catalog.operation.QueryResponse;
+import ddf.catalog.source.SourceUnavailableException;
+import ddf.catalog.source.UnsupportedQueryException;
 import ddf.mime.MimeTypeResolver;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import net.minidev.json.JSONObject;
 import org.codice.ddf.attachment.AttachmentParser;
+import org.codice.ddf.checksum.ChecksumProvider;
 import org.codice.ddf.rest.api.CatalogServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -150,13 +160,13 @@ public class AbstractCatalogServiceTest {
   }
 
   @Test
-  public void testGetHeadersWithNullId() throws CatalogServiceException {
+  public void testGetHeadersWithNullIdThrowsException() {
     MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
     URI uri = URI.create("http://localhost:8181/services/catalog");
 
-    BinaryContent result = catalogService.getHeaders(null, null, uri, queryParams);
-
-    assertThat(result, is(nullValue()));
+    assertThrows(
+        CatalogServiceException.class,
+        () -> catalogService.getHeaders(null, null, uri, queryParams));
   }
 
   @Test
@@ -231,6 +241,205 @@ public class AbstractCatalogServiceTest {
     assertThat(catalogService, is(notNullValue()));
   }
 
+  @Test
+  public void testContainsErrorsWithNullProcessingErrors() {
+    ReadStorageResponse response = mock(ReadStorageResponse.class);
+    when(response.getProcessingErrors()).thenReturn(null);
+
+    boolean result = catalogService.containsErrors(response);
+
+    assertThat(result, is(false));
+  }
+
+  @Test
+  public void testContainsErrorsWithEmptyProcessingErrors() {
+    ReadStorageResponse response = mock(ReadStorageResponse.class);
+    when(response.getProcessingErrors()).thenReturn(new HashSet<>());
+
+    boolean result = catalogService.containsErrors(response);
+
+    assertThat(result, is(false));
+  }
+
+  @Test
+  public void testContainsErrorsWithProcessingErrorWithException() {
+    ReadStorageResponse response = mock(ReadStorageResponse.class);
+    ProcessingDetails detail = mock(ProcessingDetails.class);
+    when(detail.hasException()).thenReturn(true);
+    Set<ProcessingDetails> errors = new HashSet<>();
+    errors.add(detail);
+    when(response.getProcessingErrors()).thenReturn(errors);
+
+    boolean result = catalogService.containsErrors(response);
+
+    assertThat(result, is(true));
+  }
+
+  @Test
+  public void testContainsErrorsWithProcessingErrorWithoutException() {
+    ReadStorageResponse response = mock(ReadStorageResponse.class);
+    ProcessingDetails detail = mock(ProcessingDetails.class);
+    when(detail.hasException()).thenReturn(false);
+    Set<ProcessingDetails> errors = new HashSet<>();
+    errors.add(detail);
+    when(response.getProcessingErrors()).thenReturn(errors);
+
+    boolean result = catalogService.containsErrors(response);
+
+    assertThat(result, is(false));
+  }
+
+  @Test
+  public void testDoesLocalResourceExistWithQueryException() throws Exception {
+    TestAbstractCatalogServiceWithStorage service =
+        new TestAbstractCatalogServiceWithStorage(
+            catalogFramework, attachmentParser, attributeRegistry);
+    service.setFilterBuilder(filterBuilder);
+
+    when(catalogFramework.query(any()))
+        .thenThrow(new UnsupportedQueryException("Query not supported"));
+
+    assertThrows(
+        CatalogServiceException.class, () -> service.doesLocalResourceExist("id123", "source1"));
+  }
+
+  @Test
+  public void testDoesLocalResourceExistWithSourceUnavailable() throws Exception {
+    TestAbstractCatalogServiceWithStorage service =
+        new TestAbstractCatalogServiceWithStorage(
+            catalogFramework, attachmentParser, attributeRegistry);
+    service.setFilterBuilder(filterBuilder);
+
+    when(catalogFramework.query(any()))
+        .thenThrow(new SourceUnavailableException("Source unavailable"));
+
+    assertThrows(
+        CatalogServiceException.class, () -> service.doesLocalResourceExist("id123", "source1"));
+  }
+
+  @Test
+  public void testDoesLocalResourceExistWithFederationException() throws Exception {
+    TestAbstractCatalogServiceWithStorage service =
+        new TestAbstractCatalogServiceWithStorage(
+            catalogFramework, attachmentParser, attributeRegistry);
+    service.setFilterBuilder(filterBuilder);
+
+    when(catalogFramework.query(any())).thenThrow(new FederationException("Federation failed"));
+
+    assertThrows(
+        CatalogServiceException.class, () -> service.doesLocalResourceExist("id123", "source1"));
+  }
+
+  @Test
+  public void testDoesLocalResourceExistWithNoResults() throws Exception {
+    TestAbstractCatalogServiceWithStorage service =
+        new TestAbstractCatalogServiceWithStorage(
+            catalogFramework, attachmentParser, attributeRegistry);
+    service.setFilterBuilder(filterBuilder);
+
+    QueryResponse localQueryResponse = mock(QueryResponse.class);
+    when(catalogFramework.query(any())).thenReturn(localQueryResponse);
+    when(localQueryResponse.getResults()).thenReturn(new ArrayList<>());
+
+    String result = service.doesLocalResourceExist("id123", "source1");
+
+    assertThat(result, is(nullValue()));
+  }
+
+  @Test
+  public void testDoesLocalResourceExistWithMultipleResults() throws Exception {
+    TestAbstractCatalogServiceWithStorage service =
+        new TestAbstractCatalogServiceWithStorage(
+            catalogFramework, attachmentParser, attributeRegistry);
+    service.setFilterBuilder(filterBuilder);
+
+    Result result1 = mock(Result.class);
+    Result result2 = mock(Result.class);
+    List<Result> results = new ArrayList<>();
+    results.add(result1);
+    results.add(result2);
+
+    QueryResponse localQueryResponse = mock(QueryResponse.class);
+    when(catalogFramework.query(any())).thenReturn(localQueryResponse);
+    when(localQueryResponse.getResults()).thenReturn(results);
+
+    String result = service.doesLocalResourceExist("id123", "source1");
+
+    // Should return null when there isn't exactly 1 result
+    assertThat(result, is(nullValue()));
+  }
+
+  @Test
+  public void testDoesLocalResourceExistWithNoStorageProviders() throws Exception {
+    // Service without storage providers
+    TestAbstractCatalogServiceWithStorage service =
+        new TestAbstractCatalogServiceWithStorage(
+            catalogFramework,
+            attachmentParser,
+            attributeRegistry,
+            Collections.emptyList(),
+            Collections.emptyList());
+    service.setFilterBuilder(filterBuilder);
+
+    MetacardImpl metacard = new MetacardImpl();
+    metacard.setId("id123");
+    metacard.setResourceURI(URI.create("content:id123"));
+
+    Result result = mock(Result.class);
+    when(result.getMetacard()).thenReturn(metacard);
+    List<Result> results = new ArrayList<>();
+    results.add(result);
+
+    QueryResponse localQueryResponse = mock(QueryResponse.class);
+    when(catalogFramework.query(any())).thenReturn(localQueryResponse);
+    when(localQueryResponse.getResults()).thenReturn(results);
+
+    String checksum = service.doesLocalResourceExist("id123", "source1");
+
+    // Should return null when there isn't exactly one storage provider
+    assertThat(checksum, is(nullValue()));
+  }
+
+  @Test
+  public void testSourceActionToJSONWithNullDescription() {
+    ddf.action.Action action = mock(ddf.action.Action.class);
+    when(action.getTitle()).thenReturn("Test Title");
+    when(action.getId()).thenReturn("test-id");
+    when(action.getDescription()).thenReturn(null);
+    when(action.getUrl()).thenReturn(createTestUrl());
+
+    JSONObject result = catalogService.sourceActionToJSON(action);
+
+    assertThat(result.get("title"), is(equalTo("Test Title")));
+    assertThat(result.get("id"), is(equalTo("test-id")));
+    assertThat(result.get("description"), is(nullValue()));
+    assertThat(result.get("url"), is(notNullValue()));
+  }
+
+  @Test
+  public void testGetHeadersWithEmptyIdReturnsNullWhenNoResults() throws Exception {
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    QueryResponse localQueryResponse = mock(QueryResponse.class);
+    when(catalogFramework.query(any(), any())).thenReturn(localQueryResponse);
+    when(localQueryResponse.getResults()).thenReturn(new ArrayList<>());
+
+    BinaryContent result = catalogService.getHeaders("source1", "", uri, queryParams);
+
+    // Empty ID should still attempt query and return null if no results
+    assertThat(result, is(nullValue()));
+  }
+
+  @Test
+  public void testSetUuidGenerator() {
+    org.codice.ddf.platform.util.uuidgenerator.UuidGenerator generator =
+        mock(org.codice.ddf.platform.util.uuidgenerator.UuidGenerator.class);
+    catalogService.setUuidGenerator(generator);
+    // Verify the method doesn't throw an exception
+    assertThat(catalogService, is(notNullValue()));
+  }
+
   /** Helper method to create a test URL. */
   private java.net.URL createTestUrl() {
     try {
@@ -250,7 +459,46 @@ public class AbstractCatalogServiceTest {
         CatalogFramework framework,
         AttachmentParser attachmentParser,
         AttributeRegistry attributeRegistry) {
-      super(framework, attachmentParser, attributeRegistry);
+      super(
+          framework,
+          attachmentParser,
+          attributeRegistry,
+          Collections.emptyList(),
+          Collections.emptyList());
+    }
+
+    @Override
+    public BinaryContent getSourcesInfo() {
+      // Return null for testing purposes
+      return null;
+    }
+  }
+
+  /**
+   * Concrete test implementation of AbstractCatalogService with storage providers for testing
+   * doesLocalResourceExist.
+   */
+  private static class TestAbstractCatalogServiceWithStorage extends AbstractCatalogService {
+
+    public TestAbstractCatalogServiceWithStorage(
+        CatalogFramework framework,
+        AttachmentParser attachmentParser,
+        AttributeRegistry attributeRegistry) {
+      super(
+          framework,
+          attachmentParser,
+          attributeRegistry,
+          Collections.emptyList(),
+          Collections.emptyList());
+    }
+
+    public TestAbstractCatalogServiceWithStorage(
+        CatalogFramework framework,
+        AttachmentParser attachmentParser,
+        AttributeRegistry attributeRegistry,
+        List<StorageProvider> storageProviders,
+        List<ChecksumProvider> checksumProviders) {
+      super(framework, attachmentParser, attributeRegistry, storageProviders, checksumProviders);
     }
 
     @Override
