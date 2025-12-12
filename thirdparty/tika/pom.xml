@@ -22,7 +22,7 @@
 
     <artifactId>tika</artifactId>
     <packaging>bundle</packaging>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tika</groupId>
