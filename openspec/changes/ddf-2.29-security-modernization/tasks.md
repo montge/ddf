@@ -125,8 +125,8 @@
 - [x] 4.1.5 spatial-wfs-converter tests (901 LOC) ✅ Already has 6 test files
 
 ### 4.1.6 Actually Untested Modules (Found 2025-12-12)
-- [ ] admin-configurator-actions-api (374 LOC, 8 classes) - API interfaces
-- [ ] admin-configurator-api (271 LOC, 7 classes) - API interfaces
+- [ ] admin-configurator-actions-api (374 LOC, 8 classes) - API interfaces only
+- [x] admin-configurator-api (271 LOC, 7 classes) ✅ 14 tests for Status enum + ConfiguratorException (2025-12-12)
 - [x] admin-modules-application (55 LOC, 1 class) ✅ 6 tests (2025-12-12)
 - [x] admin-core-configpidplugin (49 LOC, 1 class) ✅ 6 tests (2025-12-12)
 
