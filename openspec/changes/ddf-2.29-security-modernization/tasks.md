@@ -10,7 +10,7 @@
 - [ ] 1.1.2 Create suppression file for false positives
 - [ ] 1.1.3 Document test-only dependencies to suppress
 - [x] 1.1.4 GeoTools CVE-2025-30220 ✅ Fixed in 34.1 upgrade
-- [ ] 1.1.5 Verify Zookeeper 3.9.2 CVE status
+- [x] 1.1.5 Verify Zookeeper CVE status ✅ Upgraded 3.9.3 -> 3.9.4 (CVE-2025-58457 fixed)
 
 ### 1.2 Critical Dependency Upgrades
 - [x] 1.2.1 Hazelcast: Evaluate removal vs upgrade to 5.x ✅ **REMOVED** (2025-12-12)
@@ -25,6 +25,9 @@
 - [x] 1.2.10 OWASP HTML Sanitizer 20220608.1 -> 20240325.1 ✅ (2025-12-12)
 - [x] 1.2.11 Commons Exec 1.3 -> 1.5.0 ✅ (2025-12-12)
 - [x] 1.2.12 Commons Validator 1.6 -> 1.10.0 ✅ (2025-12-12)
+- [x] 1.2.13 Jersey 2.35 -> 2.47 (CVE-2025-25193 race condition) ✅ (2025-12-12)
+- [x] 1.2.14 Protobuf 4.28.2 -> 4.33.2 (DoS vulnerabilities) ✅ (2025-12-12)
+- [x] 1.2.15 ZooKeeper 3.9.3 -> 3.9.4 (CVE-2025-58457) ✅ (2025-12-12)
 
 ### 1.3 Security Test Coverage
 - [ ] 1.3.1 security-core-impl tests (46.88% -> 80%) - Added 74 tests (2025-12-12) incl. 36 PAOS tests
