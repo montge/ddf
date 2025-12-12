@@ -14,9 +14,9 @@ Distributed Data Framework (DDF) is an open source, modular integration framewor
 ### Core Libraries
 - **Apache Solr:** 9.0.0 (metadata storage/search)
 - **Apache CXF:** 3.6.8 (REST/SOAP services)
-- **Apache Camel:** 3.18.8 (integration routes)
-- **GeoTools:** 33.1 (geospatial processing)
-- **Spring Framework:** 5.3.39 (DI, targeting 6.x)
+- **Apache Camel:** 3.22.4 (integration routes)
+- **GeoTools:** 34.1 (geospatial processing) - Java 17+ version, includes all CVE fixes
+- **Spring Framework:** 6.2.14 ✅ (upgraded from 5.3.x)
 
 ### Build
 - **Maven:** 3.6.3+
@@ -67,17 +67,20 @@ REST/UI -> CatalogFramework (orchestrator)
 - OpenSAML 3.x -> 4.x
 - Karaf 4.3.7 -> 4.4.8
 - Pax Web 7.x -> 8.0.33
-- GeoTools 24.6 -> 31.6
+- GeoTools 24.6 -> 34.1 ✅ (Java 17+)
+- Spring 5.3.x -> 6.2.14 ✅
+- Jackson 2.18 -> 2.19.4 ✅
+- Commons Validator 1.6 -> 1.10.0 ✅
 
 ### In Progress
-- Spring 5.3.x -> 6.x (requires jakarta.* migration)
-- CXF 3.6.x -> 4.x
+- CXF 3.6.x -> 4.x (requires jakarta.* migration)
 - javax.* -> jakarta.* namespace
+- GeoTools 34.1 -> 34.x maintenance (as needed)
 
 ### Security Status
-- 126 active vulnerabilities (7 CRITICAL, 40 HIGH)
-- 70-80+ CVEs fixed in recent sessions
-- Blocked upgrades: Camel (requires Jakarta EE)
+- ~1177 active vulnerabilities (4 critical, 107 high) - down from 1798
+- Major CVE reductions: Hazelcast removal (-621), Jackson/Commons upgrades
+- Blocked upgrades: Camel 4.x (requires full Jakarta EE migration)
 
 ## Testing Standards
 - **Target:** 90%+ line coverage for core modules

@@ -955,8 +955,8 @@ public class SolrMetacardClientImpl implements SolrMetacardClient {
     }
 
     if (Metacard.ID.equals(fieldName)) {
-      CollectionUtils.transform(identifiers, Object::toString);
-      client.deleteById((List<String>) identifiers);
+      List<String> ids = identifiers.stream().map(Object::toString).toList();
+      client.deleteById(ids);
     } else {
       if (identifiers.size() < SolrCatalogProviderImpl.MAX_BOOLEAN_CLAUSES) {
         client.deleteByQuery(getIdentifierQuery(fieldName, identifiers));

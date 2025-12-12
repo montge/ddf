@@ -19,8 +19,12 @@
 - [x] 1.2.4 Jetty 9.4.57 -> 9.4.58 (CVE-2025-5115 HTTP/2 DDoS) ✅ (2025-12-12)
 - [x] 1.2.5 Netty 4.1.124 -> 4.1.128 (CVE-2025-55163 + security fixes) ✅ (2025-12-12)
 - [x] 1.2.6 Log4j 2.25.0 -> 2.25.1 (concurrency fixes) ✅ (2025-12-12)
-- [ ] 1.2.7 GeoTools 33.1 -> 33.4 (minor update) ⏸️ 33.4 not on Maven Central yet
+- [x] 1.2.7 GeoTools 33.1 -> 34.1 ✅ (2025-12-12) - Java 17+ version, latest security fixes
 - [x] 1.2.8 Apache Batik 1.14 -> 1.17+ (7 HIGH CVEs) ✅ Already at 1.18
+- [x] 1.2.9 Jackson 2.18.5 -> 2.19.4 ✅ (2025-12-12)
+- [x] 1.2.10 OWASP HTML Sanitizer 20220608.1 -> 20240325.1 ✅ (2025-12-12)
+- [x] 1.2.11 Commons Exec 1.3 -> 1.5.0 ✅ (2025-12-12)
+- [x] 1.2.12 Commons Validator 1.6 -> 1.10.0 ✅ (2025-12-12)
 
 ### 1.3 Security Test Coverage
 - [ ] 1.3.1 security-core-impl tests (46.88% -> 80%)
@@ -28,7 +32,7 @@
 - [ ] 1.3.3 security-handler-impl tests (13.84% -> 80%)
 - [ ] 1.3.4 platform-security-core-api tests (35.01% -> 80%)
 - [x] 1.3.5 security-filter-csrf tests (0% -> 80%) ✅ 99.1% instruction, 88.5% branch, 98.6% line coverage
-- [ ] 1.3.6 catalog-security-logging tests (0% -> 80%)
+- [x] 1.3.6 catalog-security-logging tests (0% -> 80%) ✅ **Already at 100%** - 45 tests, full coverage
 
 ---
 
