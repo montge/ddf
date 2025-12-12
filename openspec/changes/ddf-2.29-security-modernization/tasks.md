@@ -55,15 +55,20 @@
 - [x] 2.2.1 Identify all javax.servlet usages ✅ **334 occurrences in 127 files** (2025-12-12)
 - [x] 2.2.2 Identify all javax.ws.rs usages ✅ **421 occurrences in 129 files** (2025-12-12)
 - [x] 2.2.3 Identify all javax.xml.bind usages ✅ **195 occurrences in 89 files** (2025-12-12)
-- [ ] 2.2.4 Create migration plan per module
-- [ ] 2.2.5 Migrate platform/security modules first
-- [ ] 2.2.6 Migrate catalog modules
-- [ ] 2.2.7 Migrate remaining modules
+- [x] 2.2.4 Create migration plan per module ✅ See `jakarta-migration-plan.md` (2025-12-12)
+- [ ] 2.2.5 Migrate platform/security modules first ⏸️ **BLOCKED** on CXF 4.x
+- [ ] 2.2.6 Migrate catalog modules ⏸️ **BLOCKED** on CXF 4.x
+- [ ] 2.2.7 Migrate remaining modules ⏸️ **BLOCKED** on CXF 4.x
 
 **Additional Analysis (2025-12-12):**
 - javax.annotation: 82 occurrences in 77 files
 - javax.inject: 11 occurrences in 11 files
 - **Total: ~1,043 javax imports requiring migration**
+
+**Critical Finding (2025-12-12):**
+- OpenRewrite successfully transforms source code (tested on catalog-rest-api)
+- **BLOCKER:** CXF 3.5.x provides javax.ws.rs; migration requires CXF 4.x first
+- Migration order: CXF 4.x upgrade → Then OpenRewrite on modules
 
 ### 2.3 Spring 6.x Upgrade
 - [x] 2.3.1 Review Spring 5.3 -> 6.0 migration guide ✅ Already at 6.2.14!
@@ -170,8 +175,10 @@
 1. ~~Security test coverage (enables safe refactoring)~~ ✅ Major progress
 2. ~~OWASP suppression file (reduces noise)~~ ✅ Already comprehensive
 3. ~~Hazelcast decision (removes 4 CVEs)~~ ✅ **REMOVED**
-4. Jakarta transformation setup (unblocks upgrades) ← **CURRENT**
-5. Core library upgrades (fixes remaining CVEs)
+4. ~~Jakarta transformation setup~~ ✅ OpenRewrite verified, migration plan created
+5. **CXF 4.x upgrade** ← **NEXT** (unblocks Jakarta migration)
+6. Jakarta namespace migration (after CXF 4.x)
+7. Core library upgrades (fixes remaining CVEs)
 
 ### Commands
 ```bash
