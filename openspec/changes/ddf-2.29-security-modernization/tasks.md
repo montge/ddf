@@ -19,7 +19,7 @@
 - [x] 1.2.4 Jetty 9.4.57 -> 9.4.58 (CVE-2025-5115 HTTP/2 DDoS) ✅ (2025-12-12)
 - [x] 1.2.5 Netty 4.1.124 -> 4.1.128 (CVE-2025-55163 + security fixes) ✅ (2025-12-12)
 - [x] 1.2.6 Log4j 2.25.0 -> 2.25.1 (concurrency fixes) ✅ (2025-12-12)
-- [x] 1.2.7 GeoTools 33.1 -> 33.4 (minor update) ✅ (2025-12-12)
+- [ ] 1.2.7 GeoTools 33.1 -> 33.4 (minor update) ⏸️ 33.4 not on Maven Central yet
 - [x] 1.2.8 Apache Batik 1.14 -> 1.17+ (7 HIGH CVEs) ✅ Already at 1.18
 
 ### 1.3 Security Test Coverage

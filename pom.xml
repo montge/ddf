@@ -287,7 +287,7 @@
         <nimbus.content-type.version>2.3</nimbus.content-type.version>
         <nimbus.jose.jwt.version>10.5</nimbus.jose.jwt.version>
         <nimbus.langtag.version>1.7</nimbus.langtag.version>
-        <org.geotools.version>33.4</org.geotools.version>
+        <org.geotools.version>33.1</org.geotools.version>
         <geotools-hsql.version>2.7.2</geotools-hsql.version>
         <org.ops4j.base.version>1.5.1</org.ops4j.base.version>
         <!-- Note: The swissbox version needs to match the version used by pax-exam . -->
