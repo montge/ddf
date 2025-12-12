@@ -4,11 +4,11 @@
 Define requirements for upgrading DDF to modern Java and Jakarta EE standards while maintaining backward compatibility during transition.
 
 ## Current State
-- **Java:** 11 (targeting 17/21)
+- **Java:** 17 ✅ LTS until 2029 (targeting 21 LTS)
 - **Namespace:** javax.* (targeting jakarta.*)
 - **Spring:** 5.3.39 (targeting 6.x)
 - **CXF:** 3.6.8 (targeting 4.x)
-- **Karaf:** 4.4.8 (current)
+- **Karaf:** 4.4.8 (partial Java 21 support - needs 4.5.x for full support)
 
 ---
 
@@ -64,18 +64,21 @@ The system MUST upgrade from CXF 3.x to CXF 4.x.
 
 ---
 
-### Requirement: Java Version Upgrade
-The system SHOULD support Java 17 LTS and MAY support Java 21 LTS.
+### Requirement: Java Version Support
+The system MUST support Java 17 LTS and SHOULD support Java 21 LTS.
 
-#### Scenario: Java 17 Compatibility
-- GIVEN code compiled with Java 11
+#### Scenario: Java 17 Compatibility ✅
+- GIVEN code compiled with Java 17
 - WHEN Java 17 runtime is used
 - THEN all code MUST execute without errors
+- **Status:** Complete - maven.compiler.source/target set to 17
 
 #### Scenario: Java 21 Compatibility
-- GIVEN code compiled with Java 11
+- GIVEN code compiled with Java 17
 - WHEN Java 21 runtime is used
 - THEN all code SHOULD execute without errors
+- **Blocker:** Karaf 4.4.8 has partial Java 21 support; needs Karaf 4.5.x
+- **Blocker:** Apache Aries Blueprint compatibility not confirmed
 
 ---
 
@@ -95,7 +98,15 @@ The system MUST upgrade logging infrastructure to Logback 1.4.x.
 - [x] Karaf 4.3.7 -> 4.4.8
 - [x] Pax Web 7.x -> 8.0.33
 - [x] OpenSAML 3.x -> 4.x
+- [x] Java 17 compilation target ✅
 - [ ] Spring feature compatibility fix
+
+### Phase 1.5: Java 21 Preparation
+- [ ] Upgrade Karaf 4.4.8 -> 4.5.x (when released)
+- [ ] Validate Apache Aries Blueprint on Java 21
+- [ ] Test OSGi runtime on Java 21
+- [ ] Update maven.compiler.source/target to 21
+- [ ] Update CI to test both Java 17 and 21
 
 ### Phase 2: Transformation Tooling
 - [ ] Eclipse Transformer integration

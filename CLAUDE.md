@@ -285,7 +285,7 @@ Properties files in `$DDF_HOME/etc/`:
 ## Development Notes
 
 ### Requirements
-- OpenJDK 11 (set `JAVA_HOME`)
+- OpenJDK 17 LTS (set `JAVA_HOME`) - targeting Java 21 LTS when Karaf 4.5.x is released
 - Maven 3.6.3+ (set `MAVEN_OPTS` with appropriate memory: `-Xmx1024m`)
 
 ### Code Style

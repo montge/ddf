@@ -6,16 +6,16 @@ Distributed Data Framework (DDF) is an open source, modular integration framewor
 ## Tech Stack
 
 ### Runtime
-- **Java:** OpenJDK 11 (targeting 17/21)
+- **Java:** OpenJDK 17 ✅ LTS (targeting 21 LTS when Karaf 4.5.x released)
 - **OSGi:** Apache Karaf 4.4.8
-- **Web:** Pax Web 8.0.33 (Jetty-based)
+- **Web:** Pax Web 8.0.33 (Jetty 9.4.58)
 - **Security:** OpenSAML 4.x, pac4j 5.x
 
 ### Core Libraries
 - **Apache Solr:** 9.0.0 (metadata storage/search)
 - **Apache CXF:** 3.6.8 (REST/SOAP services)
 - **Apache Camel:** 3.18.8 (integration routes)
-- **GeoTools:** 31.6 (geospatial processing)
+- **GeoTools:** 33.1 (geospatial processing)
 - **Spring Framework:** 5.3.39 (DI, targeting 6.x)
 
 ### Build
