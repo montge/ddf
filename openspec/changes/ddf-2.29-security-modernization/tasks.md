@@ -119,10 +119,16 @@
 
 ### 4.1 Critical Untested Modules
 - [x] 4.1.1 catalog-rest-service tests (1,315 LOC) ✅ 27 tests (2025-12-12)
-- [ ] 4.1.2 admin-core-api tests (1,117 LOC)
-- [ ] 4.1.3 catalog-core-definitionparser tests (967 LOC)
-- [ ] 4.1.4 catalog-solr-offline-gazetteer tests (961 LOC)
-- [ ] 4.1.5 spatial-wfs-converter tests (901 LOC)
+- [x] 4.1.2 admin-core-api tests (1,117 LOC) ✅ Already has 6 test classes (806 lines)
+- [x] 4.1.3 catalog-core-definitionparser tests (967 LOC) ✅ Already has 903 lines Spock tests
+- [x] 4.1.4 catalog-solr-offline-gazetteer tests (961 LOC) ✅ Already has 2 test files
+- [x] 4.1.5 spatial-wfs-converter tests (901 LOC) ✅ Already has 6 test files
+
+### 4.1.6 Actually Untested Modules (Found 2025-12-12)
+- [ ] admin-configurator-actions-api (374 LOC, 8 classes) - API interfaces
+- [ ] admin-configurator-api (271 LOC, 7 classes) - API interfaces
+- [x] admin-modules-application (55 LOC, 1 class) ✅ 6 tests (2025-12-12)
+- [x] admin-core-configpidplugin (49 LOC, 1 class) ✅ 6 tests (2025-12-12)
 
 ### 4.2 Core API Coverage
 - [ ] 4.2.1 catalog-core-api coverage (7.58% -> 80%)
