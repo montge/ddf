@@ -27,7 +27,7 @@
 - [ ] 1.3.2 security-core-services tests (45.77% -> 80%)
 - [ ] 1.3.3 security-handler-impl tests (13.84% -> 80%)
 - [ ] 1.3.4 platform-security-core-api tests (35.01% -> 80%)
-- [ ] 1.3.5 security-filter-csrf tests (0% -> 80%)
+- [x] 1.3.5 security-filter-csrf tests (0% -> 80%) ✅ 99.1% instruction, 88.5% branch, 98.6% line coverage
 - [ ] 1.3.6 catalog-security-logging tests (0% -> 80%)
 
 ---
