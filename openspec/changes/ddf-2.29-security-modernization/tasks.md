@@ -28,7 +28,7 @@
 
 ### 1.3 Security Test Coverage
 - [ ] 1.3.1 security-core-impl tests (46.88% -> 80%) - Added 74 tests (2025-12-12) incl. 36 PAOS tests
-- [ ] 1.3.2 security-core-services tests (45.77% -> 80%) - Added 21 tests (2025-12-12)
+- [x] 1.3.2 security-core-services tests (45.77% -> 80%) ✅ Added 51 tests (2025-12-12) incl. 30 SecurityLoggerImpl tests
 - [x] 1.3.3 security-handler-impl tests (13.84% -> 80%) ✅ **98.2%** instruction coverage (2025-12-12)
 - [x] 1.3.4 platform-security-core-api tests ✅ Mostly interfaces (30+), concrete classes tested (2025-12-12)
 - [x] 1.3.5 security-filter-csrf tests (0% -> 80%) ✅ 99.1% instruction, 88.5% branch, 98.6% line coverage
