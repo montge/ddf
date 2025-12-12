@@ -1,0 +1,153 @@
+# Security Specification
+
+## Purpose
+Define security requirements for DDF including authentication, authorization, vulnerability management, and secure coding practices.
+
+## Current State
+- **Active Vulnerabilities:** 126 (7 CRITICAL, 40 HIGH, 70 MEDIUM, 2 LOW)
+- **Vulnerable Dependencies:** 61 of 1,152 scanned
+- **Authentication:** SAML 2.0, OAuth 2.0/OIDC, X.509, LDAP, Basic, Guest
+- **Authorization:** XACML 3.0, attribute-based access control
+
+---
+
+## Requirements
+
+### Requirement: Vulnerability Management
+The system MUST maintain zero CRITICAL and zero HIGH severity vulnerabilities in production dependencies.
+
+#### Scenario: Dependency Scanning
+- GIVEN a build is triggered
+- WHEN OWASP dependency-check runs
+- THEN all CRITICAL and HIGH vulnerabilities MUST be either fixed or suppressed with documented rationale
+
+#### Scenario: New Vulnerability Discovery
+- GIVEN a new CVE is published affecting a DDF dependency
+- WHEN the CVE severity is CRITICAL
+- THEN a fix MUST be applied within 14 days
+
+#### Scenario: High Severity Response
+- GIVEN a new CVE is published affecting a DDF dependency
+- WHEN the CVE severity is HIGH
+- THEN a fix MUST be applied within 30 days
+
+---
+
+### Requirement: Authentication Handlers
+The system MUST support multiple authentication mechanisms through pluggable handlers.
+
+#### Scenario: SAML Authentication
+- GIVEN a user accesses a protected resource
+- WHEN the user has a valid SAML assertion from a trusted IdP
+- THEN access MUST be granted with appropriate subject attributes
+
+#### Scenario: OIDC Authentication
+- GIVEN a user accesses a protected resource
+- WHEN the user has a valid OIDC token
+- THEN access MUST be granted with claims mapped to subject attributes
+
+#### Scenario: X.509 Certificate Authentication
+- GIVEN a user presents a client certificate
+- WHEN the certificate is valid and issued by a trusted CA
+- THEN access MUST be granted with DN attributes extracted
+
+---
+
+### Requirement: Authorization Framework
+The system MUST enforce attribute-based access control on all catalog operations.
+
+#### Scenario: Query Filtering
+- GIVEN a user queries the catalog
+- WHEN results contain metacards with security markings
+- THEN only metacards matching user attributes MUST be returned
+
+#### Scenario: Ingest Authorization
+- GIVEN a user attempts to create a metacard
+- WHEN the user lacks required permissions
+- THEN the operation MUST be rejected with appropriate error
+
+---
+
+### Requirement: Security Plugin Chain
+The system MUST process security decisions through a defined plugin chain.
+
+#### Scenario: Pre-Authorization Plugin
+- GIVEN an operation request arrives
+- WHEN the PreAuthorizationPlugin processes it
+- THEN subject attributes MUST be validated before proceeding
+
+#### Scenario: Policy Plugin
+- GIVEN an operation passes pre-authorization
+- WHEN the PolicyPlugin evaluates it
+- THEN applicable policies MUST be determined
+
+#### Scenario: Access Plugin
+- GIVEN policies have been determined
+- WHEN the AccessPlugin processes the operation
+- THEN the final allow/deny decision MUST be made
+
+---
+
+### Requirement: Secure Session Management
+The system MUST maintain secure sessions with proper expiration and invalidation.
+
+#### Scenario: Session Timeout
+- GIVEN a user has an active session
+- WHEN the session exceeds the configured idle timeout
+- THEN the session MUST be invalidated
+
+#### Scenario: Session Logout
+- GIVEN a user initiates logout
+- WHEN the logout request is processed
+- THEN all session tokens MUST be invalidated
+
+---
+
+### Requirement: CSRF Protection
+The system MUST protect against Cross-Site Request Forgery attacks.
+
+#### Scenario: CSRF Token Validation
+- GIVEN a state-changing request arrives
+- WHEN the CSRF token is missing or invalid
+- THEN the request MUST be rejected
+
+---
+
+### Requirement: Security Logging
+The system MUST log security-relevant events for audit purposes.
+
+#### Scenario: Authentication Events
+- GIVEN an authentication attempt occurs
+- WHEN the attempt succeeds or fails
+- THEN the event MUST be logged with user identity and outcome
+
+#### Scenario: Authorization Events
+- GIVEN an authorization decision is made
+- WHEN the decision denies access
+- THEN the event MUST be logged with user identity and resource
+
+---
+
+## Critical Dependencies (Vulnerable)
+
+| Dependency | Current | Target | CVEs | Priority |
+|------------|---------|--------|------|----------|
+| Hazelcast | 3.12.10 | 5.x or REMOVE | 4 (1 CRIT) | P1 |
+| Apache Camel | 3.18.8 | 3.22+ | 5 (1 CRIT) | P1 (blocked) |
+| Zookeeper | 3.9.2 | 3.9.3+ | 2 (1 CRIT) | P2 |
+| GeoTools | 31.6 | 32.x+ | 1 (CRIT) | P2 |
+| Apache Batik | 1.14 | 1.17 | 7 (HIGH) | P2 |
+| Netty | 4.1.92 | 4.1.114 | 9 (3 HIGH) | P3 |
+
+---
+
+## Test Coverage Requirements
+
+| Module | Current | Target |
+|--------|---------|--------|
+| security-core-impl | 46.88% | 80% |
+| security-core-services | 45.77% | 80% |
+| security-handler-impl | 13.84% | 80% |
+| platform-security-core-api | 35.01% | 80% |
+| security-filter-csrf | 0% | 80% |
+| catalog-security-logging | 0% | 80% |
