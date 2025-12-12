@@ -39,10 +39,17 @@
 ## Phase 2: Jakarta EE Migration
 
 ### 2.1 Eclipse Transformer Setup
-- [ ] 2.1.1 Add Eclipse Transformer plugin to build
-- [ ] 2.1.2 Configure javax->jakarta transformation rules
+- [x] 2.1.1 Add Eclipse Transformer plugin to build ✅ v1.0.0 in `jakarta` profile (2025-12-12)
+- [x] 2.1.2 Configure javax->jakarta transformation rules ✅ jakartaDefaults enabled (2025-12-12)
 - [ ] 2.1.3 Create transformation test pipeline
 - [ ] 2.1.4 Validate transformed artifacts work in OSGi
+
+**Implementation Notes (2025-12-12):**
+- Use `mvn install -Djakarta` to enable bytecode transformation
+- For OSGi bundles: Recommend **OpenRewrite** for source code transformation first
+- Eclipse Transformer best for transforming third-party dependencies
+- OpenRewrite recipe: `org.openrewrite.java.migrate.jakarta.JakartaEE10`
+- See: [OmniFish Guide](https://omnifish.ee/upgrade-to-jakarta-ee-10-transform-application-source-code/)
 
 ### 2.2 Core Namespace Migration
 - [x] 2.2.1 Identify all javax.servlet usages ✅ **334 occurrences in 127 files** (2025-12-12)
@@ -59,11 +66,13 @@
 - **Total: ~1,043 javax imports requiring migration**
 
 ### 2.3 Spring 6.x Upgrade
-- [ ] 2.3.1 Review Spring 5.3 -> 6.0 migration guide
-- [ ] 2.3.2 Update Spring dependencies
+- [x] 2.3.1 Review Spring 5.3 -> 6.0 migration guide ✅ Already at 6.2.14!
+- [x] 2.3.2 Update Spring dependencies ✅ Already at 6.2.14 (Jakarta-compatible)
 - [ ] 2.3.3 Fix deprecated API usages
 - [ ] 2.3.4 Update Blueprint configurations if needed
 - [ ] 2.3.5 Validate OSGi bundle resolution
+
+**Note:** DDF already uses Spring 6.2.14 which is Jakarta EE compatible!
 
 ---
 
@@ -171,6 +180,14 @@ mvn org.owasp:dependency-check-maven:aggregate -Dformats=HTML,JSON -DskipTests
 
 # Build fast
 mvn install -Dfast
+
+# Build with Jakarta transformation (bytecode)
+mvn install -Djakarta
+
+# Run OpenRewrite Jakarta migration (source code)
+mvn -U org.openrewrite.maven:rewrite-maven-plugin:run \
+  -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-migrate-java:LATEST \
+  -Drewrite.activeRecipes=org.openrewrite.java.migrate.jakarta.JakartaEE10
 
 # Run tests for module
 cd platform/security/core/security-core-impl && mvn test

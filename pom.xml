@@ -369,6 +369,9 @@
         <tink.version>1.16.0</tink.version>
         <org.json.version>20240303</org.json.version>
 
+        <!-- Eclipse Transformer for Jakarta EE migration -->
+        <eclipse-transformer.version>1.0.0</eclipse-transformer.version>
+
         <!--temporary solr download url> -->
         <solr.download.url>https://dlcdn.apache.org</solr.download.url>
 
@@ -1909,6 +1912,46 @@
                 <maven.javadoc.skip>false</maven.javadoc.skip>
                 <fmt.skip>false</fmt.skip>
             </properties>
+        </profile>
+
+        <!-- Jakarta EE migration profile - transforms javax.* to jakarta.* -->
+        <profile>
+            <id>jakarta</id>
+            <activation>
+                <property>
+                    <name>jakarta</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.transformer</groupId>
+                        <artifactId>transformer-maven-plugin</artifactId>
+                        <version>${eclipse-transformer.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <rules>
+                                <!-- Use default Jakarta EE transformation rules -->
+                                <jakartaDefaults>true</jakartaDefaults>
+                            </rules>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>transform-jar</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <artifact>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>${project.artifactId}</artifactId>
+                                    </artifact>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
     <!--
