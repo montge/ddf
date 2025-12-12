@@ -32,8 +32,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CsrfFilterTest {
 
   private static final String CSRF_HEADER = "X-Requested-With";
@@ -81,7 +84,9 @@ public class CsrfFilterTest {
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -94,8 +99,10 @@ public class CsrfFilterTest {
     // Test legitimate request with valid referer and CSRF header
     when(request.getRequestURI()).thenReturn(INTRIGUE_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn(null);
     when(request.getHeader(REFERER_HEADER)).thenReturn(VALID_REFERER);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -108,9 +115,10 @@ public class CsrfFilterTest {
     // Test attack: request without Origin or Referer header
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getHeader(ORIGIN_HEADER)).thenReturn(null);
-    when(request.getHeader(REFERER_HEADER)).thenReturn(null);
-    when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -130,8 +138,10 @@ public class CsrfFilterTest {
     // Test attack: request from untrusted origin
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getHeader(ORIGIN_HEADER)).thenReturn(INVALID_ORIGIN);
-    when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn(INVALID_ORIGIN);
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -150,8 +160,10 @@ public class CsrfFilterTest {
     // Test attack: request without X-Requested-With header
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
-    when(request.getHeader(CSRF_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -171,7 +183,9 @@ public class CsrfFilterTest {
     when(request.getRequestURI()).thenReturn(WEBSOCKET_CONTEXT);
     when(request.getMethod()).thenReturn("GET");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
-    when(request.getHeader(CSRF_HEADER)).thenReturn(null); // No CSRF header
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn(null); // No CSRF header
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -185,7 +199,9 @@ public class CsrfFilterTest {
     when(request.getRequestURI()).thenReturn(CATALOG_CONTEXT);
     when(request.getMethod()).thenReturn("GET");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
-    when(request.getHeader(CSRF_HEADER)).thenReturn(null); // No CSRF header
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn(null); // No CSRF header
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -198,9 +214,10 @@ public class CsrfFilterTest {
     // OAuth provider redirect does not include headers
     when(request.getRequestURI()).thenReturn(OAUTH_CONTEXT);
     when(request.getMethod()).thenReturn("GET");
-    when(request.getHeader(ORIGIN_HEADER)).thenReturn(null);
-    when(request.getHeader(REFERER_HEADER)).thenReturn(null);
-    when(request.getHeader(CSRF_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -213,8 +230,10 @@ public class CsrfFilterTest {
     // Test POST to protected context without CSRF header
     when(request.getRequestURI()).thenReturn(INTRIGUE_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
-    when(request.getHeader(CSRF_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn(VALID_ORIGIN);
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -231,6 +250,7 @@ public class CsrfFilterTest {
     when(request.getRequestURI()).thenReturn(SERVICES_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER)).thenReturn("Java/11.0.1");
+    lenient().when(request.getQueryString()).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -246,6 +266,7 @@ public class CsrfFilterTest {
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+    lenient().when(request.getQueryString()).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -279,6 +300,7 @@ public class CsrfFilterTest {
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124");
+    lenient().when(request.getQueryString()).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -294,6 +316,7 @@ public class CsrfFilterTest {
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Safari/537.36");
+    lenient().when(request.getQueryString()).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -309,6 +332,7 @@ public class CsrfFilterTest {
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101");
+    lenient().when(request.getQueryString()).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -324,6 +348,7 @@ public class CsrfFilterTest {
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/91.0.864.59");
+    lenient().when(request.getQueryString()).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -360,6 +385,7 @@ public class CsrfFilterTest {
     // Test unprotected context (not in protectedContexts list)
     when(request.getRequestURI()).thenReturn("/public/api/test");
     when(request.getMethod()).thenReturn("POST");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
     // No headers needed
 
     csrfFilter.doFilter(request, response, filterChain);
@@ -378,7 +404,9 @@ public class CsrfFilterTest {
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn("https://trusted.example.com:9443");
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     customFilter.doFilter(request, response, filterChain);
 
@@ -394,8 +422,10 @@ public class CsrfFilterTest {
     // Test attack: malformed origin URL
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getHeader(ORIGIN_HEADER)).thenReturn("not-a-valid-url");
-    when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn("not-a-valid-url");
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -410,7 +440,9 @@ public class CsrfFilterTest {
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn("http://localhost"); // No port specified
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -424,7 +456,9 @@ public class CsrfFilterTest {
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(ORIGIN_HEADER)).thenReturn("https://localhost"); // No port specified
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn(null);
     when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 
@@ -437,9 +471,10 @@ public class CsrfFilterTest {
     // Test with blank (empty string) origin and referer
     when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
     when(request.getMethod()).thenReturn("POST");
-    when(request.getHeader(ORIGIN_HEADER)).thenReturn("");
-    when(request.getHeader(REFERER_HEADER)).thenReturn("");
-    when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(ORIGIN_HEADER)).thenReturn("");
+    lenient().when(request.getHeader(REFERER_HEADER)).thenReturn("");
+    lenient().when(request.getHeader(CSRF_HEADER)).thenReturn("XMLHttpRequest");
+    lenient().when(request.getHeader(USER_AGENT_HEADER)).thenReturn(null);
 
     assertThrows(
         AuthenticationFailureException.class,
@@ -458,6 +493,7 @@ public class CsrfFilterTest {
     when(request.getMethod()).thenReturn("POST");
     when(request.getHeader(USER_AGENT_HEADER))
         .thenReturn("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124");
+    lenient().when(request.getQueryString()).thenReturn(null);
 
     csrfFilter.doFilter(request, response, filterChain);
 

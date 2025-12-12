@@ -30,12 +30,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Comprehensive test suite for CsrfFilter covering advanced scenarios, edge cases, and error
  * handling.
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CsrfFilterComprehensiveTest {
 
   private static final String CSRF_HEADER = "X-Requested-With";
