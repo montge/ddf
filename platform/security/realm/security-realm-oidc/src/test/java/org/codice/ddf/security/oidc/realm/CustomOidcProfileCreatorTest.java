@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +46,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
@@ -60,6 +62,7 @@ public class CustomOidcProfileCreatorTest {
   @Mock private OidcConfiguration oidcConfiguration;
   @Mock private OidcClient oidcClient;
   @Mock private WebContext webContext;
+  @Mock private SessionStore sessionStore;
 
   @BeforeEach
   public void setup() throws Exception {
@@ -70,7 +73,7 @@ public class CustomOidcProfileCreatorTest {
     RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
     validAlgorithm = Algorithm.RSA256(publicKey, privateKey);
 
-    when(oidcConfiguration.getTokenExpirationAdvance()).thenReturn(0);
+    lenient().when(oidcConfiguration.getTokenExpirationAdvance()).thenReturn(0);
 
     profileCreator = new CustomOidcProfileCreator(oidcConfiguration, oidcClient);
   }
@@ -85,7 +88,7 @@ public class CustomOidcProfileCreatorTest {
     when(credentials.getIdToken()).thenReturn(jwt);
     when(credentials.getAccessToken()).thenReturn(accessToken);
 
-    Optional<UserProfile> profile = profileCreator.create(credentials, webContext);
+    Optional<UserProfile> profile = profileCreator.create(credentials, webContext, sessionStore);
 
     assertTrue(profile.isPresent());
     OidcProfile oidcProfile = (OidcProfile) profile.get();
@@ -106,7 +109,7 @@ public class CustomOidcProfileCreatorTest {
     when(credentials.getAccessToken()).thenReturn(accessToken);
     when(credentials.getRefreshToken()).thenReturn(refreshToken);
 
-    Optional<UserProfile> profile = profileCreator.create(credentials, webContext);
+    Optional<UserProfile> profile = profileCreator.create(credentials, webContext, sessionStore);
 
     assertTrue(profile.isPresent());
     OidcProfile oidcProfile = (OidcProfile) profile.get();
@@ -123,7 +126,7 @@ public class CustomOidcProfileCreatorTest {
     when(credentials.getIdToken()).thenReturn(jwt);
     when(credentials.getAccessToken()).thenReturn(null);
 
-    Optional<UserProfile> profile = profileCreator.create(credentials, webContext);
+    Optional<UserProfile> profile = profileCreator.create(credentials, webContext, sessionStore);
 
     assertTrue(profile.isPresent());
     OidcProfile oidcProfile = (OidcProfile) profile.get();
@@ -141,7 +144,7 @@ public class CustomOidcProfileCreatorTest {
     when(credentials.getAccessToken()).thenReturn(accessToken);
     when(credentials.getRefreshToken()).thenReturn(null);
 
-    Optional<UserProfile> profile = profileCreator.create(credentials, webContext);
+    Optional<UserProfile> profile = profileCreator.create(credentials, webContext, sessionStore);
 
     assertTrue(profile.isPresent());
     OidcProfile oidcProfile = (OidcProfile) profile.get();
@@ -156,7 +159,7 @@ public class CustomOidcProfileCreatorTest {
     OidcCredentials credentials = mock(OidcCredentials.class);
     when(credentials.getIdToken()).thenReturn(jwt);
 
-    Optional<UserProfile> profile = profileCreator.create(credentials, webContext);
+    Optional<UserProfile> profile = profileCreator.create(credentials, webContext, sessionStore);
 
     assertTrue(profile.isPresent());
     OidcProfile oidcProfile = (OidcProfile) profile.get();
@@ -173,7 +176,7 @@ public class CustomOidcProfileCreatorTest {
     OidcCredentials credentials = mock(OidcCredentials.class);
     when(credentials.getIdToken()).thenReturn(jwt);
 
-    Optional<UserProfile> profile = profileCreator.create(credentials, webContext);
+    Optional<UserProfile> profile = profileCreator.create(credentials, webContext, sessionStore);
 
     assertTrue(profile.isPresent());
     OidcProfile oidcProfile = (OidcProfile) profile.get();
@@ -190,7 +193,8 @@ public class CustomOidcProfileCreatorTest {
     when(credentials.getIdToken()).thenReturn(jwt);
 
     assertThrows(
-        AuthenticationException.class, () -> profileCreator.create(credentials, webContext));
+        AuthenticationException.class,
+        () -> profileCreator.create(credentials, webContext, sessionStore));
   }
 
   @Test
@@ -219,7 +223,7 @@ public class CustomOidcProfileCreatorTest {
     OidcCredentials credentials = mock(OidcCredentials.class);
     when(credentials.getIdToken()).thenReturn(jwt);
 
-    Optional<UserProfile> profile = profileCreator.create(credentials, webContext);
+    Optional<UserProfile> profile = profileCreator.create(credentials, webContext, sessionStore);
 
     assertTrue(profile.isPresent());
     OidcProfile oidcProfile = (OidcProfile) profile.get();

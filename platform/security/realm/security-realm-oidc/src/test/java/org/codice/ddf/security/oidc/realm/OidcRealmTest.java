@@ -55,7 +55,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -65,7 +64,6 @@ import org.codice.ddf.security.handler.api.OidcHandlerConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
@@ -253,9 +251,6 @@ public class OidcRealmTest {
 
   private WebContext getWebContext() {
     WebContext context = mock(WebContext.class);
-    SessionStore sessionStore = mock(SessionStore.class);
-    when(sessionStore.get(context, NONCE_SESSION_ATTRIBUTE)).thenReturn(Optional.of("myNonce"));
-    when(context.getSessionStore()).thenReturn(sessionStore);
     return context;
   }
 

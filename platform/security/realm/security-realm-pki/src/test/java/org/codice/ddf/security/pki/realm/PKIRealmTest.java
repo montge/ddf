@@ -307,9 +307,9 @@ public class PKIRealmTest {
     AuthenticationInfo authenticationInfo = pkiRealm.doGetAuthenticationInfo(authenticationToken);
 
     assertArrayEquals(
-        "All certificates should be preserved in credentials",
         certificates,
-        (X509Certificate[]) authenticationInfo.getCredentials());
+        (X509Certificate[]) authenticationInfo.getCredentials(),
+        "All certificates should be preserved in credentials");
   }
 
   @Test

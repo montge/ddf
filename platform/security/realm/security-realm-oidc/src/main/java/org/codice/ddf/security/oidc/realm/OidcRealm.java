@@ -28,8 +28,8 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.codice.ddf.security.handler.OidcAuthenticationToken;
 import org.codice.ddf.security.handler.api.OidcHandlerConfiguration;
 import org.codice.ddf.security.oidc.resolver.OidcCredentialsResolver;
-import org.pac4j.core.context.CallContext;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.jee.context.session.JEESessionStoreFactory;
@@ -94,7 +94,7 @@ public class OidcRealm extends AuthenticatingRealm {
     int readTimeout = oidcHandlerConfiguration.getReadTimeout();
 
     try {
-      OIDCProviderMetadata oidcProviderMetadata = oidcConfiguration.getOpMetadataResolver().load();
+      OIDCProviderMetadata oidcProviderMetadata = oidcConfiguration.findProviderMetadata();
 
       OidcCredentialsResolver oidcCredentialsResolver =
           new OidcCredentialsResolver(
@@ -106,7 +106,7 @@ public class OidcRealm extends AuthenticatingRealm {
     }
 
     // problem getting id token, invalidate credentials
-    if (credentials.toIdToken() == null) {
+    if (credentials.getIdToken() == null) {
       JEESessionStoreFactory.INSTANCE.newSessionStore(null).destroySession(webContext);
 
       String msg =
@@ -122,10 +122,9 @@ public class OidcRealm extends AuthenticatingRealm {
 
     OidcProfileCreator oidcProfileCreator =
         new CustomOidcProfileCreator(oidcConfiguration, oidcClient);
+    SessionStore sessionStore = JEESessionStoreFactory.INSTANCE.newSessionStore(null);
     Optional<UserProfile> userProfile =
-        oidcProfileCreator.create(
-            new CallContext(webContext, JEESessionStoreFactory.INSTANCE.newSessionStore(null)),
-            credentials);
+        oidcProfileCreator.create(credentials, webContext, sessionStore);
 
     SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo();
     simpleAuthenticationInfo.setCredentials(credentials);
