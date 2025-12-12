@@ -16,9 +16,11 @@
 - [x] 1.2.1 Hazelcast: Evaluate removal vs upgrade to 5.x ✅ **REMOVED** (2025-12-12)
 - [x] 1.2.2 If removing Hazelcast: identify replacement strategy ✅ PersistenceStore interface
 - [x] 1.2.3 If upgrading Hazelcast: plan API migration ✅ N/A (removed)
-- [ ] 1.2.4 Apache Batik 1.14 -> 1.17+
-- [ ] 1.2.5 Netty transitive dependency upgrade to 4.1.114
-- [ ] 1.2.6 Protobuf transitive dependency upgrade
+- [ ] 1.2.4 Jetty 9.4.57 -> 9.4.58 (CVE-2025-5115 HTTP/2 DDoS) **CRITICAL**
+- [ ] 1.2.5 Netty 4.1.124 -> 4.1.128 (CVE-2025-55163 + security fixes)
+- [ ] 1.2.6 Log4j 2.25.0 -> 2.25.1 (concurrency fixes)
+- [ ] 1.2.7 GeoTools 33.1 -> 33.4 (minor update)
+- [ ] 1.2.8 Apache Batik 1.14 -> 1.17+ (7 HIGH CVEs)
 
 ### 1.3 Security Test Coverage
 - [ ] 1.3.1 security-core-impl tests (46.88% -> 80%)
@@ -118,6 +120,29 @@
 - [ ] 5.3.1 Update CHANGELOG.md
 - [ ] 5.3.2 Update migration guide
 - [ ] 5.3.3 Archive OpenSpec change folder
+
+---
+
+## Phase 6: UI Modernization
+
+### 6.1 E2E Testing Infrastructure
+- [ ] 6.1.1 Add Playwright to Search UI module
+- [ ] 6.1.2 Create basic E2E test for search workflow
+- [ ] 6.1.3 Add Playwright to CI pipeline
+- [ ] 6.1.4 Migrate CasperJS tests to Playwright
+- [ ] 6.1.5 Retire CasperJS/PhantomJS
+
+### 6.2 Bootstrap Upgrade
+- [ ] 6.2.1 Audit Bootstrap 3.4.1 usage across UI modules
+- [ ] 6.2.2 Create Bootstrap 5 migration plan
+- [ ] 6.2.3 Update CSS framework to Bootstrap 5.3
+- [ ] 6.2.4 Fix responsive layout issues
+
+### 6.3 Build Modernization
+- [ ] 6.3.1 Add package.json to UI modules
+- [ ] 6.3.2 Integrate Vite for bundling
+- [ ] 6.3.3 Add TypeScript compilation
+- [ ] 6.3.4 Replace YUI Compressor with modern minification
 
 ---
 
