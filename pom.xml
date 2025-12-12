@@ -130,7 +130,7 @@
         <hamcrest-optional.version>1.0</hamcrest-optional.version>
         <jsonassert.version>1.5.0</jsonassert.version>
         <spock.version>2.3-groovy-4.0</spock.version>
-        <mockito.version>4.11.0</mockito.version>
+        <mockito.version>5.17.0</mockito.version>
         <pax.exam.version>4.14.0</pax.exam.version>
         <pax.logging.version>2.3.0</pax.logging.version>
         <pax.url.version>2.6.17</pax.url.version>
@@ -167,7 +167,7 @@
         <apache.shiro.version>1.13.0</apache.shiro.version>
         <asm.version>9.8</asm.version>
         <awaitility.version>3.1.6</awaitility.version>
-        <bouncy.version>1.81</bouncy.version>
+        <bouncy.version>1.83</bouncy.version>
         <c3p0.version>0.9.5.5</c3p0.version>
         <cal10n.version>0.8.1</cal10n.version>
         <cal10n.thirdparty.bundle.version>${cal10n.version}_1</cal10n.thirdparty.bundle.version>
@@ -218,7 +218,7 @@
         <httpmime.version>${httpclient.version}</httpmime.version>
         <jai-imageio-core.version>1.4.0</jai-imageio-core.version>
         <JavaAPIforKml.version>2.2.1_CODICE_1</JavaAPIforKml.version>
-        <jackson.version>2.18.4</jackson.version>
+        <jackson.version>2.18.5</jackson.version>
         <jakarta.xml.bind.version>2.3.2</jakarta.xml.bind.version>
         <jakarta.activation.version>1.2.2</jakarta.activation.version>
         <jakarta.mail.version>1.6.7</jakarta.mail.version>
@@ -264,7 +264,7 @@
         <org.osgi.util.promise.version>1.2.0</org.osgi.util.promise.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
         <la4j.version>0.6.0</la4j.version>
-        <apache-log4j.version>2.23.1</apache-log4j.version>
+        <apache-log4j.version>2.25.0</apache-log4j.version>
         <logback.classic.version>1.2.13</logback.classic.version>
         <logback.version>1.2.13</logback.version>
         <mariadb.version>2.4.1</mariadb.version>
@@ -274,7 +274,7 @@
         <mime4j.version>0.8.13</mime4j.version>
         <mpegts-streamer.version>0.1.0_2</mpegts-streamer.version>
         <net.minidev.asm.version>1.0.2</net.minidev.asm.version>
-        <netty.version>4.1.119.Final</netty.version>
+        <netty.version>4.1.124.Final</netty.version>
         <objenesis.version>3.4</objenesis.version>
         <ogc-tools-gml-jts.version>1.2.0</ogc-tools-gml-jts.version>
         <opendj-embedded.app.version>1.3.3</opendj-embedded.app.version>
@@ -301,7 +301,7 @@
         <ogc-filter-v_1_1_0-schema.thirdparty.version>1.1.0_5</ogc-filter-v_1_1_0-schema.thirdparty.version>
         <openjson.version>1.0.13</openjson.version>
         <pac4j.version>5.7.7</pac4j.version>
-        <pdfbox.version>3.0.5</pdfbox.version>
+        <pdfbox.version>3.0.6</pdfbox.version>
         <poi.version>5.4.1</poi.version>
         <xlsx.transformer.poi.version>5.2.2</xlsx.transformer.poi.version>
         <protobuf.version>4.28.2</protobuf.version>
@@ -334,7 +334,7 @@
         <spring.osgi.bundle.version>6.2.14_1</spring.osgi.bundle.version>
         <spring.feature.version>6.2.14_1</spring.feature.version>
         <spring-osgi-mock.version>1.2.1</spring-osgi-mock.version>
-        <tika.version>3.2.2</tika.version>
+        <tika.version>3.2.3</tika.version>
         <usng4j.version>0.4</usng4j.version>
         <validation.version>1.1.0.Final</validation.version>
         <woodstox.core.version>6.6.2</woodstox.core.version>
