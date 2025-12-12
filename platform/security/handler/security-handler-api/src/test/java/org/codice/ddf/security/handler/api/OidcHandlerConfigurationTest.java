@@ -31,7 +31,7 @@ public class OidcHandlerConfigurationTest {
 
   @Mock private OidcConfiguration oidcConfiguration;
 
-  @Mock private OidcClient<OidcConfiguration> oidcClient;
+  @Mock private OidcClient oidcClient;
 
   @Mock private OidcLogoutActionBuilder oidcLogoutActionBuilder;
 
@@ -47,7 +47,7 @@ public class OidcHandlerConfigurationTest {
           }
 
           @Override
-          public OidcClient<OidcConfiguration> getOidcClient(String callBackUri) {
+          public OidcClient getOidcClient(String callBackUri) {
             return oidcClient;
           }
 
@@ -83,7 +83,7 @@ public class OidcHandlerConfigurationTest {
   @Test
   public void testGetOidcClient() {
     String callbackUri = "https://localhost:8993/callback";
-    OidcClient<OidcConfiguration> result = handlerConfiguration.getOidcClient(callbackUri);
+    OidcClient result = handlerConfiguration.getOidcClient(callbackUri);
     assertThat(result, is(notNullValue()));
     assertThat(result, is(oidcClient));
   }
@@ -115,14 +115,14 @@ public class OidcHandlerConfigurationTest {
 
   @Test
   public void testGetOidcClientWithNullCallbackUri() {
-    OidcClient<OidcConfiguration> result = handlerConfiguration.getOidcClient(null);
+    OidcClient result = handlerConfiguration.getOidcClient(null);
     assertThat(result, is(notNullValue()));
     assertThat(result, is(oidcClient));
   }
 
   @Test
   public void testGetOidcClientWithEmptyCallbackUri() {
-    OidcClient<OidcConfiguration> result = handlerConfiguration.getOidcClient("");
+    OidcClient result = handlerConfiguration.getOidcClient("");
     assertThat(result, is(notNullValue()));
     assertThat(result, is(oidcClient));
   }
@@ -132,8 +132,8 @@ public class OidcHandlerConfigurationTest {
     String callbackUri1 = "https://localhost:8993/callback1";
     String callbackUri2 = "https://localhost:8993/callback2";
 
-    OidcClient<OidcConfiguration> result1 = handlerConfiguration.getOidcClient(callbackUri1);
-    OidcClient<OidcConfiguration> result2 = handlerConfiguration.getOidcClient(callbackUri2);
+    OidcClient result1 = handlerConfiguration.getOidcClient(callbackUri1);
+    OidcClient result2 = handlerConfiguration.getOidcClient(callbackUri2);
 
     assertThat(result1, is(notNullValue()));
     assertThat(result2, is(notNullValue()));

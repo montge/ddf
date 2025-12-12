@@ -44,14 +44,14 @@ public class DoPrivilegedFilterTest {
   }
 
   @Test
-  public void testIoException() {
+  public void testIoException() throws Exception {
     doThrow(IOException.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
     assertThrows(
         IOException.class, () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
   }
 
   @Test
-  public void testServletException() {
+  public void testServletException() throws Exception {
     doThrow(ServletException.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
     assertThrows(
         ServletException.class,

@@ -245,11 +245,11 @@ public class GuestRealmTest {
     AuthenticationInfo first = guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
     AuthenticationInfo second = guestRealm.doGetAuthenticationInfo(baseAuthenticationToken);
 
-    assertNotSame("Each call should produce a new authentication info", first, second);
+    assertNotSame(first, second, "Each call should produce a new authentication info");
     assertNotSame(
-        "Each call should produce different security assertions",
         first.getPrincipals().asList().get(1),
-        second.getPrincipals().asList().get(1));
+        second.getPrincipals().asList().get(1),
+        "Each call should produce different security assertions");
   }
 
   @Test
@@ -357,8 +357,8 @@ public class GuestRealmTest {
     assertNotNull(securityAssertion.getNotBefore());
     assertNotNull(securityAssertion.getNotOnOrAfter());
     assertTrue(
-        "NotOnOrAfter should be after NotBefore",
-        securityAssertion.getNotOnOrAfter().after(securityAssertion.getNotBefore()));
+        securityAssertion.getNotOnOrAfter().after(securityAssertion.getNotBefore()),
+        "NotOnOrAfter should be after NotBefore");
   }
 
   @Test
