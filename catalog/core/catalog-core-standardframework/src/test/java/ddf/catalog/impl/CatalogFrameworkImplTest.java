@@ -1333,8 +1333,8 @@ public class CatalogFrameworkImplTest {
      */
     verify(mockPostResourcePlugin).process(argument.capture());
     assertNotNull(
-        "PostResourcePlugin received a ResourceResponse with a null ResourceRequest.",
-        argument.getValue().getRequest());
+        argument.getValue().getRequest(),
+        "PostResourcePlugin received a ResourceResponse with a null ResourceRequest.");
 
     /*
      * We really don't need to assert this since we return our mockResourceResponse from
@@ -2589,7 +2589,7 @@ public class CatalogFrameworkImplTest {
     assertEquals(2, store.size());
   }
 
-  @Ignore // TODO (DDF-2436) -
+  @Disabled // TODO (DDF-2436) -
   @Test
   public void testUpdateWithStores() throws Exception {
     MockEventProcessor eventAdmin = new MockEventProcessor();
@@ -2646,7 +2646,7 @@ public class CatalogFrameworkImplTest {
         equalTo("myValue1"));
   }
 
-  @Ignore // TODO (DDF-2436) -
+  @Disabled // TODO (DDF-2436) -
   @Test
   public void testDeleteWithStores() throws Exception {
     MockEventProcessor eventAdmin = new MockEventProcessor();
@@ -2812,7 +2812,7 @@ public class CatalogFrameworkImplTest {
    * @throws Exception
    */
   @Test
-  @Ignore // CACHE
+  @Disabled // CACHE
   public void
       testGetResourceToTestSecondResourceReaderWithSameSchemeGetsCalledIfFirstDoesNotReturnAnything()
           throws Exception {

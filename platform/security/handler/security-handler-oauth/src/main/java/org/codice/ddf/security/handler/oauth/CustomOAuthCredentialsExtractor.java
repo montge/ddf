@@ -36,7 +36,7 @@ public class CustomOAuthCredentialsExtractor {
         context.getRequestParameter(OAuth20Configuration.OAUTH_CODE).orElse(null);
     if (codeParam != null) {
       credentials.setCode(
-          new AuthorizationCode(URLDecoder.decode(codeParam, StandardCharsets.UTF_8)).getValue());
+          new AuthorizationCode(URLDecoder.decode(codeParam, StandardCharsets.UTF_8)));
     } else {
       LOGGER.debug("No OAuth2 code found on request.");
     }
@@ -46,8 +46,7 @@ public class CustomOAuthCredentialsExtractor {
     final String accessToken = accessTokenParam != null ? accessTokenParam : accessTokenHeader;
     if (isNotBlank(accessToken)) {
       credentials.setAccessToken(
-          new BearerAccessToken(URLDecoder.decode(accessToken, StandardCharsets.UTF_8))
-              .toJSONObject());
+          new BearerAccessToken(URLDecoder.decode(accessToken, StandardCharsets.UTF_8)));
     } else {
       LOGGER.debug("No OAuth2 access token found on request.");
     }

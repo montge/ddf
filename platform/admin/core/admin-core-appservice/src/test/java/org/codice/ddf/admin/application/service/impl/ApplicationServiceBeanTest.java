@@ -37,6 +37,7 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,7 +50,6 @@ import javax.management.MBeanException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.karaf.features.BundleInfo;
 import org.apache.karaf.features.Dependency;
 import org.apache.karaf.features.Feature;
@@ -404,7 +404,7 @@ public class ApplicationServiceBeanTest {
     assertThat(
         "Should not find any services.",
         serviceBean.getServices(TEST_APP_NAME),
-        is(ListUtils.EMPTY_LIST));
+        is(Collections.emptyList()));
   }
 
   /**

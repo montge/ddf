@@ -210,7 +210,7 @@ public class WebSSOFilterSessionHandlingTest {
   }
 
   @Test
-  public void testHandlerRedirects() {
+  public void testHandlerRedirects() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
 
     HandlerResult handlerResult = mock(HandlerResult.class);
@@ -228,7 +228,7 @@ public class WebSSOFilterSessionHandlingTest {
   }
 
   @Test
-  public void testHandlerNoActionWithGuestDisabled() {
+  public void testHandlerNoActionWithGuestDisabled() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
     when(contextPolicyManager.getGuestAccess()).thenReturn(false);
 
@@ -265,7 +265,7 @@ public class WebSSOFilterSessionHandlingTest {
   }
 
   @Test
-  public void testHandlerCompletedWithoutToken() {
+  public void testHandlerCompletedWithoutToken() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
 
     HandlerResult handlerResult = mock(HandlerResult.class);
@@ -283,7 +283,7 @@ public class WebSSOFilterSessionHandlingTest {
   }
 
   @Test
-  public void testFilterChainException() {
+  public void testFilterChainException() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
 
     HandlerResult handlerResult = mock(HandlerResult.class);

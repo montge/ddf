@@ -31,7 +31,7 @@ import ddf.catalog.pubsub.predicate.TemporalPredicate;
 import java.util.HashMap;
 import org.geotools.api.filter.And;
 import org.geotools.api.filter.Filter;
-import org.geotools.api.filter.FilterFactory2;
+import org.geotools.api.filter.FilterFactory;
 import org.geotools.api.filter.Not;
 import org.geotools.api.filter.Or;
 import org.geotools.api.filter.PropertyIsEqualTo;
@@ -50,13 +50,13 @@ import org.osgi.service.event.Event;
 
 public class SubscriptionFilterVisitorTest {
 
-  private FilterFactory2 filterFactory;
+  private FilterFactory filterFactory;
   private SubscriptionFilterVisitor visitor;
   private GeometryFactory geometryFactory;
 
   @BeforeEach
   public void setUp() {
-    filterFactory = CommonFactoryFinder.getFilterFactory2();
+    filterFactory = CommonFactoryFinder.getFilterFactory();
     visitor = new SubscriptionFilterVisitor();
     geometryFactory = new GeometryFactory();
   }

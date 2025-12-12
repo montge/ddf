@@ -540,8 +540,8 @@ public class LogoutRequestServiceTest {
     initializeLogoutRequestService();
     assertEquals(Response.Status.SEE_OTHER.getStatusCode(), response.getStatus());
     assertTrue(
-        "Expected a successful logout message",
-        response.getLocation().toString().contains("logged+out+successfully."));
+        response.getLocation().toString().contains("logged+out+successfully."),
+        "Expected a successful logout message");
   }
 
   @Test
@@ -558,7 +558,7 @@ public class LogoutRequestServiceTest {
     assertEquals(Response.Status.SEE_OTHER.getStatusCode(), response.getStatus());
     String msg = LogoutRequestService.UNABLE_TO_PARSE_LOGOUT_RESPONSE.replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 
   @Test
@@ -592,8 +592,8 @@ public class LogoutRequestServiceTest {
             deflatedSamlRequest, null, relayState, SIGNATURE_ALGORITHM, SIGNATURE);
     assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     assertTrue(
-        "Expected logout url of " + redirectLogoutUrl,
-        response.getEntity().toString().contains(redirectLogoutUrl));
+        response.getEntity().toString().contains(redirectLogoutUrl),
+        "Expected logout url of " + redirectLogoutUrl);
   }
 
   @Test
@@ -621,6 +621,6 @@ public class LogoutRequestServiceTest {
     assertEquals(Response.Status.SEE_OTHER.getStatusCode(), response.getStatus());
     String msg = "Unable to validate".replaceAll(" ", "+");
     assertTrue(
-        "Expected message containing " + msg, response.getLocation().getQuery().contains(msg));
+        response.getLocation().getQuery().contains(msg), "Expected message containing " + msg);
   }
 }

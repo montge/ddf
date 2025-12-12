@@ -127,7 +127,12 @@ public class SortedQueryMonitorTest {
 
     SortedQueryMonitor queryMonitor =
         new SortedQueryMonitor(
-            completionService, futures, queryResponse, queryRequest, new ArrayList<>());
+            new HashMap<>(),
+            completionService,
+            futures,
+            queryResponse,
+            queryRequest,
+            new ArrayList<>());
 
     final Iterator<Future<SourceResponse>> futureIter =
         new ArrayList<>(futures.keySet()).iterator();
@@ -161,7 +166,12 @@ public class SortedQueryMonitorTest {
 
     SortedQueryMonitor queryMonitor =
         new SortedQueryMonitor(
-            completionService, futures, queryResponse, queryRequest, new ArrayList<>());
+            new HashMap<>(),
+            completionService,
+            futures,
+            queryResponse,
+            queryRequest,
+            new ArrayList<>());
 
     // Put the first two futures into the list and then set the third
     // value to be null in order to mock the effect of a null return from
@@ -202,7 +212,12 @@ public class SortedQueryMonitorTest {
 
     SortedQueryMonitor queryMonitor =
         new SortedQueryMonitor(
-            completionService, futures, queryResponse, queryRequest, new ArrayList<>());
+            new HashMap<>(),
+            completionService,
+            futures,
+            queryResponse,
+            queryRequest,
+            new ArrayList<>());
 
     final Iterator<Future<SourceResponse>> futureIter =
         new ArrayList<>(futures.keySet()).iterator();
@@ -273,7 +288,12 @@ public class SortedQueryMonitorTest {
 
     SortedQueryMonitor queryMonitor =
         new SortedQueryMonitor(
-            completionService, futures, queryResponse, queryRequest, new ArrayList<>());
+            new HashMap<>(),
+            completionService,
+            futures,
+            queryResponse,
+            queryRequest,
+            new ArrayList<>());
 
     final Iterator<Future<SourceResponse>> iterator = futures.keySet().iterator();
     when(completionService.take()).thenAnswer((invocationOnMock -> iterator.next()));
@@ -425,7 +445,12 @@ public class SortedQueryMonitorTest {
 
     SortedQueryMonitor queryMonitor =
         new SortedQueryMonitor(
-            completionService, futures, queryResponse, queryRequest, new ArrayList<>());
+            new HashMap<>(),
+            completionService,
+            futures,
+            queryResponse,
+            queryRequest,
+            new ArrayList<>());
 
     Future<SourceResponse> currFuture = futures.keySet().iterator().next();
     when(completionService.poll(anyLong(), any())).thenAnswer((invocationOnMock -> currFuture));
@@ -471,7 +496,12 @@ public class SortedQueryMonitorTest {
 
     SortedQueryMonitor queryMonitor =
         new SortedQueryMonitor(
-            completionService, futures, queryResponse, queryRequest, new ArrayList<>());
+            new HashMap<>(),
+            completionService,
+            futures,
+            queryResponse,
+            queryRequest,
+            new ArrayList<>());
 
     when(completionService.take()).thenReturn(futureMock, futureMock2);
     queryMonitor.run();

@@ -16,15 +16,17 @@ package org.codice.ddf.security.logout.endpoint;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import ddf.security.service.SecurityServiceException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 import org.codice.ddf.security.logout.service.LogoutService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,84 +57,77 @@ public class LogoutEndpointTest {
   }
 
   @Test
-  public void testPathAnnotation() {
-    Path annotation = LogoutEndpoint.class.getAnnotation(Path.class);
-    assertThat(annotation, is(notNullValue()));
-    assertThat(annotation.value(), is("/"));
+  public void testIsHttpServlet() {
+    assertThat(endpoint instanceof HttpServlet, is(true));
   }
 
   @Test
-  public void testGetActionProvidersReturnsOkResponse() throws Exception {
+  public void testDoGetCallsLogoutService() throws Exception {
     String jsonResponse = "{\"actions\":[]}";
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(stringWriter);
     when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
+    when(response.getWriter()).thenReturn(printWriter);
 
-    Response result = endpoint.getActionProviders(request, response);
-
-    assertThat(result, is(notNullValue()));
-    assertThat(result.getStatus(), is(Response.Status.OK.getStatusCode()));
-  }
-
-  @Test
-  public void testGetActionProvidersCallsLogoutService() throws Exception {
-    String jsonResponse = "{\"actions\":[]}";
-    when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
-
-    endpoint.getActionProviders(request, response);
+    endpoint.doGet(request, response);
 
     verify(logoutService).getActionProviders(request, response);
   }
 
   @Test
-  public void testGetActionProvidersReturnsInputStream() throws Exception {
-    String jsonResponse = "{\"actions\":[{\"id\":\"test\"}]}";
-    when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
-
-    Response result = endpoint.getActionProviders(request, response);
-
-    assertThat(result.getEntity() instanceof InputStream, is(true));
-  }
-
-  @Test
-  public void testGetActionProvidersSetsCacheControlHeader() throws Exception {
+  public void testDoGetSetsCacheControlHeader() throws Exception {
     String jsonResponse = "{\"actions\":[]}";
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(stringWriter);
     when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
+    when(response.getWriter()).thenReturn(printWriter);
 
-    Response result = endpoint.getActionProviders(request, response);
+    endpoint.doGet(request, response);
 
-    assertThat(result.getHeaderString("Cache-Control"), is("no-cache, no-store"));
+    verify(response).setHeader("Cache-Control", "no-cache, no-store");
   }
 
   @Test
-  public void testGetActionProvidersSetsPragmaHeader() throws Exception {
+  public void testDoGetSetsPragmaHeader() throws Exception {
     String jsonResponse = "{\"actions\":[]}";
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(stringWriter);
     when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
+    when(response.getWriter()).thenReturn(printWriter);
 
-    Response result = endpoint.getActionProviders(request, response);
+    endpoint.doGet(request, response);
 
-    assertThat(result.getHeaderString("Pragma"), is("no-cache"));
+    verify(response).setHeader("Pragma", "no-cache");
   }
 
   @Test
-  public void testGetActionProvidersWithEmptyJsonResponse() throws Exception {
-    String jsonResponse = "{}";
-    when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
-
-    Response result = endpoint.getActionProviders(request, response);
-
-    assertThat(result.getStatus(), is(Response.Status.OK.getStatusCode()));
-  }
-
-  @Test
-  public void testGetActionProvidersResponseContainsCorrectContent() throws Exception {
+  public void testDoGetWritesJsonToResponse() throws Exception {
     String jsonResponse = "{\"test\":\"value\"}";
+    StringWriter stringWriter = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(stringWriter);
     when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
+    when(response.getWriter()).thenReturn(printWriter);
 
-    Response result = endpoint.getActionProviders(request, response);
+    endpoint.doGet(request, response);
+    printWriter.flush();
 
-    ByteArrayInputStream entity = (ByteArrayInputStream) result.getEntity();
-    byte[] bytes = new byte[entity.available()];
-    entity.read(bytes);
-    String content = new String(bytes);
-    assertThat(content, is(jsonResponse));
+    assertThat(stringWriter.toString(), is(jsonResponse));
+  }
+
+  @Test
+  public void testDoGetThrowsRuntimeExceptionOnSecurityServiceException() throws Exception {
+    when(logoutService.getActionProviders(request, response))
+        .thenThrow(new SecurityServiceException("Test error"));
+
+    assertThrows(RuntimeException.class, () -> endpoint.doGet(request, response));
+  }
+
+  @Test
+  public void testDoGetThrowsRuntimeExceptionOnIOException() throws Exception {
+    String jsonResponse = "{\"actions\":[]}";
+    when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
+    when(response.getWriter()).thenThrow(new IOException("Test error"));
+
+    assertThrows(RuntimeException.class, () -> endpoint.doGet(request, response));
   }
 }

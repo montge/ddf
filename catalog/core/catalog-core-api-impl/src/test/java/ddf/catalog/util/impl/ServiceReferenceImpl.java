@@ -83,8 +83,4 @@ public class ServiceReferenceImpl implements ServiceReference<Object> {
 
     return 0;
   }
-
-  public <A> A adapt(Class<A> type) {
-    return null;
-  }
 }

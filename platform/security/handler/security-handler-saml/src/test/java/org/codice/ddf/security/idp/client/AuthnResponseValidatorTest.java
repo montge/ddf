@@ -279,7 +279,7 @@ public class AuthnResponseValidatorTest {
   }
 
   @Test
-  public void testValidateWithInvalidSignature() {
+  public void testValidateWithInvalidSignature() throws Exception {
     when(statusCode.getValue()).thenReturn(StatusCode.SUCCESS);
     List<Assertion> assertions = new ArrayList<>();
     assertions.add(assertion);

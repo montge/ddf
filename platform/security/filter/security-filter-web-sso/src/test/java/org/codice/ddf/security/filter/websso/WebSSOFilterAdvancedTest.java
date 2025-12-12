@@ -364,7 +364,7 @@ public class WebSSOFilterAdvancedTest {
   }
 
   @Test
-  public void testGuestAccessDisabledWithNoActionResult() {
+  public void testGuestAccessDisabledWithNoActionResult() throws Exception {
     // Test that failure occurs when guest access disabled and handlers return NO_ACTION
     when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
@@ -389,7 +389,7 @@ public class WebSSOFilterAdvancedTest {
   // ==================== Error Handling Tests ====================
 
   @Test
-  public void testFilterChainThrowsException() {
+  public void testFilterChainThrowsException() throws Exception {
     // Test that exceptions in filter chain are handled and re-thrown
     when(contextPolicyManager.isWhiteListed(TEST_CONTEXT)).thenReturn(false);
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
