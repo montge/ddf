@@ -103,12 +103,18 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Build all modules (skip tests)
+        run: |
+          # Build all modules to populate local repo with SNAPSHOTs
+          # Integration tests need the built artifacts available
+          mvn install $MAVEN_CLI_OPTS -DskipTests -DskipStatic=true -P !itests
+
       - name: Run DDF Core integration tests
         run: |
           unset JAVA_TOOL_OPTIONS
           mvn install $MAVEN_CLI_OPTS \
             -pl distribution/test/itests/test-itests-ddf-core \
-            -nsu
+            -am
 
   # OWASP Dependency Check
   dependency-check:
