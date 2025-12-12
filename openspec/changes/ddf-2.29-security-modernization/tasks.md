@@ -104,7 +104,7 @@
 ## Phase 4: Test Coverage Expansion
 
 ### 4.1 Critical Untested Modules
-- [ ] 4.1.1 catalog-rest-service tests (1,315 LOC)
+- [x] 4.1.1 catalog-rest-service tests (1,315 LOC) ✅ 27 tests (2025-12-12)
 - [ ] 4.1.2 admin-core-api tests (1,117 LOC)
 - [ ] 4.1.3 catalog-core-definitionparser tests (967 LOC)
 - [ ] 4.1.4 catalog-solr-offline-gazetteer tests (961 LOC)
