@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 import static org.pac4j.core.context.HttpConstants.APPLICATION_JSON;
 
@@ -36,10 +35,6 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.AuthorizationGrant;
-import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
-import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
-import com.nimbusds.oauth2.sdk.auth.Secret;
-import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
@@ -89,7 +84,7 @@ public class OidcCredentialsResolverTest {
   @Mock private ResourceRetriever resourceRetriever;
   @Mock private OidcConfiguration configuration;
   @Mock private OIDCProviderMetadata oidcProviderMetadata;
-  @Mock private OidcClient<OidcConfiguration> oidcClient;
+  @Mock private OidcClient oidcClient;
   @Mock private WebContext webContext;
   @Mock private SessionStore sessionStore;
 
@@ -129,16 +124,19 @@ public class OidcCredentialsResolverTest {
     mockHttpServer.setExecutor(null); // creates a default executor
     mockHttpServer.start();
 
-    when(oidcProviderMetadata.getIDTokenJWSAlgs())
+    lenient()
+        .when(oidcProviderMetadata.getIDTokenJWSAlgs())
         .thenReturn(java.util.Collections.singletonList(JWSAlgorithm.RS256));
-    when(oidcProviderMetadata.getIssuer()).thenReturn(new Issuer(ISSUER_URI));
-    when(oidcProviderMetadata.getJWKSetURI())
+    lenient().when(oidcProviderMetadata.getIssuer()).thenReturn(new Issuer(ISSUER_URI));
+    lenient()
+        .when(oidcProviderMetadata.getJWKSetURI())
         .thenReturn(
             new URI(
                 "http://localhost:"
                     + MOCK_SERVER_PORT
                     + "/auth/realms/master/protocol/openid-connect/certs"));
-    when(oidcProviderMetadata.getTokenEndpointURI())
+    lenient()
+        .when(oidcProviderMetadata.getTokenEndpointURI())
         .thenReturn(
             new URI(
                 "http://localhost:"
@@ -153,21 +151,23 @@ public class OidcCredentialsResolverTest {
                     + "/auth/realms/master/protocol/openid-connect/userinfo"));
 
     Resource resource = new Resource(jwk, APPLICATION_JSON);
-    when(resourceRetriever.retrieveResource(any())).thenReturn(resource);
+    lenient().when(resourceRetriever.retrieveResource(any())).thenReturn(resource);
 
-    when(configuration.getClientId()).thenReturn(CLIENT_ID);
-    when(configuration.getSecret()).thenReturn(CLIENT_SECRET);
-    when(configuration.isUseNonce()).thenReturn(true);
-    when(configuration.getResponseType())
+    lenient().when(configuration.getClientId()).thenReturn(CLIENT_ID);
+    lenient().when(configuration.getSecret()).thenReturn(CLIENT_SECRET);
+    lenient().when(configuration.isUseNonce()).thenReturn(true);
+    lenient()
+        .when(configuration.getResponseType())
         .thenReturn("code"); // Use authorization code flow, not implicit
-    when(configuration.findProviderMetadata()).thenReturn(oidcProviderMetadata);
-    when(configuration.findResourceRetriever()).thenReturn(resourceRetriever);
+    lenient().when(configuration.findProviderMetadata()).thenReturn(oidcProviderMetadata);
+    lenient().when(configuration.findResourceRetriever()).thenReturn(resourceRetriever);
 
-    when(oidcClient.getNonceSessionAttributeName()).thenReturn(NONCE_SESSION_ATTRIBUTE);
-    when(oidcClient.computeFinalCallbackUrl(any())).thenReturn(CALLBACK_URL);
+    lenient().when(oidcClient.getNonceSessionAttributeName()).thenReturn(NONCE_SESSION_ATTRIBUTE);
+    lenient().when(oidcClient.computeFinalCallbackUrl(any())).thenReturn(CALLBACK_URL);
 
-    when(webContext.getSessionStore()).thenReturn(sessionStore);
-    when(sessionStore.get(webContext, NONCE_SESSION_ATTRIBUTE)).thenReturn(Optional.of("myNonce"));
+    lenient()
+        .when(sessionStore.get(webContext, NONCE_SESSION_ATTRIBUTE))
+        .thenReturn(Optional.of("myNonce"));
 
     resolver =
         new OidcCredentialsResolver(configuration, oidcClient, oidcProviderMetadata, 5000, 5000);
@@ -256,12 +256,8 @@ public class OidcCredentialsResolverTest {
         .when(grant.getType())
         .thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
 
-    ClientAuthentication clientAuth =
-        new ClientSecretBasic(new ClientID(CLIENT_ID), new Secret(CLIENT_SECRET));
-
     // This will make an HTTP call to mock server which returns a minimal valid response
-    OIDCTokens tokens =
-        OidcCredentialsResolver.getOidcTokens(grant, oidcProviderMetadata, clientAuth, 5000, 5000);
+    OIDCTokens tokens = resolver.getOidcTokens(grant, 5000, 5000);
 
     // Mock server returns access token but no ID token
     assertThat(tokens, is(notNullValue()));
@@ -275,13 +271,8 @@ public class OidcCredentialsResolverTest {
         .when(grant.getType())
         .thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
 
-    ClientAuthentication clientAuth =
-        new ClientSecretBasic(new ClientID(CLIENT_ID), new Secret(CLIENT_SECRET));
-
     // This will make an HTTP call to mock server with custom timeouts
-    OIDCTokens tokens =
-        OidcCredentialsResolver.getOidcTokens(
-            grant, oidcProviderMetadata, clientAuth, 10000, 10000);
+    OIDCTokens tokens = resolver.getOidcTokens(grant, 10000, 10000);
 
     // Mock server returns access token but no ID token
     assertThat(tokens, is(notNullValue()));
@@ -295,12 +286,8 @@ public class OidcCredentialsResolverTest {
         .when(grant.getType())
         .thenReturn(com.nimbusds.oauth2.sdk.GrantType.AUTHORIZATION_CODE);
 
-    ClientAuthentication clientAuth =
-        new ClientSecretBasic(new ClientID(CLIENT_ID), new Secret(CLIENT_SECRET));
-
     // This will make an HTTP call to mock server using deprecated method
-    OIDCTokens tokens =
-        OidcCredentialsResolver.getOidcTokens(grant, oidcProviderMetadata, clientAuth);
+    OIDCTokens tokens = resolver.getOidcTokens(grant);
 
     // Mock server returns access token but no ID token
     assertThat(tokens, is(notNullValue()));

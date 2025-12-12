@@ -51,11 +51,6 @@ public class PersistentStoreTest {
   }
 
   @Test
-  public void testPersistenceTypePreferences() {
-    assertThat(PersistenceType.PREFERENCES_TYPE.toString(), is("preferences"));
-  }
-
-  @Test
   public void testPersistenceTypeUserAttribute() {
     assertThat(PersistenceType.USER_ATTRIBUTE_TYPE.toString(), is("attributes"));
   }
@@ -89,7 +84,7 @@ public class PersistentStoreTest {
   public void testPersistenceTypeValues() {
     PersistenceType[] types = PersistenceType.values();
     assertNotNull(types);
-    assertThat(types.length, is(12));
+    assertThat(types.length, is(11));
   }
 
   @Test
@@ -101,7 +96,6 @@ public class PersistentStoreTest {
     boolean hasNotification = false;
     boolean hasActivity = false;
     boolean hasWorkspace = false;
-    boolean hasPreferences = false;
     boolean hasUserAttribute = false;
     boolean hasSubscription = false;
     boolean hasEventSubscriptions = false;
@@ -115,7 +109,6 @@ public class PersistentStoreTest {
       if (type == PersistenceType.NOTIFICATION_TYPE) hasNotification = true;
       if (type == PersistenceType.ACTIVITY_TYPE) hasActivity = true;
       if (type == PersistenceType.WORKSPACE_TYPE) hasWorkspace = true;
-      if (type == PersistenceType.PREFERENCES_TYPE) hasPreferences = true;
       if (type == PersistenceType.USER_ATTRIBUTE_TYPE) hasUserAttribute = true;
       if (type == PersistenceType.SUBSCRIPTION_TYPE) hasSubscription = true;
       if (type == PersistenceType.EVENT_SUBSCRIPTIONS_TYPE) hasEventSubscriptions = true;
@@ -129,7 +122,6 @@ public class PersistentStoreTest {
     assertTrue(hasNotification);
     assertTrue(hasActivity);
     assertTrue(hasWorkspace);
-    assertTrue(hasPreferences);
     assertTrue(hasUserAttribute);
     assertTrue(hasSubscription);
     assertTrue(hasEventSubscriptions);
@@ -145,7 +137,6 @@ public class PersistentStoreTest {
     assertThat(PersistenceType.valueOf("NOTIFICATION_TYPE"), is(PersistenceType.NOTIFICATION_TYPE));
     assertThat(PersistenceType.valueOf("ACTIVITY_TYPE"), is(PersistenceType.ACTIVITY_TYPE));
     assertThat(PersistenceType.valueOf("WORKSPACE_TYPE"), is(PersistenceType.WORKSPACE_TYPE));
-    assertThat(PersistenceType.valueOf("PREFERENCES_TYPE"), is(PersistenceType.PREFERENCES_TYPE));
     assertThat(
         PersistenceType.valueOf("USER_ATTRIBUTE_TYPE"), is(PersistenceType.USER_ATTRIBUTE_TYPE));
     assertThat(PersistenceType.valueOf("SUBSCRIPTION_TYPE"), is(PersistenceType.SUBSCRIPTION_TYPE));
@@ -223,7 +214,6 @@ public class PersistentStoreTest {
     assertThat(PersistenceType.NOTIFICATION_TYPE.toString(), is("notification"));
     assertThat(PersistenceType.ACTIVITY_TYPE.toString(), is("activity"));
     assertThat(PersistenceType.WORKSPACE_TYPE.toString(), is("workspace"));
-    assertThat(PersistenceType.PREFERENCES_TYPE.toString(), is("preferences"));
     assertThat(PersistenceType.USER_ATTRIBUTE_TYPE.toString(), is("attributes"));
     assertThat(PersistenceType.SUBSCRIPTION_TYPE.toString(), is("subscriptions"));
     assertThat(PersistenceType.EVENT_SUBSCRIPTIONS_TYPE.toString(), is("event_subscriptions"));
@@ -240,13 +230,12 @@ public class PersistentStoreTest {
     assertThat(PersistenceType.NOTIFICATION_TYPE.ordinal(), is(2));
     assertThat(PersistenceType.ACTIVITY_TYPE.ordinal(), is(3));
     assertThat(PersistenceType.WORKSPACE_TYPE.ordinal(), is(4));
-    assertThat(PersistenceType.PREFERENCES_TYPE.ordinal(), is(5));
-    assertThat(PersistenceType.USER_ATTRIBUTE_TYPE.ordinal(), is(6));
-    assertThat(PersistenceType.SUBSCRIPTION_TYPE.ordinal(), is(7));
-    assertThat(PersistenceType.EVENT_SUBSCRIPTIONS_TYPE.ordinal(), is(8));
-    assertThat(PersistenceType.ALERT_TYPE.ordinal(), is(9));
-    assertThat(PersistenceType.DECANTER_TYPE.ordinal(), is(10));
-    assertThat(PersistenceType.RESULTS_TYPE.ordinal(), is(11));
+    assertThat(PersistenceType.USER_ATTRIBUTE_TYPE.ordinal(), is(5));
+    assertThat(PersistenceType.SUBSCRIPTION_TYPE.ordinal(), is(6));
+    assertThat(PersistenceType.EVENT_SUBSCRIPTIONS_TYPE.ordinal(), is(7));
+    assertThat(PersistenceType.ALERT_TYPE.ordinal(), is(8));
+    assertThat(PersistenceType.DECANTER_TYPE.ordinal(), is(9));
+    assertThat(PersistenceType.RESULTS_TYPE.ordinal(), is(10));
   }
 
   @Test
@@ -257,7 +246,6 @@ public class PersistentStoreTest {
     assertThat(PersistenceType.NOTIFICATION_TYPE.name(), is("NOTIFICATION_TYPE"));
     assertThat(PersistenceType.ACTIVITY_TYPE.name(), is("ACTIVITY_TYPE"));
     assertThat(PersistenceType.WORKSPACE_TYPE.name(), is("WORKSPACE_TYPE"));
-    assertThat(PersistenceType.PREFERENCES_TYPE.name(), is("PREFERENCES_TYPE"));
     assertThat(PersistenceType.USER_ATTRIBUTE_TYPE.name(), is("USER_ATTRIBUTE_TYPE"));
     assertThat(PersistenceType.SUBSCRIPTION_TYPE.name(), is("SUBSCRIPTION_TYPE"));
     assertThat(PersistenceType.EVENT_SUBSCRIPTIONS_TYPE.name(), is("EVENT_SUBSCRIPTIONS_TYPE"));
@@ -278,7 +266,6 @@ public class PersistentStoreTest {
     assertNotNull(PersistenceType.NOTIFICATION_TYPE);
     assertNotNull(PersistenceType.ACTIVITY_TYPE);
     assertNotNull(PersistenceType.WORKSPACE_TYPE);
-    assertNotNull(PersistenceType.PREFERENCES_TYPE);
     assertNotNull(PersistenceType.USER_ATTRIBUTE_TYPE);
     assertNotNull(PersistenceType.SUBSCRIPTION_TYPE);
     assertNotNull(PersistenceType.EVENT_SUBSCRIPTIONS_TYPE);

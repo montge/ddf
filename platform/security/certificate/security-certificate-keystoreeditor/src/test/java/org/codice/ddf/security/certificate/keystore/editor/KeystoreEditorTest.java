@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.certificate.keystore.editor;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -41,7 +42,6 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.core.AnyOf;
 import org.hamcrest.core.Is;
 import org.junit.Rule;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
@@ -199,11 +199,11 @@ public class KeystoreEditorTest {
     byte[] encoded = Base64.getEncoder().encode("https://doesnotexist.codice.org".getBytes());
     List<Map<String, Object>> mapList =
         keystoreEditor.certificateDetails(new String(encoded, "UTF-8"));
-    Assertions.assertThat(mapList.size(), Is.is(2));
-    Assertions.assertThat(
+    assertThat(mapList.size(), Is.is(2));
+    assertThat(
         ((Principal) mapList.get(0).get("subjectDn")).getName(),
         Is.is("EMAILADDRESS=asdf@example.com, CN=asdf, O=Example, L=Phoenix, ST=Arizona, C=US"));
-    Assertions.assertThat(
+    assertThat(
         ((Principal) mapList.get(1).get("subjectDn")).getName(),
         Is.is("EMAILADDRESS=localhost@example.org, CN=localhost, OU=Dev, O=DDF, ST=AZ, C=US"));
   }
@@ -216,9 +216,9 @@ public class KeystoreEditorTest {
     byte[] encoded = Base64.getEncoder().encode("https://notarealurlatall.com".getBytes());
     List<Map<String, Object>> mapList =
         keystoreEditor.addTrustedCertificateFromUrl(new String(encoded, "UTF-8"));
-    Assertions.assertThat(mapList.size(), Is.is(2));
-    Assertions.assertThat(mapList.get(0).get("success"), Is.is(true));
-    Assertions.assertThat(mapList.get(1).get("success"), Is.is(true));
+    assertThat(mapList.size(), Is.is(2));
+    assertThat(mapList.get(0).get("success"), Is.is(true));
+    assertThat(mapList.get(1).get("success"), Is.is(true));
   }
 
   private void addCannedCertificatesToTruststore(KeystoreEditor keystoreEditor)
@@ -279,7 +279,7 @@ public class KeystoreEditorTest {
     KeystoreEditor keystoreEditor = new KeystoreEditor();
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(0));
+    assertThat(keystore.size(), Is.is(0));
   }
 
   @Test
@@ -287,7 +287,7 @@ public class KeystoreEditorTest {
     KeystoreEditor keystoreEditor = new KeystoreEditor();
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
   }
 
   @Test
@@ -296,23 +296,23 @@ public class KeystoreEditorTest {
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
     addCertChain(keystoreEditor);
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(2));
+    assertThat(keystore.size(), Is.is(2));
     String alias1 = (String) keystore.get(0).get("alias");
     String alias2 = (String) keystore.get(1).get("alias");
-    Assertions.assertThat(alias1, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
-    Assertions.assertThat(alias2, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
+    assertThat(alias1, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
+    assertThat(alias2, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
 
     addPrivateKey(keystoreEditor, keyFile, "");
     keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(2));
+    assertThat(keystore.size(), Is.is(2));
     alias1 = (String) keystore.get(0).get("alias");
     alias2 = (String) keystore.get(1).get("alias");
-    Assertions.assertThat(alias1, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
-    Assertions.assertThat(alias2, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
+    assertThat(alias1, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
+    assertThat(alias2, AnyOf.anyOf(Is.is("asdf"), Is.is("ddf demo root ca")));
     truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
   }
 
   @Test
@@ -321,10 +321,10 @@ public class KeystoreEditorTest {
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
     addPrivateKey(keystoreEditor, pemFile, KeystoreEditor.PEM_TYPE);
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
-    Assertions.assertThat(keystore.get(0).get("alias"), Is.is("asdf"));
+    assertThat(keystore.size(), Is.is(1));
+    assertThat(keystore.get(0).get("alias"), Is.is("asdf"));
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
   }
 
   @Test
@@ -333,10 +333,10 @@ public class KeystoreEditorTest {
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
     addPrivateKey(keystoreEditor, derFile, KeystoreEditor.DER_TYPE);
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
-    Assertions.assertThat(keystore.get(0).get("alias"), Is.is("asdf"));
+    assertThat(keystore.size(), Is.is(1));
+    assertThat(keystore.get(0).get("alias"), Is.is("asdf"));
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
   }
 
   private void addPrivateKey(KeystoreEditor keystoreEditor, File keyFile, String type)
@@ -382,11 +382,11 @@ public class KeystoreEditorTest {
         "",
         jksFile.toString());
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
-    Assertions.assertThat((String) keystore.get(0).get("alias"), Is.is("asdf"));
+    assertThat(keystore.size(), Is.is(1));
+    assertThat((String) keystore.get(0).get("alias"), Is.is("asdf"));
 
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
   }
 
   @Test
@@ -404,11 +404,11 @@ public class KeystoreEditorTest {
         KeystoreEditor.PKCS12_TYPE,
         pkcs12StoreFile.toString());
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
-    Assertions.assertThat((String) keystore.get(0).get("alias"), Is.is("asdf"));
+    assertThat(keystore.size(), Is.is(1));
+    assertThat((String) keystore.get(0).get("alias"), Is.is("asdf"));
 
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
   }
 
   @Test
@@ -426,10 +426,10 @@ public class KeystoreEditorTest {
         KeystoreEditor.PEM_TYPE,
         localhostCrtFile.toString());
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
+    assertThat(keystore.size(), Is.is(1));
 
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
 
     keystoreEditor = new KeystoreEditor();
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
@@ -444,19 +444,19 @@ public class KeystoreEditorTest {
         "",
         localhostKeyFile.toString());
     keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
-    Assertions.assertThat((String) keystore.get(0).get("alias"), Is.is("localhost"));
+    assertThat(keystore.size(), Is.is(1));
+    assertThat((String) keystore.get(0).get("alias"), Is.is("localhost"));
 
     truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
   }
 
   @Test
   public void testReplaceSystemStores() throws Exception {
     KeystoreEditor keystoreEditor = new KeystoreEditor();
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
-    Assertions.assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
-    Assertions.assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
+    assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
+    assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
 
     try (FileInputStream keystoreInputStream = new FileInputStream(systemKeystoreFile);
         FileInputStream truststoreInputStream = new FileInputStream(systemTruststoreFile); ) {
@@ -474,15 +474,15 @@ public class KeystoreEditorTest {
               password,
               new String(truststoreEncodedBytes),
               systemTruststoreFile.getName());
-      Assertions.assertThat(errors.size(), Is.is(0));
+      assertThat(errors.size(), Is.is(0));
       List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
       List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-      Assertions.assertThat(keystore.size(), Is.is(2));
+      assertThat(keystore.size(), Is.is(2));
       String alias1 = (String) keystore.get(0).get("alias");
       String alias2 = (String) keystore.get(1).get("alias");
-      Assertions.assertThat(alias1, AnyOf.anyOf(Is.is("localhost"), Is.is("ddf demo root ca")));
-      Assertions.assertThat(alias2, AnyOf.anyOf(Is.is("localhost"), Is.is("ddf demo root ca")));
-      Assertions.assertThat(truststore.get(0).get("alias"), Is.is("ddf demo root ca"));
+      assertThat(alias1, AnyOf.anyOf(Is.is("localhost"), Is.is("ddf demo root ca")));
+      assertThat(alias2, AnyOf.anyOf(Is.is("localhost"), Is.is("ddf demo root ca")));
+      assertThat(truststore.get(0).get("alias"), Is.is("ddf demo root ca"));
     }
   }
 
@@ -499,8 +499,8 @@ public class KeystoreEditorTest {
   private void replaceSystemStores(String fqdn) throws Exception {
     KeystoreEditor keystoreEditor = new KeystoreEditor();
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
-    Assertions.assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
-    Assertions.assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
+    assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
+    assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
 
     try (FileInputStream keystoreInputStream = new FileInputStream(systemKeystoreFile);
         FileInputStream truststoreInputStream = new FileInputStream(systemTruststoreFile)) {
@@ -518,7 +518,7 @@ public class KeystoreEditorTest {
               password,
               new String(truststoreEncodedBytes),
               systemTruststoreFile.getName());
-      Assertions.assertThat(errors.size(), Is.is(1));
+      assertThat(errors.size(), Is.is(1));
     }
   }
 
@@ -526,8 +526,8 @@ public class KeystoreEditorTest {
   public void testReplaceSystemStoresBadInput() throws Exception {
     KeystoreEditor keystoreEditor = new KeystoreEditor();
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
-    Assertions.assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
-    Assertions.assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
+    assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
+    assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
 
     List<String> errors =
         keystoreEditor.replaceSystemStores(
@@ -539,15 +539,15 @@ public class KeystoreEditorTest {
             password,
             null,
             systemTruststoreFile.getName());
-    Assertions.assertThat(errors.size(), Is.is(2));
+    assertThat(errors.size(), Is.is(2));
   }
 
   @Test
   public void testReplaceSystemStoresBadEncoding() throws Exception {
     KeystoreEditor keystoreEditor = new KeystoreEditor();
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
-    Assertions.assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
-    Assertions.assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
+    assertThat(keystoreEditor.getKeystore().size(), Is.is(0));
+    assertThat(keystoreEditor.getTruststore().size(), Is.is(0));
 
     try (FileInputStream keystoreInputStream = new FileInputStream(systemKeystoreFile);
         FileInputStream truststoreInputStream = new FileInputStream(systemTruststoreFile); ) {
@@ -565,7 +565,7 @@ public class KeystoreEditorTest {
               password,
               new String(truststoreCrtBytes),
               systemTruststoreFile.getName());
-      Assertions.assertThat(errors.size(), Is.is(1));
+      assertThat(errors.size(), Is.is(1));
     }
   }
 
@@ -584,11 +584,11 @@ public class KeystoreEditorTest {
         KeystoreEditor.PEM_TYPE,
         crtFile.toString());
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(1));
-    Assertions.assertThat(truststore.get(0).get("alias"), Is.is("asdf"));
+    assertThat(truststore.size(), Is.is(1));
+    assertThat(truststore.get(0).get("alias"), Is.is("asdf"));
 
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(0));
+    assertThat(keystore.size(), Is.is(0));
   }
 
   @Test
@@ -597,11 +597,11 @@ public class KeystoreEditorTest {
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
     addCertChain(keystoreEditor);
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(2));
+    assertThat(keystore.size(), Is.is(2));
 
     keystoreEditor.deletePrivateKey("asdf");
     keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
+    assertThat(keystore.size(), Is.is(1));
   }
 
   @Test
@@ -619,17 +619,17 @@ public class KeystoreEditorTest {
         KeystoreEditor.PEM_TYPE,
         crtFile.toString());
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(1));
+    assertThat(truststore.size(), Is.is(1));
 
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(0));
+    assertThat(keystore.size(), Is.is(0));
 
     keystoreEditor.deleteTrustedCertificate("asdf");
     truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(0));
+    assertThat(truststore.size(), Is.is(0));
 
     keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(0));
+    assertThat(keystore.size(), Is.is(0));
   }
 
   @Test
@@ -638,14 +638,14 @@ public class KeystoreEditorTest {
     keystoreEditor.setSecurityLogger(mock(SecurityLogger.class));
     addCertChain(keystoreEditor);
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(2));
+    assertThat(keystore.size(), Is.is(2));
 
     addPrivateKey(keystoreEditor, keyFile, "");
-    Assertions.assertThat(keystore.size(), Is.is(2));
+    assertThat(keystore.size(), Is.is(2));
 
     keystoreEditor.deletePrivateKey("asdf");
     keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(1));
+    assertThat(keystore.size(), Is.is(1));
   }
 
   @Test
@@ -663,11 +663,11 @@ public class KeystoreEditorTest {
         KeystoreEditor.PEM_TYPE,
         p7bFile.toString());
     List<Map<String, Object>> truststore = keystoreEditor.getTruststore();
-    Assertions.assertThat(truststore.size(), Is.is(1));
-    Assertions.assertThat(truststore.get(0).get("alias"), Is.is("asdf"));
+    assertThat(truststore.size(), Is.is(1));
+    assertThat(truststore.get(0).get("alias"), Is.is("asdf"));
 
     List<Map<String, Object>> keystore = keystoreEditor.getKeystore();
-    Assertions.assertThat(keystore.size(), Is.is(0));
+    assertThat(keystore.size(), Is.is(0));
   }
 
   @Test

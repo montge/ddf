@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.pac4j.core.context.HttpConstants.APPLICATION_JSON;
@@ -66,7 +67,7 @@ public class OidcTokenValidatorEdgeCasesTest {
   @Mock private ResourceRetriever resourceRetriever;
   @Mock private OidcConfiguration configuration;
   @Mock private OIDCProviderMetadata oidcProviderMetadata;
-  @Mock private OidcClient<OidcConfiguration> oidcClient;
+  @Mock private OidcClient oidcClient;
 
   private Algorithm validAlgorithm;
 
@@ -87,37 +88,43 @@ public class OidcTokenValidatorEdgeCasesTest {
 
     String jwk = "{\"keys\": [" + sigJwk.toPublicJWK().toJSONString() + "] }";
 
-    when(oidcProviderMetadata.getIDTokenJWSAlgs())
+    lenient()
+        .when(oidcProviderMetadata.getIDTokenJWSAlgs())
         .thenReturn(Collections.singletonList(JWSAlgorithm.RS256));
-    when(oidcProviderMetadata.getIssuer())
+    lenient()
+        .when(oidcProviderMetadata.getIssuer())
         .thenReturn(new Issuer("http://localhost:8080/auth/realms/master"));
-    when(oidcProviderMetadata.getJWKSetURI())
+    lenient()
+        .when(oidcProviderMetadata.getJWKSetURI())
         .thenReturn(
             new URI("http://localhost:8080/auth/realms/master/protocol/openid-connect/certs"));
-    when(oidcProviderMetadata.getUserInfoJWSAlgs())
+    lenient()
+        .when(oidcProviderMetadata.getUserInfoJWSAlgs())
         .thenReturn(Collections.singletonList(JWSAlgorithm.RS256));
 
     Resource resource = new Resource(jwk, APPLICATION_JSON);
-    when(resourceRetriever.retrieveResource(any())).thenReturn(resource);
+    lenient().when(resourceRetriever.retrieveResource(any())).thenReturn(resource);
 
-    when(configuration.getClientId()).thenReturn("ddf-client");
-    when(configuration.getSecret()).thenReturn("secret");
-    when(configuration.isUseNonce()).thenReturn(true);
-    when(configuration.findProviderMetadata()).thenReturn(oidcProviderMetadata);
-    when(configuration.findResourceRetriever()).thenReturn(resourceRetriever);
+    lenient().when(configuration.getClientId()).thenReturn("ddf-client");
+    lenient().when(configuration.getSecret()).thenReturn("secret");
+    lenient().when(configuration.isUseNonce()).thenReturn(true);
+    lenient().when(configuration.findProviderMetadata()).thenReturn(oidcProviderMetadata);
+    lenient().when(configuration.findResourceRetriever()).thenReturn(resourceRetriever);
 
     validAlgorithm = Algorithm.RSA256(publicKey, privateKey);
 
-    when(oidcClient.getNonceSessionAttributeName()).thenReturn(NONCE_SESSION_ATTRIBUTE);
+    lenient().when(oidcClient.getNonceSessionAttributeName()).thenReturn(NONCE_SESSION_ATTRIBUTE);
   }
 
   @Test
   public void testValidateIdTokensWithNullConfiguration() throws Exception {
     String stringJwt = createIdToken("myNonce");
     JWT jwt = SignedJWT.parse(stringJwt);
-    WebContext context = getWebContext();
+    WebContext context = mock(WebContext.class);
+    SessionStore sessionStore = mock(SessionStore.class);
 
-    Object result = OidcTokenValidator.validateIdTokens(jwt, context, null, oidcClient);
+    Object result =
+        OidcTokenValidator.validateIdTokens(jwt, context, null, oidcClient, sessionStore);
 
     assertThat(result, is(nullValue()));
   }
@@ -127,9 +134,10 @@ public class OidcTokenValidatorEdgeCasesTest {
     when(configuration.isUseNonce()).thenReturn(false);
     String stringJwt = createIdToken(null);
     JWT jwt = SignedJWT.parse(stringJwt);
-    WebContext context = getWebContext();
+    WebContext context = mock(WebContext.class);
+    SessionStore sessionStore = mock(SessionStore.class);
 
-    OidcTokenValidator.validateIdTokens(jwt, context, configuration, oidcClient);
+    OidcTokenValidator.validateIdTokens(jwt, context, configuration, oidcClient, sessionStore);
   }
 
   @Test
@@ -137,12 +145,11 @@ public class OidcTokenValidatorEdgeCasesTest {
     WebContext context = mock(WebContext.class);
     SessionStore sessionStore = mock(SessionStore.class);
     when(sessionStore.get(context, NONCE_SESSION_ATTRIBUTE)).thenReturn(Optional.empty());
-    when(context.getSessionStore()).thenReturn(sessionStore);
 
     String stringJwt = createIdToken(null);
     JWT jwt = SignedJWT.parse(stringJwt);
 
-    OidcTokenValidator.validateIdTokens(jwt, context, configuration, oidcClient);
+    OidcTokenValidator.validateIdTokens(jwt, context, configuration, oidcClient, sessionStore);
   }
 
   @Test
@@ -338,13 +345,5 @@ public class OidcTokenValidatorEdgeCasesTest {
         .withClaim("typ", "Bearer")
         .withClaim("preferred_username", "admin")
         .sign(validAlgorithm);
-  }
-
-  private WebContext getWebContext() {
-    WebContext context = mock(WebContext.class);
-    SessionStore sessionStore = mock(SessionStore.class);
-    when(sessionStore.get(context, NONCE_SESSION_ATTRIBUTE)).thenReturn(Optional.of("myNonce"));
-    when(context.getSessionStore()).thenReturn(sessionStore);
-    return context;
   }
 }

@@ -100,7 +100,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -850,7 +849,7 @@ public class WfsFilterDelegateTest {
     assertThat(filter.getLogicOps().getName().toString(), is(compOpName));
     BinaryLogicOpType logicOpType = (BinaryLogicOpType) filter.getLogicOps().getValue();
 
-    Assertions.assertThat(logicOpType.getComparisonOpsOrSpatialOpsOrTemporalOps().size(), is(2));
+    assertThat(logicOpType.getComparisonOpsOrSpatialOpsOrTemporalOps().size(), is(2));
 
     for (JAXBElement<?> jaxbElement : logicOpType.getComparisonOpsOrSpatialOpsOrTemporalOps()) {
       PropertyIsLikeType compOpsType = (PropertyIsLikeType) jaxbElement.getValue();

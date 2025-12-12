@@ -34,7 +34,6 @@ import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.server.Request;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -150,12 +149,12 @@ public class ThreadContextPropertiesTest {
     ThreadContextProperties.addClientInfo(
         MOCK_REMOTE_ADDRESS, MOCK_REMOTE_HOST, MOCK_REMOTE_PORT, null);
     Map<String, String> clientInfoMap = (Map<String, String>) ThreadContext.get(CLIENT_INFO_KEY);
-    Assertions.assertThat(clientInfoMap, CoreMatchers.notNullValue());
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_ADDR), is(MOCK_REMOTE_ADDRESS));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_PORT), is(MOCK_REMOTE_PORT));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_HOST), is(MOCK_REMOTE_HOST));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_SCHEME), is(nullValue()));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_CONTEXT_PATH), is(nullValue()));
+    assertThat(clientInfoMap, CoreMatchers.notNullValue());
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_ADDR), is(MOCK_REMOTE_ADDRESS));
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_PORT), is(MOCK_REMOTE_PORT));
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_HOST), is(MOCK_REMOTE_HOST));
+    assertThat(clientInfoMap.get(SERVLET_SCHEME), is(nullValue()));
+    assertThat(clientInfoMap.get(SERVLET_CONTEXT_PATH), is(nullValue()));
     ThreadContextProperties.removeClientInfo();
     assertThatClientInfoMapIsNull();
   }
@@ -217,27 +216,26 @@ public class ThreadContextPropertiesTest {
 
   private void assertThatClientInfoMapIsAccurate() throws Exception {
     Map<String, String> clientInfoMap = (Map<String, String>) ThreadContext.get(CLIENT_INFO_KEY);
-    Assertions.assertThat(clientInfoMap, CoreMatchers.notNullValue());
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_ADDR), is(MOCK_REMOTE_ADDRESS));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_PORT), is(MOCK_REMOTE_PORT));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_HOST), is(MOCK_REMOTE_HOST));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_SCHEME), is(MOCK_SCHEME));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_CONTEXT_PATH), is(MOCK_CONTEXT_PATH));
+    assertThat(clientInfoMap, CoreMatchers.notNullValue());
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_ADDR), is(MOCK_REMOTE_ADDRESS));
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_PORT), is(MOCK_REMOTE_PORT));
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_HOST), is(MOCK_REMOTE_HOST));
+    assertThat(clientInfoMap.get(SERVLET_SCHEME), is(MOCK_SCHEME));
+    assertThat(clientInfoMap.get(SERVLET_CONTEXT_PATH), is(MOCK_CONTEXT_PATH));
   }
 
   private void assertThatClientInfoMapIsAccurateForwardedHeaderSet() throws Exception {
     Map<String, String> clientInfoMap = (Map<String, String>) ThreadContext.get(CLIENT_INFO_KEY);
-    Assertions.assertThat(clientInfoMap, CoreMatchers.notNullValue());
-    Assertions.assertThat(
-        clientInfoMap.get(SERVLET_REMOTE_ADDR), is(MOCK_FORWARDED_REMOTE_ADDRESS));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_PORT), is(MOCK_FORWARDED_REMOTE_PORT));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_REMOTE_HOST), is(MOCK_FORWARDED_REMOTE_HOST));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_SCHEME), is(MOCK_SCHEME));
-    Assertions.assertThat(clientInfoMap.get(SERVLET_CONTEXT_PATH), is(MOCK_CONTEXT_PATH));
+    assertThat(clientInfoMap, CoreMatchers.notNullValue());
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_ADDR), is(MOCK_FORWARDED_REMOTE_ADDRESS));
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_PORT), is(MOCK_FORWARDED_REMOTE_PORT));
+    assertThat(clientInfoMap.get(SERVLET_REMOTE_HOST), is(MOCK_FORWARDED_REMOTE_HOST));
+    assertThat(clientInfoMap.get(SERVLET_SCHEME), is(MOCK_SCHEME));
+    assertThat(clientInfoMap.get(SERVLET_CONTEXT_PATH), is(MOCK_CONTEXT_PATH));
   }
 
   private void assertThatClientInfoMapIsNull() throws Exception {
     Map<String, String> clientInfoMap = (Map<String, String>) ThreadContext.get(CLIENT_INFO_KEY);
-    Assertions.assertThat(clientInfoMap, CoreMatchers.nullValue());
+    assertThat(clientInfoMap, CoreMatchers.nullValue());
   }
 }

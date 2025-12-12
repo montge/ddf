@@ -81,22 +81,23 @@ public class OidcCredentialsResolver extends OidcAuthenticator {
   3. access token
   */
   public void resolveIdToken(OidcCredentials credentials, WebContext webContext) {
-    final AccessToken initialAccessToken = credentials.toAccessToken();
-    final JWT initialIdToken = credentials.toIdToken();
+    final AccessToken initialAccessToken = credentials.getAccessToken();
+    final JWT initialIdToken = credentials.getIdToken();
 
     try {
       OidcTokenValidator.validateAccessToken(
           initialAccessToken, initialIdToken, resourceRetriever, metadata, configuration);
       if (initialIdToken != null) {
-        OidcTokenValidator.validateIdTokens(initialIdToken, webContext, configuration, client);
+        OidcTokenValidator.validateIdTokens(
+            initialIdToken, webContext, configuration, client, null);
         return;
       }
     } catch (OidcValidationException e) {
       throw new TechnicalException(e);
     }
 
-    final RefreshToken initialRefreshToken = credentials.toRefreshToken();
-    final AuthorizationCode initialAuthorizationCode = credentials.toAuthorizationCode();
+    final RefreshToken initialRefreshToken = credentials.getRefreshToken();
+    final AuthorizationCode initialAuthorizationCode = credentials.getCode();
 
     final List<AuthorizationGrant> grantList = new ArrayList<>();
 
@@ -149,7 +150,7 @@ public class OidcCredentialsResolver extends OidcAuthenticator {
           }
 
           OidcTokenValidator.validateUserInfoIdToken(idToken, resourceRetriever, metadata);
-          credentials.setIdToken(idToken.serialize());
+          credentials.setIdToken(idToken);
         } else {
           throw new TechnicalException("Received a non-successful UserInfoResponse.");
         }
@@ -168,7 +169,7 @@ public class OidcCredentialsResolver extends OidcAuthenticator {
     try {
       JWT idToken = oidcTokens.getIDToken();
       if (idToken != null) {
-        OidcTokenValidator.validateIdTokens(idToken, webContext, configuration, client);
+        OidcTokenValidator.validateIdTokens(idToken, webContext, configuration, client, null);
       }
 
       AccessToken accessToken = oidcTokens.getAccessToken();
@@ -177,9 +178,9 @@ public class OidcCredentialsResolver extends OidcAuthenticator {
             accessToken, idToken, resourceRetriever, metadata, configuration);
       }
 
-      credentials.setAccessToken(accessToken.toJSONObject());
-      credentials.setIdToken(idToken.getParsedString());
-      credentials.setRefreshToken(oidcTokens.getRefreshToken().toJSONObject());
+      credentials.setAccessToken(accessToken);
+      credentials.setIdToken(idToken);
+      credentials.setRefreshToken(oidcTokens.getRefreshToken());
 
     } catch (OidcValidationException e) {
       throw new TechnicalException(e);

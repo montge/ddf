@@ -30,7 +30,6 @@ import java.security.cert.X509Certificate;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.GeneralName;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -149,13 +148,13 @@ public class PkiToolsTest {
 
   @Test
   public void testFormatPassword() throws Exception {
-    Assertions.assertThat(
+    assertThat(
         "formatPassword() failed to return empty character array",
         PkiTools.formatPassword(null),
         instanceOf(char[].class));
 
     char[] pw = "password".toCharArray();
-    Assertions.assertThat(
+    assertThat(
         "formatPassword() should not modify the password",
         new String(PkiTools.formatPassword(pw)),
         equalTo("password"));

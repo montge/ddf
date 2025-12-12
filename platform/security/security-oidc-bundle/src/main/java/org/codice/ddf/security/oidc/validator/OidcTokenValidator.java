@@ -46,7 +46,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import org.pac4j.core.context.WebContext;
-import org.pac4j.jee.context.session.JEESessionStoreFactory;
+import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.oidc.client.OidcClient;
 import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.profile.creator.TokenValidator;
@@ -74,9 +74,15 @@ public class OidcTokenValidator {
    * @param idToken - id token to validate
    * @param webContext - the web context used to get the session information
    * @param configuration - oidc configuration
+   * @param client - the OIDC client
+   * @param sessionStore - the session store for accessing session data
    */
   public static IDTokenClaimsSet validateIdTokens(
-      JWT idToken, WebContext webContext, OidcConfiguration configuration, OidcClient client)
+      JWT idToken,
+      WebContext webContext,
+      OidcConfiguration configuration,
+      OidcClient client,
+      SessionStore sessionStore)
       throws OidcValidationException {
     if (configuration == null) {
       LOGGER.debug("Oidc configuration is null. Unable to validate ID token.");
@@ -91,18 +97,15 @@ public class OidcTokenValidator {
     try {
       // get nonce
       Nonce nonce = null;
-      if (configuration.isUseNonce()) {
+      if (configuration.isUseNonce() && sessionStore != null) {
         Optional<Object> optional =
-            JEESessionStoreFactory.INSTANCE
-                .newSessionStore(null)
-                .get(webContext, client.getNonceSessionAttributeName());
+            sessionStore.get(webContext, client.getNonceSessionAttributeName());
         if (optional.isPresent()) {
           nonce = new Nonce((String) optional.get());
         }
       }
 
-      OIDCProviderMetadata providerMetadata = configuration.getOpMetadataResolver().load();
-      TokenValidator tokenValidator = new TokenValidator(configuration, providerMetadata);
+      TokenValidator tokenValidator = new TokenValidator(configuration);
       return tokenValidator.validate(idToken, nonce);
     } catch (Exception e) {
       LOGGER.error(ID_VALIDATION_ERR_MSG, e);

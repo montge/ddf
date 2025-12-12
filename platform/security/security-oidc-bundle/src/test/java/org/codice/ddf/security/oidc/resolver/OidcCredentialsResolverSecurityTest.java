@@ -147,7 +147,6 @@ public class OidcCredentialsResolverSecurityTest {
     lenient().when(metadata.getTokenEndpointURI()).thenReturn(new URI(TEST_ISSUER + "/token"));
     when(metadata.getTokenEndpointAuthMethods()).thenReturn(null);
     lenient().when(oidcClient.computeFinalCallbackUrl(webContext)).thenReturn(CALLBACK_URL);
-    lenient().when(webContext.getSessionStore()).thenReturn(sessionStore);
 
     resolver = new OidcCredentialsResolver(oidcConfiguration, oidcClient, metadata, 5000, 5000);
   }

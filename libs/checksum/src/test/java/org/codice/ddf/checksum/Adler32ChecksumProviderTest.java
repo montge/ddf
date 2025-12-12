@@ -25,7 +25,6 @@ import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import org.codice.ddf.checksum.impl.Adler32ChecksumProvider;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -79,7 +78,7 @@ public class Adler32ChecksumProviderTest {
     // compare returned checksum to previous checksum
     // as they should be the same if the checksum is calculated
     // correctly
-    Assertions.assertThat(checksumValue, is(checksumCompareHash));
+    assertThat(checksumValue, is(checksumCompareHash));
   }
 
   @Test

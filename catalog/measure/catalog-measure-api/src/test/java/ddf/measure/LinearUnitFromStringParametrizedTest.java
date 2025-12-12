@@ -22,48 +22,39 @@ import static ddf.measure.Distance.LinearUnit.NAUTICAL_MILE;
 import static ddf.measure.Distance.LinearUnit.YARD;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.runners.Parameterized.Parameter;
-import static org.junit.runners.Parameterized.Parameters;
 
-import java.util.Arrays;
-import org.junit.jupiter.api.Test;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests the different string values supported by the {@link LinearUnit#fromString(String)} method.
  */
-@RunWith(Parameterized.class)
 public class LinearUnitFromStringParametrizedTest {
 
-  @Parameters(name = "fromString({0})")
-  public static Iterable<Object[]> data() {
-    return Arrays.asList(
-        new Object[][] {
-          {"FOOT_U_S", FOOT_U_S},
-          {"foot_u_s", FOOT_U_S},
-          {"foot", FOOT_U_S},
-          {"FOOT", FOOT_U_S},
-          {"meter", METER},
-          {"METER", METER},
-          {"kilometer", KILOMETER},
-          {"KILOMETER", KILOMETER},
-          {"nautical_mile", NAUTICAL_MILE},
-          {"NAUTICAL_MILE", NAUTICAL_MILE},
-          {"nauticalMile", NAUTICAL_MILE},
-          {"mile", MILE},
-          {"MILE", MILE},
-          {"yard", YARD},
-          {"YARD", YARD}
-        });
+  static Stream<Arguments> data() {
+    return Stream.of(
+        Arguments.of("FOOT_U_S", FOOT_U_S),
+        Arguments.of("foot_u_s", FOOT_U_S),
+        Arguments.of("foot", FOOT_U_S),
+        Arguments.of("FOOT", FOOT_U_S),
+        Arguments.of("meter", METER),
+        Arguments.of("METER", METER),
+        Arguments.of("kilometer", KILOMETER),
+        Arguments.of("KILOMETER", KILOMETER),
+        Arguments.of("nautical_mile", NAUTICAL_MILE),
+        Arguments.of("NAUTICAL_MILE", NAUTICAL_MILE),
+        Arguments.of("nauticalMile", NAUTICAL_MILE),
+        Arguments.of("mile", MILE),
+        Arguments.of("MILE", MILE),
+        Arguments.of("yard", YARD),
+        Arguments.of("YARD", YARD));
   }
 
-  @Parameter public String enumValueString;
-
-  @Parameter(1)
-  public LinearUnit expectedEnumValue;
-
-  @Test
-  public void testLinearUnit() {
+  @ParameterizedTest(name = "fromString({0})")
+  @MethodSource("data")
+  public void testLinearUnit(String enumValueString, LinearUnit expectedEnumValue) {
     assertThat(LinearUnit.fromString(enumValueString), equalTo(expectedEnumValue));
   }
 }
