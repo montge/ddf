@@ -25,7 +25,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
+import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
@@ -34,17 +34,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.jupiter.api.Test;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-@RunWith(Enclosed.class)
 public class XMLUtilsParameterizedTest {
 
   private static final String XML_XXE_EXPANSION =
@@ -62,22 +60,16 @@ public class XMLUtilsParameterizedTest {
 
   private static final XMLUtils XML_UTILS = XMLUtils.getInstance();
 
-  @RunWith(Parameterized.class)
+  @Nested
   public static class TestDocumentBuilderFactoryXXE {
 
-    private String implClass;
-
-    @Parameters(name = "{index}: {0}")
-    public static Collection valuesToTestWith() {
-      return XMLUtils.DOCUMENT_BUILDER_FACTORY_IMPL_WHITELIST;
+    static Stream<String> valuesToTestWith() {
+      return XMLUtils.DOCUMENT_BUILDER_FACTORY_IMPL_WHITELIST.stream();
     }
 
-    public TestDocumentBuilderFactoryXXE(String className) {
-      implClass = className;
-    }
-
-    @Test
-    public void testDocumentBuilderLimitEntityExpansion() {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testDocumentBuilderLimitEntityExpansion(String implClass) {
       InputStream is = new ByteArrayInputStream(XML_XXE_EXPANSION.getBytes(StandardCharsets.UTF_8));
 
       DocumentBuilderFactory dbf =
@@ -85,8 +77,9 @@ public class XMLUtilsParameterizedTest {
       assertThrows(org.xml.sax.SAXParseException.class, () -> dbf.newDocumentBuilder().parse(is));
     }
 
-    @Test
-    public void testDocumentBuilderDisallowsEntityInjection()
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testDocumentBuilderDisallowsEntityInjection(String implClass)
         throws IOException, SAXException, ParserConfigurationException {
       URL resource = XMLUtilsTest.class.getClassLoader().getResource("xxe_injection.txt");
       String xmlStr = String.format(XML_XXE_INJECTION, resource.toString());
@@ -120,22 +113,16 @@ public class XMLUtilsParameterizedTest {
     }
   }
 
-  @RunWith(Parameterized.class)
+  @Nested
   public static class TestXMLTransformerFactoryXXE {
 
-    private String implClass;
-
-    @Parameters(name = "{index}: {0}")
-    public static Collection valuesToTestWith() {
-      return XMLUtils.TRANSFORMER_FACTORY_IMPL_WHITELIST;
+    static Stream<String> valuesToTestWith() {
+      return XMLUtils.TRANSFORMER_FACTORY_IMPL_WHITELIST.stream();
     }
 
-    public TestXMLTransformerFactoryXXE(String className) {
-      implClass = className;
-    }
-
-    @Test
-    public void testXMLTransformerLimitsEntityExpansion() {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testXMLTransformerLimitsEntityExpansion(String implClass) {
       Source xmlSource = new StreamSource(new StringReader(XML_XXE_EXPANSION));
       StreamResult result = new StreamResult(new StringWriter());
 
@@ -146,8 +133,9 @@ public class XMLUtilsParameterizedTest {
           () -> tf.newTransformer().transform(xmlSource, result));
     }
 
-    @Test
-    public void testXMLTransformerDisallowsEntityInjection()
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testXMLTransformerDisallowsEntityInjection(String implClass)
         throws TransformerException, IOException {
       URL resource = XMLUtilsTest.class.getClassLoader().getResource("xxe_injection.txt");
       String xmlStr = String.format(XML_XXE_INJECTION, resource.toString());
@@ -177,22 +165,16 @@ public class XMLUtilsParameterizedTest {
     }
   }
 
-  @RunWith(Parameterized.class)
+  @Nested
   public static class TestSAXParserFactoryXXE {
 
-    private String implClass;
-
-    @Parameters(name = "{index}: {0}")
-    public static Collection valuesToTestWith() {
-      return XMLUtils.SAX_PARSER_FACTORY_IMPL_WHITELIST;
+    static Stream<String> valuesToTestWith() {
+      return XMLUtils.SAX_PARSER_FACTORY_IMPL_WHITELIST.stream();
     }
 
-    public TestSAXParserFactoryXXE(String className) {
-      implClass = className;
-    }
-
-    @Test
-    public void testSaxParserLimitsEntityExpansion() {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testSaxParserLimitsEntityExpansion(String implClass) {
       InputStream is = new ByteArrayInputStream(XML_XXE_EXPANSION.getBytes(StandardCharsets.UTF_8));
 
       assertThrows(
@@ -204,8 +186,9 @@ public class XMLUtilsParameterizedTest {
                   .parse(is, new DefaultHandler()));
     }
 
-    @Test
-    public void testSaxParserDisallowsEntityInjection()
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testSaxParserDisallowsEntityInjection(String implClass)
         throws IOException, ParserConfigurationException, SAXException {
       URL resource = XMLUtilsTest.class.getClassLoader().getResource("xxe_injection.txt");
       String xmlStr = String.format(XML_XXE_INJECTION, resource.toString());
@@ -232,22 +215,16 @@ public class XMLUtilsParameterizedTest {
     }
   }
 
-  @RunWith(Parameterized.class)
+  @Nested
   public static class TestXMLReaderXXE {
 
-    private String implClass;
-
-    @Parameters(name = "{index}: {0}")
-    public static Collection valuesToTestWith() {
-      return XMLUtils.XML_READER_IMPL_WHITELIST;
+    static Stream<String> valuesToTestWith() {
+      return XMLUtils.XML_READER_IMPL_WHITELIST.stream();
     }
 
-    public TestXMLReaderXXE(String className) {
-      implClass = className;
-    }
-
-    @Test
-    public void testXMLReaderLimitsEntityExpansion() {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testXMLReaderLimitsEntityExpansion(String implClass) {
       InputStream is = new ByteArrayInputStream(XML_XXE_EXPANSION.getBytes(StandardCharsets.UTF_8));
       InputSource ins = new InputSource(is);
       assertThrows(
@@ -255,8 +232,10 @@ public class XMLUtilsParameterizedTest {
           () -> XML_UTILS.getSecureXmlParser(implClass).parse(ins));
     }
 
-    @Test
-    public void testXMLReaderDisallowsEntityInjection() throws SAXException, IOException {
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("valuesToTestWith")
+    public void testXMLReaderDisallowsEntityInjection(String implClass)
+        throws SAXException, IOException {
       URL resource = XMLUtilsTest.class.getClassLoader().getResource("xxe_injection.txt");
       String injectedContent = IOUtils.toString(resource, StandardCharsets.UTF_8);
       String xmlStr = String.format(XML_XXE_INJECTION, resource.toString());

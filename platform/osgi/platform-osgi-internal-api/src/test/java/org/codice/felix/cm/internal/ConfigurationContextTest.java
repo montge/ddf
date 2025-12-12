@@ -301,5 +301,10 @@ public class ConfigurationContextTest {
         properties.put(key, value);
       }
     }
+
+    @Override
+    public String getFactoryServiceName() {
+      return factoryPid != null ? factoryPid + ".service" : null;
+    }
   }
 }

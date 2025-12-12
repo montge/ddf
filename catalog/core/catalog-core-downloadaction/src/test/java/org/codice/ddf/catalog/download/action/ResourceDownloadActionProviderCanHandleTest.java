@@ -20,19 +20,17 @@ import static org.mockito.Mockito.when;
 import ddf.catalog.data.Metacard;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 import org.codice.ddf.catalog.resource.cache.ResourceCacheServiceMBean;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-@RunWith(Parameterized.class)
 public class ResourceDownloadActionProviderCanHandleTest {
 
   private static final String ACTION_PROVIDER_ID = "actionID";
@@ -56,44 +54,18 @@ public class ResourceDownloadActionProviderCanHandleTest {
 
   private AutoCloseable mocks;
 
-  private String siteName;
-
-  private String resourceUri;
-
-  private String metacardId;
-
-  private boolean isMetacardResourceCached;
-
-  private boolean expectedCanHandle;
-
-  public ResourceDownloadActionProviderCanHandleTest(
-      String siteName,
-      String resourceUri,
-      String metacardId,
-      boolean isMetacardResourceCached,
-      boolean expectedCanHandle) {
-    this.siteName = siteName;
-    this.resourceUri = resourceUri;
-    this.metacardId = metacardId;
-    this.isMetacardResourceCached = isMetacardResourceCached;
-    this.expectedCanHandle = expectedCanHandle;
-  }
-
-  @Parameters
-  public static Collection<Object[]> getTestData() {
-    return Arrays.asList(
-        new Object[][] {
-          {REMOTE_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, true, false},
-          {REMOTE_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, false, true},
-          {REMOTE_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, true, false},
-          {REMOTE_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, false, true},
-          {LOCAL_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, true, false},
-          {LOCAL_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, false, true},
-          {LOCAL_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, true, false},
-          {LOCAL_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, false, false},
-          {LOCAL_SITE_NAME, null, DEFAULT_METACARD_ID, false, false},
-          {REMOTE_SITE_NAME, null, DEFAULT_METACARD_ID, false, false}
-        });
+  static Stream<Arguments> getTestData() {
+    return Stream.of(
+        Arguments.of(REMOTE_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, true, false),
+        Arguments.of(REMOTE_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, false, true),
+        Arguments.of(REMOTE_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, true, false),
+        Arguments.of(REMOTE_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, false, true),
+        Arguments.of(LOCAL_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, true, false),
+        Arguments.of(LOCAL_SITE_NAME, REMOTE_RESOURCE_URI, DEFAULT_METACARD_ID, false, true),
+        Arguments.of(LOCAL_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, true, false),
+        Arguments.of(LOCAL_SITE_NAME, CONTENT_RESOURCE_URI, DEFAULT_METACARD_ID, false, false),
+        Arguments.of(LOCAL_SITE_NAME, null, DEFAULT_METACARD_ID, false, false),
+        Arguments.of(REMOTE_SITE_NAME, null, DEFAULT_METACARD_ID, false, false));
   }
 
   @BeforeEach
@@ -119,8 +91,15 @@ public class ResourceDownloadActionProviderCanHandleTest {
     mocks.close();
   }
 
-  @Test
-  public void testCanHandle() throws Exception {
+  @ParameterizedTest
+  @MethodSource("getTestData")
+  public void testCanHandle(
+      String siteName,
+      String resourceUri,
+      String metacardId,
+      boolean isMetacardResourceCached,
+      boolean expectedCanHandle)
+      throws Exception {
     setupMockBasicMetacard(siteName, resourceUri, metacardId);
     setupMockResourceCacheServiceMBeanProxy(isMetacardResourceCached);
     assertThat(actionProvider.canHandleMetacard(mockMetacard), is(expectedCanHandle));

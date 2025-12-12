@@ -15,61 +15,50 @@ package org.codice.ddf.spatial.geocoder.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Collection;
-import org.junit.jupiter.api.Test;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
 public class JsonpValidatorTest {
-  private String inputJsonp;
 
-  private Boolean expectedResult;
-
-  public JsonpValidatorTest(String inputJsonp, Boolean expectedResult) {
-    this.inputJsonp = inputJsonp;
-    this.expectedResult = expectedResult;
+  static Stream<Arguments> testValues() {
+    return Stream.of(
+        Arguments.of("", false),
+        Arguments.of(".", false),
+        Arguments.of("...", false),
+        Arguments.of("foo..bar", false),
+        Arguments.of("foo", true),
+        Arguments.of("foo.bar", true),
+        Arguments.of("123", false),
+        Arguments.of("foo123", true),
+        Arguments.of("foo.bar.123", false),
+        Arguments.of("test()", false),
+        Arguments.of("a-b", false),
+        Arguments.of("$", true),
+        Arguments.of("$123", true),
+        Arguments.of("foo$bar", true),
+        Arguments.of("_foo", true),
+        Arguments.of("foo_bar", true),
+        Arguments.of("$.callback", true),
+        Arguments.of("_.callback", true),
+        Arguments.of(" foobar", false),
+        Arguments.of("function", false),
+        Arguments.of("(function xss(x){evil()})", false),
+        Arguments.of("foo.function.bar", false),
+        Arguments.of("$.ajaxHandler", true),
+        Arguments.of("$.123", false),
+        Arguments.of("array_of_functions[42]", true),
+        Arguments.of("array_of_functions[42][54]", true),
+        Arguments.of("array_of_functions[]", false),
+        Arguments.of("array_of_functions[\"key\"]", true),
+        Arguments.of("$.ajaxHandler[42][54].foo", true),
+        Arguments.of(":badFunction", false));
   }
 
-  @Parameterized.Parameters
-  public static Collection testValues() {
-    return Arrays.asList(
-        new Object[][] {
-          {"", false},
-          {".", false},
-          {"...", false},
-          {"foo..bar", false},
-          {"foo", true},
-          {"foo.bar", true},
-          {"123", false},
-          {"foo123", true},
-          {"foo.bar.123", false},
-          {"test()", false},
-          {"a-b", false},
-          {"$", true},
-          {"$123", true},
-          {"foo$bar", true},
-          {"_foo", true},
-          {"foo_bar", true},
-          {"$.callback", true},
-          {"_.callback", true},
-          {" foobar", false},
-          {"function", false},
-          {"(function xss(x){evil()})", false},
-          {"foo.function.bar", false},
-          {"$.ajaxHandler", true},
-          {"$.123", false},
-          {"array_of_functions[42]", true},
-          {"array_of_functions[42][54]", true},
-          {"array_of_functions[]", false},
-          {"array_of_functions[\"key\"]", true},
-          {"$.ajaxHandler[42][54].foo", true},
-          {":badFunction", false}
-        });
-  }
-
-  @Test
-  public void testIsValidJSONP() {
+  @ParameterizedTest
+  @MethodSource("testValues")
+  public void testIsValidJSONP(String inputJsonp, Boolean expectedResult) {
     assertEquals(expectedResult, JsonpValidator.isValidJsonp(inputJsonp));
   }
 }
