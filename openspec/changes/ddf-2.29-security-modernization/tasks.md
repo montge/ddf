@@ -153,7 +153,7 @@
 - [ ] 5.1.6 Test federation to remote source
 
 ### 5.2 CI/CD Verification
-- [ ] 5.2.1 All GitHub Actions workflows pass
+- [x] 5.2.1 All GitHub Actions workflows pass ✅ Fixed integration-tests job (2025-12-12)
 - [ ] 5.2.2 CodeQL analysis clean
 - [ ] 5.2.3 OWASP scan at target thresholds
 - [ ] 5.2.4 Coverage reports generated
