@@ -46,28 +46,22 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # Compile without tests for faster analysis on push/PR
-      # Nightly builds run full verify with coverage
-      - name: Build and analyze
+      # Build and install all modules first (required for multi-module SNAPSHOT deps)
+      # Then run sonar analysis
+      - name: Build project
+        run: |
+          mvn $MAVEN_CLI_OPTS install -DskipTests \
+            -pl '!distribution/docs' \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Run SonarCloud analysis
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          if [[ "${{ github.event_name }}" == "schedule" ]]; then
-            # Nightly: Full build with tests for coverage
-            mvn $MAVEN_CLI_OPTS verify \
-              -pl '!distribution/docs' \
-              -Dmaven.test.failure.ignore=true \
-              org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-              -Dsonar.projectKey=montge_ddf \
-              -Dsonar.organization=montge \
-              -Dsonar.host.url=https://sonarcloud.io
-          else
-            # Push/PR: Fast compile-only analysis
-            mvn $MAVEN_CLI_OPTS compile \
-              -pl '!distribution/docs' \
-              org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-              -Dsonar.projectKey=montge_ddf \
-              -Dsonar.organization=montge \
-              -Dsonar.host.url=https://sonarcloud.io
-          fi
+          mvn $MAVEN_CLI_OPTS sonar:sonar \
+            -pl '!distribution/docs' \
+            -Dsonar.projectKey=montge_ddf \
+            -Dsonar.organization=montge \
+            -Dsonar.host.url=https://sonarcloud.io
