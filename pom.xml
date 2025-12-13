@@ -378,8 +378,14 @@
         <!--temporary solr download url> -->
         <solr.download.url>https://dlcdn.apache.org</solr.download.url>
 
-        <!-- SonarQube Properties -->
+        <!-- SonarCloud Properties -->
+        <sonar.organization>montge</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/${project.report.output.directory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.java.source>${jdk.version}</sonar.java.source>
+        <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
+        <!-- Exclude generated code from analysis -->
+        <sonar.exclusions>**/target/generated-sources/**,**/target/generated-test-sources/**</sonar.exclusions>
         <maven-jacoco-plugin.version>0.8.13</maven-jacoco-plugin.version>
     </properties>
     <!--
