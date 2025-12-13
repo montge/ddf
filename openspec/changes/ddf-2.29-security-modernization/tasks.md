@@ -32,7 +32,8 @@
   - Note: logback-access pinned to 1.2.13 (Jetty 9.x compatibility - 2.0.x requires Jetty 11+)
 
 ### 1.3 Security Test Coverage
-- [ ] 1.3.1 security-core-impl tests (46.88% -> 80%) - Added 74 tests (2025-12-12) incl. 36 PAOS tests
+- [x] 1.3.1 security-core-impl tests (46.88% -> 80%) ✅ Added comprehensive tests (2025-12-13)
+  - SamlProtocol: +21 tests covering Binding/Type enums, createSoapMessage, edge cases
 - [x] 1.3.2 security-core-services tests (45.77% -> 80%) ✅ Added 51 tests (2025-12-12) incl. 30 SecurityLoggerImpl tests
 - [x] 1.3.3 security-handler-impl tests (13.84% -> 80%) ✅ **98.2%** instruction coverage (2025-12-12)
 - [x] 1.3.4 platform-security-core-api tests ✅ Mostly interfaces (30+), concrete classes tested (2025-12-12)
