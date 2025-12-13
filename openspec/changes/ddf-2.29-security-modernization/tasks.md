@@ -117,8 +117,13 @@
 ### 3.3 Logback 1.5.x (CVE-2025-11226 fix)
 - [x] 3.3.1 Update SLF4J to 2.x ✅ 1.7.36 -> 2.0.17 (2025-12-12)
 - [x] 3.3.2 Update Logback to 1.5.x ✅ 1.2.13 -> 1.5.21 (2025-12-12)
-- [ ] 3.3.3 Migrate configuration files
-- [ ] 3.3.4 Test logging in all modules
+- [x] 3.3.3 Migrate configuration files ✅ N/A (2025-12-13)
+  - Runtime logging uses Log4j2 via Pax Logging (org.ops4j.pax.logging.cfg)
+  - Test logback configs are simple ConsoleAppenders - compatible with 1.5.x
+  - No JMS/JDBC/complex appenders requiring migration
+- [x] 3.3.4 Test logging in all modules ✅ Verified (2025-12-13)
+  - Tests run successfully with Logback 1.5.21
+  - Note: Some legacy Log4j 1.x bridge warnings in test output (non-blocking)
 
 ---
 
