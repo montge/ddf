@@ -110,7 +110,12 @@
 - [x] 3.2.1 Review Camel 3.18 -> 3.22 migration guide ✅ Already at 3.22.4 (final 3.x EOL)
 - [x] 3.2.2 Update Camel dependencies ✅ Already at 3.22.4
 - [x] 3.2.3 Fix route compatibility issues ✅ N/A
-- [ ] 3.2.4 Test catalog:// component
+- [~] 3.2.4 Test catalog:// component ⚠️ **Tests have pre-existing issues** (2025-12-13)
+  - FrameworkProducerTest: 151 tests, 77 failures/errors
+  - Root cause: Mockito strict stubbing incompatibility with JUnit 5 migration
+  - Issue: Tests missing `getBody()` (no-args) stubs + unnecessary stubbing errors
+  - Partially fixed: Added missing stubs, reduced failures from 88 to 77
+  - **Needs:** Full Mockito stubbing refactor or switch to LENIENT mode
 - [ ] 3.2.5 Test directory monitor routes
 - [ ] 3.2.6 Plan Camel 4.x upgrade (requires Jakarta EE) ⏸️ **BLOCKED** on CXF 4.x
 
