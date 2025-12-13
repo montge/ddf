@@ -30,7 +30,8 @@ class WhoAmISpec extends SubjectSpec {
         new WhoAmI(null, new SubjectUtils())
 
         then:
-        thrown(IllegalArgumentException)
+        // Validate.notNull() throws NullPointerException for null values
+        thrown(NullPointerException)
     }
 
     def 'assertion must not be null'() {

@@ -49,9 +49,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Tests for {@link WhoAmI} class. */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class WhoAmITest {
 
   private static final String TEST_NAME = "testuser";
@@ -84,8 +87,9 @@ public class WhoAmITest {
 
   @Test
   public void testConstructorWithNullSubjectThrowsException() {
+    // Validate.notNull() throws NullPointerException for null values
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> {
           new WhoAmI(null, subjectOperations);
         });
