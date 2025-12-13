@@ -281,4 +281,229 @@ public class SamlProtocolTest {
     assertEquals("myid", logoutResponse.getMessage().getID());
     assertNull(logoutResponse.getMessage().getInResponseTo());
   }
+
+  @Test
+  public void testCreateIssuer() {
+    var issuer = SamlProtocol.createIssuer("test-issuer-value");
+    assertNotNull(issuer);
+    assertEquals("test-issuer-value", issuer.getValue());
+  }
+
+  @Test
+  public void testCreateNameID() {
+    var nameId = SamlProtocol.createNameID("test-nameid-value");
+    assertNotNull(nameId);
+    assertEquals("test-nameid-value", nameId.getValue());
+  }
+
+  @Test
+  public void testCreateSubject() {
+    var nameId = SamlProtocol.createNameID("subject-name");
+    var subject = SamlProtocol.createSubject(nameId);
+    assertNotNull(subject);
+    assertNotNull(subject.getNameID());
+    assertEquals("subject-name", subject.getNameID().getValue());
+  }
+
+  @Test
+  public void testCreateStatus() {
+    var status = SamlProtocol.createStatus("urn:oasis:names:tc:SAML:2.0:status:Success");
+    assertNotNull(status);
+    assertNotNull(status.getStatusCode());
+    assertEquals("urn:oasis:names:tc:SAML:2.0:status:Success", status.getStatusCode().getValue());
+    assertNull(status.getStatusMessage());
+  }
+
+  @Test
+  public void testCreateStatusWithMessage() {
+    var status =
+        SamlProtocol.createStatus("urn:oasis:names:tc:SAML:2.0:status:Responder", "Error occurred");
+    assertNotNull(status);
+    assertNotNull(status.getStatusCode());
+    assertEquals("urn:oasis:names:tc:SAML:2.0:status:Responder", status.getStatusCode().getValue());
+    assertNotNull(status.getStatusMessage());
+    assertEquals("Error occurred", status.getStatusMessage().getMessage());
+  }
+
+  @Test
+  public void testCreateStatusCode() {
+    var statusCode = SamlProtocol.createStatusCode("custom-status-code");
+    assertNotNull(statusCode);
+    assertEquals("custom-status-code", statusCode.getValue());
+  }
+
+  @Test
+  public void testCreateSoapMessage() {
+    LogoutWrapper<LogoutRequest> logoutRequest =
+        SamlProtocol.createLogoutRequest(
+            SamlProtocol.createIssuer("myissuer"),
+            SamlProtocol.createNameID("mynameid"),
+            "myid",
+            Collections.emptyList());
+
+    var envelope = SamlProtocol.createSoapMessage(logoutRequest.getMessage());
+    assertNotNull(envelope);
+    assertNotNull(envelope.getBody());
+    assertNotNull(envelope.getHeader());
+    assertEquals(1, envelope.getBody().getUnknownXMLObjects().size());
+  }
+
+  @Test
+  public void testCreateLogoutRequestWithSessionIndexes() {
+    LogoutWrapper<LogoutRequest> logoutRequest =
+        SamlProtocol.createLogoutRequest(
+            SamlProtocol.createIssuer("myissuer"),
+            SamlProtocol.createNameID("mynameid"),
+            "myid",
+            Arrays.asList("session1", "session2", "session3"));
+    assertEquals(3, logoutRequest.getMessage().getSessionIndexes().size());
+    assertEquals(
+        "session1", logoutRequest.getMessage().getSessionIndexes().get(0).getSessionIndex());
+    assertEquals(
+        "session2", logoutRequest.getMessage().getSessionIndexes().get(1).getSessionIndex());
+    assertEquals(
+        "session3", logoutRequest.getMessage().getSessionIndexes().get(2).getSessionIndex());
+  }
+
+  @Test
+  public void testBindingFromUri() {
+    assertEquals(SamlProtocol.Binding.HTTP_POST, SamlProtocol.Binding.from(POST_BINDING));
+    assertEquals(SamlProtocol.Binding.HTTP_REDIRECT, SamlProtocol.Binding.from(REDIRECT_BINDING));
+    assertEquals(SamlProtocol.Binding.PAOS, SamlProtocol.Binding.from(PAOS_BINDING));
+    assertEquals(SamlProtocol.Binding.SOAP, SamlProtocol.Binding.from(SOAP_BINDING));
+  }
+
+  @Test
+  public void testBindingFromInvalidUri() {
+    assertNull(SamlProtocol.Binding.from("invalid:binding:uri"));
+  }
+
+  @Test
+  public void testBindingGetUri() {
+    assertEquals(POST_BINDING, SamlProtocol.Binding.HTTP_POST.getUri());
+    assertEquals(REDIRECT_BINDING, SamlProtocol.Binding.HTTP_REDIRECT.getUri());
+    assertEquals(PAOS_BINDING, SamlProtocol.Binding.PAOS.getUri());
+    assertEquals(SOAP_BINDING, SamlProtocol.Binding.SOAP.getUri());
+  }
+
+  @Test
+  public void testBindingIsEqual() {
+    assertTrue(SamlProtocol.Binding.HTTP_POST.isEqual(POST_BINDING));
+    assertTrue(SamlProtocol.Binding.HTTP_REDIRECT.isEqual(REDIRECT_BINDING));
+    assertTrue(SamlProtocol.Binding.PAOS.isEqual(PAOS_BINDING));
+  }
+
+  @Test
+  public void testBindingIsEqualFalse() {
+    assertTrue(!SamlProtocol.Binding.HTTP_POST.isEqual(REDIRECT_BINDING));
+    assertTrue(!SamlProtocol.Binding.PAOS.isEqual(POST_BINDING));
+  }
+
+  @Test
+  public void testTypeGetKey() {
+    assertEquals("SAMLRequest", SamlProtocol.Type.REQUEST.getKey());
+    assertEquals("SAMLResponse", SamlProtocol.Type.RESPONSE.getKey());
+    assertEquals("", SamlProtocol.Type.NULL.getKey());
+  }
+
+  @Test
+  public void testGetCacheDuration() {
+    var duration = SamlProtocol.getCacheDuration();
+    assertNotNull(duration);
+    // Default is P7D (7 days)
+    assertTrue(duration.toDays() >= 0);
+  }
+
+  @Test
+  public void testCreateIdpMetadataWithNullLocations() {
+    EntityDescriptor entityDescriptor =
+        SamlProtocol.createIdpMetadata(
+            "myid",
+            "mysigningcert",
+            "myencryptioncert",
+            Arrays.asList("mynameid"),
+            null,
+            null,
+            null,
+            null);
+    assertEquals("myid", entityDescriptor.getEntityID());
+    List<SingleSignOnService> ssoServices =
+        entityDescriptor
+            .getIDPSSODescriptor(SamlProtocol.SUPPORTED_PROTOCOL)
+            .getSingleSignOnServices();
+    assertEquals(0, ssoServices.size());
+  }
+
+  @Test
+  public void testCreateIdpMetadataWithEmptyLocations() {
+    EntityDescriptor entityDescriptor =
+        SamlProtocol.createIdpMetadata(
+            "myid", "mysigningcert", "myencryptioncert", Arrays.asList("mynameid"), "", "", "", "");
+    assertEquals("myid", entityDescriptor.getEntityID());
+    List<SingleSignOnService> ssoServices =
+        entityDescriptor
+            .getIDPSSODescriptor(SamlProtocol.SUPPORTED_PROTOCOL)
+            .getSingleSignOnServices();
+    assertEquals(0, ssoServices.size());
+  }
+
+  @Test
+  public void testCreateSpMetadataWithNullLocations() {
+    EntityDescriptor entityDescriptor =
+        SamlProtocol.createSpMetadata(
+            "myid",
+            "mysigningcert",
+            "myencryptioncert",
+            Arrays.asList("mynameid"),
+            null,
+            null,
+            null,
+            null);
+    assertEquals("myid", entityDescriptor.getEntityID());
+    List<AssertionConsumerService> acServices =
+        entityDescriptor
+            .getSPSSODescriptor(SamlProtocol.SUPPORTED_PROTOCOL)
+            .getAssertionConsumerServices();
+    assertEquals(0, acServices.size());
+  }
+
+  @Test
+  public void testCreateSpMetadataWithEmptyLocations() {
+    EntityDescriptor entityDescriptor =
+        SamlProtocol.createSpMetadata(
+            "myid", "mysigningcert", "myencryptioncert", Arrays.asList("mynameid"), "", "", "", "");
+    assertEquals("myid", entityDescriptor.getEntityID());
+    List<AssertionConsumerService> acServices =
+        entityDescriptor
+            .getSPSSODescriptor(SamlProtocol.SUPPORTED_PROTOCOL)
+            .getAssertionConsumerServices();
+    assertEquals(0, acServices.size());
+  }
+
+  @Test
+  public void testCreateIdpMetadataWithMultipleNameIds() {
+    EntityDescriptor entityDescriptor =
+        SamlProtocol.createIdpMetadata(
+            "myid",
+            "mysigningcert",
+            "myencryptioncert",
+            Arrays.asList("nameid1", "nameid2", "nameid3"),
+            "redirectlocation",
+            null,
+            null,
+            null);
+    assertEquals(
+        3,
+        entityDescriptor
+            .getIDPSSODescriptor(SamlProtocol.SUPPORTED_PROTOCOL)
+            .getNameIDFormats()
+            .size());
+  }
+
+  @Test
+  public void testBindingHttpArtifact() {
+    // HTTP_ARTIFACT maps to SOAP_BINDING
+    assertEquals(SOAP_BINDING, SamlProtocol.Binding.HTTP_ARTIFACT.getUri());
+    assertTrue(SamlProtocol.Binding.HTTP_ARTIFACT.isEqual(SOAP_BINDING));
+  }
 }
