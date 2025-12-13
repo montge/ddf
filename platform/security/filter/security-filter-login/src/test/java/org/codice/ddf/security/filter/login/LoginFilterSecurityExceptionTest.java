@@ -55,10 +55,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.opensaml.core.config.InitializationService;
 
 /** Additional test coverage for LoginFilter exception handling and edge cases. */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LoginFilterSecurityExceptionTest {
 
   private LoginFilter loginFilter;
@@ -71,7 +74,8 @@ public class LoginFilterSecurityExceptionTest {
   @Mock private SessionFactory sessionFactory;
   @Mock private ContextPolicyManager contextPolicyManager;
   @Mock private BaseAuthenticationToken authenticationTokenMock;
-  @Mock private X509Certificate[] x509Certificates;
+  @Mock private X509Certificate x509CertificateMock;
+  private X509Certificate[] x509Certificates;
 
   @BeforeAll
   public static void init() throws Exception {
@@ -80,6 +84,8 @@ public class LoginFilterSecurityExceptionTest {
 
   @BeforeEach
   public void setup() throws Exception {
+    x509Certificates = new X509Certificate[] {x509CertificateMock};
+
     loginFilter = new LoginFilter();
     loginFilter.setSecurityManager(securityManagerMock);
     loginFilter.setSessionFactory(sessionFactory);

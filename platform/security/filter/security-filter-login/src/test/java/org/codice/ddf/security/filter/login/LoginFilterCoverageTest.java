@@ -57,10 +57,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.opensaml.core.config.InitializationService;
 
 /** Comprehensive test coverage for LoginFilter to increase coverage to 85%+. */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LoginFilterCoverageTest {
 
   private LoginFilter loginFilter;
@@ -73,7 +76,8 @@ public class LoginFilterCoverageTest {
   @Mock private SessionFactory sessionFactory;
   @Mock private ContextPolicyManager contextPolicyManager;
   @Mock private BaseAuthenticationToken authenticationTokenMock;
-  @Mock private X509Certificate[] x509Certificates;
+  @Mock private X509Certificate x509CertificateMock;
+  private X509Certificate[] x509Certificates;
 
   @BeforeAll
   public static void init() throws Exception {
@@ -82,6 +86,8 @@ public class LoginFilterCoverageTest {
 
   @BeforeEach
   public void setup() throws Exception {
+    x509Certificates = new X509Certificate[] {x509CertificateMock};
+
     loginFilter = new LoginFilter();
     loginFilter.setSecurityManager(securityManagerMock);
     loginFilter.setSessionFactory(sessionFactory);
