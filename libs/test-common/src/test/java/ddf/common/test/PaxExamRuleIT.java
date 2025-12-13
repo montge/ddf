@@ -20,16 +20,17 @@ import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.repositories;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 
 import org.codice.ddf.test.common.DependencyVersionResolver;
 import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.codice.ddf.test.common.annotations.PaxExamRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TestWatcher;
@@ -71,6 +72,18 @@ public class PaxExamRuleIT {
     public Option[] config() {
       return options(
           junitBundles(),
+          // Add SLF4J bundles required for OSGi container
+          // SLF4J 2.0.x requires SPI Fly for OSGi ServiceLoader support
+          mavenBundle("org.apache.aries.spifly", "org.apache.aries.spifly.dynamic.bundle")
+              .version("1.3.7"),
+          mavenBundle("org.ow2.asm", "asm").version("9.7"),
+          mavenBundle("org.ow2.asm", "asm-commons").version("9.7"),
+          mavenBundle("org.ow2.asm", "asm-util").version("9.7"),
+          mavenBundle("org.ow2.asm", "asm-tree").version("9.7"),
+          mavenBundle("org.ow2.asm", "asm-analysis").version("9.7"),
+          mavenBundle("org.slf4j", "slf4j-api").version(DependencyVersionResolver.resolver()),
+          mavenBundle("org.slf4j", "slf4j-simple").version(DependencyVersionResolver.resolver()),
+          systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"),
           bundle("file:target/test-common-" + System.getProperty("ddf.version") + ".jar"),
           repositories("https://repo1.maven.org/maven2@id=central"),
           wrappedBundle(
@@ -78,25 +91,25 @@ public class PaxExamRuleIT {
                   .version(DependencyVersionResolver.resolver())));
     }
 
-    @Test
+    @org.junit.Test
     public void superTest() {}
   }
 
   public static class DummyTest extends SuperDummyTest {
 
-    @Test
+    @org.junit.Test
     public void passingTest() {}
 
-    @Test
+    @org.junit.Test
     public void secondPassingTest() {}
 
-    @Test
+    @org.junit.Test
     public void failingTest() {
       fail(FAILING_TEST_MESSAGE);
     }
 
-    @Test
-    @Disabled
+    @org.junit.Test
+    @Ignore
     @SuppressWarnings("squid:S1607")
     public void ignoredTest() {}
   }
@@ -116,13 +129,13 @@ public class PaxExamRuleIT {
       ranBeforeExam = true;
     }
 
-    @BeforeEach
+    @Before
     public void before() {
       assertThat(ranBeforeExam).isTrue();
       assertThat(ranAfterExam).isFalse();
     }
 
-    @AfterEach
+    @After
     public void after() {
       assertThat(ranBeforeExam).isTrue();
       assertThat(ranAfterExam).isFalse();
