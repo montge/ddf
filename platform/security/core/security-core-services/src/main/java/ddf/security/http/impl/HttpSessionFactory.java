@@ -81,11 +81,9 @@ public class HttpSessionFactory implements SessionFactory {
             sessionHandler.getSessionIdManager().newSessionId(request, System.currentTimeMillis());
         Session cachedSession = sessionCache.get(sessionId);
         if (cachedSession != null && cachedSession.isValid()) {
-          // Session extends HttpSession, so cast is safe
-          HttpSession session = (HttpSession) cachedSession;
-          request.enterSession(session);
-          request.setSession(session);
-          return session;
+          request.enterSession(cachedSession);
+          request.setSession(cachedSession);
+          return cachedSession;
         }
       } catch (Exception e) {
         LOGGER.trace("Unable to get session from cache, letting a new one get created", e);

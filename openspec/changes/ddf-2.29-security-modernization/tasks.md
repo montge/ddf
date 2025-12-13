@@ -157,7 +157,12 @@
 
 ### 5.2 CI/CD Verification
 - [x] 5.2.1 All GitHub Actions workflows pass ✅ Fixed integration-tests job (2025-12-12)
-- [ ] 5.2.2 CodeQL analysis clean
+- [~] 5.2.2 CodeQL analysis clean ⚠️ **30 alerts reviewed** (2025-12-13)
+  - Fixed: useless-type-test in HttpSessionFactory.java (unnecessary Session→HttpSession cast)
+  - Stale: useless-null-check in XstreamPathConverter.java (file deleted)
+  - 16 missing-override-annotation alerts (stale - annotations already present)
+  - 11 chained-type-tests (code style, low priority)
+  - 1 type-bound-extends-final (acceptable)
 - [ ] 5.2.3 OWASP scan at target thresholds
 - [x] 5.2.4 Coverage reports generated ✅ JaCoCo configured
 - [x] 5.2.5 SonarCloud integration ✅ (2025-12-13)
