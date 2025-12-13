@@ -352,7 +352,7 @@
 
     <feature name="catalog-core-backupplugin" version="${project.version}"
              description="Catalog post ingest plug-in to backup metacards to a file system.">
-        <feature>catalog-app</feature>
+        <feature>catalog-core</feature>
         <bundle>mvn:ddf.catalog.core/catalog-core-backupplugin/${project.version}</bundle>
     </feature>
 
@@ -377,7 +377,7 @@
 
     <feature name="catalog-plugin-federationreplication"
              version="${project.version}" description="">
-        <feature>catalog-app</feature>
+        <feature>catalog-core</feature>
         <bundle>mvn:ddf.catalog.plugin/plugin-federation-replication/${project.version}</bundle>
     </feature>
 
