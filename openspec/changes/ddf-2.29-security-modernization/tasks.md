@@ -28,6 +28,7 @@
 - [x] 1.2.13 Jersey 2.35 -> 2.47 (CVE-2025-25193 race condition) ✅ (2025-12-12)
 - [x] 1.2.14 Protobuf 4.28.2 -> 4.33.2 (DoS vulnerabilities) ✅ (2025-12-12)
 - [x] 1.2.15 ZooKeeper 3.9.3 -> 3.9.4 (CVE-2025-58457) ✅ (2025-12-12)
+- [x] 1.2.16 SLF4J 1.7.36 -> 2.0.17 + Logback 1.2.13 -> 1.5.21 (CVE-2025-11226) ✅ (2025-12-12)
 
 ### 1.3 Security Test Coverage
 - [ ] 1.3.1 security-core-impl tests (46.88% -> 80%) - Added 74 tests (2025-12-12) incl. 36 PAOS tests
@@ -111,9 +112,9 @@
 - [ ] 3.2.5 Test directory monitor routes
 - [ ] 3.2.6 Plan Camel 4.x upgrade (requires Jakarta EE) ⏸️ **BLOCKED** on CXF 4.x
 
-### 3.3 Logback 1.4.x
-- [ ] 3.3.1 Update SLF4J to 2.x
-- [ ] 3.3.2 Update Logback to 1.4.x
+### 3.3 Logback 1.5.x (CVE-2025-11226 fix)
+- [x] 3.3.1 Update SLF4J to 2.x ✅ 1.7.36 -> 2.0.17 (2025-12-12)
+- [x] 3.3.2 Update Logback to 1.5.x ✅ 1.2.13 -> 1.5.21 (2025-12-12)
 - [ ] 3.3.3 Migrate configuration files
 - [ ] 3.3.4 Test logging in all modules
 
