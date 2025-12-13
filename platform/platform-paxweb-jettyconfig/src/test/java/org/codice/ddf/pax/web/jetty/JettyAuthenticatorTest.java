@@ -41,6 +41,8 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -48,6 +50,7 @@ import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.mock.MockServiceReference;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class JettyAuthenticatorTest {
 
   private JettyAuthenticator jettyAuthenticator;

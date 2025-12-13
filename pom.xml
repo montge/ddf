@@ -267,6 +267,9 @@
         <apache-log4j.version>2.25.1</apache-log4j.version>
         <logback.classic.version>1.5.21</logback.classic.version>
         <logback.version>1.5.21</logback.version>
+        <!-- logback-access 1.2.x is required for Jetty 9.x compatibility. -->
+        <!-- logback-access 2.0.x only supports Jetty 11+ and uses new Maven coordinates. -->
+        <logback-access.version>1.2.13</logback-access.version>
         <mariadb.version>2.4.1</mariadb.version>
         <maven.failsafe.version>3.5.3</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
