@@ -21,18 +21,18 @@ import static org.hamcrest.core.Is.is;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 
 public class PropertiesFileReaderTest {
-  @ClassRule public static TemporaryFolder testFolder = new TemporaryFolder();
+  @TempDir static Path testFolder;
 
   private static final Path NONEXISTENT_PATH = Paths.get("this", "path");
 
@@ -48,19 +48,18 @@ public class PropertiesFileReaderTest {
 
   @BeforeAll
   public static void setup() throws Exception {
-    File propertiesEmptyDirectory = testFolder.newFolder("empty");
-    File propertiesTestDirectory = testFolder.newFolder("properties");
+    Path propertiesEmptyDirectory = Files.createDirectory(testFolder.resolve("empty"));
+    Path propertiesTestDirectory = Files.createDirectory(testFolder.resolve("properties"));
 
-    propertiesTestEmptyDirectoryPath = propertiesEmptyDirectory.getPath();
-    propertiesTestDirectoryPath = propertiesTestDirectory.getPath();
-    propertiesTestSingleFilePath =
-        Paths.get(propertiesTestDirectoryPath, "test1.properties").toString();
+    propertiesTestEmptyDirectoryPath = propertiesEmptyDirectory.toString();
+    propertiesTestDirectoryPath = propertiesTestDirectory.toString();
+    propertiesTestSingleFilePath = propertiesTestDirectory.resolve("test1.properties").toString();
 
-    File propsFile1 = new File(propertiesTestDirectory, "test1.properties");
-    File propsFile2 = new File(propertiesTestDirectory, "test2.properties");
-    File propsFile3 = new File(propertiesTestDirectory, "test3.properties");
+    File propsFile1 = propertiesTestDirectory.resolve("test1.properties").toFile();
+    File propsFile2 = propertiesTestDirectory.resolve("test2.properties").toFile();
+    File propsFile3 = propertiesTestDirectory.resolve("test3.properties").toFile();
 
-    File randomFile = new File(propertiesTestDirectory, "random.cfg");
+    File randomFile = propertiesTestDirectory.resolve("random.cfg").toFile();
     assert randomFile.createNewFile();
 
     generateAndSaveProperties(propsFile1, "test1value", VALUES_PER_FILE);

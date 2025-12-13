@@ -19,15 +19,15 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -36,7 +36,7 @@ public class PropertiesLoaderTest {
 
   @Mock private Properties propertiesMock;
 
-  @ClassRule public static TemporaryFolder temporaryFolder = new TemporaryFolder();
+  @TempDir static Path temporaryFolder;
   private static final String PROPERTIES_FILENAME = "test.properties";
   private static final String NON_EXISTENT_FILENAME = "nonExistentFile.properties";
   private static File propertiesFile;
@@ -63,8 +63,9 @@ public class PropertiesLoaderTest {
     }
 
     // initialize file
-    propertiesFile = temporaryFolder.newFile(PROPERTIES_FILENAME);
-    Files.write(propertiesFile.toPath(), sb.toString().getBytes());
+    Path propertiesPath = Files.createFile(temporaryFolder.resolve(PROPERTIES_FILENAME));
+    propertiesFile = propertiesPath.toFile();
+    Files.write(propertiesPath, sb.toString().getBytes());
 
     System.setProperty("value4", "value4value");
   }
@@ -102,8 +103,8 @@ public class PropertiesLoaderTest {
 
   @Test
   public void testLoadPropertiesWithEmptyPropertiesFile() throws Exception {
-    File emptyFile = temporaryFolder.newFile("tempFile");
-    Properties testProperties = PROPERTIES_LOADER.loadProperties(emptyFile.getPath(), null);
+    Path emptyFilePath = Files.createFile(temporaryFolder.resolve("tempFile"));
+    Properties testProperties = PROPERTIES_LOADER.loadProperties(emptyFilePath.toString(), null);
 
     assertThat(testProperties).isEmpty();
   }
