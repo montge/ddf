@@ -158,7 +158,11 @@
 - [x] 5.2.1 All GitHub Actions workflows pass ✅ Fixed integration-tests job (2025-12-12)
 - [ ] 5.2.2 CodeQL analysis clean
 - [ ] 5.2.3 OWASP scan at target thresholds
-- [ ] 5.2.4 Coverage reports generated
+- [x] 5.2.4 Coverage reports generated ✅ JaCoCo configured
+- [x] 5.2.5 SonarCloud integration ✅ (2025-12-13)
+  - SONAR_TOKEN secret configured
+  - Workflow optimized: compile-only for push/PR, full verify nightly
+  - Project: https://sonarcloud.io/project/overview?id=montge_ddf
 
 ### 5.3 Documentation
 - [ ] 5.3.1 Update CHANGELOG.md

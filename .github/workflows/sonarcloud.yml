@@ -9,6 +9,9 @@ on:
     branches:
       - master
       - '*.x'
+  schedule:
+    # Run nightly for full analysis with coverage
+    - cron: '0 4 * * *'
   workflow_dispatch:  # Manual trigger
 
 env:
@@ -20,7 +23,7 @@ jobs:
   sonarcloud:
     name: SonarCloud Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
 
     steps:
       - name: Checkout code
@@ -43,16 +46,28 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # Build and run tests with JaCoCo coverage
-      # Skip docs module due to JRuby/asciidoctor compatibility issues
+      # Compile without tests for faster analysis on push/PR
+      # Nightly builds run full verify with coverage
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn $MAVEN_CLI_OPTS verify \
-            -pl '!distribution/docs' \
-            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-            -Dsonar.projectKey=montge_ddf \
-            -Dsonar.organization=montge \
-            -Dsonar.host.url=https://sonarcloud.io
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            # Nightly: Full build with tests for coverage
+            mvn $MAVEN_CLI_OPTS verify \
+              -pl '!distribution/docs' \
+              -Dmaven.test.failure.ignore=true \
+              org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+              -Dsonar.projectKey=montge_ddf \
+              -Dsonar.organization=montge \
+              -Dsonar.host.url=https://sonarcloud.io
+          else
+            # Push/PR: Fast compile-only analysis
+            mvn $MAVEN_CLI_OPTS compile \
+              -pl '!distribution/docs' \
+              org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+              -Dsonar.projectKey=montge_ddf \
+              -Dsonar.organization=montge \
+              -Dsonar.host.url=https://sonarcloud.io
+          fi

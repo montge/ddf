@@ -22,6 +22,7 @@ Distributed Data Framework (DDF) is an open source, modular integration framewor
 - **Maven:** 3.6.3+
 - **Code Style:** google-java-format
 - **CI/CD:** GitHub Actions
+- **Code Quality:** SonarCloud (montge_ddf)
 
 ## Architecture Patterns
 
