@@ -21,6 +21,8 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,23 +38,36 @@ import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.federation.FederationException;
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
+import ddf.catalog.operation.DeleteResponse;
 import ddf.catalog.operation.ProcessingDetails;
 import ddf.catalog.operation.QueryResponse;
+import ddf.catalog.source.IngestException;
 import ddf.catalog.source.SourceUnavailableException;
 import ddf.catalog.source.UnsupportedQueryException;
 import ddf.mime.MimeTypeResolver;
+import ddf.mime.MimeTypeToTransformerMapper;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.ContentDisposition;
+import org.codice.ddf.attachment.AttachmentInfo;
 import org.codice.ddf.attachment.AttachmentParser;
 import org.codice.ddf.checksum.ChecksumProvider;
+import org.codice.ddf.platform.util.uuidgenerator.UuidGenerator;
 import org.codice.ddf.rest.api.CatalogServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,9 +83,11 @@ public class AbstractCatalogServiceTest {
   @Mock private AttachmentParser attachmentParser;
   @Mock private AttributeRegistry attributeRegistry;
   @Mock private MimeTypeResolver mimeTypeResolver;
+  @Mock private MimeTypeToTransformerMapper mimeTypeToTransformerMapper;
   @Mock private HttpServletRequest httpServletRequest;
   @Mock private QueryResponse queryResponse;
   @Mock private BinaryContent binaryContent;
+  @Mock private UuidGenerator uuidGenerator;
 
   private TestAbstractCatalogService catalogService;
   private FilterBuilder filterBuilder;
@@ -437,6 +454,422 @@ public class AbstractCatalogServiceTest {
         mock(org.codice.ddf.platform.util.uuidgenerator.UuidGenerator.class);
     catalogService.setUuidGenerator(generator);
     // Verify the method doesn't throw an exception
+    assertThat(catalogService, is(notNullValue()));
+  }
+
+  // =====================================================
+  // Tests for deleteDocument
+  // =====================================================
+
+  @Test
+  public void testDeleteDocumentSuccess() throws Exception {
+    String id = "test-metacard-id";
+    DeleteResponse deleteResponse = mock(DeleteResponse.class);
+    when(catalogFramework.delete(any())).thenReturn(deleteResponse);
+
+    catalogService.deleteDocument(id);
+
+    verify(catalogFramework).delete(any());
+  }
+
+  @Test
+  public void testDeleteDocumentWithEmptyIdSucceeds() throws Exception {
+    // Empty string is sanitized and passed to delete (not rejected like null)
+    DeleteResponse deleteResponse = mock(DeleteResponse.class);
+    when(catalogFramework.delete(any())).thenReturn(deleteResponse);
+
+    catalogService.deleteDocument("");
+
+    verify(catalogFramework).delete(any());
+  }
+
+  @Test
+  public void testDeleteDocumentSourceUnavailable() throws Exception {
+    String id = "test-metacard-id";
+    doThrow(new SourceUnavailableException("Source unavailable"))
+        .when(catalogFramework)
+        .delete(any());
+
+    assertThrows(
+        javax.ws.rs.InternalServerErrorException.class, () -> catalogService.deleteDocument(id));
+  }
+
+  @Test
+  public void testDeleteDocumentIngestException() throws Exception {
+    String id = "test-metacard-id";
+    doThrow(new IngestException("Ingest failed")).when(catalogFramework).delete(any());
+
+    assertThrows(CatalogServiceException.class, () -> catalogService.deleteDocument(id));
+  }
+
+  // =====================================================
+  // Tests for addDocument
+  // =====================================================
+
+  @Test
+  public void testAddDocumentWithNullMessage() {
+    List<String> contentTypeList = Collections.singletonList("application/xml");
+
+    assertThrows(
+        CatalogServiceException.class,
+        () -> catalogService.addDocument(contentTypeList, (HttpServletRequest) null, "xml", null));
+  }
+
+  @Test
+  public void testAddDocumentWithNullMultipartBody() {
+    List<String> contentTypeList = Collections.singletonList("application/xml");
+
+    assertThrows(
+        CatalogServiceException.class,
+        () ->
+            catalogService.addDocument(
+                contentTypeList,
+                (org.apache.cxf.jaxrs.ext.multipart.MultipartBody) null,
+                "xml",
+                null));
+  }
+
+  // =====================================================
+  // Tests for updateDocument
+  // =====================================================
+
+  @Test
+  public void testUpdateDocumentWithNullId() {
+    List<String> contentTypeList = Collections.singletonList("application/xml");
+    InputStream message = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
+
+    assertThrows(
+        CatalogServiceException.class,
+        () ->
+            catalogService.updateDocument(
+                null,
+                contentTypeList,
+                (org.apache.cxf.jaxrs.ext.multipart.MultipartBody) null,
+                "xml",
+                message));
+  }
+
+  @Test
+  public void testUpdateDocumentWithNullMessage() {
+    List<String> contentTypeList = Collections.singletonList("application/xml");
+
+    assertThrows(
+        CatalogServiceException.class,
+        () ->
+            catalogService.updateDocument(
+                "test-id",
+                contentTypeList,
+                (org.apache.cxf.jaxrs.ext.multipart.MultipartBody) null,
+                "xml",
+                null));
+  }
+
+  @Test
+  public void testUpdateDocumentWithBothNullIdAndMessage() {
+    List<String> contentTypeList = Collections.singletonList("application/xml");
+
+    assertThrows(
+        CatalogServiceException.class,
+        () ->
+            catalogService.updateDocument(
+                null,
+                contentTypeList,
+                (org.apache.cxf.jaxrs.ext.multipart.MultipartBody) null,
+                "xml",
+                null));
+  }
+
+  @Test
+  public void testUpdateDocumentHttpServletRequestWithNullId() {
+    List<String> contentTypeList = Collections.singletonList("application/xml");
+    InputStream message = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
+
+    assertThrows(
+        CatalogServiceException.class,
+        () ->
+            catalogService.updateDocument(
+                null, contentTypeList, httpServletRequest, "xml", message));
+  }
+
+  @Test
+  public void testUpdateDocumentHttpServletRequestWithNullMessage() {
+    List<String> contentTypeList = Collections.singletonList("application/xml");
+
+    assertThrows(
+        CatalogServiceException.class,
+        () ->
+            catalogService.updateDocument(
+                "test-id", contentTypeList, httpServletRequest, "xml", null));
+  }
+
+  // =====================================================
+  // Tests for parseAttachments
+  // =====================================================
+
+  @Test
+  public void testParseAttachmentsSingleAttachment() throws Exception {
+    Attachment attachment = mock(Attachment.class);
+    ContentDisposition contentDisposition = mock(ContentDisposition.class);
+    DataHandler dataHandler = mock(DataHandler.class);
+    InputStream inputStream =
+        new ByteArrayInputStream("test content".getBytes(StandardCharsets.UTF_8));
+
+    when(attachment.getContentDisposition()).thenReturn(contentDisposition);
+    when(contentDisposition.getParameter("filename")).thenReturn("test.txt");
+    when(attachment.getContentType()).thenReturn(MediaType.TEXT_PLAIN_TYPE);
+    when(attachment.getDataHandler()).thenReturn(dataHandler);
+    when(dataHandler.getInputStream()).thenReturn(inputStream);
+
+    AttachmentInfo attachmentInfo = mock(AttachmentInfo.class);
+    when(attachmentParser.generateAttachmentInfo(any(), anyString(), anyString()))
+        .thenReturn(attachmentInfo);
+
+    List<Attachment> attachments = Collections.singletonList(attachment);
+    Pair<AttachmentInfo, Metacard> result = catalogService.parseAttachments(attachments, null);
+
+    assertThat(result, is(notNullValue()));
+    assertThat(result.getLeft(), is(attachmentInfo));
+    assertThat(result.getRight(), is(nullValue()));
+  }
+
+  @Test
+  public void testParseAttachmentsWithParseResource() throws Exception {
+    Attachment resourceAttachment = mock(Attachment.class);
+    ContentDisposition resourceDisposition = mock(ContentDisposition.class);
+    DataHandler resourceDataHandler = mock(DataHandler.class);
+    InputStream resourceInputStream =
+        new ByteArrayInputStream("resource content".getBytes(StandardCharsets.UTF_8));
+
+    when(resourceAttachment.getContentDisposition()).thenReturn(resourceDisposition);
+    when(resourceDisposition.getParameter("name")).thenReturn("parse.resource");
+    when(resourceDisposition.getParameter("filename")).thenReturn("resource.txt");
+    when(resourceAttachment.getContentType()).thenReturn(MediaType.TEXT_PLAIN_TYPE);
+    when(resourceAttachment.getDataHandler()).thenReturn(resourceDataHandler);
+    when(resourceDataHandler.getInputStream()).thenReturn(resourceInputStream);
+
+    AttachmentInfo attachmentInfo = mock(AttachmentInfo.class);
+    when(attachmentParser.generateAttachmentInfo(any(), anyString(), anyString()))
+        .thenReturn(attachmentInfo);
+
+    List<Attachment> attachments = new ArrayList<>();
+    attachments.add(resourceAttachment);
+    // Add a second attachment to trigger multi-attachment parsing
+    Attachment secondAttachment = mock(Attachment.class);
+    ContentDisposition secondDisposition = mock(ContentDisposition.class);
+    DataHandler secondDataHandler = mock(DataHandler.class);
+    when(secondAttachment.getContentDisposition()).thenReturn(secondDisposition);
+    when(secondDisposition.getParameter("name")).thenReturn("other");
+    when(secondAttachment.getDataHandler()).thenReturn(secondDataHandler);
+    when(secondDataHandler.getInputStream())
+        .thenReturn(new ByteArrayInputStream("other".getBytes(StandardCharsets.UTF_8)));
+    attachments.add(secondAttachment);
+
+    Pair<AttachmentInfo, Metacard> result = catalogService.parseAttachments(attachments, null);
+
+    assertThat(result, is(notNullValue()));
+    assertThat(result.getLeft(), is(attachmentInfo));
+    assertThat(result.getRight(), is(notNullValue())); // Should create empty metacard
+  }
+
+  @Test
+  public void testParseAttachmentsNoResourceThrowsException() {
+    Attachment attachment = mock(Attachment.class);
+    ContentDisposition contentDisposition = mock(ContentDisposition.class);
+    DataHandler dataHandler = mock(DataHandler.class);
+
+    when(attachment.getContentDisposition()).thenReturn(contentDisposition);
+    when(contentDisposition.getParameter("name")).thenReturn("other");
+    when(attachment.getDataHandler()).thenReturn(dataHandler);
+
+    try {
+      when(dataHandler.getInputStream())
+          .thenReturn(new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8)));
+    } catch (Exception e) {
+      // Ignore
+    }
+
+    // Add second attachment to trigger multi-attachment parsing
+    Attachment secondAttachment = mock(Attachment.class);
+    ContentDisposition secondDisposition = mock(ContentDisposition.class);
+    DataHandler secondDataHandler = mock(DataHandler.class);
+    when(secondAttachment.getContentDisposition()).thenReturn(secondDisposition);
+    when(secondDisposition.getParameter("name")).thenReturn("another");
+    when(secondAttachment.getDataHandler()).thenReturn(secondDataHandler);
+    try {
+      when(secondDataHandler.getInputStream())
+          .thenReturn(new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8)));
+    } catch (Exception e) {
+      // Ignore
+    }
+
+    List<Attachment> attachments = new ArrayList<>();
+    attachments.add(attachment);
+    attachments.add(secondAttachment);
+
+    assertThrows(
+        IllegalArgumentException.class, () -> catalogService.parseAttachments(attachments, null));
+  }
+
+  // =====================================================
+  // Tests for getDocument
+  // =====================================================
+
+  @Test
+  public void testGetDocumentWithNullId() {
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    assertThrows(
+        CatalogServiceException.class,
+        () -> catalogService.getDocument(null, null, null, uri, queryParams, httpServletRequest));
+  }
+
+  @Test
+  public void testGetDocumentWithValidIdNoResults() throws Exception {
+    String encodedId = "test-id";
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    when(catalogFramework.query(any(), any())).thenReturn(queryResponse);
+    when(queryResponse.getResults()).thenReturn(new ArrayList<>());
+
+    BinaryContent result =
+        catalogService.getDocument(null, encodedId, null, uri, queryParams, httpServletRequest);
+
+    assertThat(result, is(nullValue()));
+  }
+
+  @Test
+  public void testGetDocumentWithValidIdAndResults() throws Exception {
+    String encodedId = "test-id";
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    MetacardImpl metacard = new MetacardImpl();
+    metacard.setId("test-id");
+    Result result = mock(Result.class);
+    when(result.getMetacard()).thenReturn(metacard);
+    List<Result> results = Collections.singletonList(result);
+
+    when(catalogFramework.query(any(), any())).thenReturn(queryResponse);
+    when(queryResponse.getResults()).thenReturn(results);
+    when(catalogFramework.transform(any(Metacard.class), anyString(), any()))
+        .thenReturn(binaryContent);
+
+    BinaryContent content =
+        catalogService.getDocument(null, encodedId, null, uri, queryParams, httpServletRequest);
+
+    assertThat(content, is(notNullValue()));
+    assertThat(content, is(binaryContent));
+  }
+
+  @Test
+  public void testGetDocumentWithSourceIdAndResults() throws Exception {
+    String encodedSourceId = "source1";
+    String encodedId = "test-id";
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    MetacardImpl metacard = new MetacardImpl();
+    metacard.setId("test-id");
+    Result result = mock(Result.class);
+    when(result.getMetacard()).thenReturn(metacard);
+    List<Result> results = Collections.singletonList(result);
+
+    when(catalogFramework.query(any(), any())).thenReturn(queryResponse);
+    when(queryResponse.getResults()).thenReturn(results);
+    when(catalogFramework.transform(any(Metacard.class), anyString(), any()))
+        .thenReturn(binaryContent);
+
+    BinaryContent content =
+        catalogService.getDocument(
+            encodedSourceId, encodedId, null, uri, queryParams, httpServletRequest);
+
+    assertThat(content, is(notNullValue()));
+  }
+
+  @Test
+  public void testGetDocumentWithCustomTransformer() throws Exception {
+    String encodedId = "test-id";
+    String transformer = "json";
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    MetacardImpl metacard = new MetacardImpl();
+    metacard.setId("test-id");
+    Result result = mock(Result.class);
+    when(result.getMetacard()).thenReturn(metacard);
+    List<Result> results = Collections.singletonList(result);
+
+    when(catalogFramework.query(any(), any())).thenReturn(queryResponse);
+    when(queryResponse.getResults()).thenReturn(results);
+    when(catalogFramework.transform(any(Metacard.class), anyString(), any()))
+        .thenReturn(binaryContent);
+
+    BinaryContent content =
+        catalogService.getDocument(
+            null, encodedId, transformer, uri, queryParams, httpServletRequest);
+
+    assertThat(content, is(notNullValue()));
+    verify(catalogFramework).transform(any(Metacard.class), eq(transformer), any());
+  }
+
+  @Test
+  public void testGetDocumentFederationException() throws Exception {
+    String encodedId = "test-id";
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    when(catalogFramework.query(any(), any()))
+        .thenThrow(new FederationException("Federation failed"));
+
+    assertThrows(
+        javax.ws.rs.InternalServerErrorException.class,
+        () ->
+            catalogService.getDocument(
+                null, encodedId, null, uri, queryParams, httpServletRequest));
+  }
+
+  @Test
+  public void testGetDocumentSourceUnavailableException() throws Exception {
+    String encodedId = "test-id";
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    when(catalogFramework.query(any(), any()))
+        .thenThrow(new SourceUnavailableException("Source unavailable"));
+
+    assertThrows(
+        javax.ws.rs.InternalServerErrorException.class,
+        () ->
+            catalogService.getDocument(
+                null, encodedId, null, uri, queryParams, httpServletRequest));
+  }
+
+  @Test
+  public void testGetDocumentUnsupportedQueryException() throws Exception {
+    String encodedId = "test-id";
+    MultivaluedMap<String, String> queryParams = new MultivaluedHashMap<>();
+    URI uri = URI.create("http://localhost:8181/services/catalog");
+
+    when(catalogFramework.query(any(), any()))
+        .thenThrow(new UnsupportedQueryException("Query not supported"));
+
+    assertThrows(
+        CatalogServiceException.class,
+        () ->
+            catalogService.getDocument(
+                null, encodedId, null, uri, queryParams, httpServletRequest));
+  }
+
+  // =====================================================
+  // Tests for setMimeTypeToTransformerMapper
+  // =====================================================
+
+  @Test
+  public void testSetMimeTypeToTransformerMapperDoesNotThrow() {
+    MimeTypeToTransformerMapper mapper = mock(MimeTypeToTransformerMapper.class);
+    catalogService.setMimeTypeToTransformerMapper(mapper);
     assertThat(catalogService, is(notNullValue()));
   }
 
