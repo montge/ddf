@@ -24,12 +24,14 @@ env:
 
 jobs:
   # Notify build started (for PRs)
+  # Note: Dependabot PRs have limited permissions and can't post comments
   notify-start:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Post PR comment
         uses: actions/github-script@v7
+        continue-on-error: true  # Dependabot PRs have limited permissions
         with:
           script: |
             github.rest.issues.createComment({
@@ -268,6 +270,7 @@ jobs:
       - name: Post PR comment with result
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
+        continue-on-error: true  # Dependabot PRs have limited permissions
         with:
           script: |
             const status = '${{ steps.result.outputs.status }}';
