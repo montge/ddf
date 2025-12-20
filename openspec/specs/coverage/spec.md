@@ -90,7 +90,7 @@ Test coverage MUST be enforced in continuous integration.
 
 | Rank | Module | LOC | Priority |
 |------|--------|-----|----------|
-| 1 | catalog/rest/catalog-rest-service | 1,315 | HIGHEST |
+| 1 | ~~catalog/rest/catalog-rest-service~~ | 1,315 | ✅ DONE (50 tests) |
 | 2 | platform/admin/core/admin-core-api | 1,117 | HIGHEST |
 | 3 | catalog/core/catalog-core-definitionparser | 967 | HIGH |
 | 4 | catalog/solr/catalog-solr-offline-gazetteer | 961 | HIGH |
