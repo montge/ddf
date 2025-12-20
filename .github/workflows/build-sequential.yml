@@ -115,7 +115,7 @@ jobs:
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'schedule'
     runs-on: ubuntu-latest
-    timeout-minutes: 90  # Reduced: integration tests skipped with -DskipITs
+    timeout-minutes: 120  # DDF 455-module build needs 90-120 min on GitHub runners
 
     strategy:
       matrix:
