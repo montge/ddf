@@ -103,18 +103,20 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build all modules (skip tests)
+      - name: Build all modules including itest dependencies (skip tests)
         run: |
           # Build all modules to populate local repo with SNAPSHOTs
           # Integration tests need the built artifacts available
-          mvn install $MAVEN_CLI_OPTS -DskipTests -DskipStatic=true -P !itests
+          # Note: We include itests profile here because test-itests-ddf-core
+          # depends on test-itests-common and test-itests-dependencies-app
+          mvn install $MAVEN_CLI_OPTS -DskipTests -DskipStatic=true
 
       - name: Run DDF Core integration tests
         run: |
           unset JAVA_TOOL_OPTIONS
-          mvn install $MAVEN_CLI_OPTS \
+          mvn verify $MAVEN_CLI_OPTS \
             -pl distribution/test/itests/test-itests-ddf-core \
-            -am
+            -nsu
 
   # OWASP Dependency Check
   dependency-check:
