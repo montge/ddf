@@ -15,9 +15,9 @@ on:
   workflow_dispatch:  # Manual trigger
 
 env:
-  # -Xss4M: Increase thread stack size to prevent StackOverflowError during Karaf feature resolution
+  # -Xss8M: Increase thread stack size to prevent StackOverflowError during Karaf feature resolution
   MAVEN_OPTS: >-
-    -Xmx4G -Xms1G -Xss4M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
+    -Xmx4G -Xms1G -Xss8M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
