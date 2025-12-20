@@ -18,8 +18,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # -Xss8M: Increase thread stack size to prevent StackOverflowError during Karaf feature resolution
-  MAVEN_OPTS: '-Xmx4G -Xms1G -Xss8M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+  # -Xss16M: Increase thread stack size to prevent StackOverflowError during Karaf feature resolution
+  MAVEN_OPTS: '-Xmx4G -Xms1G -Xss16M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
   MAVEN_CLI_OPTS: '-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
 
 jobs:
