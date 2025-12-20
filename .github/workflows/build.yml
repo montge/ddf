@@ -880,6 +880,7 @@ jobs:
 
       - name: Comment on PR with results
         if: github.event_name == 'pull_request'
+        continue-on-error: true  # Dependabot PRs have limited permissions
         uses: actions/github-script@v8
         with:
           script: |
