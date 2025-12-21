@@ -1,0 +1,356 @@
+name: Build and Test (Parallel)
+
+on:
+  push:
+    branches:
+      - master
+      - '*.x'
+  pull_request:
+    branches:
+      - master
+      - '*.x'
+  workflow_dispatch:
+
+env:
+  # -Xss32M: Increase thread stack size for Karaf feature dependency resolution
+  MAVEN_OPTS: >-
+    -Xmx4G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
+  MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+
+jobs:
+  #
+  # STAGE 1: Build all modules without tests (fastest path to compiled artifacts)
+  #
+  build:
+    name: Build (No Tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build without tests
+        run: |
+          mvn $MAVEN_CLI_OPTS -T 1C install \
+            -DskipTests \
+            -Dmaven.test.skip=true \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -Djacoco.skip=true \
+            -pl '!distribution/docs'
+
+      - name: Cache Maven local repository
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+  #
+  # STAGE 2: Run tests in parallel job groups
+  # Test distribution: platform (380), catalog/core (198), catalog/spatial (143),
+  # catalog/transformer+rest (86), libs (27), catalog/other (77)
+  #
+  test-libs:
+    name: Test Libs
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+      - name: Test libs modules
+        run: |
+          mvn $MAVEN_CLI_OPTS -f libs/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-libs
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+  test-platform:
+    name: Test Platform Modules
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+      - name: Test platform modules
+        run: |
+          mvn $MAVEN_CLI_OPTS -f platform/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-platform
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+  test-catalog-core:
+    name: Test Catalog Core Modules
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+      - name: Test catalog core modules
+        run: |
+          mvn $MAVEN_CLI_OPTS -f catalog/core/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-catalog-core
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+  test-catalog-spatial:
+    name: Test Catalog Spatial Modules
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+      - name: Test catalog spatial modules
+        run: |
+          mvn $MAVEN_CLI_OPTS -f catalog/spatial/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-catalog-spatial
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+  test-catalog-rest:
+    name: Test Catalog REST/Transformer Modules
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+      - name: Test catalog REST and transformer modules
+        run: |
+          # Run REST and transformer tests separately since they're in different reactors
+          mvn $MAVEN_CLI_OPTS -f catalog/rest/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+          mvn $MAVEN_CLI_OPTS -f catalog/transformer/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-catalog-rest
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+  test-catalog-other:
+    name: Test Catalog Other Modules
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+      - name: Test catalog plugin, solr, security, opensearch modules
+        run: |
+          mvn $MAVEN_CLI_OPTS -f catalog/plugin/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+          mvn $MAVEN_CLI_OPTS -f catalog/solr/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+          mvn $MAVEN_CLI_OPTS -f catalog/security/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+          mvn $MAVEN_CLI_OPTS -f catalog/opensearch/pom.xml test \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-catalog-other
+          path: '**/target/surefire-reports/*.xml'
+          retention-days: 7
+
+  #
+  # STAGE 3: Build final distribution
+  #
+  distribution:
+    name: Build Distribution
+    needs: [test-libs, test-platform, test-catalog-core, test-catalog-spatial, test-catalog-rest, test-catalog-other]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ github.sha }}
+
+      - name: Build distribution
+        run: |
+          mvn $MAVEN_CLI_OPTS package \
+            -pl distribution/ddf \
+            -am \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Upload distribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: ddf-distribution
+          path: distribution/ddf/target/ddf-*.zip
+          retention-days: 14
+
+  #
+  # Final status check
+  #
+  ci-status:
+    name: CI Status
+    needs: [distribution]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [[ "${{ needs.distribution.result }}" != "success" ]]; then
+            echo "Distribution build failed"
+            exit 1
+          fi
+          echo "All CI checks passed!"
