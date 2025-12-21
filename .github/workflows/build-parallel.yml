@@ -39,31 +39,23 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build all modules except features and distribution (skip test compilation)
-        # Build main code first. Skip test compilation to avoid errors in some test classes.
-        # Exclude features (needs separate stack size) and distribution (needs features first).
+      - name: Build test-jar producing modules first (with test compilation)
+        # These modules export test-jars that other modules depend on.
+        # Build them first with their dependencies, including test compilation.
+        # Uses -DskipTests to compile tests but not run them.
         run: |
           mvn $MAVEN_CLI_OPTS install \
-            -Dmaven.test.skip=true \
+            -DskipTests \
             -DskipITs \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!distribution,!distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/ddf-common,!distribution/kernel,!distribution/docker,!distribution/test,!distribution/console-branding,!distribution/ddf-branding-plugin,!distribution/software-list,!distribution/solr-distro,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf'
-
-      - name: Build test-jar producing modules (compile tests for test-jar artifacts)
-        # These modules export test-jars that other modules depend on.
-        # Run test-compile to create the test-jar artifacts.
-        run: |
-          mvn $MAVEN_CLI_OPTS jar:test-jar \
-            -DskipTests \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true \
-            -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api
+            -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
+            -am
 
       - name: Build features modules
-        # Build features with larger stack to avoid StackOverflowError
-        # during recursive feature dependency resolution in Karaf plugin.
+        # Build features early since many modules depend on feature artifacts.
+        # Use larger stack to avoid StackOverflowError in Karaf plugin.
         run: |
           MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
             -f features/pom.xml \
@@ -71,8 +63,18 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
-      - name: Build distribution modules
-        # Build distribution last since it depends on features.
+      - name: Build distribution branding plugin (needed by other modules)
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -pl distribution/ddf-branding-plugin \
+            -am
+
+      - name: Build remaining modules (skip test compilation)
+        # Now build remaining modules. Skip test compilation to avoid errors
+        # in test classes that need API fixes.
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
@@ -80,8 +82,7 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -f distribution/pom.xml \
-            -pl '!docs'
+            -pl '!distribution/docs'
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5
