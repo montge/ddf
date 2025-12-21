@@ -13,8 +13,9 @@ on:
 
 env:
   # -Xss32M: Increase thread stack size for Karaf feature dependency resolution
+  # -Xmx8G: Full build requires significant heap space
   MAVEN_OPTS: >-
-    -Xmx4G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
+    -Xmx8G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
@@ -35,7 +36,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
 
       - name: Build without tests
         run: |
