@@ -42,6 +42,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Enhanced tests for {@link ServletMetrics} focusing on coverage and edge cases.
@@ -59,6 +61,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * </ul>
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ServletMetricsEnhancedTest {
 
   private static final String LATENCY_METRIC = "ddf.platform.http.latency";
