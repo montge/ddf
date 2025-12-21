@@ -94,7 +94,7 @@ public class RtfTemplate {
   private RtfRow appendProperty(
       String metacardId, Map.Entry<String, ExportCategory.ExportValue> entry) {
     if (ExportCategory.ValueType.MEDIA.equals(entry.getValue().getType())) {
-      ExportCategory.ExportValue<byte[], ExportCategory.ValueType> value = entry.getValue();
+      ExportCategory.ExportValue<byte[]> value = entry.getValue();
 
       Function<byte[], InputStream> fromByteArrayFunction = memoizeForImageData.apply(metacardId);
 

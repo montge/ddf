@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
