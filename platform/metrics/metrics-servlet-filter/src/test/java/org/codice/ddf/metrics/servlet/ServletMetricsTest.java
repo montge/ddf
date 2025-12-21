@@ -172,12 +172,15 @@ public class ServletMetricsTest {
 
   @Test
   public void syncException() throws Exception {
-    doThrow(Exception.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
+    doThrow(new javax.servlet.ServletException("Test exception"))
+        .when(mockFilterChain)
+        .doFilter(mockRequest, mockResponse);
     when(mockRequest.getMethod()).thenReturn("POST");
     when(mockResponse.getStatus()).thenReturn(500);
 
     assertThrows(
-        Exception.class, () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
+        javax.servlet.ServletException.class,
+        () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
 
     tags = getTags("POST", 500);
     assertThat(meterRegistry.summary(LATENCY, tags).count(), is(1L));
@@ -185,12 +188,15 @@ public class ServletMetricsTest {
 
   @Test
   public void syncExceptionWithConflictingStatusCode() throws Exception {
-    doThrow(Exception.class).when(mockFilterChain).doFilter(mockRequest, mockResponse);
+    doThrow(new javax.servlet.ServletException("Test exception"))
+        .when(mockFilterChain)
+        .doFilter(mockRequest, mockResponse);
     when(mockRequest.getMethod()).thenReturn("POST");
     when(mockResponse.getStatus()).thenReturn(200);
 
     assertThrows(
-        Exception.class, () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
+        javax.servlet.ServletException.class,
+        () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
 
     tags = getTags("POST", 500);
     assertThat(meterRegistry.summary(LATENCY, tags).count(), is(1L));

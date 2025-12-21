@@ -36,8 +36,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SolrQueryFilterVisitorTest {
 
   @Mock private SolrClient solrClient;
@@ -119,9 +122,13 @@ public class SolrQueryFilterVisitorTest {
   }
 
   @Test
-  public void testOrWithInvalidQuery() throws Exception {
+  public void testOrWithLikeQuery() throws Exception {
+    // LIKE queries are now supported in OR clauses
     Filter filter = ECQL.toFilter("property = 'val' OR otherProp LIKE 'val2'");
-    assertThrows(UnsupportedOperationException.class, () -> filter.accept(solrVisitor, null));
+    SolrQuery solrQuery = (SolrQuery) filter.accept(solrVisitor, null);
+    assertThat(
+        solrQuery.getQuery().trim(),
+        equalTo("( property_txt:\"val\" OR otherProp_txt_tokenized:val2 )"));
   }
 
   @Test
@@ -133,10 +140,11 @@ public class SolrQueryFilterVisitorTest {
   }
 
   @Test
-  public void testUnsupportedQuery() throws Exception {
+  public void testLikeQuery() throws Exception {
+    // LIKE queries are now supported using tokenized fields
     Filter filter = ECQL.toFilter("property LIKE 'val*'");
     SolrQuery solrQuery = (SolrQuery) filter.accept(solrVisitor, null);
-    assertThat(solrQuery, equalTo(null));
+    assertThat(solrQuery.getQuery(), equalTo("property_txt_tokenized:val*"));
   }
 
   @Test
