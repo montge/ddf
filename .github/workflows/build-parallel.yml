@@ -39,33 +39,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build test-jar producing modules (with test compilation)
-        # These modules export test-jars that other modules depend on.
-        # We need to compile their tests to create the test-jar artifacts.
-        run: |
-          mvn $MAVEN_CLI_OPTS install \
-            -DskipTests \
-            -DskipITs \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true \
-            -Djacoco.skip=true \
-            -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
-            -am
-
-      - name: Build features modules
-        # Build features BEFORE remaining modules because distribution/kernel depends on features.
-        # Build features separately - Karaf plugin runs in forked JVM with larger stack
-        # to avoid StackOverflowError during recursive feature dependency resolution.
-        run: |
-          MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
-            -f features/pom.xml \
-            -DskipTests \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true
-
-      - name: Build remaining modules (skip test compilation)
-        # Use maven.test.skip=true to skip test compilation for remaining modules
-        # (some have test compilation errors that need separate fixes).
+      - name: Build all modules except features and distribution (skip test compilation)
+        # Build main code first. Skip test compilation to avoid errors in some test classes.
+        # Exclude features (needs separate stack size) and distribution (needs features first).
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
@@ -73,7 +49,39 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!distribution/docs,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf'
+            -pl '!distribution/docs,!distribution,!distribution/ddf,!distribution/kernel,!distribution/docker,!distribution/sdk,!distribution/test,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf'
+
+      - name: Build test-jar producing modules (compile tests for test-jar artifacts)
+        # These modules export test-jars that other modules depend on.
+        # Run test-compile to create the test-jar artifacts.
+        run: |
+          mvn $MAVEN_CLI_OPTS jar:test-jar \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api
+
+      - name: Build features modules
+        # Build features with larger stack to avoid StackOverflowError
+        # during recursive feature dependency resolution in Karaf plugin.
+        run: |
+          MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
+            -f features/pom.xml \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Build distribution modules
+        # Build distribution last since it depends on features.
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -Dmaven.test.skip=true \
+            -DskipITs \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -Djacoco.skip=true \
+            -pl distribution,distribution/ddf,distribution/kernel,distribution/docker,distribution/sdk,distribution/test \
+            -pl '!distribution/docs'
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5
