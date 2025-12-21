@@ -39,9 +39,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build without tests
-        # Note: Parallel builds (-T 1C) disabled due to StackOverflowError in
-        # Karaf maven plugin when processing features concurrently
+      - name: Build without tests (excluding features)
+        # Note: Features build causes StackOverflowError in Karaf maven plugin
+        # during recursive feature dependency resolution (even with 64MB stack).
+        # Build features separately with increased stack size per-fork.
         run: |
           mvn $MAVEN_CLI_OPTS clean install \
             -DskipTests \
@@ -49,7 +50,16 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!distribution/docs'
+            -pl '!distribution/docs,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf'
+
+      - name: Build features modules
+        # Build features separately - Karaf plugin runs in forked JVM with larger stack
+        run: |
+          MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
+            -f features/pom.xml \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5
