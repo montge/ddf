@@ -52,10 +52,18 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
+      - name: Build features modules
+        # Build features BEFORE remaining modules because distribution/kernel depends on features.
+        # Build features separately - Karaf plugin runs in forked JVM with larger stack
+        # to avoid StackOverflowError during recursive feature dependency resolution.
+        run: |
+          MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
+            -f features/pom.xml \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
       - name: Build remaining modules (skip test compilation)
-        # Note: Features build causes StackOverflowError in Karaf maven plugin
-        # during recursive feature dependency resolution (even with 64MB stack).
-        # Build features separately with increased stack size per-fork.
         # Use maven.test.skip=true to skip test compilation for remaining modules
         # (some have test compilation errors that need separate fixes).
         run: |
@@ -66,15 +74,6 @@ jobs:
             -Dfmt.skip=true \
             -Djacoco.skip=true \
             -pl '!distribution/docs,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf'
-
-      - name: Build features modules
-        # Build features separately - Karaf plugin runs in forked JVM with larger stack
-        run: |
-          MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
-            -f features/pom.xml \
-            -DskipTests \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5
