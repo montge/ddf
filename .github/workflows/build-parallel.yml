@@ -49,7 +49,7 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!distribution/docs,!distribution,!distribution/ddf,!distribution/kernel,!distribution/docker,!distribution/sdk,!distribution/test,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf'
+            -pl '!distribution,!distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/ddf-common,!distribution/kernel,!distribution/docker,!distribution/test,!distribution/console-branding,!distribution/ddf-branding-plugin,!distribution/software-list,!distribution/solr-distro,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf'
 
       - name: Build test-jar producing modules (compile tests for test-jar artifacts)
         # These modules export test-jars that other modules depend on.
@@ -80,8 +80,8 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl distribution,distribution/ddf,distribution/kernel,distribution/docker,distribution/sdk,distribution/test \
-            -pl '!distribution/docs'
+            -f distribution/pom.xml \
+            -pl '!docs'
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5
