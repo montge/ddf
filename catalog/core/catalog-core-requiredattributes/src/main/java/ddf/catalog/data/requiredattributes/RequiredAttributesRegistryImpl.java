@@ -13,7 +13,7 @@
  */
 package ddf.catalog.data.requiredattributes;
 
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.data.RequiredAttributes;
 import ddf.catalog.data.RequiredAttributesRegistry;
