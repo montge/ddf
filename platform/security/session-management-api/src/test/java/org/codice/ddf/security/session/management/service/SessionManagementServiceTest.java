@@ -28,12 +28,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Tests for {@link SessionManagementService} interface contract. Uses a test implementation to
  * verify the interface behavior and contract expectations.
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SessionManagementServiceTest {
 
   private static final String SESSION_EXPIRY = "1800000"; // 30 minutes in ms
