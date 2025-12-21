@@ -51,9 +51,10 @@ on:
 env:
   # DDF has 455 modules - requires substantial heap
   # Java module exports moved to maven-compiler-plugin in pom.xml
-  # -Xss32M: Increase thread stack size for Karaf feature dependency resolution
+  # -Xss64M: Increase thread stack size for Karaf feature dependency resolution
+  # (32M was still insufficient for deep feature dependency graphs)
   MAVEN_OPTS: >-
-    -Xmx8G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
+    -Xmx8G -Xms1G -Xss64M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
