@@ -38,8 +38,13 @@ jobs:
           distribution: 'temurin'
 
       - name: Build without tests
+        # Note: NOT using -T 1C here because Karaf feature dependency resolution
+        # causes StackOverflowError in parallel build worker threads even with -Xss32M.
+        # The 32M stack is set on the main Maven JVM but parallel worker threads
+        # may have reduced stack. Serial build for compilation is acceptable since
+        # test parallelization provides the main speedup.
         run: |
-          mvn $MAVEN_CLI_OPTS -T 1C install \
+          mvn $MAVEN_CLI_OPTS install \
             -DskipTests \
             -Dmaven.test.skip=true \
             -Dcheckstyle.skip=true \
