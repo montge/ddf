@@ -43,10 +43,11 @@ jobs:
         # Note: Features build causes StackOverflowError in Karaf maven plugin
         # during recursive feature dependency resolution (even with 64MB stack).
         # Build features separately with increased stack size per-fork.
-        # Use maven.test.skip=true to also skip test compilation.
+        # Use -DskipTests to skip test execution but still compile tests
+        # (required because some modules depend on test-jar artifacts).
         run: |
           mvn $MAVEN_CLI_OPTS clean install \
-            -Dmaven.test.skip=true \
+            -DskipTests \
             -DskipITs \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
