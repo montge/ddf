@@ -41,8 +41,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Comprehensive test harness for Jackson deserialization security vulnerabilities.
@@ -223,7 +225,8 @@ public class JacksonDeserializationSecurityTest {
    * CVE Coverage: CVE-2020-36518 Test: Verify protection against large arrays (resource exhaustion
    * prevention)
    */
-  @Test(timeout = 5000) // 5 second timeout to prevent actual DoS
+  @Test
+  @Timeout(value = 5, unit = TimeUnit.SECONDS) // 5 second timeout to prevent actual DoS
   public void testLargeArrayProtection() throws Exception {
     // Generate JSON with large array (100k elements)
     StringBuilder largeArray = new StringBuilder("[");

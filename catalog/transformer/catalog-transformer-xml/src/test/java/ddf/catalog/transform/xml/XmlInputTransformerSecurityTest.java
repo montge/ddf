@@ -27,9 +27,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 import org.codice.ddf.parser.xml.XmlParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Enhanced security test harness for XmlInputTransformer. Tests XXE vulnerabilities, injection
@@ -135,7 +137,8 @@ public class XmlInputTransformerSecurityTest {
   }
 
   /** SECURITY TEST: Billion Laughs attack (XML bomb) Exponential entity expansion can cause DoS */
-  @Test(timeout = 5000) // Should complete quickly, not hang
+  @Test
+  @Timeout(value = 5, unit = TimeUnit.SECONDS) // Should complete quickly, not hang
   public void testBlocksBillionLaughsAttack() throws Exception {
     String billionLaughs =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -210,7 +213,8 @@ public class XmlInputTransformerSecurityTest {
   }
 
   /** Test handling of extremely nested XML (DoS via stack overflow) */
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
   public void testHandlesDeeplyNestedXml() throws Exception {
     StringBuilder deepXml = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     deepXml.append("<metacard xmlns=\"urn:catalog:metacard\">\n");
@@ -240,7 +244,8 @@ public class XmlInputTransformerSecurityTest {
   }
 
   /** Test handling of extremely large XML (DoS via memory exhaustion) */
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(value = 10, unit = TimeUnit.SECONDS)
   public void testHandlesVeryLargeXml() throws Exception {
     StringBuilder largeXml = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     largeXml.append("<metacard xmlns=\"urn:catalog:metacard\">\n");

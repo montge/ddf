@@ -25,9 +25,11 @@ import ddf.catalog.transform.CatalogTransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 import org.codice.ddf.platform.util.SortedServiceList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Enhanced comprehensive test harness for GeoJsonInputTransformer. Tests GeoJSON parsing, geometry
@@ -338,7 +340,8 @@ public class GeoJsonInputTransformerEnhancedTest {
   }
 
   /** SECURITY TEST: Extremely large coordinate array (DoS attempt) */
-  @Test(timeout = 5000)
+  @Test
+  @Timeout(value = 5, unit = TimeUnit.SECONDS)
   public void testHandlesLargeCoordinateArray() throws Exception {
     StringBuilder coords = new StringBuilder("[");
     for (int i = 0; i < 10000; i++) {
