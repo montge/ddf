@@ -39,9 +39,10 @@ jobs:
           cache: 'maven'
 
       - name: Build without tests
-        # Use same flags as sequential build for consistency
+        # Note: Parallel builds (-T 1C) disabled due to StackOverflowError in
+        # Karaf maven plugin when processing features concurrently
         run: |
-          mvn $MAVEN_CLI_OPTS -T 1C clean install \
+          mvn $MAVEN_CLI_OPTS clean install \
             -DskipTests \
             -DskipITs \
             -Dcheckstyle.skip=true \
