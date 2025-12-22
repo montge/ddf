@@ -64,7 +64,7 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!features,!features/camel-karaf,!features/kernel,!features/test-utils,!features/utilities,!features/branding,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!distribution/docs'
+            -pl '!features,!features/camel-karaf,!features/kernel,!features/test-utilities,!features/utilities,!features/branding,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!distribution/docs'
 
       - name: Build features modules
         # Build features with larger stack to avoid StackOverflowError
