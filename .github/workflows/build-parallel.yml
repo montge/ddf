@@ -54,10 +54,9 @@ jobs:
             -am
 
       - name: Build distribution/kernel (provides kernel:zip for feature tests)
-        # Build kernel first with large stack for karaf-maven-plugin.
-        # This creates kernel:zip which features need as a test dependency.
-        env:
-          MAVEN_OPTS: '-Xss2G -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+        # Build kernel with karaf plugin skipped to avoid StackOverflowError.
+        # The plugin has deep recursive feature resolution that exceeds stack limits.
+        # Skipping it creates a minimal kernel:zip sufficient for test dependencies.
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -DskipTests \
@@ -65,6 +64,7 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
+            -Dkaraf.skip=true \
             -pl distribution/kernel \
             -am
 
