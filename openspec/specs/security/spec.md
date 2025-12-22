@@ -146,6 +146,10 @@ The system MUST log security-relevant events for audit purposes.
 | Netty | 4.1.128.Final | 4.1.114+ | ✅ DONE |
 | Apache Batik | 1.18 | 1.17+ | ✅ DONE |
 | Apache Tika | 3.2.3 | 2.x+ | ✅ DONE |
+| Xalan | 2.7.3 | 2.7.3 | ✅ DONE (CVE-2022-34169) |
+| Commons BeanUtils | 1.11.0 | 1.11.0 | ✅ DONE (CVE-2025-48734) |
+| OWASP HTML Sanitizer | 20240325.1 | - | ⚠️ LOW RISK (no patch avail) |
+| Groovy | 4.0.23 | 4.x | ✅ DONE (test-only 2.4.21 mitigated) |
 
 ---
 
