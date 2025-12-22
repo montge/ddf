@@ -70,6 +70,7 @@ jobs:
 
       - name: Build feature modules (needed as test dependencies by other modules)
         # Feature modules generate XML files that other modules need as test deps.
+        # Use -am to build dependencies (like libs/test-common) that features need.
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -DskipTests \
@@ -77,7 +78,8 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl features/kernel,features/utilities,features/test-utilities,features/security,features/solr,features/admin,features/apps,features/branding,features/camel-karaf,features/install-profiles
+            -pl features/kernel,features/utilities,features/test-utilities,features/security,features/solr,features/admin,features/apps,features/branding,features/camel-karaf,features/install-profiles \
+            -am
 
       - name: Build all modules (except distribution and test)
         # Build all modules except:
