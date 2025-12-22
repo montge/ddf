@@ -112,11 +112,8 @@ public class PptxInputTransformer implements InputTransformer {
       Metacard metacard =
           extractInitialMetadata(fileBackedOutputStream.asByteSource().openStream());
 
-      try {
-        extractThumbnail(metacard, fileBackedOutputStream.asByteSource().openStream());
-      } catch (EncryptedDocumentException e) {
-        LOGGER.debug("Unable to generate thumbnail", e);
-      }
+      extractThumbnail(metacard, fileBackedOutputStream.asByteSource().openStream());
+
       return metacard;
     }
   }
@@ -146,8 +143,10 @@ public class PptxInputTransformer implements InputTransformer {
    * @param input
    * @throws IOException
    * @throws EncryptedDocumentException
+   * @throws CatalogTransformerException
    */
-  private void extractThumbnail(Metacard metacard, InputStream input) throws IOException {
+  private void extractThumbnail(Metacard metacard, InputStream input)
+      throws IOException, CatalogTransformerException {
 
     ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
     // This class is arbitrary. It just needs to be part of the bundle exporting POI classes
@@ -166,6 +165,10 @@ public class PptxInputTransformer implements InputTransformer {
         LOGGER.debug("Cannot transform old style (OLE2) ppt : id = {}", metacard.getId());
       }
 
+    } catch (EncryptedDocumentException e) {
+      LOGGER.debug("Unable to generate thumbnail for encrypted document", e);
+    } catch (org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException e) {
+      throw new CatalogTransformerException("Invalid or corrupted PowerPoint file", e);
     } catch (NoClassDefFoundError e) {
       LOGGER.warn("Cannot extract thumbnail: ", e);
     } finally {

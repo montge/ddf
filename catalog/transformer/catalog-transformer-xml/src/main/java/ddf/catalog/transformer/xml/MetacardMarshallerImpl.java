@@ -121,11 +121,14 @@ public class MetacardMarshallerImpl implements MetacardMarshaller {
       throws XmlPullParserException, IOException, CatalogTransformerException {
     PrintWriter writer = this.writerProvider.build(Metacard.class);
 
+    // Add XML declaration by default unless explicitly omitted
+    boolean omitXmlDeclaration = false;
     if (arguments != null && arguments.get(OMIT_XML_DECL) != null) {
-      Boolean omitXmlDec = Boolean.valueOf(String.valueOf(arguments.get(OMIT_XML_DECL)));
-      if (omitXmlDec == null || !omitXmlDec) {
-        writer.setRawValue(XML_DECL);
-      }
+      omitXmlDeclaration = Boolean.valueOf(String.valueOf(arguments.get(OMIT_XML_DECL)));
+    }
+
+    if (!omitXmlDeclaration) {
+      writer.setRawValue(XML_DECL);
     }
 
     writer.startNode("metacard");

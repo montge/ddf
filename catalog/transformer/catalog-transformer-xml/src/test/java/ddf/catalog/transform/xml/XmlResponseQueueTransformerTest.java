@@ -454,8 +454,6 @@ public class XmlResponseQueueTransformerTest {
 
   @Test
   public void testMimeTypeInitException() throws MimeTypeParseException {
-    SourceResponse response = givenSourceResponse(new MetacardStub("source1", "id1"));
-
     PrintWriterProvider pwp = new PrintWriterProviderImpl();
     MetacardMarshaller mockMetacardMarshaller = mock(MetacardMarshaller.class);
 
@@ -463,11 +461,9 @@ public class XmlResponseQueueTransformerTest {
 
     doThrow(new MimeTypeParseException("")).when(mockMimeType).setSubType(anyString());
 
-    XmlResponseQueueTransformer xrqt =
-        new XmlResponseQueueTransformer(parser, pwp, mockMetacardMarshaller, mockMimeType);
-    xrqt.setThreshold(2);
-
-    assertThrows(ExceptionInInitializerError.class, () -> xrqt.transform(response, null));
+    assertThrows(
+        ExceptionInInitializerError.class,
+        () -> new XmlResponseQueueTransformer(parser, pwp, mockMetacardMarshaller, mockMimeType));
   }
 
   @Test

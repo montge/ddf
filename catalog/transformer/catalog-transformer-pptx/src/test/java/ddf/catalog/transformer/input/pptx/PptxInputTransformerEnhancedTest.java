@@ -86,8 +86,7 @@ public class PptxInputTransformerEnhancedTest {
     slideShow.close();
 
     Metacard mockMetacard = new MetacardImpl();
-    when(mockInputTransformer.transform(any(InputStream.class), any(String.class)))
-        .thenReturn(mockMetacard);
+    when(mockInputTransformer.transform(any(InputStream.class))).thenReturn(mockMetacard);
 
     InputStream is = new ByteArrayInputStream(baos.toByteArray());
     String testId = "test-pptx-id-123";
