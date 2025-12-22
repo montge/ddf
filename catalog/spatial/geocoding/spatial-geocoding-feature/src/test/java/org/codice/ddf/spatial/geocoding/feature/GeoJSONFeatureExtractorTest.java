@@ -84,7 +84,8 @@ public class GeoJSONFeatureExtractorTest {
 
   @Test
   public void testExtractNullPath() {
-    assertThrows(IllegalArgumentException.class, () -> loadFeaturesFromPath(null, false));
+    // commons-lang3 3.17.0+ Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> loadFeaturesFromPath(null, false));
   }
 
   private List<SimpleFeature> loadFeaturesFromPath(String path, boolean assertSuccessfulExtraction)

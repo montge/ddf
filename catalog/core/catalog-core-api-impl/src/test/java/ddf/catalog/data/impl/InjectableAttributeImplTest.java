@@ -28,8 +28,9 @@ import org.junit.jupiter.api.Test;
 public class InjectableAttributeImplTest {
   @Test
   public void testNullAttributeName() {
+    // commons-lang3 3.17.0+ Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> new InjectableAttributeImpl(null, Collections.emptySet()));
   }
 

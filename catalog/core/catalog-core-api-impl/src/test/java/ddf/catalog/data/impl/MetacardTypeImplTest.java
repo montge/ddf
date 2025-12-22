@@ -247,15 +247,17 @@ public class MetacardTypeImplTest {
 
   @Test
   public void testExtendingNullMetacardTypeThrowsException() {
+    // commons-lang3 3.17.0+ Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> new MetacardTypeImpl(NAME, null, BASIC_METACARD.getAttributeDescriptors()));
   }
 
   @Test
   public void testExtendingMetacardTypeWithNullAdditionalDescriptorsThrowsException() {
+    // commons-lang3 3.17.0+ Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class, () -> new MetacardTypeImpl(NAME, BASIC_METACARD, null));
+        NullPointerException.class, () -> new MetacardTypeImpl(NAME, BASIC_METACARD, null));
   }
 
   @Test

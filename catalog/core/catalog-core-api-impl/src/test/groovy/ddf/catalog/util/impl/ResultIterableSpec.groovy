@@ -541,6 +541,7 @@ class ResultIterableSpec extends Specification {
         thrown CatalogQueryException
     }
 
+    // Note: commons-lang3 3.17.0+ Validate.notNull() throws NullPointerException
     def "constructor when catalog framework is null"() {
         setup:
         Query queryMock = createQueryMock(1, 1)
@@ -550,7 +551,7 @@ class ResultIterableSpec extends Specification {
         resultIterable(null as CatalogFramework, queryRequestMock)
 
         then:
-        thrown IllegalArgumentException
+        thrown NullPointerException
     }
 
     def "constructor when catalog framework is set but query request is null"() {
@@ -558,7 +559,7 @@ class ResultIterableSpec extends Specification {
         resultIterable(catalogFramework, null)
 
         then:
-        thrown IllegalArgumentException
+        thrown NullPointerException
     }
 
     def "constructor when query function is null"() {
@@ -570,7 +571,7 @@ class ResultIterableSpec extends Specification {
         resultIterable(null as QueryFunction, queryRequestMock)
 
         then:
-        thrown IllegalArgumentException
+        thrown NullPointerException
     }
 
     def "constructor when query function is set but query request is null"() {
@@ -578,7 +579,7 @@ class ResultIterableSpec extends Specification {
         resultIterable(Mock(QueryFunction), null)
 
         then:
-        thrown IllegalArgumentException
+        thrown NullPointerException
     }
 
     private Query createQueryMock(int startIndex, int pageSize) {

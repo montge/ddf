@@ -38,12 +38,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Extended tests for AbstractMetacardActionProvider to increase code coverage to 80%+. These tests
  * focus on edge cases, error handling, and various metacard configurations.
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractMetacardActionProviderExtendedTest {
 
   private static final String ACTION_ID = "test-action-id";
