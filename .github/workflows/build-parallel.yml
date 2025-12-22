@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  # -Xss64M: Default thread stack size (overridden to 512M in build step)
-  # Karaf feature dependency resolution requires very large stack (512M)
+  # -Xss64M: Default thread stack size (overridden to 1G in build step)
+  # Karaf feature dependency resolution requires very large stack (1G)
   # -Xmx8G: Full build requires significant heap space
   MAVEN_OPTS: >-
     -Xmx8G -Xms1G -Xss64M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
@@ -59,7 +59,7 @@ jobs:
         # Maven correctly orders modules so platform builds before features.
         # Exclude docs (requires asciidoctor setup).
         env:
-          MAVEN_OPTS: '-Xss512M -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+          MAVEN_OPTS: '-Xss1G -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
