@@ -143,7 +143,7 @@ The system MUST log security-relevant events for audit purposes.
 | Apache Camel | 3.22.4 | 3.22+ | ✅ DONE |
 | Zookeeper | 3.9.4 | 3.9.3+ | ✅ DONE |
 | GeoTools | 34.1 | 32.x+ | ✅ DONE |
-| Netty | 4.1.128.Final | 4.1.114+ | ✅ DONE |
+| Netty | 4.1.130.Final | 4.1.114+ | ✅ DONE |
 | Apache Batik | 1.18 | 1.17+ | ✅ DONE |
 | Apache Tika | 3.2.3 | 2.x+ | ✅ DONE |
 | Xalan | 2.7.3 | 2.7.3 | ✅ DONE (CVE-2022-34169) |
