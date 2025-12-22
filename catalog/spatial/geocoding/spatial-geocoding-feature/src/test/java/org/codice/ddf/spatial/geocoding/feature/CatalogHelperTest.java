@@ -20,7 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
 import ddf.catalog.operation.Query;
-import org.geotools.api.filter.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -48,15 +47,15 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForAllCountries();
 
     assertThat(query, is(notNullValue()));
-    assertThat(query.getFilter(), is(notNullValue()));
+    // Query extends Filter, so it is itself a filter
   }
 
   @Test
-  public void testGetQueryForAllCountriesReturnsValidFilter() {
+  public void testGetQueryForAllCountriesReturnsValidQuery() {
     Query query = catalogHelper.getQueryForAllCountries();
 
-    Filter filter = query.getFilter();
-    assertThat(filter, is(notNullValue()));
+    // Query extends Filter, so we verify the query is a valid Filter
+    assertThat(query, is(notNullValue()));
   }
 
   @Test
@@ -65,7 +64,6 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForName(countryCode);
 
     assertThat(query, is(notNullValue()));
-    assertThat(query.getFilter(), is(notNullValue()));
   }
 
   @Test
@@ -74,8 +72,6 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForName(countryCode);
 
     assertThat(query, is(notNullValue()));
-    Filter filter = query.getFilter();
-    assertThat(filter, is(notNullValue()));
   }
 
   @Test
@@ -85,7 +81,6 @@ public class CatalogHelperTest {
     for (String countryCode : countryCodes) {
       Query query = catalogHelper.getQueryForName(countryCode);
       assertThat(query, is(notNullValue()));
-      assertThat(query.getFilter(), is(notNullValue()));
     }
   }
 
@@ -95,7 +90,6 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForName(countryCode);
 
     assertThat(query, is(notNullValue()));
-    assertThat(query.getFilter(), is(notNullValue()));
   }
 
   @Test
@@ -104,7 +98,6 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForName(countryCode);
 
     assertThat(query, is(notNullValue()));
-    assertThat(query.getFilter(), is(notNullValue()));
   }
 
   @Test
@@ -112,7 +105,6 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForName(null);
 
     assertThat(query, is(notNullValue()));
-    assertThat(query.getFilter(), is(notNullValue()));
   }
 
   @Test
@@ -121,7 +113,6 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForName(countryCode);
 
     assertThat(query, is(notNullValue()));
-    assertThat(query.getFilter(), is(notNullValue()));
   }
 
   @Test
@@ -130,7 +121,6 @@ public class CatalogHelperTest {
     Query query = catalogHelper.getQueryForName(countryCode);
 
     assertThat(query, is(notNullValue()));
-    assertThat(query.getFilter(), is(notNullValue()));
   }
 
   @Test
