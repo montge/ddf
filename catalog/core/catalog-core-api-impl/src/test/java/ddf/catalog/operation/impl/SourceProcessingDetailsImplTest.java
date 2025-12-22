@@ -113,14 +113,14 @@ public class SourceProcessingDetailsImplTest {
   }
 
   /**
-   * Tests constructor with null warnings throws NullPointerException.
+   * Tests constructor with null warnings throws IllegalArgumentException.
    *
-   * <p>Verifies that null warnings are not accepted. Note: commons-lang3 3.17.0+ throws
-   * NullPointerException from Validate.notNull().
+   * <p>Verifies that null warnings are not accepted. Note: Validate.isTrue() throws
+   * IllegalArgumentException.
    */
   @Test
   public void testConstructorWithNullWarningsThrowsException() {
-    assertThrows(NullPointerException.class, () -> new SourceProcessingDetailsImpl(null));
+    assertThrows(IllegalArgumentException.class, () -> new SourceProcessingDetailsImpl(null));
   }
 
   /**
@@ -199,14 +199,14 @@ public class SourceProcessingDetailsImplTest {
   }
 
   /**
-   * Tests setWarnings with null throws NullPointerException.
+   * Tests setWarnings with null throws IllegalArgumentException.
    *
-   * <p>Verifies that null warnings are not accepted in setter. Note: commons-lang3 3.17.0+ throws
-   * NullPointerException from Validate.notNull().
+   * <p>Verifies that null warnings are not accepted in setter. Note: Validate.isTrue() throws
+   * IllegalArgumentException.
    */
   @Test
   public void testSetWarningsToNullThrowsException() {
-    assertThrows(NullPointerException.class, () -> details.setWarnings(null));
+    assertThrows(IllegalArgumentException.class, () -> details.setWarnings(null));
   }
 
   /**

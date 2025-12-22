@@ -13,7 +13,7 @@
  */
 package ddf.catalog.operation.impl;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import static org.apache.commons.lang3.Validate.isTrue;
 
 import ddf.catalog.operation.SourceProcessingDetails;
 import java.util.Collections;
@@ -39,8 +39,9 @@ public class SourceProcessingDetailsImpl implements SourceProcessingDetails {
    * @param warnings the warnings associated with the {@link Source}
    */
   public SourceProcessingDetailsImpl(List<String> warnings) {
-    notNull(
-        warnings, "the constructor of SourceProcessingDetailsImpl does not accept null warnings");
+    isTrue(
+        warnings != null,
+        "the constructor of SourceProcessingDetailsImpl does not accept null warnings");
     this.warnings = warnings;
   }
 
@@ -80,7 +81,7 @@ public class SourceProcessingDetailsImpl implements SourceProcessingDetails {
    * @param warnings the new warnings associated with the {@link Source}
    */
   public void setWarnings(List<String> warnings) {
-    notNull(warnings, "setWarnings(List<String> warnings) does not accept null warnings");
+    isTrue(warnings != null, "setWarnings(List<String> warnings) does not accept null warnings");
     this.warnings = warnings;
   }
 }
