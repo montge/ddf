@@ -53,10 +53,10 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
-      - name: Build all modules except features and docs
-        # Build libs, platform, catalog (all regular modules) first.
-        # This ensures dependencies like sync-installer-api are available.
-        # Use maven.test.skip since test-jars are already built above.
+      - name: Build libs, platform, and catalog modules
+        # Build core modules first (excluding features and distribution).
+        # This ensures dependencies like sync-installer-api are available
+        # before features are built. Distribution depends on features.
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
@@ -64,7 +64,7 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!features,!features/camel-karaf,!features/kernel,!features/test-utilities,!features/utilities,!features/branding,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!distribution/docs'
+            -pl libs,platform,catalog
 
       - name: Build features modules
         # Build features with larger stack to avoid StackOverflowError
@@ -75,6 +75,17 @@ jobs:
             -DskipTests \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
+
+      - name: Build distribution modules
+        # Distribution depends on features, so build last.
+        # Exclude docs (requires asciidoctor setup).
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -Dmaven.test.skip=true \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -pl distribution \
+            -pl '!distribution/docs'
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5

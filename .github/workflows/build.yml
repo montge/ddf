@@ -97,20 +97,26 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
-      - name: Build all modules except features and docs
-        # Build libs, platform, catalog first to ensure dependencies
-        # like sync-installer-api are available for features.
+      - name: Build libs, platform, and catalog modules
+        # Build core modules first (excluding features and distribution).
+        # This ensures dependencies like sync-installer-api are available.
         run: |
           mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
-            -pl '!features,!features/camel-karaf,!features/kernel,!features/test-utilities,!features/utilities,!features/branding,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!distribution/docs'
+            -pl libs,platform,catalog
 
       - name: Build features modules
         # Build features with larger stack for Karaf plugin.
-        # All dependencies are now available in local repository.
         run: |
           MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
             -f features/pom.xml \
             -DskipTests
+
+      - name: Build distribution modules
+        # Distribution depends on features, so build last.
+        run: |
+          mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
+            -pl distribution \
+            -pl '!distribution/docs'
 
       # Upload Maven repository containing all built artifacts
       # Only include ddf/ artifacts to reduce upload size
