@@ -101,8 +101,10 @@ jobs:
         # Build everything with larger stack to avoid StackOverflowError
         # in Karaf plugin during recursive feature dependency resolution.
         # Exclude docs (requires asciidoctor setup).
+        env:
+          MAVEN_OPTS: '-Xss128M -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
         run: |
-          MAVEN_OPTS="-Xss128M -Xmx8G" mvn $MAVEN_CLI_OPTS install \
+          mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
             -pl '!distribution/docs'
 
