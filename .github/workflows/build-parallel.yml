@@ -39,10 +39,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build test-jar modules and their dependencies first
+      - name: Build test-jar modules with test compilation
         # These modules export test-jars that other modules depend on.
         # Build them with -DskipTests to compile tests and create test-jars
-        # but not run them. The -am flag includes all dependencies.
+        # but not run them.
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -DskipTests \
@@ -53,6 +53,19 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
+      - name: Build all modules except features and docs
+        # Build libs, platform, catalog (all regular modules) first.
+        # This ensures dependencies like sync-installer-api are available.
+        # Use maven.test.skip since test-jars are already built above.
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -Dmaven.test.skip=true \
+            -DskipITs \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -Djacoco.skip=true \
+            -pl '!features,!features/camel-karaf,!features/kernel,!features/test-utils,!features/utilities,!features/branding,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!distribution/docs'
+
       - name: Build features modules
         # Build features with larger stack to avoid StackOverflowError
         # in Karaf plugin during recursive feature dependency resolution.
@@ -62,19 +75,6 @@ jobs:
             -DskipTests \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
-
-      - name: Build all remaining modules
-        # Now that test-jars and features exist, build everything else.
-        # Use maven.test.skip to skip test compilation for modules with
-        # test compile errors in transformer code.
-        run: |
-          mvn $MAVEN_CLI_OPTS install \
-            -Dmaven.test.skip=true \
-            -DskipITs \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true \
-            -Djacoco.skip=true \
-            -pl '!distribution/docs'
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5

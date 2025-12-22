@@ -89,7 +89,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build test-jar modules and their dependencies first
+      - name: Build test-jar modules with test compilation
         # These modules export test-jars that other modules depend on.
         # Build them with -DskipTests to compile tests and create test-jars.
         run: |
@@ -97,18 +97,20 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
+      - name: Build all modules except features and docs
+        # Build libs, platform, catalog first to ensure dependencies
+        # like sync-installer-api are available for features.
+        run: |
+          mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
+            -pl '!features,!features/camel-karaf,!features/kernel,!features/test-utils,!features/utilities,!features/branding,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!distribution/docs'
+
       - name: Build features modules
         # Build features with larger stack for Karaf plugin.
+        # All dependencies are now available in local repository.
         run: |
           MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
             -f features/pom.xml \
             -DskipTests
-
-      - name: Build all remaining modules
-        # Now that test-jars and features exist, build everything else.
-        run: |
-          mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
-            -pl '!distribution/docs'
 
       # Upload Maven repository containing all built artifacts
       # Only include ddf/ artifacts to reduce upload size
