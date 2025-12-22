@@ -73,9 +73,11 @@ jobs:
         # Use -am to build dependencies (like libs/test-common) that features need.
         # Use -Pskip-karaf-features because -am pulls in distribution/kernel which
         # has the karaf plugin that causes StackOverflowError.
+        # Use -Dmaven.test.skip=true to skip test compilation (not just execution)
+        # since we only need the feature XMLs, not test classes.
         run: |
           mvn $MAVEN_CLI_OPTS install \
-            -DskipTests \
+            -Dmaven.test.skip=true \
             -DskipITs \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
