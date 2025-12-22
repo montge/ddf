@@ -150,6 +150,9 @@ The system MUST log security-relevant events for audit purposes.
 | Commons BeanUtils | 1.11.0 | 1.11.0 | ✅ DONE (CVE-2025-48734) |
 | OWASP HTML Sanitizer | 20240325.1 | - | ⚠️ LOW RISK (no patch avail) |
 | Groovy | 4.0.23 | 4.x | ✅ DONE (test-only 2.4.21 mitigated) |
+| JDOM2 | 2.0.6.1_1 | 2.0.6.1 | ✅ DONE (CVE-2021-33813) |
+| Jetty | 9.4.58 | 9.4.57+ | ✅ DONE (CVE-2024-13009) |
+| Logback | 1.5.21 | 1.3.12+ | ✅ DONE (CVE-2023-6378) |
 
 ---
 
