@@ -53,13 +53,15 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
-      - name: Build all modules (except distribution and test)
+      - name: Build all modules (except distribution, test, and features)
         # Build all modules except:
         # - distribution/* (karaf-maven-plugin causes StackOverflowError)
         # - distribution/test/* (depends on distribution/kernel:zip)
-        # - features/test-utilities (depends on distribution/kernel:zip)
+        # - features/* (test dependencies on distribution/kernel:zip)
+        # These modules will be built in the distribution job after tests pass.
         run: |
           EXCLUDED_MODULES=(
+            # Distribution modules
             "distribution/kernel"
             "distribution/ddf"
             "distribution/ddf-catalog"
@@ -69,6 +71,7 @@ jobs:
             "distribution/docker/solr-docker"
             "distribution/docker/solrcloud"
             "distribution/software-list"
+            # Test modules
             "distribution/test"
             "distribution/test/features-xml"
             "distribution/test/example-bundle"
@@ -86,7 +89,17 @@ jobs:
             "distribution/test/performance/jmeter"
             "distribution/test/performance/jmeter/catalog-transformer-xml"
             "distribution/test/performance/jmeter/csw"
+            # Feature modules (have test dependencies on kernel:zip)
+            "features/admin"
+            "features/apps"
+            "features/branding"
+            "features/camel-karaf"
+            "features/install-profiles"
+            "features/kernel"
+            "features/security"
+            "features/solr"
             "features/test-utilities"
+            "features/utilities"
           )
           EXCLUDE_PL=$(printf "!%s," "${EXCLUDED_MODULES[@]}" | sed 's/,$//')
           mvn $MAVEN_CLI_OPTS install \
