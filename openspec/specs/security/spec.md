@@ -153,6 +153,7 @@ The system MUST log security-relevant events for audit purposes.
 | JDOM2 | 2.0.6.1_1 | 2.0.6.1 | ✅ DONE (CVE-2021-33813) |
 | Jetty | 9.4.58 | 9.4.57+ | ✅ DONE (CVE-2024-13009) |
 | Logback | 1.5.21 | 1.3.12+ | ✅ DONE (CVE-2023-6378) |
+| Log4j | 2.25.3 | 2.25.3 | ✅ DONE |
 
 ### Known False Positives (Not in Runtime Distribution)
 
