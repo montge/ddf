@@ -13,7 +13,7 @@ Define requirements for modernizing the DDF user interface from legacy jQuery/JS
 | Bootstrap | 3.4.1 | **Legacy** (EOL 2019) |
 | Handlebars | 4.7.8 | Current |
 | Underscore.js | 1.13.7 | Current |
-| CasperJS | PhantomJS | **Deprecated** |
+| Playwright | 1.49.1 | ✅ Current |
 | TypeScript | N/A | Not used |
 
 ### Architecture (As-Is)
@@ -116,8 +116,8 @@ npm init playwright@latest
 ### Phase 1: Testing Infrastructure (Low Risk) - ✅ COMPLETE
 - [x] Add Playwright to Search UI (`@playwright/test@^1.49.1`)
 - [x] Write E2E tests for existing functionality (8 tests: auth.spec.ts, search.spec.ts)
-- [ ] Retire CasperJS tests
-- [ ] Add to CI pipeline
+- [x] Retire CasperJS tests (removed from codebase)
+- [x] Add to CI pipeline (`.github/workflows/playwright.yml`)
 
 ### Phase 2: Bootstrap 5 Migration (Medium Risk)
 - [ ] Audit Bootstrap 3 usage

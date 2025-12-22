@@ -3,7 +3,7 @@
 ## Purpose
 Define security requirements for DDF including authentication, authorization, vulnerability management, and secure coding practices.
 
-## Current State (Updated 2025-12-20)
+## Current State (Updated 2025-12-22)
 - **Active Vulnerabilities:** Reduced - major dependencies upgraded
 - **Key Upgrades Completed:**
   - Hazelcast 3.12.10 → 5.3.5
@@ -11,6 +11,8 @@ Define security requirements for DDF including authentication, authorization, vu
   - Zookeeper 3.9.2 → 3.9.4
   - GeoTools 31.6 → 34.1
   - Netty 4.1.92 → 4.1.128.Final
+  - Apache Batik → 1.18 (via Tika 3.2.3)
+  - Tika 1.28 → 3.2.3
 - **Authentication:** SAML 2.0, OAuth 2.0/OIDC, X.509, LDAP, Basic, Guest
 - **Authorization:** XACML 3.0, attribute-based access control
 
@@ -133,7 +135,7 @@ The system MUST log security-relevant events for audit purposes.
 
 ---
 
-## Critical Dependencies (Status as of 2025-12-20)
+## Critical Dependencies (Status as of 2025-12-22)
 
 | Dependency | Current | Target | Status |
 |------------|---------|--------|--------|
@@ -141,8 +143,9 @@ The system MUST log security-relevant events for audit purposes.
 | Apache Camel | 3.22.4 | 3.22+ | ✅ DONE |
 | Zookeeper | 3.9.4 | 3.9.3+ | ✅ DONE |
 | GeoTools | 34.1 | 32.x+ | ✅ DONE |
-| Netty | 4.1.128.Final | 4.1.114 | ✅ DONE |
-| Apache Batik | transitive | 1.17 | CHECK - via Tika |
+| Netty | 4.1.128.Final | 4.1.114+ | ✅ DONE |
+| Apache Batik | 1.18 | 1.17+ | ✅ DONE |
+| Apache Tika | 3.2.3 | 2.x+ | ✅ DONE |
 
 ---
 
