@@ -97,25 +97,13 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
-      - name: Build libs, platform, and catalog modules
-        # Build core modules first (excluding features and distribution).
-        # This ensures dependencies like sync-installer-api are available.
+      - name: Build all modules
+        # Build everything with larger stack to avoid StackOverflowError
+        # in Karaf plugin during recursive feature dependency resolution.
+        # Exclude docs (requires asciidoctor setup).
         run: |
-          mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
-            -pl libs,platform,catalog
-
-      - name: Build features modules
-        # Build features with larger stack for Karaf plugin.
-        run: |
-          MAVEN_OPTS="-Xss128M -Xmx4G" mvn $MAVEN_CLI_OPTS install \
-            -f features/pom.xml \
-            -DskipTests
-
-      - name: Build distribution modules
-        # Distribution depends on features, so build last.
-        run: |
-          mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
-            -pl distribution \
+          MAVEN_OPTS="-Xss128M -Xmx8G" mvn $MAVEN_CLI_OPTS install \
+            -Dmaven.test.skip=true \
             -pl '!distribution/docs'
 
       # Upload Maven repository containing all built artifacts
