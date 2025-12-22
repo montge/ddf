@@ -53,15 +53,40 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
-      - name: Build all modules (except distribution, test, and features)
+      - name: Build distribution/kernel (provides kernel:zip for feature tests)
+        # Build kernel first with large stack for karaf-maven-plugin.
+        # This creates kernel:zip which features need as a test dependency.
+        env:
+          MAVEN_OPTS: '-Xss2G -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -DskipTests \
+            -DskipITs \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -Djacoco.skip=true \
+            -pl distribution/kernel \
+            -am
+
+      - name: Build feature modules (needed as test dependencies by other modules)
+        # Feature modules generate XML files that other modules need as test deps.
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -DskipTests \
+            -DskipITs \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
+            -Djacoco.skip=true \
+            -pl features/kernel,features/utilities,features/test-utilities,features/security,features/solr,features/admin,features/apps,features/branding,features/camel-karaf,features/install-profiles
+
+      - name: Build all modules (except distribution and test)
         # Build all modules except:
         # - distribution/* (karaf-maven-plugin causes StackOverflowError)
         # - distribution/test/* (depends on distribution/kernel:zip)
-        # - features/* (test dependencies on distribution/kernel:zip)
         # These modules will be built in the distribution job after tests pass.
         run: |
           EXCLUDED_MODULES=(
-            # Distribution modules
+            # Distribution modules (karaf-maven-plugin causes StackOverflowError)
             "distribution/kernel"
             "distribution/ddf"
             "distribution/ddf-catalog"
@@ -71,7 +96,7 @@ jobs:
             "distribution/docker/solr-docker"
             "distribution/docker/solrcloud"
             "distribution/software-list"
-            # Test modules
+            # Test modules (depend on distribution/kernel:zip)
             "distribution/test"
             "distribution/test/features-xml"
             "distribution/test/example-bundle"
@@ -89,17 +114,6 @@ jobs:
             "distribution/test/performance/jmeter"
             "distribution/test/performance/jmeter/catalog-transformer-xml"
             "distribution/test/performance/jmeter/csw"
-            # Feature modules (have test dependencies on kernel:zip)
-            "features/admin"
-            "features/apps"
-            "features/branding"
-            "features/camel-karaf"
-            "features/install-profiles"
-            "features/kernel"
-            "features/security"
-            "features/solr"
-            "features/test-utilities"
-            "features/utilities"
           )
           EXCLUDE_PL=$(printf "!%s," "${EXCLUDED_MODULES[@]}" | sed 's/,$//')
           mvn $MAVEN_CLI_OPTS install \
