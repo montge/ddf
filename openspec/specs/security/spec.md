@@ -3,9 +3,14 @@
 ## Purpose
 Define security requirements for DDF including authentication, authorization, vulnerability management, and secure coding practices.
 
-## Current State
-- **Active Vulnerabilities:** 126 (7 CRITICAL, 40 HIGH, 70 MEDIUM, 2 LOW)
-- **Vulnerable Dependencies:** 61 of 1,152 scanned
+## Current State (Updated 2025-12-20)
+- **Active Vulnerabilities:** Reduced - major dependencies upgraded
+- **Key Upgrades Completed:**
+  - Hazelcast 3.12.10 → 5.3.5
+  - Camel 3.18.8 → 3.22.4
+  - Zookeeper 3.9.2 → 3.9.4
+  - GeoTools 31.6 → 34.1
+  - Netty 4.1.92 → 4.1.128.Final
 - **Authentication:** SAML 2.0, OAuth 2.0/OIDC, X.509, LDAP, Basic, Guest
 - **Authorization:** XACML 3.0, attribute-based access control
 
@@ -128,16 +133,16 @@ The system MUST log security-relevant events for audit purposes.
 
 ---
 
-## Critical Dependencies (Vulnerable)
+## Critical Dependencies (Status as of 2025-12-20)
 
-| Dependency | Current | Target | CVEs | Priority |
-|------------|---------|--------|------|----------|
-| Hazelcast | 3.12.10 | 5.x or REMOVE | 4 (1 CRIT) | P1 |
-| Apache Camel | 3.18.8 | 3.22+ | 5 (1 CRIT) | P1 (blocked) |
-| Zookeeper | 3.9.2 | 3.9.3+ | 2 (1 CRIT) | P2 |
-| GeoTools | 31.6 | 32.x+ | 1 (CRIT) | P2 |
-| Apache Batik | 1.14 | 1.17 | 7 (HIGH) | P2 |
-| Netty | 4.1.92 | 4.1.114 | 9 (3 HIGH) | P3 |
+| Dependency | Current | Target | Status |
+|------------|---------|--------|--------|
+| Hazelcast | 5.3.5 | 5.x | ✅ DONE |
+| Apache Camel | 3.22.4 | 3.22+ | ✅ DONE |
+| Zookeeper | 3.9.4 | 3.9.3+ | ✅ DONE |
+| GeoTools | 34.1 | 32.x+ | ✅ DONE |
+| Netty | 4.1.128.Final | 4.1.114 | ✅ DONE |
+| Apache Batik | transitive | 1.17 | CHECK - via Tika |
 
 ---
 

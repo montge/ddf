@@ -113,9 +113,9 @@ npm init playwright@latest
 
 ## Migration Strategy
 
-### Phase 1: Testing Infrastructure (Low Risk)
-- [ ] Add Playwright to Search UI
-- [ ] Write E2E tests for existing functionality
+### Phase 1: Testing Infrastructure (Low Risk) - ✅ COMPLETE
+- [x] Add Playwright to Search UI (`@playwright/test@^1.49.1`)
+- [x] Write E2E tests for existing functionality (8 tests: auth.spec.ts, search.spec.ts)
 - [ ] Retire CasperJS tests
 - [ ] Add to CI pipeline
 
