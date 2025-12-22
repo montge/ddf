@@ -180,7 +180,7 @@ public class PDDocumentGeneratorImplTest {
 
       PDDocument document = generator.apply(stream);
 
-      assertNotNull("Document should be loaded on iteration " + i, document);
+      assertNotNull(document, "Document should be loaded on iteration " + i);
       assertThat(
           "Document should have pages on iteration " + i,
           document.getNumberOfPages(),
@@ -211,7 +211,7 @@ public class PDDocumentGeneratorImplTest {
       if (stream != null) {
         try {
           PDDocument document = generator.apply(stream);
-          assertNotNull("Document should be loaded for " + filename, document);
+          assertNotNull(document, "Document should be loaded for " + filename);
           document.close();
         } finally {
           stream.close();

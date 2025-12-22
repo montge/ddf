@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import javax.imageio.ImageIO;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +68,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent(), "Thumbnail should be generated");
@@ -83,7 +85,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
 
     if (testDocument.getNumberOfPages() > 0) {
       Optional<byte[]> result = generator.apply(testDocument);
@@ -123,7 +125,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent());
@@ -152,7 +154,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent());
@@ -178,7 +180,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent());
@@ -197,7 +199,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent());
@@ -217,7 +219,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
 
     Optional<byte[]> result1 = generator.apply(testDocument);
     Optional<byte[]> result2 = generator.apply(testDocument);
@@ -236,7 +238,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream1, "Test PDF file not found");
 
-    PDDocument doc1 = PDDocument.load(stream1);
+    PDDocument doc1 = Loader.loadPDF(new RandomAccessReadBuffer(stream1));
     Optional<byte[]> result1 = generator.apply(doc1);
 
     assertTrue(result1.isPresent());
@@ -248,7 +250,7 @@ public class PdfThumbnailGeneratorImplTest {
     if (testDocument == null) {
       InputStream stream2 =
           Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
-      testDocument = PDDocument.load(stream2);
+      testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream2));
       stream2.close();
     }
   }
@@ -259,7 +261,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent());
@@ -279,7 +281,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent(), "Should generate thumbnail even if PDF contains images");
@@ -294,7 +296,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
 
     if (testDocument.getNumberOfPages() >= 1) {
       Optional<byte[]> result = generator.apply(testDocument);
@@ -312,7 +314,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     Optional<byte[]> result = generator.apply(testDocument);
 
     assertTrue(result.isPresent());
@@ -332,7 +334,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
 
     PdfThumbnailGeneratorImpl newGenerator = new PdfThumbnailGeneratorImpl();
     Optional<byte[]> result = newGenerator.apply(testDocument);
@@ -349,7 +351,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
     int originalPageCount = testDocument.getNumberOfPages();
 
     generator.apply(testDocument);
@@ -368,7 +370,7 @@ public class PdfThumbnailGeneratorImplTest {
         Thread.currentThread().getContextClassLoader().getResourceAsStream("sample.pdf");
     assertNotNull(stream, "Test PDF file not found");
 
-    testDocument = PDDocument.load(stream);
+    testDocument = Loader.loadPDF(new RandomAccessReadBuffer(stream));
 
     Optional<byte[]> result1 = generator.apply(testDocument);
     Optional<byte[]> result2 = generator.apply(testDocument);

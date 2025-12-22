@@ -35,7 +35,9 @@ public class XlsxMetacardUtilityTest {
 
   @Test
   public void testEmptyMetacardList() {
-    BinaryContent binaryContent = XlsxMetacardUtility.buildSpreadSheet(Collections.emptyList());
+    BinaryContent binaryContent =
+        XlsxMetacardUtility.buildSpreadSheet(
+            Collections.emptyList(), Collections.emptyMap(), Collections.emptyList());
 
     assertThat(binaryContent, nullValue());
   }
@@ -45,7 +47,8 @@ public class XlsxMetacardUtilityTest {
     Metacard metacard = new MetacardImpl();
 
     BinaryContent binaryContent =
-        XlsxMetacardUtility.buildSpreadSheet(Collections.singletonList(metacard));
+        XlsxMetacardUtility.buildSpreadSheet(
+            Collections.singletonList(metacard), Collections.emptyMap(), Collections.emptyList());
 
     MimeType mimeType = new MimeType();
     try {
@@ -66,7 +69,8 @@ public class XlsxMetacardUtilityTest {
     metacard.setAttribute(new AttributeImpl(Metacard.CONTENT_TYPE, (Serializable) null));
 
     BinaryContent binaryContent =
-        XlsxMetacardUtility.buildSpreadSheet(Collections.singletonList(metacard));
+        XlsxMetacardUtility.buildSpreadSheet(
+            Collections.singletonList(metacard), Collections.emptyMap(), Collections.emptyList());
 
     assertThat(binaryContent, notNullValue());
   }
@@ -77,7 +81,8 @@ public class XlsxMetacardUtilityTest {
     metacard.setAttribute(new AttributeImpl(Metacard.ID, UUID.randomUUID()));
 
     BinaryContent binaryContent =
-        XlsxMetacardUtility.buildSpreadSheet(Collections.singletonList(metacard));
+        XlsxMetacardUtility.buildSpreadSheet(
+            Collections.singletonList(metacard), Collections.emptyMap(), Collections.emptyList());
 
     assertThat(binaryContent, notNullValue());
   }
@@ -88,7 +93,8 @@ public class XlsxMetacardUtilityTest {
     metacard.setAttribute(new AttributeImpl(Core.LANGUAGE, new String[] {"english", "spanish"}));
 
     BinaryContent binaryContent =
-        XlsxMetacardUtility.buildSpreadSheet(Collections.singletonList(metacard));
+        XlsxMetacardUtility.buildSpreadSheet(
+            Collections.singletonList(metacard), Collections.emptyMap(), Collections.emptyList());
 
     assertThat(binaryContent, notNullValue());
   }

@@ -472,7 +472,8 @@ public class XmlResponseQueueTransformerTest {
 
   @Test
   public void testMetacardMarshallThrowsXmlPullParserException()
-      throws XmlPullParserException, MimeTypeParseException {
+      throws XmlPullParserException, IOException, MimeTypeParseException,
+          CatalogTransformerException {
     SourceResponse response = givenSourceResponse(new MetacardStub("source1", "id1"));
 
     PrintWriterProvider pwp = new PrintWriterProviderImpl();
