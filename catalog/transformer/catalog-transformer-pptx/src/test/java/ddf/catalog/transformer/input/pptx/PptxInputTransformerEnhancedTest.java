@@ -327,7 +327,8 @@ public class PptxInputTransformerEnhancedTest {
   }
 
   @Test
-  public void testTransformWhenInnerTransformerThrowsException() throws IOException {
+  public void testTransformWhenInnerTransformerThrowsException()
+      throws IOException, CatalogTransformerException {
     XMLSlideShow slideShow = new XMLSlideShow();
     slideShow.createSlide();
 
