@@ -140,7 +140,7 @@
         <restito.version>1.1.2</restito.version>
         <restassured.version>5.5.0</restassured.version>
         <groovy.version>4.0.23</groovy.version>
-        <xmlunit.version>1.4</xmlunit.version>
+        <xmlunit.version>1.6</xmlunit.version>
         <xmlunit-matchers.version>2.8.2</xmlunit-matchers.version>
         <auth0.jwt.version>3.8.1</auth0.jwt.version>
         <tinybundles.version>4.0.1</tinybundles.version>
