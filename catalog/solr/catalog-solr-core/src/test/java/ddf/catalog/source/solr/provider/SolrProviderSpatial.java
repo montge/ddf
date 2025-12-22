@@ -121,14 +121,14 @@ public class SolrProviderSpatial {
 
     Filter filter = getFilterBuilder().attribute(Metacard.ID).is().like().text("*");
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
-    assertEquals("Failed to find all records.", 3, sourceResponse.getResults().size());
+    assertEquals(3, sourceResponse.getResults().size(), "Failed to find all records.");
 
     // Right on Flagstaff
     QueryImpl query = pointRadius(-111.67121887207031, 35.138454437255859, 10.0);
     query.setPageSize(1);
     sourceResponse = provider.query(new QueryRequestImpl(query));
 
-    assertEquals("Failed to find Flagstaff record only.", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find Flagstaff record only.");
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
@@ -143,7 +143,7 @@ public class SolrProviderSpatial {
     query.setSortBy(new ddf.catalog.filter.impl.SortByImpl("foo", SortOrder.ASCENDING));
     sourceResponse = provider.query(new QueryRequestImpl(query));
 
-    assertEquals("Failed to find the two records.", 2, sourceResponse.getResults().size());
+    assertEquals(2, sourceResponse.getResults().size(), "Failed to find the two records.");
 
     ArrayList<Result> results = new ArrayList<>(sourceResponse.getResults());
 
@@ -171,7 +171,7 @@ public class SolrProviderSpatial {
     query.setPageSize(3);
     sourceResponse = provider.query(new QueryRequestImpl(query));
 
-    assertEquals("Should have not found any records.", 0, sourceResponse.getResults().size());
+    assertEquals(0, sourceResponse.getResults().size(), "Should have not found any records.");
 
     // FEET
     query =
@@ -264,9 +264,9 @@ public class SolrProviderSpatial {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(query));
 
     assertEquals(
-        "Failed to find two records within 1000 nautical miles.",
         2,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Failed to find two records within 1000 nautical miles.");
     assertTrue(
         sourceResponse
                 .getResults()
@@ -285,9 +285,9 @@ public class SolrProviderSpatial {
     sourceResponse = provider.query(new QueryRequestImpl(query));
 
     assertEquals(
-        "Failed to find two records within 1000 nautical miles.",
         2,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Failed to find two records within 1000 nautical miles.");
     assertTrue(
         sourceResponse
                 .getResults()
@@ -308,9 +308,9 @@ public class SolrProviderSpatial {
     sourceResponse = provider.query(new QueryRequestImpl(query));
 
     assertEquals(
-        "Failed to find two records based on polygon centroid.",
         2,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Failed to find two records based on polygon centroid.");
   }
 
   @Test
@@ -364,7 +364,7 @@ public class SolrProviderSpatial {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(query));
 
     // then
-    assertEquals("Failed to find metacard WKT with filter", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find metacard WKT with filter");
     Result result = sourceResponse.getResults().get(0);
 
     assertThat(result.getDistanceInMeters(), is(notNullValue()));
@@ -431,7 +431,7 @@ public class SolrProviderSpatial {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(query));
 
     // then
-    assertEquals("Failed to find metacard WKT with filter", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find metacard WKT with filter");
     Result result = sourceResponse.getResults().get(0);
 
     assertThat(result.getDistanceInMeters(), is(notNullValue()));
@@ -488,7 +488,7 @@ public class SolrProviderSpatial {
             .wkt(Library.CLOCKWISE_ARIZONA_RECTANGLE_WKT);
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Failed to find Flagstaff record.", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find Flagstaff record.");
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
@@ -515,7 +515,7 @@ public class SolrProviderSpatial {
             .wkt(Library.ACROSS_INTERNATIONAL_DATELINE_LARGE_CCW_WKT);
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Failed to find the correct record. ", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find the correct record. ");
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
@@ -531,7 +531,7 @@ public class SolrProviderSpatial {
             .wkt(Library.ACROSS_INTERNATIONAL_DATELINE_LARGE_CW_WKT);
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Failed to find the correct record. ", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find the correct record. ");
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
@@ -547,7 +547,7 @@ public class SolrProviderSpatial {
             .wkt(Library.ACROSS_INTERNATIONAL_DATELINE_SMALL_WKT);
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Should not find a record. ", 0, sourceResponse.getResults().size());
+    assertEquals(0, sourceResponse.getResults().size(), "Should not find a record. ");
   }
 
   @Test
@@ -595,7 +595,7 @@ public class SolrProviderSpatial {
             .wkt(Library.FLAGSTAFF_AIRPORT_POINT_WKT);
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Failed to find correct record.", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find correct record.");
 
     // UPDATE
     MockMetacard updatedMetacard = new MockMetacard(Library.getTampaRecord());
@@ -613,7 +613,7 @@ public class SolrProviderSpatial {
             .wkt(Library.FLAGSTAFF_AIRPORT_POINT_WKT);
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Failed to find correct record.", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find correct record.");
   }
 
   @Test
@@ -635,7 +635,7 @@ public class SolrProviderSpatial {
             .wkt(Library.COUNTERCLOCKWISE_ARIZONA_RECTANGLE_WKT);
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Failed to find Flagstaff record.", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find Flagstaff record.");
 
     for (Result r : sourceResponse.getResults()) {
       assertTrue(
@@ -849,10 +849,10 @@ public class SolrProviderSpatial {
 
     SourceResponse sourceResponse =
         provider.query(new QueryRequestImpl(new QueryImpl(positiveFilter)));
-    assertEquals("Failed to find metacard WKT with filter", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Failed to find metacard WKT with filter");
 
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(negativeFilter)));
-    assertEquals("Should not have found metacard record.", 0, sourceResponse.getResults().size());
+    assertEquals(0, sourceResponse.getResults().size(), "Should not have found metacard record.");
   }
 
   /** Creates a point radius {@link QueryImpl} with units of measurement of meters. */

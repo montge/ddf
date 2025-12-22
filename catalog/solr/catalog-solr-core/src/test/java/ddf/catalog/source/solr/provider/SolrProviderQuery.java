@@ -269,7 +269,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Tampa should be found", 1, sourceResponse.getResults().size());
+    assertEquals(1, sourceResponse.getResults().size(), "Tampa should be found");
   }
 
   @Test
@@ -341,7 +341,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Flagstaff and Airport", ONE_HIT, sourceResponse.getResults().size());
+    assertEquals(ONE_HIT, sourceResponse.getResults().size(), "Flagstaff and Airport");
   }
 
   @Test
@@ -368,7 +368,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Flagstaff and Tampa", 0, sourceResponse.getResults().size());
+    assertEquals(0, sourceResponse.getResults().size(), "Flagstaff and Tampa");
   }
 
   @Test
@@ -395,7 +395,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Flagstaff OR Tampa", 2, sourceResponse.getResults().size());
+    assertEquals(2, sourceResponse.getResults().size(), "Flagstaff OR Tampa");
   }
 
   @Test
@@ -432,7 +432,7 @@ public class SolrProviderQuery {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
     assertEquals(
-        "Failed: (Airport AND AZ) or Flagstaff", ONE_HIT, sourceResponse.getResults().size());
+        ONE_HIT, sourceResponse.getResults().size(), "Failed: (Airport AND AZ) or Flagstaff");
   }
 
   @Test
@@ -476,7 +476,7 @@ public class SolrProviderQuery {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
     assertEquals(
-        "(Airport AND (AZ AND (Flagstaff OR TAMPA)))", ONE_HIT, sourceResponse.getResults().size());
+        ONE_HIT, sourceResponse.getResults().size(), "(Airport AND (AZ AND (Flagstaff OR TAMPA)))");
   }
 
   @Test
@@ -504,7 +504,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Did not find Flagstaff NOT Tampa", ONE_HIT, sourceResponse.getResults().size());
+    assertEquals(ONE_HIT, sourceResponse.getResults().size(), "Did not find Flagstaff NOT Tampa");
   }
 
   @Test
@@ -532,7 +532,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Wrongly found Flagstaff NOT Airport", 0, sourceResponse.getResults().size());
+    assertEquals(0, sourceResponse.getResults().size(), "Wrongly found Flagstaff NOT Airport");
   }
 
   @Test
@@ -553,7 +553,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Did not find Flagstaff", ONE_HIT, sourceResponse.getResults().size());
+    assertEquals(ONE_HIT, sourceResponse.getResults().size(), "Did not find Flagstaff");
     assertTrue(
         sourceResponse
             .getResults()
@@ -601,7 +601,7 @@ public class SolrProviderQuery {
 
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
-    assertEquals("Did not find Flagstaff NOT Tampa", ONE_HIT, sourceResponse.getResults().size());
+    assertEquals(ONE_HIT, sourceResponse.getResults().size(), "Did not find Flagstaff NOT Tampa");
   }
 
   @Test
@@ -623,7 +623,7 @@ public class SolrProviderQuery {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
     assertEquals(
-        "Did not find NOT Flagstaff OR Pennsylvania", ONE_HIT, sourceResponse.getResults().size());
+        ONE_HIT, sourceResponse.getResults().size(), "Did not find NOT Flagstaff OR Pennsylvania");
   }
 
   @Test
@@ -668,9 +668,9 @@ public class SolrProviderQuery {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
     assertEquals(
-        "Failed: ( Airport )  AND  ( AZ )  OR  ( Flagstaff )  OR  ( AZ ) ",
         ONE_HIT,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Failed: ( Airport )  AND  ( AZ )  OR  ( Flagstaff )  OR  ( AZ ) ");
   }
 
   @Test
@@ -708,9 +708,9 @@ public class SolrProviderQuery {
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
 
     assertEquals(
-        "Failed: ( Flagstaff )  OR  ( AZ )  NOT  (  ( Tampa )  )  ",
         ONE_HIT,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Failed: ( Flagstaff )  OR  ( AZ )  NOT  (  ( Tampa )  )  ");
   }
 
   private void createContextualMetacards() throws UnsupportedQueryException, IngestException {
@@ -1013,37 +1013,37 @@ public class SolrProviderQuery {
             .fuzzyText(Library.FLAGSTAFF_QUERY_PHRASE);
     SourceResponse sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
     assertEquals(
-        "Expected one hit for fuzzy term 'Flagstaff'", ONE_HIT, sourceResponse.getResults().size());
+        ONE_HIT, sourceResponse.getResults().size(), "Expected one hit for fuzzy term 'Flagstaff'");
 
     // CONTEXTUAL QUERY - FUZZY PHRASE
     filter = getFilterBuilder().attribute(Metacard.METADATA).like().fuzzyText("Flagstaff Chamber");
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
     assertEquals(
-        "Expected one hit for fuzzy term 'Flagstaff Chamber'",
         ONE_HIT,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Expected one hit for fuzzy term 'Flagstaff Chamber'");
 
     // CONTEXTUAL QUERY - FUZZY PHRASE, multiple spaces
     filter =
         getFilterBuilder().attribute(Metacard.METADATA).like().fuzzyText("Flagstaff    Chamber");
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
     assertEquals(
-        "Expected one hit for fuzzy term 'Flagstaff    Chamber'",
         ONE_HIT,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Expected one hit for fuzzy term 'Flagstaff    Chamber'");
 
     // CONTEXTUAL QUERY - FUZZY PHRASE, upper case with insertion
     filter = getFilterBuilder().attribute(Metacard.METADATA).like().fuzzyText("FLGD");
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
-    assertEquals("Expected two hits for fuzzy term 'FLGD'", 2, sourceResponse.getResults().size());
+    assertEquals(2, sourceResponse.getResults().size(), "Expected two hits for fuzzy term 'FLGD'");
 
     // CONTEXTUAL QUERY - FUZZY PHRASE, second word missing
     filter = getFilterBuilder().attribute(Metacard.METADATA).like().fuzzyText("Flagstaff Igloo");
     sourceResponse = provider.query(new QueryRequestImpl(new QueryImpl(filter)));
     assertEquals(
-        "Expected zero hits for fuzzy term 'Flagstaff Igloo'",
         0,
-        sourceResponse.getResults().size());
+        sourceResponse.getResults().size(),
+        "Expected zero hits for fuzzy term 'Flagstaff Igloo'");
 
     // CONTEXTUAL QUERY - FUZZY - Possible POSITIVE CASE
     // Possible matches are:

@@ -120,7 +120,7 @@ public class SolrProviderUpdate {
 
   /** Tests what happens when the whole request is null. */
   @Test
-  public void testUpdateNull() throws UnsupportedQueryException {
+  public void testUpdateNull() throws UnsupportedQueryException, IngestException {
     deleteAll(provider);
 
     assertThrows(IngestException.class, () -> provider.update(null));
@@ -210,7 +210,7 @@ public class SolrProviderUpdate {
   }
 
   private void verifyUpdates(String uri1, String uri2, UpdateResponse updateResponse) {
-    assertEquals("Testing Update operation: ", 2, updateResponse.getUpdatedMetacards().size());
+    assertEquals(2, updateResponse.getUpdatedMetacards().size(), "Testing Update operation: ");
 
     List<Update> updatedMetacards = updateResponse.getUpdatedMetacards();
 
@@ -362,7 +362,7 @@ public class SolrProviderUpdate {
 
     // VERIFY
     assertEquals(
-        "Testing Update operation: ", ONE_HIT, updateResponse.getUpdatedMetacards().size());
+        ONE_HIT, updateResponse.getUpdatedMetacards().size(), "Testing Update operation: ");
 
     Metacard newCard = updateResponse.getUpdatedMetacards().get(0).getNewMetacard();
     Metacard oldCard = updateResponse.getUpdatedMetacards().get(0).getOldMetacard();
@@ -686,7 +686,7 @@ public class SolrProviderUpdate {
 
   /** Testing update operation of unknown attribute. */
   @Test
-  public void testUpdateUnknownAttribute() throws UnsupportedQueryException {
+  public void testUpdateUnknownAttribute() throws UnsupportedQueryException, IngestException {
     deleteAll(provider);
 
     assertThrows(

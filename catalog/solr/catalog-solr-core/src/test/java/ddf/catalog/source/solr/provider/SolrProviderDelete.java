@@ -127,7 +127,7 @@ public class SolrProviderDelete {
 
   /** Tests what happens when the whole request is null. */
   @Test
-  public void testDeleteNull() throws UnsupportedQueryException {
+  public void testDeleteNull() throws UnsupportedQueryException, IngestException {
     deleteAll(provider);
 
     assertThrows(IngestException.class, () -> provider.delete(null));

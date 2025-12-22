@@ -160,7 +160,7 @@ public class SolrProviderCreate {
 
   /** Tests what happens when the whole request is null. */
   @Test
-  public void testCreateNull() throws UnsupportedQueryException {
+  public void testCreateNull() throws UnsupportedQueryException, IngestException {
     deleteAll(provider);
 
     assertThrows(IngestException.class, () -> provider.create(null));
@@ -296,7 +296,8 @@ public class SolrProviderCreate {
   }
 
   @Test
-  public void testCreateOperationWithSourceIdNoId() throws UnsupportedQueryException {
+  public void testCreateOperationWithSourceIdNoId()
+      throws UnsupportedQueryException, IngestException {
     deleteAll(provider);
 
     MockMetacard metacard = new MockMetacard(Library.getFlagstaffRecord());

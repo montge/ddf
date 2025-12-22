@@ -623,9 +623,7 @@ public class SolrProviderSorting {
     int maxSize = 20;
     int startIndex = 2;
     SortByImpl sortBy =
-        new SortByImpl(
-            filterFactory.property(Metacard.EFFECTIVE),
-            org.opengis.filter.sort.SortOrder.ASCENDING);
+        new SortByImpl(filterFactory.property(Metacard.EFFECTIVE), SortOrder.ASCENDING);
     QueryImpl query =
         query(Metacard.CONTENT_TYPE, MockMetacard.DEFAULT_TYPE, startIndex, maxSize, sortBy);
 
@@ -638,10 +636,7 @@ public class SolrProviderSorting {
     // a match-all queryByProperty
     maxSize = 5;
     startIndex = 20;
-    sortBy =
-        new SortByImpl(
-            filterFactory.property(Metacard.EFFECTIVE),
-            org.opengis.filter.sort.SortOrder.ASCENDING);
+    sortBy = new SortByImpl(filterFactory.property(Metacard.EFFECTIVE), SortOrder.ASCENDING);
     query = query(Metacard.CONTENT_TYPE, MockMetacard.DEFAULT_TYPE, startIndex, maxSize, sortBy);
 
     sourceResponse = provider.query(new QueryRequestImpl(query));
@@ -653,10 +648,7 @@ public class SolrProviderSorting {
     // a match-all queryByProperty
     maxSize = 20;
     startIndex = 80;
-    sortBy =
-        new SortByImpl(
-            filterFactory.property(Metacard.EFFECTIVE),
-            org.opengis.filter.sort.SortOrder.ASCENDING);
+    sortBy = new SortByImpl(filterFactory.property(Metacard.EFFECTIVE), SortOrder.ASCENDING);
     query = query(Metacard.CONTENT_TYPE, MockMetacard.DEFAULT_TYPE, startIndex, maxSize, sortBy);
 
     sourceResponse = provider.query(new QueryRequestImpl(query));
@@ -668,10 +660,7 @@ public class SolrProviderSorting {
     // a match-all queryByProperty
     maxSize = 100;
     startIndex = 1;
-    sortBy =
-        new SortByImpl(
-            filterFactory.property(Metacard.EFFECTIVE),
-            org.opengis.filter.sort.SortOrder.ASCENDING);
+    sortBy = new SortByImpl(filterFactory.property(Metacard.EFFECTIVE), SortOrder.ASCENDING);
     query = query(Metacard.CONTENT_TYPE, MockMetacard.DEFAULT_TYPE, startIndex, maxSize, sortBy);
 
     sourceResponse = provider.query(new QueryRequestImpl(query));
