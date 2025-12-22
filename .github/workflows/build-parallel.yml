@@ -64,7 +64,7 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!distribution/kernel,!distribution/ddf,!distribution/ddf-catalog,!distribution/docs,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list'
+            -pl '!distribution/kernel,!distribution/ddf,!distribution/ddf-catalog,!distribution/docs,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list,!features/test-utilities'
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5

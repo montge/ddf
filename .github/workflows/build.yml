@@ -104,7 +104,7 @@ jobs:
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
-            -pl '!distribution/kernel,!distribution/ddf,!distribution/ddf-catalog,!distribution/docs,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list'
+            -pl '!distribution/kernel,!distribution/ddf,!distribution/ddf-catalog,!distribution/docs,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list,!features/test-utilities'
 
       # Upload Maven repository containing all built artifacts
       # Only include ddf/ artifacts to reduce upload size
