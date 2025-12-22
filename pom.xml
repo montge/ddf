@@ -156,7 +156,7 @@
         <asciidoctorj.diagram.version>2.3.2</asciidoctorj.diagram.version>
         <asciidoctorj.pdf.version>2.3.19</asciidoctorj.pdf.version>
         <asciidoctorj.version>2.5.8</asciidoctorj.version>
-        <jruby.version>9.4.12.0</jruby.version>
+        <jruby.version>10.0.2.0</jruby.version>
         <openlayers.version>4.6.5</openlayers.version>
 
         <abdera.osgi.version>1.1.3_2</abdera.osgi.version>
