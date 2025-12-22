@@ -154,6 +154,14 @@ The system MUST log security-relevant events for audit purposes.
 | Jetty | 9.4.58 | 9.4.57+ | ✅ DONE (CVE-2024-13009) |
 | Logback | 1.5.21 | 1.3.12+ | ✅ DONE (CVE-2023-6378) |
 
+### Known False Positives (Not in Runtime Distribution)
+
+| Package | CVE | Location | Reason |
+|---------|-----|----------|--------|
+| jgit 3.2.0 | CVE-2014-9390 | gitsetup/ | Build-time git hooks only |
+| slf4j-ext 1.7.1 | CVE-2018-8088 | gitsetup/ | Build-time git hooks only |
+| groovy-all 2.4.x | CVE-2016-6814 | test scope | Test-only, version override to 2.4.21 |
+
 ---
 
 ## Test Coverage Requirements
