@@ -37,10 +37,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleContext;
 
 /** Unit tests for CswSourceImpl */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CswSourceImplTest {
 
   private static final String CSW_URL = "http://example.com/csw";

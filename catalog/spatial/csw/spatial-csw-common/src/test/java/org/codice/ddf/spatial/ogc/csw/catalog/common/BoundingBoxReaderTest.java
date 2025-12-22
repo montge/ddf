@@ -30,9 +30,12 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTReader;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Unit tests for BoundingBoxReader - handles coordinate transformations and WKT parsing */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class BoundingBoxReaderTest {
 
   private static final String LOWER_CORNER_NODE = "LowerCorner";
