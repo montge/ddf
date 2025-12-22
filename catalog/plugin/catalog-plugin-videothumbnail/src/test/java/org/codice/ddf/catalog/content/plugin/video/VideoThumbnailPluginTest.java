@@ -252,7 +252,7 @@ public class VideoThumbnailPluginTest {
 
   private static class VideoMimeTypeMatcher implements ArgumentMatcher<MimeType> {
     public boolean matches(MimeType mimeType) {
-      return VIDEO_MP4.match(mimeType);
+      return mimeType != null && VIDEO_MP4.match(mimeType);
     }
   }
 

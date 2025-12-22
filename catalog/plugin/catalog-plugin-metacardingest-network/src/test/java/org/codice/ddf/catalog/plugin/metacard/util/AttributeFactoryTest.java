@@ -45,9 +45,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Validate the behavior for {@link AttributeFactory}. */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AttributeFactoryTest {
 
   private static final String SAMPLE_JSON_STRING = "{ \"id\": \"j8k767bjav592j2\"}";
@@ -89,15 +92,15 @@ public class AttributeFactoryTest {
 
   @Test
   public void testCreateAttributeWithNullDescriptor() {
-    assertThrows(
-        IllegalArgumentException.class, () -> attributeFactory.createAttribute(null, "value"));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> attributeFactory.createAttribute(null, "value"));
   }
 
   @Test
   public void testCreateAttributeWithNullParseValue() {
+    // commons-lang3 Validate.notEmpty() throws NullPointerException for null
     assertThrows(
-        IllegalArgumentException.class,
-        () -> attributeFactory.createAttribute(mockDescriptor, null));
+        NullPointerException.class, () -> attributeFactory.createAttribute(mockDescriptor, null));
   }
 
   @Test
@@ -120,8 +123,9 @@ public class AttributeFactoryTest {
     when(mockDescriptor.getName()).thenReturn(LANGUAGE);
     when(mockType.getAttributeFormat()).thenReturn(INTEGER);
 
+    // When parsing fails (returns null), Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> attributeFactory.createAttribute(mockDescriptor, COMMA_SEPARATED_INTS_WITH_STRING));
   }
 

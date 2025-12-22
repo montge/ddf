@@ -107,8 +107,9 @@ public class KeyValueParserTest {
 
   @Test
   public void testCreateMapNullList() {
+    // commons-lang3 Validate.notNull() throws NullPointerException
     KeyValueParser parser = new KeyValueParser();
-    assertThrows(IllegalArgumentException.class, () -> parser.parsePairsToMap(null));
+    assertThrows(NullPointerException.class, () -> parser.parsePairsToMap(null));
   }
 
   @Test
