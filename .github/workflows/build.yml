@@ -51,8 +51,8 @@ on:
 env:
   # DDF has 455 modules - requires substantial heap
   # Java module exports moved to maven-compiler-plugin in pom.xml
-  # -Xss64M: Default thread stack size (overridden to 1G in build step)
-  # Karaf feature dependency resolution requires very large stack (1G)
+  # -Xss64M: Default thread stack size
+  # Distribution modules excluded from build (karaf-maven-plugin causes StackOverflowError)
   MAVEN_OPTS: >-
     -Xmx8G -Xms1G -Xss64M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
@@ -97,16 +97,14 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
-      - name: Build all modules
-        # Build everything with larger stack to avoid StackOverflowError
-        # in Karaf plugin during recursive feature dependency resolution.
-        # Exclude docs (requires asciidoctor setup).
-        env:
-          MAVEN_OPTS: '-Xss1G -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+      - name: Build all modules (except distribution)
+        # Build all modules except distribution which use karaf-maven-plugin
+        # that causes StackOverflowError during feature dependency resolution.
+        # Distribution modules are built in a separate step after tests pass.
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
-            -pl '!distribution/docs'
+            -pl '!distribution/kernel,!distribution/ddf,!distribution/ddf-catalog,!distribution/docs,!distribution/docker,!distribution/docker/ddf,!distribution/docker/solr,!distribution/docker/solrcloud,!distribution/software-list'
 
       # Upload Maven repository containing all built artifacts
       # Only include ddf/ artifacts to reduce upload size

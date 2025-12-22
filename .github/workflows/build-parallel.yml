@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  # -Xss64M: Default thread stack size (overridden to 1G in build step)
-  # Karaf feature dependency resolution requires very large stack (1G)
+  # -Xss64M: Default thread stack size
+  # Distribution build uses 2G stack for Karaf feature resolution (see distribution job)
   # -Xmx8G: Full build requires significant heap space
   MAVEN_OPTS: >-
     -Xmx8G -Xms1G -Xss64M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
@@ -53,13 +53,10 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
-      - name: Build all modules
-        # Build everything with larger stack to avoid StackOverflowError
-        # in Karaf plugin during recursive feature dependency resolution.
-        # Maven correctly orders modules so platform builds before features.
-        # Exclude docs (requires asciidoctor setup).
-        env:
-          MAVEN_OPTS: '-Xss1G -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+      - name: Build all modules (except distribution)
+        # Build all modules except distribution which use karaf-maven-plugin
+        # that causes StackOverflowError during feature dependency resolution.
+        # Distribution modules are built in a separate step after tests pass.
         run: |
           mvn $MAVEN_CLI_OPTS install \
             -Dmaven.test.skip=true \
@@ -67,7 +64,7 @@ jobs:
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true \
             -Djacoco.skip=true \
-            -pl '!distribution/docs'
+            -pl '!distribution/kernel,!distribution/ddf,!distribution/ddf-catalog,!distribution/docs,!distribution/docker,!distribution/docker/ddf,!distribution/docker/solr,!distribution/docker/solrcloud,!distribution/software-list'
 
       - name: Cache Maven local repository
         uses: actions/cache/save@v5
@@ -345,6 +342,10 @@ jobs:
           key: maven-${{ github.sha }}
 
       - name: Build distribution
+        # Distribution modules use karaf-maven-plugin which has deep recursive
+        # feature dependency resolution. Requires very large stack size.
+        env:
+          MAVEN_OPTS: '-Xss2G -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
         run: |
           mvn $MAVEN_CLI_OPTS package \
             -pl distribution/ddf \
