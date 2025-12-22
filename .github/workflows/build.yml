@@ -89,17 +89,13 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build core modules without tests (phase 1)
-        # Build modules that don't depend on test-jars or features.
+      - name: Build test-jar modules and their dependencies first
+        # These modules export test-jars that other modules depend on.
+        # Build them with -DskipTests to compile tests and create test-jars.
         run: |
-          mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
-            -pl '!distribution,!distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/ddf-common,!distribution/kernel,!distribution/docker,!distribution/test,!distribution/console-branding,!distribution/ddf-branding-plugin,!distribution/software-list,!distribution/solr-distro,!features,!features/kernel,!features/utilities,!features/security,!features/solr,!features/admin,!features/apps,!features/install-profiles,!features/branding,!features/test-utilities,!features/camel-karaf,!catalog/core/catalog-core-standardframework,!catalog/spatial/geocoding/spatial-geocoding-create,!catalog/spatial/geocoding/spatial-geocoding-extract,!catalog/spatial/geocoding/spatial-geocoding-offline-index'
-
-      - name: Build test-jars for modules that export them
-        # Compile tests and create test-jar artifacts.
-        run: |
-          mvn $MAVEN_CLI_OPTS test-compile jar:test-jar install \
-            -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api
+          mvn $MAVEN_CLI_OPTS install -DskipTests \
+            -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
+            -am
 
       - name: Build features modules
         # Build features with larger stack for Karaf plugin.
@@ -108,11 +104,11 @@ jobs:
             -f features/pom.xml \
             -DskipTests
 
-      - name: Build remaining modules (phase 2)
-        # Build modules that depend on test-jars and features.
+      - name: Build all remaining modules
+        # Now that test-jars and features exist, build everything else.
         run: |
           mvn $MAVEN_CLI_OPTS install -Dmaven.test.skip=true \
-            -pl catalog/core/catalog-core-standardframework,catalog/spatial/geocoding/spatial-geocoding-create,catalog/spatial/geocoding/spatial-geocoding-extract,catalog/spatial/geocoding/spatial-geocoding-offline-index,distribution/ddf,distribution/ddf-catalog,distribution/ddf-common,distribution/kernel,distribution/docker,distribution/test,distribution/console-branding,distribution/ddf-branding-plugin,distribution/software-list,distribution/solr-distro
+            -pl '!distribution/docs'
 
       # Upload Maven repository containing all built artifacts
       # Only include ddf/ artifacts to reduce upload size
