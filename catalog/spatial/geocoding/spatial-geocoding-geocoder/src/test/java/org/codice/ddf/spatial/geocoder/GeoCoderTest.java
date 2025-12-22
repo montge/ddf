@@ -26,9 +26,14 @@ import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.codice.ddf.spatial.geocoding.context.NearbyLocation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
 /** Unit tests for GeoCoder interface and its implementation. */
 public class GeoCoderTest {
+
+  private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
   private GeoCoder geoCoder;
 
@@ -45,9 +50,9 @@ public class GeoCoderTest {
 
   @Test
   public void testGetLocationWithValidQuery() {
+    Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(-77.0369, 38.9072));
     when(mockGeoResult.getFullName()).thenReturn("Washington, D.C., United States");
-    when(mockGeoResult.getLatitude()).thenReturn(38.9072);
-    when(mockGeoResult.getLongitude()).thenReturn(-77.0369);
+    when(mockGeoResult.getPoint()).thenReturn(point);
 
     GeoResult result = geoCoder.getLocation("Washington, D.C.");
 
@@ -204,9 +209,9 @@ public class GeoCoderTest {
           return null;
         }
         GeoResult result = mock(GeoResult.class);
+        Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(0.0, 0.0));
         when(result.getFullName()).thenReturn(location);
-        when(result.getLatitude()).thenReturn(0.0);
-        when(result.getLongitude()).thenReturn(0.0);
+        when(result.getPoint()).thenReturn(point);
         return result;
       }
 

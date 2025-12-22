@@ -19,12 +19,15 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.codice.ddf.spatial.geocoding.GeoEntry;
-import org.geotools.api.geometry.primitive.Point;
-import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
-import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
 public class GeoResultCreatorTest {
+
+  private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+
   private void verifyGeoResult(
       final String name,
       final double latitude,
@@ -49,28 +52,16 @@ public class GeoResultCreatorTest {
 
     assertThat(geoResult.fullName, is(equalTo(name)));
 
-    final Point point = new PointImpl(new DirectPositionImpl(longitude, latitude));
+    final Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(longitude, latitude));
     assertThat(geoResult.point, is(equalTo(point)));
 
     assertThat(geoResult.bbox.size(), is(2));
 
-    assertEquals(
-        geoResult.bbox.get(0).getDirectPosition().getCoordinate()[0],
-        longitude - expectedLongitudeOffset,
-        0.001);
-    assertEquals(
-        geoResult.bbox.get(0).getDirectPosition().getCoordinate()[1],
-        latitude + expectedLatitudeOffset,
-        0.001);
+    assertEquals(geoResult.bbox.get(0).getX(), longitude - expectedLongitudeOffset, 0.001);
+    assertEquals(geoResult.bbox.get(0).getY(), latitude + expectedLatitudeOffset, 0.001);
 
-    assertEquals(
-        geoResult.bbox.get(1).getDirectPosition().getCoordinate()[0],
-        longitude + expectedLongitudeOffset,
-        0.001);
-    assertEquals(
-        geoResult.bbox.get(1).getDirectPosition().getCoordinate()[1],
-        latitude - expectedLatitudeOffset,
-        0.001);
+    assertEquals(geoResult.bbox.get(1).getX(), longitude + expectedLongitudeOffset, 0.001);
+    assertEquals(geoResult.bbox.get(1).getY(), latitude - expectedLatitudeOffset, 0.001);
   }
 
   @Test

@@ -21,17 +21,18 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.geotools.api.geometry.DirectPosition;
-import org.geotools.api.geometry.primitive.Point;
-import org.geotools.geometry.jts.spatialschema.geometry.DirectPositionImpl;
-import org.geotools.geometry.jts.spatialschema.geometry.primitive.PointImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class GeoResultTest {
+
+  private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
   private GeoResult geoResult;
 
@@ -42,15 +43,14 @@ public class GeoResultTest {
 
   @Test
   public void testSetAndGetPoint() {
-    DirectPosition directPosition = new DirectPositionImpl(-71.0595, 42.3577);
-    Point point = new PointImpl(directPosition);
+    Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(-71.0595, 42.3577));
 
     geoResult.setPoint(point);
 
     assertThat(geoResult.getPoint(), is(notNullValue()));
     assertThat(geoResult.getPoint(), is(equalTo(point)));
-    assertThat(geoResult.getPoint().getDirectPosition().getCoordinate()[0], is(equalTo(-71.0595)));
-    assertThat(geoResult.getPoint().getDirectPosition().getCoordinate()[1], is(equalTo(42.3577)));
+    assertThat(geoResult.getPoint().getX(), is(equalTo(-71.0595)));
+    assertThat(geoResult.getPoint().getY(), is(equalTo(42.3577)));
   }
 
   @Test
@@ -63,24 +63,20 @@ public class GeoResultTest {
   @Test
   public void testSetAndGetBbox() {
     List<Point> bbox = new ArrayList<>();
-    DirectPosition northWest = new DirectPositionImpl(-71.1, 42.4);
-    DirectPosition southEast = new DirectPositionImpl(-71.0, 42.3);
-    bbox.add(new PointImpl(northWest));
-    bbox.add(new PointImpl(southEast));
+    Point northWest = GEOMETRY_FACTORY.createPoint(new Coordinate(-71.1, 42.4));
+    Point southEast = GEOMETRY_FACTORY.createPoint(new Coordinate(-71.0, 42.3));
+    bbox.add(northWest);
+    bbox.add(southEast);
 
     geoResult.setBbox(bbox);
 
     assertThat(geoResult.getBbox(), is(notNullValue()));
     assertThat(geoResult.getBbox().size(), is(equalTo(2)));
     assertThat(geoResult.getBbox(), is(equalTo(bbox)));
-    assertThat(
-        geoResult.getBbox().get(0).getDirectPosition().getCoordinate()[0], is(equalTo(-71.1)));
-    assertThat(
-        geoResult.getBbox().get(0).getDirectPosition().getCoordinate()[1], is(equalTo(42.4)));
-    assertThat(
-        geoResult.getBbox().get(1).getDirectPosition().getCoordinate()[0], is(equalTo(-71.0)));
-    assertThat(
-        geoResult.getBbox().get(1).getDirectPosition().getCoordinate()[1], is(equalTo(42.3)));
+    assertThat(geoResult.getBbox().get(0).getX(), is(equalTo(-71.1)));
+    assertThat(geoResult.getBbox().get(0).getY(), is(equalTo(42.4)));
+    assertThat(geoResult.getBbox().get(1).getX(), is(equalTo(-71.0)));
+    assertThat(geoResult.getBbox().get(1).getY(), is(equalTo(42.3)));
   }
 
   @Test
@@ -136,14 +132,13 @@ public class GeoResultTest {
 
   @Test
   public void testSetAllProperties() {
-    DirectPosition directPosition = new DirectPositionImpl(-122.4194, 37.7749);
-    Point point = new PointImpl(directPosition);
+    Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(-122.4194, 37.7749));
 
     List<Point> bbox = new ArrayList<>();
-    DirectPosition northWest = new DirectPositionImpl(-122.5, 37.8);
-    DirectPosition southEast = new DirectPositionImpl(-122.35, 37.7);
-    bbox.add(new PointImpl(northWest));
-    bbox.add(new PointImpl(southEast));
+    Point northWest = GEOMETRY_FACTORY.createPoint(new Coordinate(-122.5, 37.8));
+    Point southEast = GEOMETRY_FACTORY.createPoint(new Coordinate(-122.35, 37.7));
+    bbox.add(northWest);
+    bbox.add(southEast);
 
     String fullName = "San Francisco, CA, USA";
 
@@ -160,41 +155,37 @@ public class GeoResultTest {
   public void testBboxWithMultiplePoints() {
     List<Point> bbox = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      DirectPosition position = new DirectPositionImpl(i * 10.0, i * 5.0);
-      bbox.add(new PointImpl(position));
+      Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(i * 10.0, i * 5.0));
+      bbox.add(point);
     }
 
     geoResult.setBbox(bbox);
 
     assertThat(geoResult.getBbox().size(), is(equalTo(5)));
     for (int i = 0; i < 5; i++) {
-      assertThat(
-          geoResult.getBbox().get(i).getDirectPosition().getCoordinate()[0], is(equalTo(i * 10.0)));
-      assertThat(
-          geoResult.getBbox().get(i).getDirectPosition().getCoordinate()[1], is(equalTo(i * 5.0)));
+      assertThat(geoResult.getBbox().get(i).getX(), is(equalTo(i * 10.0)));
+      assertThat(geoResult.getBbox().get(i).getY(), is(equalTo(i * 5.0)));
     }
   }
 
   @Test
   public void testPointWithExtremeCoordinates() {
-    DirectPosition directPosition = new DirectPositionImpl(-180.0, -90.0);
-    Point point = new PointImpl(directPosition);
+    Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(-180.0, -90.0));
 
     geoResult.setPoint(point);
 
-    assertThat(geoResult.getPoint().getDirectPosition().getCoordinate()[0], is(equalTo(-180.0)));
-    assertThat(geoResult.getPoint().getDirectPosition().getCoordinate()[1], is(equalTo(-90.0)));
+    assertThat(geoResult.getPoint().getX(), is(equalTo(-180.0)));
+    assertThat(geoResult.getPoint().getY(), is(equalTo(-90.0)));
   }
 
   @Test
   public void testPointWithMaximumCoordinates() {
-    DirectPosition directPosition = new DirectPositionImpl(180.0, 90.0);
-    Point point = new PointImpl(directPosition);
+    Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(180.0, 90.0));
 
     geoResult.setPoint(point);
 
-    assertThat(geoResult.getPoint().getDirectPosition().getCoordinate()[0], is(equalTo(180.0)));
-    assertThat(geoResult.getPoint().getDirectPosition().getCoordinate()[1], is(equalTo(90.0)));
+    assertThat(geoResult.getPoint().getX(), is(equalTo(180.0)));
+    assertThat(geoResult.getPoint().getY(), is(equalTo(90.0)));
   }
 
   @Test
