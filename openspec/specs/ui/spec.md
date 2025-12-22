@@ -120,8 +120,16 @@ npm init playwright@latest
 - [x] Add to CI pipeline (`.github/workflows/playwright.yml`)
 
 ### Phase 2: Bootstrap 5 Migration (Medium Risk)
-- [ ] Audit Bootstrap 3 usage
+- [x] Audit Bootstrap 3 usage (2025-12-22)
+  - Scope: Only `catalog/ui/search-ui/simple` uses Bootstrap
+  - Platform/admin modules: NO Bootstrap dependencies
+  - ~100+ Bootstrap 3-specific classes found
 - [ ] Create migration plan
+  - Grid: 30+ `span*` → `col-*` replacements
+  - Forms: 20+ `input-append/prepend` → `input-group`
+  - Nav: `navbar-inverse`, `nav-collapse` → Bootstrap 5 equivalents
+  - Icons: `icon-*` → `fa-*` (Font Awesome upgrade)
+  - Custom: Replace `partial-affix.js` with CSS `position: sticky`
 - [ ] Update CSS framework
 - [ ] Fix responsive layouts
 
