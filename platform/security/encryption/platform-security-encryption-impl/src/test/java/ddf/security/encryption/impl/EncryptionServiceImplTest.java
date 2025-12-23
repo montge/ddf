@@ -398,7 +398,7 @@ public class EncryptionServiceImplTest {
 
     // All threads should have successfully encrypted and decrypted
     for (int i = 0; i < threadCount; i++) {
-      assertEquals("Thread " + i + " failed", password, results[i]);
+      assertEquals(password, results[i], "Thread " + i + " failed");
     }
   }
 }
