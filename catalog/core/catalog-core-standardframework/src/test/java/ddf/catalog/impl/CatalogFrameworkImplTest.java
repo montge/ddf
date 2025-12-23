@@ -2282,7 +2282,7 @@ public class CatalogFrameworkImplTest {
           newCard.setId(null);
           metacards.add(newCard);
 
-          CreateRequest create = new CreateRequestImpl((Metacard) null);
+          CreateRequest create = new CreateRequestImpl(metacards, null);
           try {
             framework.create(create);
           } catch (SourceUnavailableException e) {

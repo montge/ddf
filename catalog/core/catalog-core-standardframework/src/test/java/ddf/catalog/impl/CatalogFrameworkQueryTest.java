@@ -185,7 +185,7 @@ public class CatalogFrameworkQueryTest {
 
     createResponse = framework.create(new CreateRequestImpl(metacards, null));
 
-    assertEquals(createResponse.getCreatedMetacards().size(), metacards.size());
+    assertEquals(metacards.size(), createResponse.getCreatedMetacards().size());
     for (Metacard curCard : createResponse.getCreatedMetacards()) {
       if (curCard.getExpirationDate().equals(card1Exp.getTime())) {
         mcId1 = curCard.getId();
@@ -223,9 +223,9 @@ public class CatalogFrameworkQueryTest {
       QueryResponse response = framework.query(queryReq);
       assertEquals(1, response.getHits(), "After filter should return 1 result");
       assertEquals(
-          "After filter should return metacard[" + mcId2 + "]",
           mcId2,
-          response.getResults().get(0).getMetacard().getId());
+          response.getResults().get(0).getMetacard().getId(),
+          "After filter should return metacard[" + mcId2 + "]");
     } catch (UnsupportedQueryException e) {
       fail();
     } catch (FederationException e) {
@@ -278,7 +278,7 @@ public class CatalogFrameworkQueryTest {
     } catch (SourceUnavailableException e1) {
       fail();
     }
-    assertEquals(createResponse.getCreatedMetacards().size(), metacards.size());
+    assertEquals(metacards.size(), createResponse.getCreatedMetacards().size());
     for (Metacard curCard : createResponse.getCreatedMetacards()) {
       if (curCard.getExpirationDate().equals(card1Exp.getTime())) {
         mcId1 = curCard.getId();
@@ -313,9 +313,9 @@ public class CatalogFrameworkQueryTest {
       QueryResponse response = framework.query(queryReq);
       assertEquals(1, response.getHits(), "Before filter should return 1 result");
       assertEquals(
-          "Before filter should return metacard[" + mcId1 + "]",
           mcId1,
-          response.getResults().get(0).getMetacard().getId());
+          response.getResults().get(0).getMetacard().getId(),
+          "Before filter should return metacard[" + mcId1 + "]");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();
@@ -372,7 +372,7 @@ public class CatalogFrameworkQueryTest {
       LOGGER.error("Failure", e1);
       fail();
     }
-    assertEquals(createResponse.getCreatedMetacards().size(), metacards.size());
+    assertEquals(metacards.size(), createResponse.getCreatedMetacards().size());
     for (Metacard curCard : createResponse.getCreatedMetacards()) {
       if (curCard.getExpirationDate().equals(card1Exp.getTime())) {
         mcId1 = curCard.getId();
@@ -414,9 +414,9 @@ public class CatalogFrameworkQueryTest {
       QueryResponse response = framework.query(queryReq);
       assertEquals(1, response.getHits(), "Begins filter should return 1 result");
       assertEquals(
-          "Begins filter should return metacard[" + mcId1 + "]",
           mcId1,
-          response.getResults().get(0).getMetacard().getId());
+          response.getResults().get(0).getMetacard().getId(),
+          "Begins filter should return metacard[" + mcId1 + "]");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();
@@ -435,9 +435,9 @@ public class CatalogFrameworkQueryTest {
       QueryResponse response = framework.query(queryReq);
       assertEquals(1, response.getHits(), "Begins filter should return 1 result");
       assertEquals(
-          "Begins filter should return metacard[" + mcId2 + "]",
           mcId2,
-          response.getResults().get(0).getMetacard().getId());
+          response.getResults().get(0).getMetacard().getId(),
+          "Begins filter should return metacard[" + mcId2 + "]");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();
@@ -480,7 +480,7 @@ public class CatalogFrameworkQueryTest {
       LOGGER.error("Failure", e1);
       fail();
     }
-    assertEquals(createResponse.getCreatedMetacards().size(), metacards.size());
+    assertEquals(metacards.size(), createResponse.getCreatedMetacards().size());
     for (Metacard curCard : createResponse.getCreatedMetacards()) {
       if (curCard.getExpirationDate().equals(card1Exp.getTime())) {
         mcId1 = curCard.getId();
@@ -505,9 +505,9 @@ public class CatalogFrameworkQueryTest {
       QueryResponse response = framework.query(queryReq);
       assertEquals(1, response.getHits(), "Expecting return 1 result.");
       assertEquals(
-          "During filter should return metacard[" + mcId1 + "]",
           mcId1,
-          response.getResults().get(0).getMetacard().getId());
+          response.getResults().get(0).getMetacard().getId(),
+          "During filter should return metacard[" + mcId1 + "]");
 
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
@@ -527,9 +527,9 @@ public class CatalogFrameworkQueryTest {
       QueryResponse response = framework.query(queryReq);
       assertEquals(1, response.getHits(), "During filter should return 1 result");
       assertEquals(
-          "During filter should return metacard[" + mcId2 + "]",
           mcId2,
-          response.getResults().get(0).getMetacard().getId());
+          response.getResults().get(0).getMetacard().getId(),
+          "During filter should return metacard[" + mcId2 + "]");
     } catch (UnsupportedQueryException | SourceUnavailableException | FederationException e) {
       LOGGER.error("Failure", e);
       fail();

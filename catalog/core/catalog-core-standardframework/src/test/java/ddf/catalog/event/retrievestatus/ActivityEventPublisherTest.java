@@ -21,8 +21,11 @@ import ddf.action.Action;
 import ddf.action.ActionProvider;
 import ddf.security.service.impl.SubjectUtils;
 import java.net.URL;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Tests that the activity events are properly published when simulating download events. */
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ActivityEventPublisherTest extends AbstractDownloadsStatusEventPublisherTest {
 
   @Override

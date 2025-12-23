@@ -43,6 +43,7 @@ import org.codice.ddf.notifications.Notification;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -140,7 +141,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
   }
 
   /** Calls the retrieval status test with a security subject */
-  @org.junit.Test
+  @Test
   public void testPostRetrievalStatusWithSecurity() {
     setupPublisher();
     addSecurity();
@@ -151,7 +152,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
    * Calls the retrieval status test with no security subject (simulating no security in the
    * system).
    */
-  @org.junit.Test
+  @Test
   public void testPostRetrievalStatusWithoutSecurity() {
     setupPublisher();
     testPostRetrievalStatus(DEFAULT_USER_ID);
@@ -207,7 +208,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
   /**
    * Verifies client can set parameter to only publish a notification, no corresponding activity.
    */
-  @org.junit.Test
+  @Test
   public void testPostRetrievalStatusNotificationOnly() {
     setupPublisher();
     publisher.setActivityEnabled(true);
@@ -230,7 +231,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
   /**
    * Verifies client can set parameter to only publish an activity, no corresponding notification.
    */
-  @org.junit.Test
+  @Test
   public void testPostRetrievalStatusActivityOnly() {
     setupPublisher();
     publisher.setActivityEnabled(true);
@@ -254,7 +255,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
    * Verifies client can set parameters to publish an activity and its corresponding notification.
    * This is the default behavior.
    */
-  @org.junit.Test
+  @Test
   public void testPostRetrievalStatusSendNotificationAndActivity() {
     setupPublisher();
     publisher.setActivityEnabled(true);
@@ -290,7 +291,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
   /**
    * Calls the no name property test with a security subject (simulating security in the system).
    */
-  @org.junit.Test
+  @Test
   public void testPostRetrievalStatusWithNoNamePropertyWithSecurity() {
     setupPublisher();
     addSecurity();
@@ -301,7 +302,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
    * Calls the no name property test with no security subject (simulating no security in the
    * system).
    */
-  @org.junit.Test
+  @Test
   public void testPostRetrievalStatusWithNoNamePropertyWithoutSecurity() {
     setupPublisher();
     testPostRetrievalStatusWithNoNameProperty(DEFAULT_USER_ID);
@@ -354,7 +355,7 @@ public abstract class AbstractDownloadsStatusEventPublisherTest {
     assertEquals(correctUser, curEvent.getProperty(Notification.NOTIFICATION_KEY_USER_ID));
   }
 
-  @org.junit.Test
+  @Test
   public void testPostRetrievalWithNoStatus() {
     setupPublisherWithNoNotifications();
 

@@ -250,37 +250,36 @@ public class ResourceCacheImplTest {
 
   @Test
   public void getDefaultResourceWithNullMetacard() {
-    assertThrows(IllegalArgumentException.class, () -> newResourceCache.get(null));
+    assertThrows(NullPointerException.class, () -> newResourceCache.get(null));
   }
 
   @Test
   public void getSpecificResourceWithNullMetacard() {
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> newResourceCache.get(null, new ResourceRequestById(METACARD_ID)));
   }
 
   @Test
   public void getSpecificResourceWithNullResourceRequest() {
-    assertThrows(IllegalArgumentException.class, () -> newResourceCache.get(cachedMetacard, null));
+    assertThrows(NullPointerException.class, () -> newResourceCache.get(cachedMetacard, null));
   }
 
   @Test
   public void containsDefaultResourceWithNullMetacard() {
-    assertThrows(IllegalArgumentException.class, () -> newResourceCache.contains(null));
+    assertThrows(NullPointerException.class, () -> newResourceCache.contains(null));
   }
 
   @Test
   public void containsSpecificResourceWithNullMetacard() {
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> newResourceCache.contains(null, new ResourceRequestById(METACARD_ID)));
   }
 
   @Test
   public void containsSpecificResourceWithNullResourceRequest() {
-    assertThrows(
-        IllegalArgumentException.class, () -> newResourceCache.contains(cachedMetacard, null));
+    assertThrows(NullPointerException.class, () -> newResourceCache.contains(cachedMetacard, null));
   }
 
   @Test

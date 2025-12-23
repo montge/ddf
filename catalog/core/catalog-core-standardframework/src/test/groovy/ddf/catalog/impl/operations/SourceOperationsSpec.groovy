@@ -67,7 +67,7 @@ class SourceOperationsSpec extends Specification {
         new SourceOperations(frameworkProps, sourceActionRegistry, statusSourcePoller, contentTypesSourcePoller)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(NullPointerException)
 
         where:
         frameworkProps            | sourceActionRegistry | statusSourcePoller | contentTypesSourcePoller

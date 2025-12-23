@@ -486,8 +486,6 @@ public class HistorianTest {
 
     // Mock out a bad storage provider
     StorageProvider exceptionStorageProvider = mock(StorageProvider.class);
-    doThrow(StorageException.class).when(exceptionStorageProvider).commit(any());
-    doThrow(StorageException.class).when(exceptionStorageProvider).rollback(any());
 
     ContentItem item = mock(ContentItem.class);
     when(item.getId()).thenReturn(METACARD_ID);
@@ -498,7 +496,13 @@ public class HistorianTest {
     when(readStorageResponse.getContentItem()).thenReturn(item);
     when(exceptionStorageProvider.read(any())).thenReturn(readStorageResponse);
 
-    when(exceptionStorageProvider.create(any())).thenReturn(mock(CreateStorageResponse.class));
+    CreateStorageResponse createStorageResponse = mock(CreateStorageResponse.class);
+    StorageRequest createStorageRequest = mock(StorageRequest.class);
+    when(createStorageResponse.getStorageRequest()).thenReturn(createStorageRequest);
+    when(exceptionStorageProvider.create(any())).thenReturn(createStorageResponse);
+
+    doThrow(StorageException.class).when(exceptionStorageProvider).commit(any());
+    doThrow(StorageException.class).when(exceptionStorageProvider).rollback(any());
 
     historian.setStorageProviders(Collections.singletonList(exceptionStorageProvider));
 

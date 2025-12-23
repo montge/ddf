@@ -36,18 +36,17 @@ public class CacheKeyTest {
 
   @Test
   public void testNullMetacardValidResourceRequest() {
-    assertThrows(
-        IllegalArgumentException.class, () -> new CacheKey(null, mock(ResourceRequest.class)));
+    assertThrows(NullPointerException.class, () -> new CacheKey(null, mock(ResourceRequest.class)));
   }
 
   @Test
   public void testNullResourceRequest() {
-    assertThrows(IllegalArgumentException.class, () -> new CacheKey(mock(Metacard.class), null));
+    assertThrows(NullPointerException.class, () -> new CacheKey(mock(Metacard.class), null));
   }
 
   @Test
   public void testNullMetacard() {
-    assertThrows(IllegalArgumentException.class, () -> new CacheKey(null));
+    assertThrows(NullPointerException.class, () -> new CacheKey(null));
   }
 
   @Test
