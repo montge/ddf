@@ -77,6 +77,7 @@ public class LoginFilterCoverageTest {
   @Mock private ContextPolicyManager contextPolicyManager;
   @Mock private BaseAuthenticationToken authenticationTokenMock;
   @Mock private X509Certificate x509CertificateMock;
+  @Mock private PrincipalHolder principalHolderMock;
   private X509Certificate[] x509Certificates;
 
   @BeforeAll
@@ -98,6 +99,7 @@ public class LoginFilterCoverageTest {
     when(contextPolicyManager.getSessionAccess()).thenReturn(true);
     when(requestMock.getRequestURI()).thenReturn("/test/path");
     when(sessionMock.getId()).thenReturn("session-id");
+    when(sessionMock.getAttribute(SECURITY_TOKEN_KEY)).thenReturn(principalHolderMock);
   }
 
   @Test

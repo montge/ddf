@@ -14,6 +14,7 @@
 package org.codice.ddf.security.filter.login;
 
 import static ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY;
+import static ddf.security.SecurityConstants.SECURITY_TOKEN_KEY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -75,6 +76,7 @@ public class LoginFilterSecurityExceptionTest {
   @Mock private ContextPolicyManager contextPolicyManager;
   @Mock private BaseAuthenticationToken authenticationTokenMock;
   @Mock private X509Certificate x509CertificateMock;
+  @Mock private PrincipalHolder principalHolderMock;
   private X509Certificate[] x509Certificates;
 
   @BeforeAll
@@ -95,6 +97,7 @@ public class LoginFilterSecurityExceptionTest {
     when(sessionFactory.getOrCreateSession(any())).thenReturn(sessionMock);
     when(contextPolicyManager.getSessionAccess()).thenReturn(true);
     when(requestMock.getRequestURI()).thenReturn("/test/path");
+    when(sessionMock.getAttribute(SECURITY_TOKEN_KEY)).thenReturn(principalHolderMock);
   }
 
   @Test
