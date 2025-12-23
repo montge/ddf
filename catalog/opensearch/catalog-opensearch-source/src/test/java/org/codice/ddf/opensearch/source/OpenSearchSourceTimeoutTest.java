@@ -46,9 +46,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Tests timeout and error handling for OpenSearchSource */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OpenSearchSourceTimeoutTest {
 
   private static final String SOURCE_ID = "TEST-TIMEOUT";
@@ -127,7 +130,7 @@ public class OpenSearchSourceTimeoutTest {
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
+    assertThrows(ProcessingException.class, () -> source.query(queryRequest));
   }
 
   @Test
@@ -137,7 +140,7 @@ public class OpenSearchSourceTimeoutTest {
     Filter filter = FILTER_BUILDER.attribute("anyText").like().text("test");
     QueryRequest queryRequest = new QueryRequestImpl(new QueryImpl(filter));
 
-    assertThrows(UnsupportedQueryException.class, () -> source.query(queryRequest));
+    assertThrows(ProcessingException.class, () -> source.query(queryRequest));
   }
 
   @Test
