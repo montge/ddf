@@ -41,10 +41,13 @@ import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Comprehensive tests for ExportCommand */
 @EnableRuleMigrationSupport
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExportCommandTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();

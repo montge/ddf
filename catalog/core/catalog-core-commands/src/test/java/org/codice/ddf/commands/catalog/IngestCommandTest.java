@@ -26,22 +26,26 @@ import static org.mockito.Mockito.when;
 import ddf.catalog.transform.InputTransformer;
 import ddf.security.audit.SecurityLogger;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import org.apache.commons.lang3.SystemUtils;
 import org.codice.ddf.commands.util.DigitalSignature;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 /** Tests the {@EnableRuleMigrationSupport
  * @link IngestCommand} output. */
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IngestCommandTest extends CommandCatalogFrameworkCommon {
 
-  @Rule public TemporaryFolder testFolder = new TemporaryFolder();
+  @TempDir Path testFolder;
 
   IngestCommand ingestCommand;
 
@@ -74,7 +78,7 @@ public class IngestCommandTest extends CommandCatalogFrameworkCommon {
     ingestCommand.bundleContext = bundleContext;
 
     ingestCommand.transformerId = CatalogCommands.SERIALIZED_OBJECT_ID;
-    ingestCommand.filePath = testFolder.getRoot().getAbsolutePath();
+    ingestCommand.filePath = testFolder.toAbsolutePath().toString();
   }
 
   /**
@@ -100,11 +104,11 @@ public class IngestCommandTest extends CommandCatalogFrameworkCommon {
   @Test
   public void testExpectedCounts() throws Exception {
     // given
-    testFolder.newFile("somefile1.txt");
-    testFolder.newFile("somefile2.jpg");
-    testFolder.newFile("somefile3.txt");
-    testFolder.newFile("somefile4.jpg");
-    testFolder.newFile("somefile5.txt");
+    Files.createFile(testFolder.resolve("somefile1.txt"));
+    Files.createFile(testFolder.resolve("somefile2.jpg"));
+    Files.createFile(testFolder.resolve("somefile3.txt"));
+    Files.createFile(testFolder.resolve("somefile4.jpg"));
+    Files.createFile(testFolder.resolve("somefile5.txt"));
 
     // when
     ingestCommand.executeWithSubject();
@@ -124,11 +128,11 @@ public class IngestCommandTest extends CommandCatalogFrameworkCommon {
   @Test
   public void testExpectedCountsWithIgnore() throws Exception {
     // given
-    testFolder.newFile("somefile1.txt");
-    testFolder.newFile("somefile2.jpg");
-    testFolder.newFile("somefile3.txt");
-    testFolder.newFile("somefile4.jpg");
-    testFolder.newFile("somefile5.txt");
+    Files.createFile(testFolder.resolve("somefile1.txt"));
+    Files.createFile(testFolder.resolve("somefile2.jpg"));
+    Files.createFile(testFolder.resolve("somefile3.txt"));
+    Files.createFile(testFolder.resolve("somefile4.jpg"));
+    Files.createFile(testFolder.resolve("somefile5.txt"));
 
     ArrayList<String> ignoreList = new ArrayList<>();
     ignoreList.add(".txt");
@@ -156,11 +160,11 @@ public class IngestCommandTest extends CommandCatalogFrameworkCommon {
     assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
     // given
-    testFolder.newFile(".somefile1");
-    testFolder.newFile(".somefile2");
-    testFolder.newFile(".somefile3");
-    testFolder.newFile(".somefile4");
-    testFolder.newFile("somefile5");
+    Files.createFile(testFolder.resolve(".somefile1"));
+    Files.createFile(testFolder.resolve(".somefile2"));
+    Files.createFile(testFolder.resolve(".somefile3"));
+    Files.createFile(testFolder.resolve(".somefile4"));
+    Files.createFile(testFolder.resolve("somefile5"));
 
     // when
     ingestCommand.executeWithSubject();

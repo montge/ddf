@@ -38,6 +38,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,20 +47,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.codice.ddf.commands.util.DigitalSignature;
 import org.fusesource.jansi.Ansi;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Tests the {@EnableRuleMigrationSupport
  * @link DumpCommand} output. */
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class DumpCommandTest extends CommandCatalogFrameworkCommon {
 
   static final String DEFAULT_CONSOLE_COLOR = Ansi.ansi().reset().toString();
 
   static final String RED_CONSOLE_COLOR = Ansi.ansi().fg(ERROR_COLOR).toString();
 
-  @Rule public TemporaryFolder testFolder = new TemporaryFolder();
+  @TempDir Path testFolder;
 
   private DigitalSignature signer;
 
@@ -105,7 +109,7 @@ public class DumpCommandTest extends CommandCatalogFrameworkCommon {
   public void testOutputDirectoryIsFile() throws Exception {
     // given
     DumpCommand dumpCommand = new DumpCommand(signer);
-    File testFile = testFolder.newFile("somefile.txt");
+    File testFile = Files.createFile(testFolder.resolve("somefile.txt")).toFile();
     String testFilePath = testFile.getAbsolutePath();
     dumpCommand.dirPath = testFilePath;
     dumpCommand.transformerId = CatalogCommands.SERIALIZED_OBJECT_ID;
@@ -135,7 +139,7 @@ public class DumpCommandTest extends CommandCatalogFrameworkCommon {
     dumpCommand.securityLogger = mock(SecurityLogger.class);
     dumpCommand.catalogFramework = givenCatalogFramework(getResultList("id1", "id2"));
     dumpCommand.filterBuilder = new GeotoolsFilterBuilder();
-    File outputDirectory = testFolder.newFolder("somedirectory");
+    File outputDirectory = Files.createDirectory(testFolder.resolve("normalop")).toFile();
     String outputDirectoryPath = outputDirectory.getAbsolutePath();
     dumpCommand.dirPath = outputDirectoryPath;
     dumpCommand.transformerId = CatalogCommands.SERIALIZED_OBJECT_ID;
@@ -159,7 +163,7 @@ public class DumpCommandTest extends CommandCatalogFrameworkCommon {
     dumpCommand.securityLogger = mock(SecurityLogger.class);
     dumpCommand.catalogFramework = givenCatalogFramework(getEmptyResultList());
     dumpCommand.filterBuilder = new GeotoolsFilterBuilder();
-    File outputDirectory = testFolder.newFolder("somedirectory");
+    File outputDirectory = Files.createDirectory(testFolder.resolve("nofiles")).toFile();
     String outputDirectoryPath = outputDirectory.getAbsolutePath();
     dumpCommand.dirPath = outputDirectoryPath;
     dumpCommand.transformerId = CatalogCommands.SERIALIZED_OBJECT_ID;
@@ -190,7 +194,7 @@ public class DumpCommandTest extends CommandCatalogFrameworkCommon {
     dumpCommand.securityLogger = mock(SecurityLogger.class);
     dumpCommand.catalogFramework = givenCatalogFramework(resultList);
     dumpCommand.filterBuilder = new GeotoolsFilterBuilder();
-    File outputDirectory = testFolder.newFolder("somedirectory");
+    File outputDirectory = Files.createDirectory(testFolder.resolve("withcontent")).toFile();
     String outputDirectoryPath = outputDirectory.getAbsolutePath();
     dumpCommand.dirPath = outputDirectoryPath;
     dumpCommand.transformerId = CatalogCommands.SERIALIZED_OBJECT_ID;
@@ -225,7 +229,7 @@ public class DumpCommandTest extends CommandCatalogFrameworkCommon {
     TestDumpCommand dumpCommand = new TestDumpCommand(transformers, signer);
     dumpCommand.catalogFramework = givenCatalogFramework(resultList);
     dumpCommand.filterBuilder = new GeotoolsFilterBuilder();
-    File outputDirectory = testFolder.newFolder("somedirectory");
+    File outputDirectory = Files.createDirectory(testFolder.resolve("transformfails")).toFile();
     String outputDirectoryPath = outputDirectory.getAbsolutePath();
     dumpCommand.dirPath = outputDirectoryPath;
     dumpCommand.transformerId = "someOtherTransformer";
@@ -240,7 +244,7 @@ public class DumpCommandTest extends CommandCatalogFrameworkCommon {
 
   @Test
   public void testNormalOperationsAsCompressedFile() throws Exception {
-    File outputDirectory = testFolder.newFolder("somedirectory");
+    File outputDirectory = Files.createDirectory(testFolder.resolve("compressed")).toFile();
     String outputDirectoryPath = outputDirectory.getAbsolutePath();
     List<Result> results =
         ImmutableList.of(

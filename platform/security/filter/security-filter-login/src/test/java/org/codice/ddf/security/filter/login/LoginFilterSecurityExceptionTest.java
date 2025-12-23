@@ -19,7 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -41,7 +40,6 @@ import java.util.Collections;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.apache.shiro.session.SessionException;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.codice.ddf.platform.filter.AuthenticationException;
@@ -166,12 +164,13 @@ public class LoginFilterSecurityExceptionTest {
     when(requestMock.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
     when(securityManagerMock.getSubject(authenticationTokenMock)).thenReturn(subject);
 
-    try {
-      loginFilter.doFilter(requestMock, responseMock, filterChainMock);
-      fail("Expected SessionException to be thrown");
-    } catch (SessionException e) {
-      assertThat(e.getMessage(), is("Unable to store user's session."));
-    }
+    // SessionException is wrapped in ExecutionException when thrown from subject.execute()
+    org.apache.shiro.subject.ExecutionException executionException =
+        assertThrows(
+            org.apache.shiro.subject.ExecutionException.class,
+            () -> loginFilter.doFilter(requestMock, responseMock, filterChainMock));
+    assertThat(executionException.getCause(), is(notNullValue()));
+    assertThat(executionException.getCause().getMessage(), is("Unable to store user's session."));
   }
 
   @Test

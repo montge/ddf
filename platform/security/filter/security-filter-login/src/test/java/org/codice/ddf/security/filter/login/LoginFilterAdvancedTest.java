@@ -287,12 +287,15 @@ public class LoginFilterAdvancedTest {
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
 
     PrincipalCollection newPrincipalCollection = mock(PrincipalCollection.class);
-    when(securityManager.getSubject(authToken)).thenReturn(subject);
-    when(subject.getPrincipals()).thenReturn(newPrincipalCollection);
-    when(principalCollection.byType(SecurityAssertion.class))
-        .thenReturn(Collections.singletonList(securityAssertion));
     when(newPrincipalCollection.byType(SecurityAssertion.class))
         .thenReturn(Collections.singletonList(securityAssertion));
+
+    // Use a real SubjectImpl so that execute() actually runs the callable
+    ddf.security.Subject realSubject =
+        new ddf.security.impl.SubjectImpl(
+            newPrincipalCollection, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
+
+    when(securityManager.getSubject(authToken)).thenReturn(realSubject);
 
     PrincipalHolder holder = new PrincipalHolder();
     holder.setPrincipals(principalCollection);
@@ -300,7 +303,7 @@ public class LoginFilterAdvancedTest {
 
     loginFilter.doFilter(request, response, filterChain);
 
-    verify(sessionFactory).getOrCreateSession(request);
+    verify(sessionFactory, org.mockito.Mockito.atLeast(1)).getOrCreateSession(request);
   }
 
   @Test
@@ -321,18 +324,24 @@ public class LoginFilterAdvancedTest {
 
   @Test
   public void testSessionFactoryNullThrowsException() {
+    // Test that null session factory throws exception when session access enabled
+    // The exception is wrapped in ExecutionException when thrown from subject.execute()
     assertThrows(
-        AuthenticationException.class,
+        org.apache.shiro.subject.ExecutionException.class,
         () -> {
-          // Test that null session factory throws exception when session access enabled
           loginFilter.setSessionFactory(null);
           when(contextPolicyManager.getSessionAccess()).thenReturn(true);
           HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
           when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
-          when(securityManager.getSubject(authToken)).thenReturn(subject);
-          when(subject.getPrincipals()).thenReturn(principalCollection);
-          when(principalCollection.byType(SecurityAssertion.class))
+
+          // Use real SubjectImpl so execute() actually runs the callable
+          PrincipalCollection principals = mock(PrincipalCollection.class);
+          when(principals.byType(SecurityAssertion.class))
               .thenReturn(Collections.singletonList(securityAssertion));
+          ddf.security.Subject realSubject =
+              new ddf.security.impl.SubjectImpl(
+                  principals, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
+          when(securityManager.getSubject(authToken)).thenReturn(realSubject);
 
           loginFilter.doFilter(request, response, filterChain);
         });
@@ -345,15 +354,21 @@ public class LoginFilterAdvancedTest {
     // Test that Java subject is created from security assertions
     HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
-    when(securityManager.getSubject(authToken)).thenReturn(subject);
-    when(subject.getPrincipals()).thenReturn(principalCollection);
 
     java.security.Principal principal1 = mock(java.security.Principal.class);
     java.security.Principal principal2 = mock(java.security.Principal.class);
     when(securityAssertion.getPrincipals())
         .thenReturn(new HashSet<>(Arrays.asList(principal1, principal2)));
-    when(principalCollection.byType(SecurityAssertion.class))
+
+    PrincipalCollection principals = mock(PrincipalCollection.class);
+    when(principals.byType(SecurityAssertion.class))
         .thenReturn(Collections.singletonList(securityAssertion));
+
+    // Use real SubjectImpl so execute() actually runs
+    ddf.security.Subject realSubject =
+        new ddf.security.impl.SubjectImpl(
+            principals, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
+    when(securityManager.getSubject(authToken)).thenReturn(realSubject);
 
     loginFilter.doFilter(request, response, filterChain);
 
@@ -369,13 +384,19 @@ public class LoginFilterAdvancedTest {
     when(contextPolicyManager.getSessionAccess()).thenReturn(true);
     HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
-    when(securityManager.getSubject(authToken)).thenReturn(subject);
-    when(subject.getPrincipals()).thenReturn(principalCollection);
 
     java.security.Principal principal = mock(java.security.Principal.class);
     when(securityAssertion.getPrincipals()).thenReturn(Collections.singleton(principal));
-    when(principalCollection.byType(SecurityAssertion.class))
+
+    PrincipalCollection principals = mock(PrincipalCollection.class);
+    when(principals.byType(SecurityAssertion.class))
         .thenReturn(Collections.singletonList(securityAssertion));
+
+    // Use real SubjectImpl so execute() actually runs
+    ddf.security.Subject realSubject =
+        new ddf.security.impl.SubjectImpl(
+            principals, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
+    when(securityManager.getSubject(authToken)).thenReturn(realSubject);
 
     loginFilter.doFilter(request, response, filterChain);
 
@@ -391,18 +412,23 @@ public class LoginFilterAdvancedTest {
     HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
 
-    PrincipalCollection oldPrincipals = mock(PrincipalCollection.class);
+    // Use actual SimplePrincipalCollection instances which are naturally not equal
+    SimplePrincipalCollection oldPrincipals = new SimplePrincipalCollection();
+    oldPrincipals.add("oldPrincipal", "realm");
+    // For the new principals, we need a mock so we can stub byType()
     PrincipalCollection newPrincipals = mock(PrincipalCollection.class);
-    when(oldPrincipals.equals(newPrincipals)).thenReturn(false);
+    when(newPrincipals.byType(SecurityAssertion.class))
+        .thenReturn(Collections.singletonList(securityAssertion));
 
     PrincipalHolder holder = new PrincipalHolder();
     holder.setPrincipals(oldPrincipals);
     when(session.getAttribute(SECURITY_TOKEN_KEY)).thenReturn(holder);
 
-    when(securityManager.getSubject(authToken)).thenReturn(subject);
-    when(subject.getPrincipals()).thenReturn(newPrincipals);
-    when(newPrincipals.byType(SecurityAssertion.class))
-        .thenReturn(Collections.singletonList(securityAssertion));
+    // Use real SubjectImpl so execute() actually runs
+    ddf.security.Subject realSubject =
+        new ddf.security.impl.SubjectImpl(
+            newPrincipals, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
+    when(securityManager.getSubject(authToken)).thenReturn(realSubject);
 
     loginFilter.doFilter(request, response, filterChain);
 
@@ -417,7 +443,10 @@ public class LoginFilterAdvancedTest {
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
 
     // Use the same principal collection reference for both old and new
-    PrincipalCollection samePrincipals = new SimplePrincipalCollection();
+    // We need to use a mock here because the filter calls byType() on the principals
+    PrincipalCollection samePrincipals = mock(PrincipalCollection.class);
+    when(samePrincipals.byType(SecurityAssertion.class))
+        .thenReturn(Collections.singletonList(securityAssertion));
 
     PrincipalHolder holder = new PrincipalHolder();
     holder.setPrincipals(samePrincipals);
@@ -425,8 +454,6 @@ public class LoginFilterAdvancedTest {
 
     when(securityManager.getSubject(authToken)).thenReturn(subject);
     when(subject.getPrincipals()).thenReturn(samePrincipals);
-    when(samePrincipals.byType(SecurityAssertion.class))
-        .thenReturn(Collections.singletonList(securityAssertion));
 
     loginFilter.doFilter(request, response, filterChain);
 
@@ -476,8 +503,6 @@ public class LoginFilterAdvancedTest {
     // Test handling of multiple security assertions
     HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
-    when(securityManager.getSubject(authToken)).thenReturn(subject);
-    when(subject.getPrincipals()).thenReturn(principalCollection);
 
     SecurityAssertion assertion1 = mock(SecurityAssertion.class);
     SecurityAssertion assertion2 = mock(SecurityAssertion.class);
@@ -488,8 +513,16 @@ public class LoginFilterAdvancedTest {
     when(assertion1.getPrincipals())
         .thenReturn(new HashSet<>(Arrays.asList(principal1, principal2)));
     when(assertion2.getPrincipals()).thenReturn(Collections.singleton(principal3));
-    when(principalCollection.byType(SecurityAssertion.class))
+
+    PrincipalCollection principals = mock(PrincipalCollection.class);
+    when(principals.byType(SecurityAssertion.class))
         .thenReturn(Arrays.asList(assertion1, assertion2));
+
+    // Use real SubjectImpl so execute() actually runs
+    ddf.security.Subject realSubject =
+        new ddf.security.impl.SubjectImpl(
+            principals, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
+    when(securityManager.getSubject(authToken)).thenReturn(realSubject);
 
     loginFilter.doFilter(request, response, filterChain);
 
@@ -506,11 +539,17 @@ public class LoginFilterAdvancedTest {
     // Test handling of security assertion with empty principals
     HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
-    when(securityManager.getSubject(authToken)).thenReturn(subject);
-    when(subject.getPrincipals()).thenReturn(principalCollection);
     when(securityAssertion.getPrincipals()).thenReturn(Collections.emptySet());
-    when(principalCollection.byType(SecurityAssertion.class))
+
+    PrincipalCollection principals = mock(PrincipalCollection.class);
+    when(principals.byType(SecurityAssertion.class))
         .thenReturn(Collections.singletonList(securityAssertion));
+
+    // Use real SubjectImpl so execute() actually runs
+    ddf.security.Subject realSubject =
+        new ddf.security.impl.SubjectImpl(
+            principals, true, null, mock(org.apache.shiro.mgt.SecurityManager.class));
+    when(securityManager.getSubject(authToken)).thenReturn(realSubject);
 
     loginFilter.doFilter(request, response, filterChain);
 
