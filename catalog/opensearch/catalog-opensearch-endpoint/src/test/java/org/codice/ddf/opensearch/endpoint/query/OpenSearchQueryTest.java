@@ -345,9 +345,9 @@ public class OpenSearchQueryTest {
     osq.addContextualFilter(inputKeywordPhrase, null);
 
     assertEquals(
-        "Incorrect Filter was produced for input filter string: " + inputKeywordPhrase + "\n\t",
         expectedFilter,
-        osq.getFilter());
+        osq.getFilter(),
+        "Incorrect Filter was produced for input filter string: " + inputKeywordPhrase + "\n\t");
   }
 
   @Test

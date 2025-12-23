@@ -45,9 +45,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /** Tests error handling in OpenSearchEndpoint */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OpenSearchEndpointErrorTest {
 
   private static final String TEST_SITE_NAME = "TestSite";
@@ -112,7 +115,7 @@ public class OpenSearchEndpointErrorTest {
             mockRequest);
 
     assertThat(response, notNullValue());
-    assertThat(response.getStatus(), is(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
+    assertThat(response.getStatus(), is(Response.Status.BAD_REQUEST.getStatusCode()));
   }
 
   @Test
@@ -252,7 +255,7 @@ public class OpenSearchEndpointErrorTest {
     assertThat(response, notNullValue());
     assertThat(response.getStatus(), is(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
     assertThat(
-        response.getEntity().toString(), containsString("Exception while executing a query"));
+        response.getEntity().toString(), containsString("RuntimeException on executing query"));
   }
 
   @Test

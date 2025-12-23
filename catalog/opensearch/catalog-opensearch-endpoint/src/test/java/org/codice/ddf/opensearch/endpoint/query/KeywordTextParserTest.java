@@ -101,13 +101,13 @@ public class KeywordTextParserTest {
       ParsingResult<?> result = new ReportingParseRunner(parser.inputPhrase()).run(input);
       LOGGER.debug("input = {}\t\t=====>result matched = {}", input, result.matched);
       assertEquals(
-          "Failed on input [" + input + "]. Parse Error [" + getErrorOutput(result) + "]",
           0,
-          result.parseErrors.size());
+          result.parseErrors.size(),
+          "Failed on input [" + input + "]. Parse Error [" + getErrorOutput(result) + "]");
       assertEquals(
-          "Failed to parse [" + input + "] properly.",
           input,
-          ParseTreeUtils.getNodeText(result.parseTreeRoot, result.inputBuffer));
+          ParseTreeUtils.getNodeText(result.parseTreeRoot, result.inputBuffer),
+          "Failed to parse [" + input + "] properly.");
     }
   }
 
@@ -173,13 +173,13 @@ public class KeywordTextParserTest {
       ParsingResult<?> result = new ReportingParseRunner(parser.inputPhrase()).run(input);
 
       assertEquals(
-          "Failed on input [" + input + "]. Parse Error [" + getErrorOutput(result) + "]",
           0,
-          result.parseErrors.size());
+          result.parseErrors.size(),
+          "Failed on input [" + input + "]. Parse Error [" + getErrorOutput(result) + "]");
       assertEquals(
-          "Failed to parse [" + input + "] properly.",
           input,
-          ParseTreeUtils.getNodeText(result.parseTreeRoot, result.inputBuffer));
+          ParseTreeUtils.getNodeText(result.parseTreeRoot, result.inputBuffer),
+          "Failed to parse [" + input + "] properly.");
     }
   }
 
