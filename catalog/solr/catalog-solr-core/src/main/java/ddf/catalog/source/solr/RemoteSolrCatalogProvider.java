@@ -73,6 +73,15 @@ public abstract class RemoteSolrCatalogProvider extends MaskableImpl implements 
       SolrClient client,
       SolrFilterDelegateFactory solrFilterDelegateFactory,
       @Nullable DynamicSchemaResolver resolver) {
+    if (filterAdapter == null) {
+      throw new IllegalArgumentException("FilterAdapter cannot be null");
+    }
+    if (client == null) {
+      throw new IllegalArgumentException("SolrClient cannot be null");
+    }
+    if (solrFilterDelegateFactory == null) {
+      throw new IllegalArgumentException("SolrFilterDelegateFactory cannot be null");
+    }
     this.provider =
         new SolrCatalogProviderImpl(
             client,

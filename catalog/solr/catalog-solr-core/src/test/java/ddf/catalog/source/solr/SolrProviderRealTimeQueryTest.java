@@ -47,25 +47,21 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.cloud.MiniSolrCloudCluster;
 import org.codice.solr.factory.impl.SolrCloudClientFactory;
 import org.geotools.api.filter.Filter;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@EnableRuleMigrationSupport
 public class SolrProviderRealTimeQueryTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SolrProviderRealTimeQueryTest.class);
 
   private static final String COMMIT_NRT_TYPE = "CommitNrtType";
 
-  @Rule @ClassRule public static TemporaryFolder baseDir = new TemporaryFolder();
+  @TempDir static Path baseDir;
 
   private static SolrClient solrClient;
 
@@ -111,7 +107,7 @@ public class SolrProviderRealTimeQueryTest {
     System.setProperty("jute.maxbuffer", "20000000"); // windows solution
 
     miniSolrCloud =
-        new MiniSolrCloudCluster.Builder(1, baseDir.getRoot().toPath())
+        new MiniSolrCloudCluster.Builder(1, baseDir)
             .withJettyConfig(jetty -> jetty.setContext("/solr"))
             .build();
 
