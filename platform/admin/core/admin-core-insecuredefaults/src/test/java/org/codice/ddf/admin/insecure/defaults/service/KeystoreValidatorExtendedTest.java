@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.not;
 
 import ddf.security.SecurityConstants;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.KeyPair;
@@ -27,11 +28,10 @@ import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Extended unit tests for {@EnableRuleMigrationSupport
@@ -44,7 +44,7 @@ public class KeystoreValidatorExtendedTest {
   private static final String CUSTOM_KEYSTORE_PASSWORD = "customPassword123";
   private static final String CUSTOM_KEY_PASSWORD = "customKeyPass456";
 
-  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir Path tempFolder;
 
   private KeystoreValidator validator;
   private Path keystorePath;
@@ -56,8 +56,8 @@ public class KeystoreValidatorExtendedTest {
 
     validator = new KeystoreValidator();
 
-    keystorePath = Paths.get(tempFolder.newFile("test-keystore.jks").getAbsolutePath());
-    blacklistKeystorePath = Paths.get(tempFolder.newFile("test-blacklist.jks").getAbsolutePath());
+    keystorePath = Files.createFile(tempFolder.resolve("test-keystore.jks"));
+    blacklistKeystorePath = Files.createFile(tempFolder.resolve("test-blacklist.jks"));
   }
 
   @Test
@@ -204,7 +204,7 @@ public class KeystoreValidatorExtendedTest {
 
   @Test
   public void testValidateWithNonExistentKeystore() {
-    Path nonExistentPath = Paths.get(tempFolder.getRoot().getAbsolutePath(), "nonexistent.jks");
+    Path nonExistentPath = tempFolder.resolve("nonexistent.jks");
 
     validator.setKeystorePath(nonExistentPath);
     validator.setKeystorePassword(DEFAULT_KEYSTORE_PASSWORD);
@@ -221,8 +221,7 @@ public class KeystoreValidatorExtendedTest {
   @Test
   public void testValidateWithNonExistentBlacklistKeystore() throws Exception {
     createKeystore(keystorePath, CUSTOM_KEYSTORE_PASSWORD, "testAlias", CUSTOM_KEY_PASSWORD);
-    Path nonExistentPath =
-        Paths.get(tempFolder.getRoot().getAbsolutePath(), "nonexistent-blacklist.jks");
+    Path nonExistentPath = tempFolder.resolve("nonexistent-blacklist.jks");
 
     validator.setKeystorePath(keystorePath);
     validator.setKeystorePassword(CUSTOM_KEYSTORE_PASSWORD);

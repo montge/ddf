@@ -19,14 +19,14 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
-import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /** Unit tests for {@EnableRuleMigrationSupport
@@ -41,7 +41,7 @@ public class CryptoPropertiesFileValidatorTest {
   private static final String CUSTOM_ALIAS = "customAlias";
   private static final String CUSTOM_PRIVATE_KEY_PASSWORD = "customPrivateKey456";
 
-  @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
+  @TempDir Path tempFolder;
 
   private SignaturePropertiesFileValidator validator;
   private Path propertiesPath;
@@ -49,7 +49,7 @@ public class CryptoPropertiesFileValidatorTest {
   @BeforeEach
   public void setUp() throws Exception {
     validator = new SignaturePropertiesFileValidator();
-    propertiesPath = tempFolder.newFile("signature.properties").toPath();
+    propertiesPath = Files.createFile(tempFolder.resolve("signature.properties"));
   }
 
   @Test
