@@ -266,7 +266,8 @@ public class SecurityTest {
 
   @Test
   public void testRunWithSubjectOrElevateWhenCallableIsNull() throws Exception {
-    assertThrows(IllegalArgumentException.class, () -> security.runWithSubjectOrElevate(null));
+    // Validate.notNull() throws NullPointerException, not IllegalArgumentException
+    assertThrows(NullPointerException.class, () -> security.runWithSubjectOrElevate(null));
   }
 
   private void configureMockForSecurityManager(SecurityManager sm) {

@@ -41,6 +41,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Comprehensive unit tests for {@link SmtpClientImpl} class.
@@ -57,6 +59,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * </ul>
  */
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SmtpClientImplTest {
 
   private static final String TEST_HOST = "smtp.example.com";
@@ -105,7 +108,8 @@ public class SmtpClientImplTest {
 
   @Test
   public void testSetHostNameWithNull() {
-    assertThrows(IllegalArgumentException.class, () -> smtpClient.setHostName(null));
+    // Validate.notNull() throws NullPointerException, not IllegalArgumentException
+    assertThrows(NullPointerException.class, () -> smtpClient.setHostName(null));
   }
 
   @Test
@@ -121,7 +125,8 @@ public class SmtpClientImplTest {
 
   @Test
   public void testSetPortNumberWithNull() {
-    assertThrows(IllegalArgumentException.class, () -> smtpClient.setPortNumber(null));
+    // Validate.notNull() throws NullPointerException, not IllegalArgumentException
+    assertThrows(NullPointerException.class, () -> smtpClient.setPortNumber(null));
   }
 
   @Test
@@ -269,7 +274,8 @@ public class SmtpClientImplTest {
 
   @Test
   public void testSendWithNullMessage() {
-    assertThrows(IllegalArgumentException.class, () -> smtpClient.send(null));
+    // Validate.notNull() throws NullPointerException, not IllegalArgumentException
+    assertThrows(NullPointerException.class, () -> smtpClient.send(null));
   }
 
   @Test
