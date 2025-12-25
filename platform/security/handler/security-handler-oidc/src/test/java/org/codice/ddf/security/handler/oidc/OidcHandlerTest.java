@@ -24,7 +24,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.io.CharStreams;
+import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.oauth2.sdk.AuthorizationCode;
 import com.nimbusds.oauth2.sdk.id.State;
+import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -42,6 +45,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.context.session.SessionStore;
 import org.pac4j.core.exception.http.RedirectionAction;
@@ -50,6 +55,7 @@ import org.pac4j.oidc.config.OidcConfiguration;
 import org.pac4j.oidc.credentials.OidcCredentials;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OidcHandlerTest {
   private static String accessTokenString;
   private static String authorizationCodeString;
@@ -185,6 +191,12 @@ public class OidcHandlerTest {
 
     when(mockRequest.getParameterMap()).thenReturn(parameterMap);
 
+    // Stub getCredentials to return OidcCredentials with authorization code
+    OidcCredentials credentials = new OidcCredentials();
+    credentials.setCode(new AuthorizationCode(authorizationCodeString));
+    when(mockOidcClient.getCredentials(any(WebContext.class), any(SessionStore.class)))
+        .thenReturn(Optional.of(credentials));
+
     result = handler.getNormalizedToken(mockRequest, mockResponse, null, false);
 
     assertThat(result.getStatus(), is(Status.COMPLETED));
@@ -200,6 +212,12 @@ public class OidcHandlerTest {
     parameterMap.put("token_type", new String[] {"Bearer"});
     when(mockRequest.getParameterMap()).thenReturn(parameterMap);
 
+    // Stub getCredentials to return OidcCredentials with access token
+    OidcCredentials credentials = new OidcCredentials();
+    credentials.setAccessToken(new BearerAccessToken(accessTokenString));
+    when(mockOidcClient.getCredentials(any(WebContext.class), any(SessionStore.class)))
+        .thenReturn(Optional.of(credentials));
+
     result = handler.getNormalizedToken(mockRequest, mockResponse, null, false);
 
     assertThat(result.getStatus(), is(Status.COMPLETED));
@@ -213,6 +231,12 @@ public class OidcHandlerTest {
   public void getNormalizedTokenWithIdTokenInQueryParameters() throws Exception {
     parameterMap.put("id_token", new String[] {idTokenString});
     when(mockRequest.getParameterMap()).thenReturn(parameterMap);
+
+    // Stub getCredentials to return OidcCredentials with id token
+    OidcCredentials credentials = new OidcCredentials();
+    credentials.setIdToken(SignedJWT.parse(idTokenString));
+    when(mockOidcClient.getCredentials(any(WebContext.class), any(SessionStore.class)))
+        .thenReturn(Optional.of(credentials));
 
     result = handler.getNormalizedToken(mockRequest, mockResponse, null, false);
 
