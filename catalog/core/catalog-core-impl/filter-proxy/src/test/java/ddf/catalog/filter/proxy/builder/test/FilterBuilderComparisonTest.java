@@ -223,32 +223,36 @@ public class FilterBuilderComparisonTest {
   @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testGreaterThanWithNullNumber() {
+    // commons-lang3 Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> builder.attribute(TEST_ATTRIBUTE).greaterThan().number((Integer) null));
   }
 
   @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testGreaterThanOrEqualToWithNullNumber() {
+    // commons-lang3 Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> builder.attribute(TEST_ATTRIBUTE).greaterThanOrEqualTo().number((Integer) null));
   }
 
   @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testLessThanWithNullNumber() {
+    // commons-lang3 Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> builder.attribute(TEST_ATTRIBUTE).lessThan().number((Integer) null));
   }
 
   @Test
   @SuppressWarnings("NullArgumentForNonNullParameter")
   public void testLessThanOrEqualToWithNullNumber() {
+    // commons-lang3 Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> builder.attribute(TEST_ATTRIBUTE).lessThanOrEqualTo().number((Integer) null));
   }
 

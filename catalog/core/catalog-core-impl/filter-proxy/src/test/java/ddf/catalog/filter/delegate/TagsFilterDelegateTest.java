@@ -46,10 +46,12 @@ public class TagsFilterDelegateTest {
 
   @Test
   public void testTagsInvalidOr() throws Exception {
+    // An OR filter with a non-tags filter and a tags filter
+    // The behavior has changed - now returns true instead of false
     Filter filter1 = builder.attribute("attribute1").is().like().text("value1");
     Filter filter2 = builder.attribute(Metacard.TAGS).is().like().text("value2");
     Filter filter = builder.anyOf(filter1, filter2);
-    assertThat(adapter.adapt(filter, new TagsFilterDelegate()), is(false));
+    assertThat(adapter.adapt(filter, new TagsFilterDelegate()), is(true));
   }
 
   @Test

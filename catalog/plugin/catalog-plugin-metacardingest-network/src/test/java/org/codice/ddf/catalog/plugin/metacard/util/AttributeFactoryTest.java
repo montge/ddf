@@ -85,8 +85,9 @@ public class AttributeFactoryTest {
   @Test
   public void testCreateAttributeWithIllegalArgument() {
     when(mockType.getAttributeFormat()).thenReturn(INTEGER);
+    // Parsing fails and returns null, then Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> attributeFactory.createAttribute(mockDescriptor, "1874xyz"));
   }
 
@@ -210,13 +211,18 @@ public class AttributeFactoryTest {
   }
 
   @Test
-  public void testParseAttributeValueWithNullDescriptor() throws Exception {
-    attributeFactory.parseAttributeValue(null, "anyValue");
+  public void testParseAttributeValueWithNullDescriptor() {
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(
+        NullPointerException.class, () -> attributeFactory.parseAttributeValue(null, "anyValue"));
   }
 
   @Test
-  public void testParseAttributeValueWithNullValue() throws Exception {
-    attributeFactory.parseAttributeValue(mockDescriptor, null);
+  public void testParseAttributeValueWithNullValue() {
+    // commons-lang3 Validate.notEmpty() throws NullPointerException for null
+    assertThrows(
+        NullPointerException.class,
+        () -> attributeFactory.parseAttributeValue(mockDescriptor, null));
   }
 
   private void runParameterizedAttributeValueTest(
