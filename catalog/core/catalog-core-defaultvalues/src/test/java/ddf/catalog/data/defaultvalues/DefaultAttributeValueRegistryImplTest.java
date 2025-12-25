@@ -151,64 +151,74 @@ public class DefaultAttributeValueRegistryImplTest {
 
   @Test
   public void testRegisterGlobalDefaultNullAttribute() {
-    assertThrows(IllegalArgumentException.class, () -> registry.setDefaultValue(null, DEFAULT_1));
+    // Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.setDefaultValue(null, DEFAULT_1));
   }
 
   @Test
   public void testRegisterGlobalDefaultNullValue() {
-    assertThrows(IllegalArgumentException.class, () -> registry.setDefaultValue(TITLE, null));
+    // Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.setDefaultValue(TITLE, null));
   }
 
   @Test
   public void testRegisterMetacardDefaultNullMetacardType() {
+    // Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class, () -> registry.setDefaultValue(null, TITLE, DEFAULT_1));
+        NullPointerException.class, () -> registry.setDefaultValue(null, TITLE, DEFAULT_1));
   }
 
   @Test
   public void testRegisterMetacardDefaultNullAttribute() {
+    // Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> registry.setDefaultValue(BASIC_METACARD_NAME, null, DEFAULT_1));
   }
 
   @Test
   public void testRegisterMetacardDefaultNullValue() {
+    // Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> registry.setDefaultValue(BASIC_METACARD_NAME, TITLE, null));
   }
 
   @Test
   public void testGetDefaultValueNullMetacardType() {
-    assertThrows(IllegalArgumentException.class, () -> registry.getDefaultValue(null, TITLE));
+    // Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.getDefaultValue(null, TITLE));
   }
 
   @Test
   public void testGetDefaultValueNullAttribute() {
+    // Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class, () -> registry.getDefaultValue(BASIC_METACARD_NAME, null));
+        NullPointerException.class, () -> registry.getDefaultValue(BASIC_METACARD_NAME, null));
   }
 
   @Test
   public void testRemoveGlobalDefaultValueNullAttribute() {
-    assertThrows(IllegalArgumentException.class, () -> registry.removeDefaultValue(null));
+    // Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.removeDefaultValue(null));
   }
 
   @Test
   public void testRemoveMetacardDefaultNullMetacardType() {
-    assertThrows(IllegalArgumentException.class, () -> registry.removeDefaultValue(null, TITLE));
+    // Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.removeDefaultValue(null, TITLE));
   }
 
   @Test
   public void testRemoveMetacardDefaultNullAttribute() {
+    // Validate.notNull() throws NullPointerException
     assertThrows(
-        IllegalArgumentException.class,
-        () -> registry.removeDefaultValue(BASIC_METACARD_NAME, null));
+        NullPointerException.class, () -> registry.removeDefaultValue(BASIC_METACARD_NAME, null));
   }
 
   @Test
   public void testRemoveAllMetacardDefaultsNullMetacardType() {
-    assertThrows(IllegalArgumentException.class, () -> registry.removeDefaultValues(null));
+    // Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.removeDefaultValues(null));
   }
 }

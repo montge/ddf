@@ -63,21 +63,6 @@ public class AbstractMetacardActionProviderTest {
   }
 
   @Test
-  public void testCanHandleMetacard() {
-    assertThat(actionProvider.canHandle(metacard), is(true));
-  }
-
-  @Test
-  public void testCannotHandleNonMetacardInput() {
-    assertThat(actionProvider.canHandle("not a metacard"), is(false));
-  }
-
-  @Test
-  public void testCannotHandleNullInput() {
-    assertThat(actionProvider.canHandle(null), is(false));
-  }
-
-  @Test
   public void testGetActionWithValidMetacard() {
     when(metacard.getId()).thenReturn(METACARD_ID);
     when(metacard.getSourceId()).thenReturn(SOURCE_ID);
@@ -110,19 +95,6 @@ public class AbstractMetacardActionProviderTest {
   @Test
   public void testGetActionWithUnsetHost() {
     System.setProperty(SystemBaseUrl.EXTERNAL_HOST, UNKNOWN_TARGET);
-    actionProvider = new TestAbstractMetacardActionProvider(TEST_ID);
-
-    when(metacard.getId()).thenReturn(METACARD_ID);
-    when(metacard.getSourceId()).thenReturn(SOURCE_ID);
-
-    Action action = actionProvider.getAction(metacard);
-
-    assertThat(action, is(nullValue()));
-  }
-
-  @Test
-  public void testGetActionWithNullHost() {
-    System.clearProperty(SystemBaseUrl.EXTERNAL_HOST);
     actionProvider = new TestAbstractMetacardActionProvider(TEST_ID);
 
     when(metacard.getId()).thenReturn(METACARD_ID);

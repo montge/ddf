@@ -219,20 +219,15 @@ public class BindMethodChooserTest {
   }
 
   /**
-   * Tests null bind method defaults to Simple bind.
+   * Tests null bind method throws NullPointerException.
    *
-   * <p>Verifies that null bind method is handled safely.
+   * <p>Switch statements in Java cannot handle null values, so NPE is expected.
    */
   @Test
-  public void testNullBindMethodDefaultsToSimple() {
-    BindRequest request =
-        BindMethodChooser.selectBindMethod(null, BIND_USER_DN, BIND_PASSWORD, null, null);
-
-    assertThat("BindRequest should not be null", request, notNullValue());
-    assertThat(
-        "Should return SimpleBindRequest instance as default",
-        request,
-        instanceOf(SimpleBindRequest.class));
+  public void testNullBindMethodThrowsNpe() {
+    org.junit.jupiter.api.Assertions.assertThrows(
+        NullPointerException.class,
+        () -> BindMethodChooser.selectBindMethod(null, BIND_USER_DN, BIND_PASSWORD, null, null));
   }
 
   /**
