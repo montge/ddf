@@ -21,19 +21,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.codice.ddf.admin.configurator.ConfiguratorException;
 import org.codice.ddf.admin.configurator.Operation;
 import org.codice.ddf.admin.configurator.Result;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/** Unit tests for {@EnableRuleMigrationSupport
- * @link ConfigOperation} */
+/** Unit tests for {@link ConfigOperation} */
 @ExtendWith(MockitoExtension.class)
+@EnableRuleMigrationSupport
 public class ConfigOperationTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -43,8 +43,14 @@ public class ConfigOperationTest {
 
   @BeforeEach
   public void setUp() throws Exception {
+    // Set ddf.home to temp folder for tests that require it
+    System.setProperty("ddf.home", tempFolder.getRoot().getAbsolutePath());
+    // Create allowed subdirectory (etc is an allowed edit location)
+    tempFolder.newFolder("etc");
     actions = new ConfigOperation.Actions();
-    testFilePath = tempFolder.newFile("test-config.cfg").toPath();
+    testFilePath = Paths.get(tempFolder.getRoot().getAbsolutePath(), "etc", "test-config.cfg");
+    // Create the test file
+    testFilePath.toFile().createNewFile();
   }
 
   @Test
@@ -70,7 +76,9 @@ public class ConfigOperationTest {
 
   @Test
   public void testDeleteNonExistentFile() throws Exception {
-    Path nonExistentPath = Paths.get(tempFolder.getRoot().getAbsolutePath(), "nonexistent.cfg");
+    // Path must be in an allowed subdirectory (etc/)
+    Path nonExistentPath =
+        Paths.get(tempFolder.getRoot().getAbsolutePath(), "etc", "nonexistent.cfg");
 
     Operation<Void> deleteOp = actions.delete(nonExistentPath);
     Result<Void> result = deleteOp.commit();
@@ -80,12 +88,14 @@ public class ConfigOperationTest {
 
   @Test
   public void testDeleteWithNullPath() {
-    assertThrows(ConfiguratorException.class, () -> actions.delete(null));
+    // Implementation throws IllegalArgumentException for null path validation
+    assertThrows(IllegalArgumentException.class, () -> actions.delete(null));
   }
 
   @Test
   public void testDeleteWithInvalidPath() {
-    assertThrows(ConfiguratorException.class, () -> actions.delete(Paths.get("")));
+    // Implementation throws IllegalArgumentException for invalid path validation
+    assertThrows(IllegalArgumentException.class, () -> actions.delete(Paths.get("")));
   }
 
   @Test

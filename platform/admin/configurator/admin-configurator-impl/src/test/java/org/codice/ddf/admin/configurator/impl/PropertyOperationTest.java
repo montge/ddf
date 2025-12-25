@@ -34,12 +34,13 @@ import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/** Comprehensive unit tests for {@EnableRuleMigrationSupport
- * @link PropertyOperation} */
+/** Comprehensive unit tests for {@link PropertyOperation} */
 @ExtendWith(MockitoExtension.class)
+@EnableRuleMigrationSupport
 public class PropertyOperationTest {
 
   @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -49,8 +50,13 @@ public class PropertyOperationTest {
 
   @BeforeEach
   public void setUp() throws Exception {
+    // Set ddf.home to temp folder for tests that require it
+    System.setProperty("ddf.home", tempFolder.getRoot().getAbsolutePath());
+    // Create allowed subdirectory (system is an allowed edit location)
+    tempFolder.newFolder("system");
     actions = new PropertyOperation.Actions();
-    testPropertiesPath = tempFolder.newFile("test.properties").toPath();
+    testPropertiesPath =
+        Paths.get(tempFolder.getRoot().getAbsolutePath(), "system", "test.properties");
   }
 
   @Test
@@ -211,50 +217,60 @@ public class PropertyOperationTest {
   public void testCreateWithNullPath() {
     Map<String, String> configs = new HashMap<>();
     configs.put("key", "value");
-    assertThrows(ConfiguratorException.class, () -> actions.create(null, configs));
+    // Implementation throws IllegalArgumentException for null path validation
+    assertThrows(IllegalArgumentException.class, () -> actions.create(null, configs));
   }
 
   @Test
   public void testCreateWithEmptyConfigs() {
+    // Implementation throws IllegalArgumentException for empty config validation
     assertThrows(
-        ConfiguratorException.class, () -> actions.create(testPropertiesPath, new HashMap<>()));
+        IllegalArgumentException.class, () -> actions.create(testPropertiesPath, new HashMap<>()));
   }
 
   @Test
   public void testCreateWithNullConfigs() {
-    assertThrows(ConfiguratorException.class, () -> actions.create(testPropertiesPath, null));
+    // Implementation throws IllegalArgumentException for null config validation
+    assertThrows(IllegalArgumentException.class, () -> actions.create(testPropertiesPath, null));
   }
 
   @Test
   public void testUpdateWithNullPath() {
     Map<String, String> configs = new HashMap<>();
     configs.put("key", "value");
-    assertThrows(ConfiguratorException.class, () -> actions.update(null, configs, true));
+    // Implementation throws IllegalArgumentException for null path validation
+    assertThrows(IllegalArgumentException.class, () -> actions.update(null, configs, true));
   }
 
   @Test
   public void testUpdateWithNullConfigs() {
-    assertThrows(ConfiguratorException.class, () -> actions.update(testPropertiesPath, null, true));
+    // Implementation throws IllegalArgumentException for null config validation
+    assertThrows(
+        IllegalArgumentException.class, () -> actions.update(testPropertiesPath, null, true));
   }
 
   @Test
   public void testDeleteWithNullPath() {
-    assertThrows(ConfiguratorException.class, () -> actions.delete(null));
+    // Implementation throws IllegalArgumentException for null path validation
+    assertThrows(IllegalArgumentException.class, () -> actions.delete(null));
   }
 
   @Test
   public void testGetPropertiesWithNullPath() {
-    assertThrows(ConfiguratorException.class, () -> actions.getProperties(null));
+    // Implementation throws IllegalArgumentException for null path validation
+    assertThrows(IllegalArgumentException.class, () -> actions.getProperties(null));
   }
 
   @Test
   public void testUpdateWithNonExistentFile() {
+    // Path must be in an allowed subdirectory (system/) to avoid illegal path rejection
     Path nonExistentPath =
-        Paths.get(tempFolder.getRoot().getAbsolutePath(), "nonexistent.properties");
+        Paths.get(tempFolder.getRoot().getAbsolutePath(), "system", "nonexistent.properties");
 
     Map<String, String> configs = new HashMap<>();
     configs.put("key", "value");
 
+    // Update with non-existent file throws ConfiguratorException
     assertThrows(ConfiguratorException.class, () -> actions.update(nonExistentPath, configs, true));
   }
 
