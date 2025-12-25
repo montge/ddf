@@ -152,14 +152,15 @@ public class AttributeInjectorImplTest {
 
   @Test
   public void testNullMetacardType() {
+    // Validate.notNull() throws NullPointerException, not IllegalArgumentException
     assertThrows(
-        IllegalArgumentException.class,
-        () -> attributeInjector.injectAttributes((MetacardType) null));
+        NullPointerException.class, () -> attributeInjector.injectAttributes((MetacardType) null));
   }
 
   @Test
   public void testNullMetacard() {
+    // Validate.notNull() throws NullPointerException, not IllegalArgumentException
     assertThrows(
-        IllegalArgumentException.class, () -> attributeInjector.injectAttributes((Metacard) null));
+        NullPointerException.class, () -> attributeInjector.injectAttributes((Metacard) null));
   }
 }
