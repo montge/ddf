@@ -305,7 +305,7 @@
         <openjson.version>1.0.13</openjson.version>
         <pac4j.version>5.7.7</pac4j.version>
         <pdfbox.version>3.0.6</pdfbox.version>
-        <poi.version>5.4.1</poi.version>
+        <poi.version>5.5.1</poi.version>
         <xlsx.transformer.poi.version>5.2.2</xlsx.transformer.poi.version>
         <protobuf.version>4.33.2</protobuf.version>
         <quartz.version>2.3.2</quartz.version>
