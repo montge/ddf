@@ -42,6 +42,9 @@ public class AbstractProfileCommandTest {
 
   @BeforeEach
   public void setUp() {
+    // Set ddf.etc system property before instantiating command (required by AbstractProfileCommand)
+    System.setProperty("ddf.etc", System.getProperty("java.io.tmpdir"));
+
     this.applicationService = mock(ApplicationServiceImpl.class);
     this.featuresService = mock(FeaturesServiceImpl.class);
     this.bundleService = mock(BundleServiceImpl.class);

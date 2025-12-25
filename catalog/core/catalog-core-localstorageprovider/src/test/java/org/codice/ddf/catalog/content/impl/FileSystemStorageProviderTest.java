@@ -175,7 +175,11 @@ public class FileSystemStorageProviderTest {
   @Test
   public void testReadDeletedReference() throws Exception {
     Path tempFile = Files.createTempFile("test", "nitf");
-    Files.write(tempFile, TEST_INPUT_CONTENTS.getBytes());
+    // The content must be encrypted since the provider will decrypt on read
+    Crypter crypter = new Crypter(CRYPTER_NAME);
+    InputStream encryptedStream =
+        crypter.encrypt(new ByteArrayInputStream(TEST_INPUT_CONTENTS.getBytes()));
+    Files.copy(encryptedStream, tempFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
     CreateStorageResponse createResponse =
         assertContentItem(
             TEST_INPUT_CONTENTS,

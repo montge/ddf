@@ -70,6 +70,8 @@ public class ProfileInstallCommandTest {
   @BeforeEach
   public void setUp() throws Exception {
     ddfHome.newFolder("etc", "profiles");
+    // Set ddf.etc system property before instantiating command (required by AbstractProfileCommand)
+    System.setProperty("ddf.etc", Paths.get(ddfHome.getRoot().toString(), "etc").toString());
     profilePath = Paths.get(ddfHome.getRoot().toString(), "etc", "profiles");
     Files.copy(
         this.getClass().getResourceAsStream("/profiles/devProfile.json"),
