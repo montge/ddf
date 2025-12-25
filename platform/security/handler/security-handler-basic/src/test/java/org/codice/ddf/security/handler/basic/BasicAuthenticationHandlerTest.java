@@ -160,19 +160,17 @@ public class BasicAuthenticationHandlerTest {
             "Basic " + Base64.getEncoder().encodeToString(CREDENTIALS.getBytes()), "127.0.0.1");
     assertNotNull(result);
 
+    // Empty username is now rejected for security
     result =
         handler.extractAuthInfo(
             "Basic " + Base64.getEncoder().encodeToString(":password".getBytes()), "127.0.0.1");
-    assertNotNull(result);
-    assertEquals("", getAttributeValue(result, USERNAME_ATTR));
-    assertEquals("password", getAttributeValue(result, PASSWORD_ATTR));
+    assertNull(result);
 
+    // Empty password is now rejected for security
     result =
         handler.extractAuthInfo(
             "Basic " + Base64.getEncoder().encodeToString("user:".getBytes()), "127.0.0.1");
-    assertNotNull(result);
-    assertEquals("user", getAttributeValue(result, USERNAME_ATTR));
-    assertEquals("", getAttributeValue(result, PASSWORD_ATTR));
+    assertNull(result);
 
     result =
         handler.extractAuthInfo(
