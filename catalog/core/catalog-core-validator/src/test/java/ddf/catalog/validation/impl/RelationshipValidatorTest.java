@@ -76,8 +76,8 @@ public class RelationshipValidatorTest {
   @Test
   public void testMustHaveWithMultipleTargetValues() {
     metacard.setAttribute(new AttributeImpl("format", "digital"));
-    metacard.setAttribute(new AttributeImpl("encoding", "UTF-8"));
-    metacard.setAttribute(new AttributeImpl("encoding", "ASCII"));
+    // Use multi-valued attribute - setAttribute replaces, so use a list
+    metacard.setAttribute(new AttributeImpl("encoding", java.util.Arrays.asList("UTF-8", "ASCII")));
 
     RelationshipValidator validator =
         new RelationshipValidator("format", "digital", "mustHave", "encoding", "UTF-8", "ASCII");

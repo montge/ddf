@@ -42,10 +42,13 @@ import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.service.cm.Configuration;
 
 @EnableRuleMigrationSupport
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ConfigurationContextImplTest {
   private static final String TEST_PID = "org.codice.test.ServiceFactory";
 

@@ -32,7 +32,8 @@ public class SolrClientFactoryImplTest {
   @Test
   public void newClientWithNullCoreName() {
     SolrClientFactoryImpl factory = new SolrClientFactoryImpl();
-    assertThrows(IllegalArgumentException.class, () -> factory.newClient(null));
+    // Validate.notNull() throws NullPointerException, not IllegalArgumentException
+    assertThrows(NullPointerException.class, () -> factory.newClient(null));
   }
 
   @Test
