@@ -34,7 +34,7 @@ MODULE_PATH="$1"
 shift
 
 # Parse arguments - check if any lifecycle phase or goal is specified
-MAVEN_ARGS="$@"
+MAVEN_ARGS="$*"
 HAS_GOAL=false
 for arg in $MAVEN_ARGS; do
     if [[ ! "$arg" =~ ^- ]]; then

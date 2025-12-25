@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 HOW=$1
 PID=$2

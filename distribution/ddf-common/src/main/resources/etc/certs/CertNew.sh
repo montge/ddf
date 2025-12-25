@@ -28,13 +28,13 @@
 # NOTE: Defaults to Java Keystore file type.
 
 #Assume script is in <DDF>/etc/certs/ directory
-cd `dirname $0`
+cd "$(dirname "$0")" || exit 1
 
 #Set password, keystore location and other variables
 PASSWORD="changeit"
 KEYFILE="../keystores/serverKeystore.jks"
 KEYTYPE="JKS"
-JARPATTERN=security-certificate-generator*.jar
+JARPATTERN="security-certificate-generator*.jar"
 
 if [[ ! -e $KEYFILE ]]; then
     echo "Could not find $KEYFILE. Exiting."
@@ -58,8 +58,8 @@ else
     PARAM1="-cn"
     PARAM2="$(hostname -f)"
 fi
-echo "--IGNORE SLF4J ERRORS"--
-$(java -Djavax.net.ssl.keyStore="$KEYFILE" -Djavax.net.ssl.keyStorePassword="$PASSWORD" -Djavax.net.ssl.keyStoreType="$KEYTYPE" -jar "$JARFILE" "$PARAM1" "$PARAM2" "$@")
+echo "--IGNORE SLF4J ERRORS--"
+java -Djavax.net.ssl.keyStore="$KEYFILE" -Djavax.net.ssl.keyStorePassword="$PASSWORD" -Djavax.net.ssl.keyStoreType="$KEYTYPE" -jar "$JARFILE" "$PARAM1" "$PARAM2" "$@"
 
 
 if [[ $? == 0 ]]; then
