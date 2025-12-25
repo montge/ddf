@@ -97,11 +97,32 @@ jobs:
             -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
             -am
 
+      - name: Build distribution/kernel (provides kernel:zip for feature tests)
+        # Build kernel with karaf plugin skipped via profile to avoid StackOverflowError.
+        # The plugin has deep recursive feature resolution that exceeds stack limits.
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -DskipTests \
+            -Pskip-karaf-features \
+            -pl distribution/kernel \
+            -am
+
+      - name: Build feature modules (needed as test dependencies by other modules)
+        # Feature modules generate XML files that other modules need as test deps.
+        # Use -Pskip-karaf-features because -am pulls in distribution/kernel which
+        # has the karaf plugin that causes StackOverflowError.
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
+            -Dmaven.test.skip=true \
+            -Pskip-karaf-features \
+            -pl features/kernel,features/utilities,features/test-utilities,features/security,features/solr,features/admin,features/apps,features/branding,features/camel-karaf,features/install-profiles \
+            -am
+
       - name: Build all modules (except distribution, test, and features)
         # Build all modules except:
         # - distribution/* (karaf-maven-plugin causes StackOverflowError)
         # - distribution/test/* (depends on distribution/kernel:zip)
-        # - features/* (test dependencies on distribution/kernel:zip)
+        # - features/* (already built above, test dependencies on distribution/kernel:zip)
         # These modules will be built in the distribution job after tests pass.
         run: |
           EXCLUDED_MODULES=(
@@ -133,7 +154,7 @@ jobs:
             "distribution/test/performance/jmeter"
             "distribution/test/performance/jmeter/catalog-transformer-xml"
             "distribution/test/performance/jmeter/csw"
-            # Feature modules (have test dependencies on kernel:zip)
+            # Feature modules (already built above, skip rebuild)
             "features/admin"
             "features/apps"
             "features/branding"
