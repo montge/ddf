@@ -17,7 +17,7 @@ Analyze and improve the DDF build system to enable parallel builds, reduce build
 ## Requirements
 
 ### Requirement: Dependency Structure Analysis
-The system SHOULD use Design Structure Matrix (DSM) analysis to identify build optimization opportunities.
+The system MUST use Design Structure Matrix (DSM) analysis to identify build optimization opportunities.
 
 #### Scenario: Module Dependency Mapping
 - GIVEN the 455 Maven modules
@@ -37,7 +37,7 @@ The system SHOULD use Design Structure Matrix (DSM) analysis to identify build o
 ---
 
 ### Requirement: Parallel Build Optimization
-The system SHOULD support parallel module builds where dependencies allow.
+The system MUST support parallel module builds where dependencies allow.
 
 #### Scenario: Independent Module Groups
 - GIVEN modules with no inter-dependencies
@@ -52,7 +52,7 @@ The system SHOULD support parallel module builds where dependencies allow.
 ---
 
 ### Requirement: Build Time Reduction
-The system SHOULD reduce full build time by at least 40%.
+The system MUST reduce full build time by at least 40%.
 
 #### Scenario: Incremental Builds
 - GIVEN a code change in a single module

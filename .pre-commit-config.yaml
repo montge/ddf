@@ -68,3 +68,19 @@ repos:
         files: \.java$
         pass_filenames: false
         stages: [pre-push]
+
+      - id: openspec-validate
+        name: Validate OpenSpec specs
+        entry: openspec
+        args: ['validate', '--specs', '--no-interactive']
+        language: system
+        files: ^openspec/.*\.md$
+        pass_filenames: false
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+        args: ['--severity=warning']
+        files: \.(sh|bash)$

@@ -36,29 +36,25 @@ Define requirements for modernizing the DDF user interface from legacy jQuery/JS
 ## Requirements
 
 ### Requirement: Modern UI Framework
-The system SHOULD migrate to a modern JavaScript framework for improved maintainability.
+The system MUST migrate to a modern JavaScript framework for improved maintainability.
 
-#### Option A: React (Recommended)
-- Widely adopted, large ecosystem
-- Good OSGi integration patterns exist
-- Strong TypeScript support
-
-#### Option B: Angular
-- Enterprise-focused
-- Built-in dependency injection
-- Opinionated structure
-
-#### Option C: Vue.js
-- Gentle learning curve
-- Good for incremental adoption
-- Less ecosystem than React
+#### Scenario: Framework Selection
+- GIVEN the need for a modern UI framework
+- WHEN evaluating framework options (React, Angular, Vue.js)
+- THEN React MUST be selected as the primary framework due to its large ecosystem and TypeScript support
 
 ### Requirement: Bootstrap Upgrade
 The system MUST upgrade from Bootstrap 3.4.1 to Bootstrap 5.x.
 
-- Bootstrap 3.4.1 reached EOL in 2019
-- Bootstrap 5 removes jQuery dependency
-- Accessibility improvements
+#### Scenario: Bootstrap CSS Migration
+- GIVEN the current Bootstrap 3.4.1 EOL status
+- WHEN CSS classes are migrated to Bootstrap 5
+- THEN all legacy Bootstrap 3 classes MUST be replaced with Bootstrap 5 equivalents
+
+#### Scenario: Accessibility Compliance
+- GIVEN Bootstrap 5 accessibility improvements
+- WHEN the upgrade is complete
+- THEN all UI components MUST meet WCAG 2.1 AA standards
 
 ### Requirement: Modern E2E Testing
 The system MUST replace CasperJS with Playwright for E2E testing.
@@ -69,11 +65,17 @@ The system MUST replace CasperJS with Playwright for E2E testing.
 - THEN all critical user workflows MUST pass
 
 ### Requirement: TypeScript Adoption
-The system SHOULD use TypeScript for new UI code.
+The system MUST use TypeScript for all new UI code.
 
-- Type safety reduces runtime errors
-- Better IDE support
-- Self-documenting code
+#### Scenario: New Component Development
+- GIVEN new UI components are being developed
+- WHEN code is written
+- THEN TypeScript MUST be used with strict mode enabled
+
+#### Scenario: Type Safety Enforcement
+- GIVEN TypeScript compilation
+- WHEN build runs
+- THEN all type errors MUST be resolved before deployment
 
 ---
 
