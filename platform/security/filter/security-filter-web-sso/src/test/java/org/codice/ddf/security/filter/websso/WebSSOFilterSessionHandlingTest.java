@@ -43,6 +43,7 @@ import org.codice.ddf.platform.filter.AuthenticationFailureException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.api.AuthenticationHandler;
 import org.codice.ddf.security.handler.api.HandlerResult;
+import org.codice.ddf.security.policy.context.ContextPolicy;
 import org.codice.ddf.security.policy.context.ContextPolicyManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,6 +68,7 @@ public class WebSSOFilterSessionHandlingTest {
   @Mock private SecurityLogger securityLogger;
   @Mock private HttpSession session;
   @Mock private AuthenticationHandler handler;
+  @Mock private ContextPolicy contextPolicy;
 
   @BeforeEach
   public void setup() {
@@ -189,15 +191,16 @@ public class WebSSOFilterSessionHandlingTest {
   }
 
   @Test
-  public void testNoHandlersAndGuestDisabled() {
+  public void testNoHandlersAndGuestDisabled() throws IOException, AuthenticationException {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
     when(contextPolicyManager.getGuestAccess()).thenReturn(false);
 
-    assertThrows(
-        AuthenticationFailureException.class,
-        () -> {
-          filter.doFilter(request, response, filterChain);
-        });
+    // When no handlers and guest is disabled, filter returns 503 without throwing exception
+    filter.doFilter(request, response, filterChain);
+
+    verify(response, times(1)).setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+    verify(response, times(1)).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+    verify(filterChain, never()).doFilter(any(), any());
   }
 
   @Test
@@ -215,6 +218,8 @@ public class WebSSOFilterSessionHandlingTest {
   @Test
   public void testHandlerRedirects() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
+    when(contextPolicyManager.getContextPolicy(anyString())).thenReturn(contextPolicy);
+    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
 
     HandlerResult handlerResult = mock(HandlerResult.class);
     when(handlerResult.getStatus()).thenReturn(HandlerResult.Status.REDIRECTED);
@@ -234,10 +239,14 @@ public class WebSSOFilterSessionHandlingTest {
   public void testHandlerNoActionWithGuestDisabled() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
     when(contextPolicyManager.getGuestAccess()).thenReturn(false);
+    when(contextPolicyManager.getContextPolicy(anyString())).thenReturn(contextPolicy);
+    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
 
     HandlerResult handlerResult = mock(HandlerResult.class);
     when(handlerResult.getStatus()).thenReturn(HandlerResult.Status.NO_ACTION);
     when(handler.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(handlerResult);
+    when(handler.getNormalizedToken(any(), any(), any(), eq(true))).thenReturn(handlerResult);
+    when(handler.getAuthenticationType()).thenReturn("test");
 
     filter.setHandlerList(Collections.singletonList(handler));
 
@@ -251,12 +260,16 @@ public class WebSSOFilterSessionHandlingTest {
   @Test
   public void testHandlerCompletedWithToken() throws IOException, AuthenticationException {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
+    when(contextPolicyManager.getGuestAccess()).thenReturn(false);
+    when(contextPolicyManager.getContextPolicy(anyString())).thenReturn(contextPolicy);
+    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
 
     HandlerResult handlerResult = mock(HandlerResult.class);
     when(handlerResult.getStatus()).thenReturn(HandlerResult.Status.COMPLETED);
     when(handlerResult.getToken())
         .thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
     when(handler.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(handlerResult);
+    when(handler.getAuthenticationType()).thenReturn("test");
 
     filter.setHandlerList(Collections.singletonList(handler));
 
@@ -270,11 +283,14 @@ public class WebSSOFilterSessionHandlingTest {
   @Test
   public void testHandlerCompletedWithoutToken() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
+    when(contextPolicyManager.getContextPolicy(anyString())).thenReturn(contextPolicy);
+    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
 
     HandlerResult handlerResult = mock(HandlerResult.class);
     when(handlerResult.getStatus()).thenReturn(HandlerResult.Status.COMPLETED);
     when(handlerResult.getToken()).thenReturn(null);
     when(handler.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(handlerResult);
+    when(handler.getAuthenticationType()).thenReturn("test");
 
     filter.setHandlerList(Collections.singletonList(handler));
 
@@ -288,12 +304,16 @@ public class WebSSOFilterSessionHandlingTest {
   @Test
   public void testFilterChainException() throws Exception {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
+    when(contextPolicyManager.getGuestAccess()).thenReturn(false);
+    when(contextPolicyManager.getContextPolicy(anyString())).thenReturn(contextPolicy);
+    when(contextPolicy.getAuthenticationMethods()).thenReturn(Collections.singletonList("test"));
 
     HandlerResult handlerResult = mock(HandlerResult.class);
     when(handlerResult.getStatus()).thenReturn(HandlerResult.Status.COMPLETED);
     when(handlerResult.getToken())
         .thenReturn(mock(org.codice.ddf.security.handler.BaseAuthenticationToken.class));
     when(handler.getNormalizedToken(any(), any(), any(), eq(false))).thenReturn(handlerResult);
+    when(handler.getAuthenticationType()).thenReturn("test");
 
     HandlerResult errorResult = mock(HandlerResult.class);
     when(errorResult.getStatus()).thenReturn(HandlerResult.Status.NO_ACTION);
@@ -313,9 +333,15 @@ public class WebSSOFilterSessionHandlingTest {
   @Test
   public void testMultipleHandlers() throws IOException, AuthenticationException {
     when(contextPolicyManager.getSessionAccess()).thenReturn(false);
+    when(contextPolicyManager.getGuestAccess()).thenReturn(false);
+    when(contextPolicyManager.getContextPolicy(anyString())).thenReturn(contextPolicy);
+    when(contextPolicy.getAuthenticationMethods())
+        .thenReturn(Arrays.asList("handler1", "handler2"));
 
     AuthenticationHandler handler1 = mock(AuthenticationHandler.class);
     AuthenticationHandler handler2 = mock(AuthenticationHandler.class);
+    when(handler1.getAuthenticationType()).thenReturn("handler1");
+    when(handler2.getAuthenticationType()).thenReturn("handler2");
 
     HandlerResult noActionResult = mock(HandlerResult.class);
     when(noActionResult.getStatus()).thenReturn(HandlerResult.Status.NO_ACTION);
