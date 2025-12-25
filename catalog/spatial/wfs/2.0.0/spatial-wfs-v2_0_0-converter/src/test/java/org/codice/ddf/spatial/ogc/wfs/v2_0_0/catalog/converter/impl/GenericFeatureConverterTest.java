@@ -48,6 +48,7 @@ import org.codice.ddf.spatial.ogc.wfs.catalog.mapper.MetacardMapper;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs20Constants;
 import org.codice.ddf.spatial.ogc.wfs.v2_0_0.catalog.common.Wfs20FeatureCollection;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class GenericFeatureConverterTest {
@@ -96,7 +97,7 @@ public class GenericFeatureConverterTest {
   }
 
   @Test
-  @Ignore // DDF-733
+  @Disabled // DDF-733
   public void testUnmarshalSingleFeatureXmlToObject() throws Exception {
     MetacardType metacardType = buildMetacardType();
     GenericFeatureConverterWfs20 converter = new GenericFeatureConverterWfs20();
@@ -336,7 +337,7 @@ public class GenericFeatureConverterTest {
   }
 
   @Test
-  @Ignore // DDF-733
+  @Disabled // DDF-733
   public void testReadCdata() {
     String contents = "<tag>my cdata contents</tag>";
     String xml = "<string><![CDATA[" + contents + "]]></string>";
