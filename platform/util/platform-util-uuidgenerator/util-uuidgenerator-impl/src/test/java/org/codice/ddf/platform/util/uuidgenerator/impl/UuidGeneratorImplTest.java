@@ -83,4 +83,75 @@ public class UuidGeneratorImplTest {
     uuidGenerator.setUseHyphens(true);
     assertThat(uuidGenerator.validateUuid(UUID.randomUUID().toString()), is(true));
   }
+
+  @Test
+  public void testGenerateKnownIdNoHyphens() {
+    String uuid1 = uuidGenerator.generateKnownId("tag1", "user1");
+    String uuid2 = uuidGenerator.generateKnownId("tag1", "user1");
+    assertThat(uuid1.length(), is(32));
+    assertThat(uuid1, is(uuid2));
+    assertThat(uuidGenerator.validateUuid(uuid1), is(true));
+  }
+
+  @Test
+  public void testGenerateKnownIdWithHyphens() {
+    uuidGenerator.setUseHyphens(true);
+    String uuid1 = uuidGenerator.generateKnownId("tag1", "user1");
+    String uuid2 = uuidGenerator.generateKnownId("tag1", "user1");
+    assertThat(uuid1.length(), is(36));
+    assertThat(uuid1, is(uuid2));
+    assertThat(uuidGenerator.validateUuid(uuid1), is(true));
+  }
+
+  @Test
+  public void testGenerateKnownIdWithAdditionalInput() {
+    String uuid1 = uuidGenerator.generateKnownId("tag1", "user1", "extra1", "extra2");
+    String uuid2 = uuidGenerator.generateKnownId("tag1", "user1", "extra1", "extra2");
+    String uuid3 = uuidGenerator.generateKnownId("tag1", "user1", "extra1");
+    assertThat(uuid1, is(uuid2));
+    assertThat(uuid1.equals(uuid3), is(false));
+  }
+
+  @Test
+  public void testGenerateKnownIdWithNullAdditionalInput() {
+    String uuid = uuidGenerator.generateKnownId("tag1", "user1", (String[]) null);
+    assertThat(uuid.length(), is(32));
+  }
+
+  @Test
+  public void testUseHyphensDefaultFalse() {
+    assertThat(uuidGenerator.useHyphens(), is(false));
+  }
+
+  @Test
+  public void testUseHyphensSetTrue() {
+    uuidGenerator.setUseHyphens(true);
+    assertThat(uuidGenerator.useHyphens(), is(true));
+  }
+
+  @Test
+  public void testValidateUuidWithHyphensValidFormat() {
+    uuidGenerator.setUseHyphens(true);
+    String validUuid = "12345678-1234-1234-1234-123456789abc";
+    assertThat(uuidGenerator.validateUuid(validUuid), is(true));
+  }
+
+  @Test
+  public void testValidateUuidWithHyphensInvalidLength() {
+    uuidGenerator.setUseHyphens(true);
+    String shortUuid = "12345678-1234-1234-1234-12345678";
+    assertThat(uuidGenerator.validateUuid(shortUuid), is(false));
+  }
+
+  @Test
+  public void testValidateUuidNoHyphensValidFormat() {
+    String validUuid = "12345678123412341234123456789abc";
+    assertThat(uuidGenerator.validateUuid(validUuid), is(true));
+  }
+
+  @Test
+  public void testValidateUuidNoHyphensInvalidChars() {
+    String invalidUuid = "1234567812341234123412345678ghij";
+    assertThat(uuidGenerator.validateUuid(invalidUuid), is(false));
+  }
 }
