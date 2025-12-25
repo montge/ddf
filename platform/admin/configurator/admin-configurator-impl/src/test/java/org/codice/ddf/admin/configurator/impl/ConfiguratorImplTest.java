@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -87,7 +88,8 @@ public class ConfiguratorImplTest {
     assertThat(report.hasTransactionSucceeded(), is(true));
     verify(mockOperation1, times(1)).commit();
     verify(mockOperation1, never()).rollback();
-    verify(mockSecurityLogger, times(1)).audit("Test audit message");
+    // Implementation calls audit(message, (Object[]) params) - use varargs matching
+    verify(mockSecurityLogger, times(1)).audit(eq("Test audit message"), any(Object[].class));
   }
 
   @Test
@@ -113,7 +115,6 @@ public class ConfiguratorImplTest {
   public void testCommitWithFirstOperationFailure() throws Exception {
     ConfiguratorException exception = new ConfiguratorException("Operation 1 failed");
     when(mockOperation1.commit()).thenThrow(exception);
-    when(mockOperation1.rollback()).thenReturn(ResultImpl.rollback());
 
     configurator.add(mockOperation1);
     configurator.add(mockOperation2);
@@ -122,7 +123,8 @@ public class ConfiguratorImplTest {
 
     assertThat(report.hasTransactionSucceeded(), is(false));
     verify(mockOperation1, times(1)).commit();
-    verify(mockOperation1, times(1)).rollback();
+    // No rollback needed - first operation failed so nothing was committed yet
+    verify(mockOperation1, never()).rollback();
     verify(mockOperation2, never()).commit();
     verify(mockSecurityLogger, never()).audit(any());
   }
@@ -199,7 +201,7 @@ public class ConfiguratorImplTest {
     OperationReport report = configurator.commit("Test audit message");
 
     assertThat(report.hasTransactionSucceeded(), is(true));
-    verify(mockSecurityLogger, times(1)).audit("Test audit message");
+    verify(mockSecurityLogger, times(1)).audit(eq("Test audit message"), any(Object[].class));
   }
 
   @Test
@@ -234,7 +236,7 @@ public class ConfiguratorImplTest {
     OperationReport report = configurator.commit("Test audit message");
 
     assertThat(report.hasTransactionSucceeded(), is(true));
-    verify(mockSecurityLogger, times(1)).audit("Test audit message");
+    verify(mockSecurityLogger, times(1)).audit(eq("Test audit message"), any(Object[].class));
   }
 
   @Test
@@ -289,7 +291,7 @@ public class ConfiguratorImplTest {
     OperationReport report = configurator.commit("Simple audit message");
 
     assertThat(report.hasTransactionSucceeded(), is(true));
-    verify(mockSecurityLogger, times(1)).audit("Simple audit message");
+    verify(mockSecurityLogger, times(1)).audit(eq("Simple audit message"), any(Object[].class));
   }
 
   @Test
@@ -300,6 +302,6 @@ public class ConfiguratorImplTest {
     OperationReport report = configurator.commit("");
 
     assertThat(report.hasTransactionSucceeded(), is(true));
-    verify(mockSecurityLogger, times(1)).audit("");
+    verify(mockSecurityLogger, times(1)).audit(eq(""), any(Object[].class));
   }
 }

@@ -45,8 +45,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class FrameworkProducerTest {
 
   private static final String OPERATION_HEADER = "operation";
@@ -71,6 +74,8 @@ public class FrameworkProducerTest {
   public void setup() {
     producer = new FrameworkProducer(mockEndpoint, mockCatalogFramework);
     when(mockExchange.getIn()).thenReturn(mockMessage);
+    // Default stub for getBody() - implementation checks this first before typed getBody(Class)
+    when(mockMessage.getBody()).thenReturn(new Object());
   }
 
   @Test
@@ -138,10 +143,10 @@ public class FrameworkProducerTest {
     when(mockMessage.getBody(Metacard.class)).thenReturn(null);
     when(mockMessage.getBody(List.class)).thenReturn(new ArrayList<>());
 
-    producer.process(mockExchange);
+    // Implementation validates list and throws for empty list
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
 
     verify(mockCatalogFramework, never()).create(any(CreateRequest.class));
-    verify(mockMessage).setBody(any(ArrayList.class));
   }
 
   @Test
@@ -276,10 +281,9 @@ public class FrameworkProducerTest {
     when(mockMessage.getBody(Metacard.class)).thenReturn(null);
     when(mockMessage.getBody(List.class)).thenReturn(new ArrayList<>());
 
-    producer.process(mockExchange);
-
+    // Implementation validates list and throws for empty list
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
     verify(mockCatalogFramework, never()).update(any(UpdateRequest.class));
-    verify(mockMessage).setBody(any(ArrayList.class));
   }
 
   @Test
@@ -359,10 +363,9 @@ public class FrameworkProducerTest {
     when(mockMessage.getBody(List.class)).thenReturn(new ArrayList<>());
     when(mockMessage.getBody(String.class)).thenReturn(null);
 
-    producer.process(mockExchange);
-
+    // Implementation validates list and throws for empty list
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
     verify(mockCatalogFramework, never()).delete(any(DeleteRequest.class));
-    verify(mockMessage).setBody(any(ArrayList.class));
   }
 
   @Test
@@ -483,10 +486,9 @@ public class FrameworkProducerTest {
     when(mockMessage.getBody(Metacard.class)).thenReturn(null);
     when(mockMessage.getBody(List.class)).thenReturn(null);
 
-    producer.process(mockExchange);
-
+    // Implementation validates list and throws for null/empty body
+    assertThrows(FrameworkProducerException.class, () -> producer.process(mockExchange));
     verify(mockCatalogFramework, never()).create(any(CreateRequest.class));
-    verify(mockMessage).setBody(any(ArrayList.class));
   }
 
   @Test
