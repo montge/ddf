@@ -7,7 +7,7 @@ Define test coverage requirements and standards to ensure code quality, enable s
 - **Overall Coverage:** ~85-90% estimated
 - **Total Modules:** 455 Maven modules
 - **Modules with Tests:** Most critical modules now have tests
-- **Priority Modules Without Tests:** 3 remaining (see below)
+- **Priority Modules Without Tests:** 0 remaining (all complete)
 - **CI Integration:** JaCoCo coverage checks enforced per-module
 
 ---
@@ -95,7 +95,7 @@ Test coverage MUST be enforced in continuous integration.
 | 3 | ~~catalog/core/catalog-core-definitionparser~~ | 967 | ✅ DONE (27 new tests) |
 | 4 | ~~catalog/solr/catalog-solr-offline-gazetteer~~ | 961 | ✅ Has 102 tests |
 | 5 | ~~catalog/spatial/wfs/spatial-wfs-converter~~ | 901 | ✅ Has tests |
-| 6 | catalog/spatial/wfs/2.0.0/spatial-wfs-v2_0_0-common | 861 | ❌ NO TESTS |
+| 6 | ~~catalog/spatial/wfs/2.0.0/spatial-wfs-v2_0_0-common~~ | 861 | ✅ DONE (98 tests) |
 | 7 | ~~catalog/transformer/catalog-transformer-service-xslt~~ | 859 | ✅ Has 1 test file |
 | 8 | ~~platform/sync-installer/sync-installer-impl~~ | 713 | ✅ Has 68 tests |
 | 9 | ~~platform/security/rest/security-rest-clientapi~~ | 623 | ✅ Has 4 test files |
@@ -106,18 +106,20 @@ Test coverage MUST be enforced in continuous integration.
 | Module | LOC | Status |
 |--------|-----|--------|
 | ~~security-filter-csrf~~ | 387 | ✅ Has tests |
-| sync-installer-api | 385 | ❌ NO TESTS |
+| ~~sync-installer-api~~ | 385 | ✅ DONE (13 tests) |
 | ~~libs/alerts~~ | 378 | ✅ Has tests |
-| admin-configurator-actions-api | 374 | ❌ NO TESTS |
+| ~~admin-configurator-actions-api~~ | 374 | ✅ N/A (interfaces only) |
 | ~~spatial-wcs-common~~ | 350 | ✅ Has 7 test files |
 
 ### Remaining Modules Needing Tests
 
-| Module | LOC | Priority |
-|--------|-----|----------|
-| catalog/spatial/wfs/2.0.0/spatial-wfs-v2_0_0-common | 861 | HIGH |
-| platform/sync-installer/sync-installer-api | 385 | MEDIUM |
-| platform/admin/configurator/admin-configurator-actions-api | 374 | MEDIUM |
+All priority modules now have test coverage or are interface-only modules that don't require tests.
+
+| Module | LOC | Status |
+|--------|-----|--------|
+| ~~spatial-wfs-v2_0_0-common~~ | 861 | ✅ 98 tests added |
+| ~~sync-installer-api~~ | 385 | ✅ 13 tests added |
+| ~~admin-configurator-actions-api~~ | 374 | ✅ Interface-only, no impl to test |
 
 ---
 
