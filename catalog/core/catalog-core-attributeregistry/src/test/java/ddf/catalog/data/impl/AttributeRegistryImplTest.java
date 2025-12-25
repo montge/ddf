@@ -187,14 +187,16 @@ public class AttributeRegistryImplTest {
 
   @Test
   public void testNullAttributeDescriptor() {
-    assertThrows(IllegalArgumentException.class, () -> registry.register(null));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.register(null));
   }
 
   @Test
   public void testNullAttributeDescriptorName() {
     final AttributeDescriptor descriptor =
         new AttributeDescriptorImpl(null, true, false, true, false, BasicTypes.STRING_TYPE);
-    assertThrows(IllegalArgumentException.class, () -> registry.register(descriptor));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.register(descriptor));
   }
 
   private static MetacardType generateMetacardType() {

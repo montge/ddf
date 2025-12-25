@@ -84,31 +84,36 @@ public class AttributeRegistryImplEnhancedTest {
 
   @Test
   public void testRegisterNullDescriptor() {
-    assertThrows(IllegalArgumentException.class, () -> registry.register(null));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.register(null));
   }
 
   @Test
   public void testRegisterDescriptorWithNullName() {
     AttributeDescriptor descriptor =
         new AttributeDescriptorImpl(null, true, true, false, false, BasicTypes.STRING_TYPE);
-    assertThrows(IllegalArgumentException.class, () -> registry.register(descriptor));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.register(descriptor));
   }
 
   @Test
   public void testDeregisterNullDescriptor() {
-    assertThrows(IllegalArgumentException.class, () -> registry.deregister(null));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.deregister(null));
   }
 
   @Test
   public void testDeregisterDescriptorWithNullName() {
     AttributeDescriptor descriptor =
         new AttributeDescriptorImpl(null, true, true, false, false, BasicTypes.STRING_TYPE);
-    assertThrows(IllegalArgumentException.class, () -> registry.deregister(descriptor));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.deregister(descriptor));
   }
 
   @Test
   public void testLookupWithNullName() {
-    assertThrows(IllegalArgumentException.class, () -> registry.lookup(null));
+    // commons-lang3 Validate.notNull() throws NullPointerException
+    assertThrows(NullPointerException.class, () -> registry.lookup(null));
   }
 
   @Test
