@@ -111,4 +111,32 @@ class SourceInfoRequestImplTest {
 
     assertThat(request.isEnterprise(), is(false));
   }
+
+  @Test
+  void testSourceInfoRequestEnterpriseWithIncludeContentTypesTrue() {
+    SourceInfoRequestEnterprise request = new SourceInfoRequestEnterprise(true);
+
+    assertThat(request.includeContentTypes(), is(true));
+  }
+
+  @Test
+  void testSourceInfoRequestEnterpriseWithIncludeContentTypesFalse() {
+    SourceInfoRequestEnterprise request = new SourceInfoRequestEnterprise(false);
+
+    assertThat(request.includeContentTypes(), is(false));
+  }
+
+  @Test
+  void testSourceInfoRequestEnterpriseIsEnterpriseReturnsTrue() {
+    SourceInfoRequestEnterprise request = new SourceInfoRequestEnterprise(true);
+
+    assertThat(request.isEnterprise(), is(true));
+  }
+
+  @Test
+  void testSourceInfoRequestEnterpriseGetSourceIdsReturnsNull() {
+    SourceInfoRequestEnterprise request = new SourceInfoRequestEnterprise(true);
+
+    assertThat(request.getSourceIds(), is(nullValue()));
+  }
 }
