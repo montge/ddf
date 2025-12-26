@@ -24,6 +24,7 @@ import ddf.catalog.data.types.Core;
 import ddf.catalog.data.types.DateTime;
 import ddf.catalog.data.types.Location;
 import ddf.catalog.data.types.Media;
+import ddf.catalog.data.types.Security;
 import ddf.catalog.data.types.Topic;
 import ddf.catalog.data.types.Validation;
 import ddf.catalog.data.types.Version;
@@ -49,6 +50,8 @@ public class TypeAttributesTest {
   private static final ValidationAttributes VALIDATION_ATTRIBUTES = new ValidationAttributes();
 
   private static final CoreAttributes CORE_ATTRIBUTES = new CoreAttributes();
+
+  private static final SecurityAttributes SECURITY_ATTRIBUTES = new SecurityAttributes();
 
   @Test
   public void testContactAttributes() {
@@ -114,5 +117,31 @@ public class TypeAttributesTest {
     assertThat(
         ASSOCIATIONS_ATTRIBUTES.getAttributeDescriptor(Associations.DERIVED), notNullValue());
     assertThat(ASSOCIATIONS_ATTRIBUTES.getAttributeDescriptor(Version.ACTION), nullValue());
+  }
+
+  @Test
+  public void testSecurityAttributes() {
+    assertThat(SECURITY_ATTRIBUTES.getName(), is("security"));
+    assertThat(
+        SECURITY_ATTRIBUTES.getAttributeDescriptor(Security.ACCESS_ADMINISTRATORS), notNullValue());
+    assertThat(SECURITY_ATTRIBUTES.getAttributeDescriptor(Security.ACCESS_GROUPS), notNullValue());
+    assertThat(
+        SECURITY_ATTRIBUTES.getAttributeDescriptor(Security.ACCESS_GROUPS_READ), notNullValue());
+    assertThat(
+        SECURITY_ATTRIBUTES.getAttributeDescriptor(Security.ACCESS_INDIVIDUALS), notNullValue());
+    assertThat(
+        SECURITY_ATTRIBUTES.getAttributeDescriptor(Security.ACCESS_INDIVIDUALS_READ),
+        notNullValue());
+    assertThat(SECURITY_ATTRIBUTES.getAttributeDescriptor(Version.ACTION), nullValue());
+  }
+
+  @Test
+  public void testSecurityAttributesDescriptorCount() {
+    assertThat(SECURITY_ATTRIBUTES.getAttributeDescriptors().size(), is(5));
+  }
+
+  @Test
+  public void testLocationAttributesDescriptorCount() {
+    assertThat(LOCATION_ATTRIBUTES.getAttributeDescriptors().size(), is(4));
   }
 }
