@@ -89,4 +89,107 @@ class EventExceptionsTest {
     assertThat(exception, instanceOf(Exception.class));
     assertThat(RuntimeException.class.isAssignableFrom(exception.getClass()), is(false));
   }
+
+  // DeliveryException tests
+
+  @Test
+  void testDeliveryExceptionMessageConstructor() {
+    DeliveryException exception = new DeliveryException(TEST_MESSAGE);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  void testDeliveryExceptionMessageAndCauseConstructor() {
+    Throwable cause = new RuntimeException("root cause");
+    DeliveryException exception = new DeliveryException(TEST_MESSAGE, cause);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(sameInstance(cause)));
+  }
+
+  @Test
+  void testDeliveryExceptionCauseConstructor() {
+    Throwable cause = new RuntimeException("root cause");
+    DeliveryException exception = new DeliveryException(cause);
+
+    assertThat(exception.getCause(), is(sameInstance(cause)));
+  }
+
+  @Test
+  void testDeliveryExceptionExtendsEventException() {
+    DeliveryException exception = new DeliveryException(TEST_MESSAGE);
+
+    assertThat(exception, instanceOf(EventException.class));
+  }
+
+  // InvalidSubscriptionException tests
+
+  @Test
+  void testInvalidSubscriptionExceptionMessageConstructor() {
+    InvalidSubscriptionException exception = new InvalidSubscriptionException(TEST_MESSAGE);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  void testInvalidSubscriptionExceptionMessageAndCauseConstructor() {
+    Throwable cause = new RuntimeException("root cause");
+    InvalidSubscriptionException exception = new InvalidSubscriptionException(TEST_MESSAGE, cause);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(sameInstance(cause)));
+  }
+
+  @Test
+  void testInvalidSubscriptionExceptionCauseConstructor() {
+    Throwable cause = new RuntimeException("root cause");
+    InvalidSubscriptionException exception = new InvalidSubscriptionException(cause);
+
+    assertThat(exception.getCause(), is(sameInstance(cause)));
+  }
+
+  @Test
+  void testInvalidSubscriptionExceptionExtendsEventException() {
+    InvalidSubscriptionException exception = new InvalidSubscriptionException(TEST_MESSAGE);
+
+    assertThat(exception, instanceOf(EventException.class));
+  }
+
+  // SubscriptionNotFoundException tests
+
+  @Test
+  void testSubscriptionNotFoundExceptionMessageConstructor() {
+    SubscriptionNotFoundException exception = new SubscriptionNotFoundException(TEST_MESSAGE);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  void testSubscriptionNotFoundExceptionMessageAndCauseConstructor() {
+    Throwable cause = new RuntimeException("root cause");
+    SubscriptionNotFoundException exception =
+        new SubscriptionNotFoundException(TEST_MESSAGE, cause);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(sameInstance(cause)));
+  }
+
+  @Test
+  void testSubscriptionNotFoundExceptionCauseConstructor() {
+    Throwable cause = new RuntimeException("root cause");
+    SubscriptionNotFoundException exception = new SubscriptionNotFoundException(cause);
+
+    assertThat(exception.getCause(), is(sameInstance(cause)));
+  }
+
+  @Test
+  void testSubscriptionNotFoundExceptionExtendsEventException() {
+    SubscriptionNotFoundException exception = new SubscriptionNotFoundException(TEST_MESSAGE);
+
+    assertThat(exception, instanceOf(EventException.class));
+  }
 }
