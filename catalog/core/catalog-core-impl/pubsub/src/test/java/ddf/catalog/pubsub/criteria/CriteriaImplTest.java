@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ddf.catalog.pubsub.criteria.contenttype.ContentTypeEvaluationCriteriaImpl;
 import ddf.catalog.pubsub.criteria.entry.DadEvaluationCriteriaImpl;
 import ddf.catalog.pubsub.criteria.entry.EntryEvaluationCriteriaImpl;
+import ddf.catalog.pubsub.criteria.entry.EntryEvaluator;
 import ddf.catalog.pubsub.criteria.temporal.TemporalEvaluationCriteriaImpl;
 import ddf.catalog.pubsub.predicate.ContentTypePredicate;
 import java.net.URI;
@@ -234,5 +235,40 @@ public class CriteriaImplTest {
 
     assertThat(criteria.getContentType(), is(equalTo(predicate)));
     assertThat(criteria.getInputContentType(), is(equalTo(inputContentType)));
+  }
+
+  @Test
+  public void testEntryEvaluatorMatchingIds() {
+    EntryEvaluationCriteriaImpl criteria = new EntryEvaluationCriteriaImpl("test-id", "test-id");
+
+    assertThat(EntryEvaluator.evaluate(criteria), is(true));
+  }
+
+  @Test
+  public void testEntryEvaluatorNonMatchingIds() {
+    EntryEvaluationCriteriaImpl criteria = new EntryEvaluationCriteriaImpl("test-id", "other-id");
+
+    assertThat(EntryEvaluator.evaluate(criteria), is(false));
+  }
+
+  @Test
+  public void testEntryEvaluatorWithEmptyId() {
+    EntryEvaluationCriteriaImpl criteria = new EntryEvaluationCriteriaImpl("", "");
+
+    assertThat(EntryEvaluator.evaluate(criteria), is(true));
+  }
+
+  @Test
+  public void testEntryEvaluatorWithEmptyIdAndNonEmptyInputId() {
+    EntryEvaluationCriteriaImpl criteria = new EntryEvaluationCriteriaImpl("", "test-id");
+
+    assertThat(EntryEvaluator.evaluate(criteria), is(false));
+  }
+
+  @Test
+  public void testEntryEvaluatorWithNonEmptyIdAndEmptyInputId() {
+    EntryEvaluationCriteriaImpl criteria = new EntryEvaluationCriteriaImpl("test-id", "");
+
+    assertThat(EntryEvaluator.evaluate(criteria), is(false));
   }
 }
