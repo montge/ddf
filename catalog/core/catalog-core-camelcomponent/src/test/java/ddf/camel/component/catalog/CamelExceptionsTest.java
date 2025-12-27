@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.sameInstance;
 
 import ddf.camel.component.catalog.content.ContentComponentException;
 import ddf.camel.component.catalog.framework.FrameworkProducerException;
+import ddf.camel.component.catalog.framework.IngestTimeoutException;
 import ddf.camel.component.catalog.transformer.TransformerTimeoutException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -145,5 +146,54 @@ class CamelExceptionsTest {
     TransformerTimeoutException exception = new TransformerTimeoutException();
 
     assertThat(RuntimeException.class.isAssignableFrom(exception.getClass()), is(true));
+  }
+
+  // IngestTimeoutException tests
+
+  @Test
+  void testIngestTimeoutExceptionDefaultConstructor() {
+    IngestTimeoutException exception = new IngestTimeoutException();
+
+    assertThat(exception, is(notNullValue()));
+    assertThat(exception.getMessage(), is(nullValue()));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  void testIngestTimeoutExceptionMessageConstructor() {
+    IngestTimeoutException exception = new IngestTimeoutException(TEST_MESSAGE);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  void testIngestTimeoutExceptionThrowableConstructor() {
+    IngestTimeoutException exception = new IngestTimeoutException(testCause);
+
+    assertThat(exception.getCause(), is(sameInstance(testCause)));
+  }
+
+  @Test
+  void testIngestTimeoutExceptionMessageAndThrowableConstructor() {
+    IngestTimeoutException exception = new IngestTimeoutException(TEST_MESSAGE, testCause);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(sameInstance(testCause)));
+  }
+
+  @Test
+  void testIngestTimeoutExceptionExtendsFrameworkProducerException() {
+    IngestTimeoutException exception = new IngestTimeoutException();
+
+    assertThat(FrameworkProducerException.class.isAssignableFrom(exception.getClass()), is(true));
+  }
+
+  @Test
+  void testIngestTimeoutExceptionIsCheckedException() {
+    IngestTimeoutException exception = new IngestTimeoutException();
+
+    assertThat(Exception.class.isAssignableFrom(exception.getClass()), is(true));
+    assertThat(RuntimeException.class.isAssignableFrom(exception.getClass()), is(false));
   }
 }
