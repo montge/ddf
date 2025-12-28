@@ -179,7 +179,7 @@
   - 16 missing-override-annotation alerts (stale - annotations already present)
   - 11 chained-type-tests (code style, low priority)
   - 1 type-bound-extends-final (acceptable)
-- [ ] 5.2.3 OWASP scan at target thresholds
+- [x] 5.2.3 OWASP scan at target thresholds ✅ 0 critical, 24 high (2025-12-28)
 - [x] 5.2.4 Coverage reports generated ✅ JaCoCo configured
 - [x] 5.2.5 SonarCloud integration ✅ (2025-12-13)
   - SONAR_TOKEN secret configured
