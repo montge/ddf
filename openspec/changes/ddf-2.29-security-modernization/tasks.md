@@ -1,16 +1,20 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2025-12-13)
-**Vulnerabilities:** 912 (4 critical, 120 high) - down from 1798
+**Status:** In Progress (Last updated: 2025-12-28)
+**Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
 
 ### 1.1 Vulnerability Triage
-- [ ] 1.1.1 Run fresh OWASP dependency-check scan
-- [ ] 1.1.2 Create suppression file for false positives
-- [ ] 1.1.3 Document test-only dependencies to suppress
+- [x] 1.1.1 Run fresh OWASP dependency-check scan ✅ Completed 2025-12-28
+  - **Results:** 0 Critical, 24 High, 37 Medium, 4 Low (65 total)
+  - **Improvement:** Down from 912 → 65 vulnerabilities (-93%)
+  - Most HIGH findings are false positives from stale Maven cache
+- [x] 1.1.2 Create suppression file for false positives ✅ Already exists: dependency-check-maven-config.xml
+- [x] 1.1.3 Document test-only dependencies to suppress ✅ Documented in suppression file (JRuby, PlantUML, Groovy)
 - [x] 1.1.4 GeoTools CVE-2025-30220 ✅ Fixed in 34.1 upgrade
 - [x] 1.1.5 Verify Zookeeper CVE status ✅ Upgraded 3.9.3 -> 3.9.4 (CVE-2025-58457 fixed)
+- [x] 1.1.6 Fix logback 1.2.3 transitive (CVE-2023-6378) ✅ Excluded from mpegts-streamer (2025-12-28)
 
 ### 1.2 Critical Dependency Upgrades
 - [x] 1.2.1 Hazelcast: Evaluate removal vs upgrade to 5.x ✅ **REMOVED** (2025-12-12)
@@ -79,9 +83,9 @@
 ### 2.3 Spring 6.x Upgrade
 - [x] 2.3.1 Review Spring 5.3 -> 6.0 migration guide ✅ Already at 6.2.14!
 - [x] 2.3.2 Update Spring dependencies ✅ Already at 6.2.14 (Jakarta-compatible)
-- [ ] 2.3.3 Fix deprecated API usages
-- [ ] 2.3.4 Update Blueprint configurations if needed
-- [ ] 2.3.5 Validate OSGi bundle resolution
+- [x] 2.3.3 Fix deprecated API usages ✅ No deprecated Spring APIs found (2025-12-28)
+- [x] 2.3.4 Update Blueprint configurations if needed ✅ No deprecated Spring namespaces in 333 Blueprint files
+- [ ] 2.3.5 Validate OSGi bundle resolution (requires full build)
 
 **Note:** DDF already uses Spring 6.2.14 which is Jakarta EE compatible!
 
@@ -110,13 +114,10 @@
 - [x] 3.2.1 Review Camel 3.18 -> 3.22 migration guide ✅ Already at 3.22.4 (final 3.x EOL)
 - [x] 3.2.2 Update Camel dependencies ✅ Already at 3.22.4
 - [x] 3.2.3 Fix route compatibility issues ✅ N/A
-- [~] 3.2.4 Test catalog:// component ⚠️ **Tests have pre-existing issues** (2025-12-13)
-  - FrameworkProducerTest: 151 tests, 77 failures/errors
-  - Root cause: Mockito strict stubbing incompatibility with JUnit 5 migration
-  - Issue: Tests missing `getBody()` (no-args) stubs + unnecessary stubbing errors
-  - Partially fixed: Added missing stubs, reduced failures from 88 to 77
-  - **Needs:** Full Mockito stubbing refactor or switch to LENIENT mode
-- [ ] 3.2.5 Test directory monitor routes
+- [x] 3.2.4 Test catalog:// component ✅ Tests pass (2025-12-28)
+  - FrameworkProducerTest: All tests passing
+  - Previous issues resolved
+- [~] 3.2.5 Test directory monitor routes ⚠️ Requires full build (features artifacts)
 - [ ] 3.2.6 Plan Camel 4.x upgrade (requires Jakarta EE) ⏸️ **BLOCKED** on CXF 4.x
 
 ### 3.3 Logback 1.5.x (CVE-2025-11226 fix)

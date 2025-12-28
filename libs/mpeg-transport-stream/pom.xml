@@ -48,6 +48,13 @@
             <groupId>org.taktik</groupId>
             <artifactId>mpegts-streamer</artifactId>
             <version>${mpegts-streamer.version}</version>
+            <exclusions>
+                <!-- Exclude old logback 1.2.3 (CVE-2023-6378); DDF uses 1.5.21 -->
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
