@@ -60,4 +60,48 @@ public class SignatureExceptionTest {
     SignatureException exception = new SignatureException("");
     assertThat(exception.getMessage(), is(""));
   }
+
+  @Test
+  public void testDefaultConstructor() {
+    SignatureException exception = new SignatureException();
+
+    assertThat(exception.getMessage(), is(nullValue()));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageAndThrowable() {
+    String message = "Signature error occurred";
+    Throwable cause = new RuntimeException("Root cause");
+    SignatureException exception = new SignatureException(message, cause);
+
+    assertThat(exception.getMessage(), is(message));
+    assertThat(exception.getCause(), is(cause));
+  }
+
+  @Test
+  public void testConstructorWithThrowable() {
+    Throwable cause = new RuntimeException("Root cause");
+    SignatureException exception = new SignatureException(cause);
+
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getMessage(), is("java.lang.RuntimeException: Root cause"));
+  }
+
+  @Test
+  public void testConstructorWithNullThrowable() {
+    SignatureException exception = new SignatureException((Throwable) null);
+
+    assertThat(exception.getCause(), is(nullValue()));
+    assertThat(exception.getMessage(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageAndNullThrowable() {
+    String message = "Error message";
+    SignatureException exception = new SignatureException(message, null);
+
+    assertThat(exception.getMessage(), is(message));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
 }

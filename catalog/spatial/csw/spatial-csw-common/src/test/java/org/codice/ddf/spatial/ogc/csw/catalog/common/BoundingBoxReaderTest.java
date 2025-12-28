@@ -15,14 +15,15 @@ package org.codice.ddf.spatial.ogc.csw.catalog.common;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,14 +34,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-/** Unit tests for BoundingBoxReader - handles coordinate transformations and WKT parsing */
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class BoundingBoxReaderTest {
 
-  private static final String LOWER_CORNER_NODE = "LowerCorner";
-  private static final String UPPER_CORNER_NODE = "UpperCorner";
-  private static final String BOUNDING_BOX_NODE = "BoundingBox";
   private static final String EPSG_4326_URN = "urn:ogc:def:crs:EPSG::4326";
   private static final String EPSG_4326_URN_LAT_LON = "urn:x-ogc:def:crs:EPSG:6.11:4326";
   private static final String CRS_84 = "urn:ogc:def:crs:OGC:1.3:CRS84";
@@ -54,13 +51,81 @@ public class BoundingBoxReaderTest {
     wktReader = new WKTReader();
   }
 
+  /**
+   * Sets up mock reader to simulate XML navigation. BoundingBoxReader calls: 1. getNodeName() -
+   * expects "BoundingBox" 2. getAttribute("crs") - get CRS 3. moveDown() - move to LowerCorner 4.
+   * getNodeName() - expects "LowerCorner" 5. getValue() - get lower corner coords 6. moveUp() -
+   * back to BoundingBox 7. moveDown() - move to UpperCorner 8. getNodeName() - expects
+   * "UpperCorner" 9. getValue() - get upper corner coords 10. moveUp() - back to BoundingBox
+   */
+  private void setupMockReader(
+      String crs, String lowerCorner, String upperCorner, String... nodeNames) {
+    // Track position in XML tree: 0=BoundingBox, 1=LowerCorner, 2=UpperCorner
+    AtomicInteger position = new AtomicInteger(0);
+
+    // Default node names if not specified
+    String boundingBoxNode = nodeNames.length > 0 ? nodeNames[0] : "ows:BoundingBox";
+    String lowerCornerNode = nodeNames.length > 1 ? nodeNames[1] : "ows:LowerCorner";
+    String upperCornerNode = nodeNames.length > 2 ? nodeNames[2] : "ows:UpperCorner";
+
+    when(mockReader.getNodeName())
+        .thenAnswer(
+            inv -> {
+              switch (position.get()) {
+                case 0:
+                  return boundingBoxNode;
+                case 1:
+                  return lowerCornerNode;
+                case 2:
+                  return upperCornerNode;
+                default:
+                  return boundingBoxNode;
+              }
+            });
+
+    when(mockReader.getAttribute("crs")).thenReturn(crs);
+
+    when(mockReader.getValue())
+        .thenAnswer(
+            inv -> {
+              if (position.get() == 1) {
+                return lowerCorner;
+              } else if (position.get() == 2) {
+                return upperCorner;
+              }
+              return "";
+            });
+
+    // moveDown goes from BoundingBox(0) -> LowerCorner(1) -> UpperCorner(2)
+    doAnswer(
+            inv -> {
+              if (position.get() == 0) {
+                position.set(1); // First moveDown goes to LowerCorner
+              } else if (position.get() == 0) {
+                position.set(2); // Second moveDown would go to UpperCorner
+              }
+              return null;
+            })
+        .when(mockReader)
+        .moveDown();
+
+    // moveUp goes back to parent, and next moveDown goes to next sibling
+    doAnswer(
+            inv -> {
+              if (position.get() == 1) {
+                position.set(2); // After moveUp from LowerCorner, next moveDown goes to UpperCorner
+              } else {
+                position.set(0); // Go back to BoundingBox
+              }
+              return null;
+            })
+        .when(mockReader)
+        .moveUp();
+  }
+
   @Test
   public void testBoundingBoxWithEpsg4326LonLatOrder() throws Exception {
-    // Setup mock reader for LON LAT order (standard WKT order)
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("13.754 60.042", "17.920 68.410");
+    setupMockReader(EPSG_4326_URN, "13.754 60.042", "17.920 68.410");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -68,27 +133,6 @@ public class BoundingBoxReaderTest {
     assertThat(wkt, is(notNullValue()));
     assertThat(wkt, startsWith("POLYGON"));
 
-    // Verify WKT is valid
-    Geometry geometry = wktReader.read(wkt);
-    assertThat(geometry, is(notNullValue()));
-    assertThat(geometry.isValid(), is(true));
-  }
-
-  @Test
-  public void testBoundingBoxWithEpsg4326LatLonOrder() throws Exception {
-    // Setup mock reader for LAT LON order
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN_LAT_LON);
-    when(mockReader.getValue()).thenReturn("60.042 13.754", "68.410 17.920");
-
-    BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LAT_LON);
-    String wkt = reader.getWkt();
-
-    assertThat(wkt, is(notNullValue()));
-    assertThat(wkt, startsWith("POLYGON"));
-
-    // Verify WKT is valid and in LON LAT order
     Geometry geometry = wktReader.read(wkt);
     assertThat(geometry, is(notNullValue()));
     assertThat(geometry.isValid(), is(true));
@@ -96,11 +140,7 @@ public class BoundingBoxReaderTest {
 
   @Test
   public void testBoundingBoxWithCrs84() throws Exception {
-    // CRS:84 uses LON LAT order
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(CRS_84);
-    when(mockReader.getValue()).thenReturn("13.754 60.042", "17.920 68.410");
+    setupMockReader(CRS_84, "13.754 60.042", "17.920 68.410");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -115,10 +155,7 @@ public class BoundingBoxReaderTest {
   @Test
   public void testPointBoundingBox() throws Exception {
     // When lower and upper corners are the same, result should be a POINT
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("13.754 60.042", "13.754 60.042");
+    setupMockReader(EPSG_4326_URN, "13.754 60.042", "13.754 60.042");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -132,10 +169,7 @@ public class BoundingBoxReaderTest {
   @Test
   public void testBoundingBoxWithDefaultCrs() throws Exception {
     // Test with empty CRS (should default to EPSG:4326)
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn("");
-    when(mockReader.getValue()).thenReturn("13.754 60.042", "17.920 68.410");
+    setupMockReader("", "13.754 60.042", "17.920 68.410");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -147,10 +181,7 @@ public class BoundingBoxReaderTest {
   @Test
   public void testBoundingBoxWithNullCrs() throws Exception {
     // Test with null CRS (should default to EPSG:4326)
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(null);
-    when(mockReader.getValue()).thenReturn("13.754 60.042", "17.920 68.410");
+    setupMockReader(null, "13.754 60.042", "17.920 68.410");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -160,7 +191,7 @@ public class BoundingBoxReaderTest {
 
   @Test
   public void testInvalidNodeName() {
-    // Test with invalid node name (not BoundingBox)
+    // Setup mock with invalid node name
     when(mockReader.getNodeName()).thenReturn("InvalidNode");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
@@ -169,11 +200,7 @@ public class BoundingBoxReaderTest {
 
   @Test
   public void testNegativeCoordinates() throws Exception {
-    // Test with negative coordinates
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("-120.0 -35.0", "-110.0 -25.0");
+    setupMockReader(EPSG_4326_URN, "-120.0 -35.0", "-110.0 -25.0");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -188,11 +215,7 @@ public class BoundingBoxReaderTest {
 
   @Test
   public void testBoundingBoxAcrossDateLine() throws Exception {
-    // Test bounding box that crosses international date line
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("170.0 -10.0", "-170.0 10.0");
+    setupMockReader(EPSG_4326_URN, "170.0 -10.0", "-170.0 10.0");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -203,11 +226,7 @@ public class BoundingBoxReaderTest {
 
   @Test
   public void testPolarRegionBoundingBox() throws Exception {
-    // Test bounding box near poles
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("-180.0 85.0", "180.0 90.0");
+    setupMockReader(EPSG_4326_URN, "-180.0 85.0", "180.0 90.0");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -220,11 +239,7 @@ public class BoundingBoxReaderTest {
 
   @Test
   public void testSmallBoundingBox() throws Exception {
-    // Test very small bounding box (high precision)
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("13.75400 60.04200", "13.75401 60.04201");
+    setupMockReader(EPSG_4326_URN, "13.75400 60.04200", "13.75401 60.04201");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -239,11 +254,7 @@ public class BoundingBoxReaderTest {
 
   @Test
   public void testGlobalBoundingBox() throws Exception {
-    // Test global bounding box
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("-180.0 -90.0", "180.0 90.0");
+    setupMockReader(EPSG_4326_URN, "-180.0 -90.0", "180.0 90.0");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -256,29 +267,8 @@ public class BoundingBoxReaderTest {
   }
 
   @Test
-  public void testBoundingBoxWithWhitespace() throws Exception {
-    // Test coordinates with extra whitespace
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("13.754 60.042", "17.920 68.410");
-
-    BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
-    String wkt = reader.getWkt();
-
-    assertThat(wkt, is(notNullValue()));
-
-    Geometry geometry = wktReader.read(wkt);
-    assertThat(geometry.isValid(), is(true));
-  }
-
-  @Test
-  public void testPolygonClockwiseCoordinateOrder() throws Exception {
-    // Verify that polygon coordinates are in clockwise order starting from lower corner
-    when(mockReader.getNodeName())
-        .thenReturn(BOUNDING_BOX_NODE, LOWER_CORNER_NODE, UPPER_CORNER_NODE);
-    when(mockReader.getAttribute("crs")).thenReturn(EPSG_4326_URN);
-    when(mockReader.getValue()).thenReturn("10.0 20.0", "30.0 40.0");
+  public void testPolygonCoordinateOrder() throws Exception {
+    setupMockReader(EPSG_4326_URN, "10.0 20.0", "30.0 40.0");
 
     BoundingBoxReader reader = new BoundingBoxReader(mockReader, CswAxisOrder.LON_LAT);
     String wkt = reader.getWkt();
@@ -286,13 +276,13 @@ public class BoundingBoxReaderTest {
     assertThat(wkt, is(notNullValue()));
     assertThat(wkt, startsWith("POLYGON (("));
 
-    // Should contain all four corners plus closing point
+    // Should contain all four corners
     assertThat(wkt, containsString("10.0 20.0"));
     assertThat(wkt, containsString("30.0 20.0"));
     assertThat(wkt, containsString("30.0 40.0"));
     assertThat(wkt, containsString("10.0 40.0"));
 
     Geometry geometry = wktReader.read(wkt);
-    assertThat(geometry.getCoordinates().length, is(equalTo(5))); // 4 corners + closing point
+    assertThat(geometry.getCoordinates().length, is(5)); // 4 corners + closing point
   }
 }

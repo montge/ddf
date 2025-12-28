@@ -16,9 +16,13 @@ package org.codice.ddf.spatial.ogc.csw.catalog.common;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigInteger;
+import net.opengis.cat.csw.v_2_0_2.GetRecordsType;
+import net.opengis.cat.csw.v_2_0_2.ResultType;
 import org.junit.jupiter.api.Test;
 
 class GetRecordsRequestTest {
@@ -259,5 +263,341 @@ class GetRecordsRequestTest {
     request.setStartPosition(BigInteger.ZERO);
 
     assertThat(request.getStartPosition(), is(BigInteger.ZERO));
+  }
+
+  // Tests for get202RecordsType()
+
+  private static final String CSW_NAMESPACE = "xmlns(csw=http://www.opengis.net/cat/csw/2.0.2)";
+  private static final String DC_NAMESPACE = "xmlns(dc=http://purl.org/dc/elements/1.1/)";
+  private static final String COMBINED_NAMESPACE =
+      "xmlns(csw=http://www.opengis.net/cat/csw/2.0.2),xmlns(dc=http://purl.org/dc/elements/1.1/)";
+
+  @Test
+  void testGet202RecordsTypeMinimalSettings() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result, is(notNullValue()));
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithOutputSchema() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setOutputSchema("http://www.opengis.net/cat/csw/2.0.2");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getOutputSchema(), is("http://www.opengis.net/cat/csw/2.0.2"));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithRequestId() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setRequestId("request-123");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getRequestId(), is("request-123"));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithMaxRecords() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setMaxRecords(BigInteger.valueOf(100));
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getMaxRecords(), is(BigInteger.valueOf(100)));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithStartPosition() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setStartPosition(BigInteger.valueOf(10));
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getStartPosition(), is(BigInteger.valueOf(10)));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithOutputFormat() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setOutputFormat("application/xml");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getOutputFormat(), is("application/xml"));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithResponseHandler() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setResponseHandler("http://example.com/handler");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getResponseHandler().size(), is(1));
+    assertThat(result.getResponseHandler().get(0), is("http://example.com/handler"));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithResultTypeHits() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setResultType("hits");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getResultType(), is(ResultType.HITS));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithResultTypeResults() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setResultType("results");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getResultType(), is(ResultType.RESULTS));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithResultTypeValidate() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setResultType("validate");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getResultType(), is(ResultType.VALIDATE));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithInvalidResultType() {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setResultType("invalid");
+
+    CswException exception = assertThrows(CswException.class, () -> request.get202RecordsType());
+    assertThat(
+        exception.getMessage(),
+        is("A CSW getRecords request ResultType must be \"hits\", \"results\", or \"validate\""));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithDistributedSearch() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setDistributedSearch(Boolean.TRUE);
+    request.setHopCount(BigInteger.valueOf(5));
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getDistributedSearch(), is(notNullValue()));
+    assertThat(result.getDistributedSearch().getHopCount(), is(BigInteger.valueOf(5)));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithDistributedSearchFalse() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setDistributedSearch(Boolean.FALSE);
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getDistributedSearch(), is(nullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithElementSetNameBrief() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setElementSetName("brief");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithElementSetNameSummary() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setElementSetName("summary");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithElementSetNameFull() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setElementSetName("full");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithInvalidElementSetName() {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setElementSetName("invalid");
+
+    CswException exception = assertThrows(CswException.class, () -> request.get202RecordsType());
+    assertThat(
+        exception.getMessage(),
+        is("A CSW getRecords request ElementSetType must be \"brief\", \"summary\", or \"full\""));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithBothElementNameAndElementSetNameThrows() {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(COMBINED_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setElementName("dc:title");
+    request.setElementSetName("brief");
+
+    CswException exception = assertThrows(CswException.class, () -> request.get202RecordsType());
+    assertThat(
+        exception.getMessage(),
+        is("A CSW getRecords request can only have an \"ElementName\" or an \"ElementSetName\""));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithElementName() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(COMBINED_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setElementName("dc:title");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithSortByAscending() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(COMBINED_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setSortBy("dc:title:A");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithSortByDescending() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(COMBINED_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setSortBy("dc:title:D");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithInvalidSortByFormat() {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setSortBy("invalidformat");
+
+    CswException exception = assertThrows(CswException.class, () -> request.get202RecordsType());
+    assertThat(exception.getMessage(), is("Invalid Sort Order format: invalidformat"));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithInvalidSortByDirection() {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(COMBINED_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setSortBy("dc:title:X");
+
+    CswException exception = assertThrows(CswException.class, () -> request.get202RecordsType());
+    assertThat(exception.getMessage(), is("Invalid Sort Order format: dc:title:X"));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithCqlConstraint() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setConstraintLanguage(CswConstants.CONSTRAINT_LANGUAGE_CQL);
+    request.setConstraint("title LIKE 'test%'");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithInvalidConstraintLanguage() {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setConstraintLanguage("INVALID");
+    request.setConstraint("some constraint");
+
+    CswException exception = assertThrows(CswException.class, () -> request.get202RecordsType());
+    assertThat(exception.getMessage(), is("Invalid Constraint Language defined: INVALID"));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithMultipleSortProperties() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(COMBINED_NAMESPACE);
+    request.setTypeNames("csw:Record");
+    request.setSortBy("dc:title:A,dc:date:D");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result.getAbstractQuery(), is(notNullValue()));
+  }
+
+  @Test
+  void testGet202RecordsTypeWithNamespaceAndTypeNames() throws CswException {
+    GetRecordsRequest request = new GetRecordsRequest();
+    request.setNamespace(CSW_NAMESPACE);
+    request.setTypeNames("csw:Record");
+
+    GetRecordsType result = request.get202RecordsType();
+
+    assertThat(result, is(notNullValue()));
   }
 }

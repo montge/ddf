@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
 
 import ddf.security.encryption.EncryptionService;
 import ddf.security.permission.Permissions;
@@ -73,6 +74,8 @@ public class CswSourceConfigurationTest {
 
   @Test
   public void testSetAndGetPassword() {
+    // Mock encryption service to return the password unchanged (simulating decryption)
+    when(encryptionService.decryptValue("testpassword")).thenReturn("testpassword");
     configuration.setPassword("testpassword");
     assertThat(configuration.getPassword(), is("testpassword"));
   }

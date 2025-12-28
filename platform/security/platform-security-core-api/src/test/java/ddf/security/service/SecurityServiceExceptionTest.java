@@ -60,4 +60,48 @@ public class SecurityServiceExceptionTest {
     SecurityServiceException exception = new SecurityServiceException("");
     assertThat(exception.getMessage(), is(""));
   }
+
+  @Test
+  public void testDefaultConstructor() {
+    SecurityServiceException exception = new SecurityServiceException();
+
+    assertThat(exception.getMessage(), is(nullValue()));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageAndThrowable() {
+    String message = "Security error occurred";
+    Throwable cause = new RuntimeException("Root cause");
+    SecurityServiceException exception = new SecurityServiceException(message, cause);
+
+    assertThat(exception.getMessage(), is(message));
+    assertThat(exception.getCause(), is(cause));
+  }
+
+  @Test
+  public void testConstructorWithThrowable() {
+    Throwable cause = new RuntimeException("Root cause");
+    SecurityServiceException exception = new SecurityServiceException(cause);
+
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getMessage(), is("java.lang.RuntimeException: Root cause"));
+  }
+
+  @Test
+  public void testConstructorWithNullThrowable() {
+    SecurityServiceException exception = new SecurityServiceException((Throwable) null);
+
+    assertThat(exception.getCause(), is(nullValue()));
+    assertThat(exception.getMessage(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageAndNullThrowable() {
+    String message = "Error message";
+    SecurityServiceException exception = new SecurityServiceException(message, null);
+
+    assertThat(exception.getMessage(), is(message));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
 }

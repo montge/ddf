@@ -15,12 +15,19 @@ package org.codice.ddf.spatial.ogc.csw.catalog.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.net.HttpURLConnection;
 import org.junit.jupiter.api.Test;
 
 /** Unit tests for {@link CswException}. */
 public class CswExceptionTest {
+
+  private static final String TEST_MESSAGE = "Test exception message";
+  private static final String EXCEPTION_CODE = "InvalidParameterValue";
+  private static final String LOCATOR = "service";
+  private static final int CUSTOM_HTTP_STATUS = HttpURLConnection.HTTP_NOT_FOUND;
 
   @Test
   public void testCswExceptionWithMessage() {
@@ -67,5 +74,124 @@ public class CswExceptionTest {
 
     assertThat(exception.getCause(), is(intermediateCause));
     assertThat(exception.getCause().getCause(), is(rootCause));
+  }
+
+  @Test
+  public void testConstructorWithThrowable() {
+    Throwable cause = new RuntimeException("Root cause");
+    CswException exception = new CswException(cause);
+
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getHttpStatus(), is(HttpURLConnection.HTTP_BAD_REQUEST));
+    assertThat(exception.getExceptionCode(), is(nullValue()));
+    assertThat(exception.getLocator(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageAndHttpStatus() {
+    CswException exception = new CswException(TEST_MESSAGE, CUSTOM_HTTP_STATUS);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getHttpStatus(), is(CUSTOM_HTTP_STATUS));
+    assertThat(exception.getExceptionCode(), is(nullValue()));
+    assertThat(exception.getLocator(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithThrowableAndHttpStatus() {
+    Throwable cause = new RuntimeException("Root cause");
+    CswException exception = new CswException(cause, CUSTOM_HTTP_STATUS);
+
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getHttpStatus(), is(CUSTOM_HTTP_STATUS));
+    assertThat(exception.getExceptionCode(), is(nullValue()));
+    assertThat(exception.getLocator(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageExceptionCodeAndLocator() {
+    CswException exception = new CswException(TEST_MESSAGE, EXCEPTION_CODE, LOCATOR);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getExceptionCode(), is(EXCEPTION_CODE));
+    assertThat(exception.getLocator(), is(LOCATOR));
+    assertThat(exception.getHttpStatus(), is(HttpURLConnection.HTTP_BAD_REQUEST));
+  }
+
+  @Test
+  public void testConstructorWithThrowableExceptionCodeAndLocator() {
+    Throwable cause = new RuntimeException("Root cause");
+    CswException exception = new CswException(cause, EXCEPTION_CODE, LOCATOR);
+
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getExceptionCode(), is(EXCEPTION_CODE));
+    assertThat(exception.getLocator(), is(LOCATOR));
+    assertThat(exception.getHttpStatus(), is(HttpURLConnection.HTTP_BAD_REQUEST));
+  }
+
+  @Test
+  public void testConstructorWithMessageHttpStatusExceptionCodeAndLocator() {
+    CswException exception =
+        new CswException(TEST_MESSAGE, CUSTOM_HTTP_STATUS, EXCEPTION_CODE, LOCATOR);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getHttpStatus(), is(CUSTOM_HTTP_STATUS));
+    assertThat(exception.getExceptionCode(), is(EXCEPTION_CODE));
+    assertThat(exception.getLocator(), is(LOCATOR));
+  }
+
+  @Test
+  public void testConstructorWithThrowableHttpStatusExceptionCodeAndLocator() {
+    Throwable cause = new RuntimeException("Root cause");
+    CswException exception = new CswException(cause, CUSTOM_HTTP_STATUS, EXCEPTION_CODE, LOCATOR);
+
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getHttpStatus(), is(CUSTOM_HTTP_STATUS));
+    assertThat(exception.getExceptionCode(), is(EXCEPTION_CODE));
+    assertThat(exception.getLocator(), is(LOCATOR));
+  }
+
+  @Test
+  public void testConstructorWithMessageThrowableExceptionCodeAndLocator() {
+    Throwable cause = new RuntimeException("Root cause");
+    CswException exception = new CswException(TEST_MESSAGE, cause, EXCEPTION_CODE, LOCATOR);
+
+    assertThat(exception.getMessage(), is(TEST_MESSAGE));
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getExceptionCode(), is(EXCEPTION_CODE));
+    assertThat(exception.getLocator(), is(LOCATOR));
+    assertThat(exception.getHttpStatus(), is(HttpURLConnection.HTTP_BAD_REQUEST));
+  }
+
+  @Test
+  public void testSetHttpStatus() {
+    CswException exception = new CswException(TEST_MESSAGE);
+    exception.setHttpStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
+
+    assertThat(exception.getHttpStatus(), is(HttpURLConnection.HTTP_INTERNAL_ERROR));
+  }
+
+  @Test
+  public void testSetExceptionCode() {
+    CswException exception = new CswException(TEST_MESSAGE);
+    exception.setExceptionCode("MissingParameterValue");
+
+    assertThat(exception.getExceptionCode(), is("MissingParameterValue"));
+  }
+
+  @Test
+  public void testSetLocator() {
+    CswException exception = new CswException(TEST_MESSAGE);
+    exception.setLocator("request");
+
+    assertThat(exception.getLocator(), is("request"));
+  }
+
+  @Test
+  public void testDefaultHttpStatus() {
+    CswException exception = new CswException(TEST_MESSAGE);
+
+    // Default should be HTTP_BAD_REQUEST (400)
+    assertThat(exception.getHttpStatus(), is(400));
   }
 }

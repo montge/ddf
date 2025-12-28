@@ -60,4 +60,48 @@ public class LogoutSecurityExceptionTest {
     LogoutSecurityException exception = new LogoutSecurityException("");
     assertThat(exception.getMessage(), is(""));
   }
+
+  @Test
+  public void testDefaultConstructor() {
+    LogoutSecurityException exception = new LogoutSecurityException();
+
+    assertThat(exception.getMessage(), is(nullValue()));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageAndThrowable() {
+    String message = "Logout error occurred";
+    Throwable cause = new RuntimeException("Root cause");
+    LogoutSecurityException exception = new LogoutSecurityException(message, cause);
+
+    assertThat(exception.getMessage(), is(message));
+    assertThat(exception.getCause(), is(cause));
+  }
+
+  @Test
+  public void testConstructorWithThrowable() {
+    Throwable cause = new RuntimeException("Root cause");
+    LogoutSecurityException exception = new LogoutSecurityException(cause);
+
+    assertThat(exception.getCause(), is(cause));
+    assertThat(exception.getMessage(), is("java.lang.RuntimeException: Root cause"));
+  }
+
+  @Test
+  public void testConstructorWithNullThrowable() {
+    LogoutSecurityException exception = new LogoutSecurityException((Throwable) null);
+
+    assertThat(exception.getCause(), is(nullValue()));
+    assertThat(exception.getMessage(), is(nullValue()));
+  }
+
+  @Test
+  public void testConstructorWithMessageAndNullThrowable() {
+    String message = "Error message";
+    LogoutSecurityException exception = new LogoutSecurityException(message, null);
+
+    assertThat(exception.getMessage(), is(message));
+    assertThat(exception.getCause(), is(nullValue()));
+  }
 }
