@@ -14,21 +14,35 @@
 package ddf.catalog.source.solr;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.AttributeType.AttributeFormat;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.types.Core;
+import ddf.catalog.impl.filter.DivisibleByFunction;
+import ddf.catalog.impl.filter.ProximityFunction;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Stream;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.geotools.api.filter.sort.SortBy;
+import org.geotools.api.filter.sort.SortOrder;
+import org.geotools.filter.SortByImpl;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -722,5 +736,681 @@ public class SolrFilterDelegateTest {
     calendar.set(year, month, day, hour, 59, 56);
     calendar.set(Calendar.MILLISECOND, 765);
     return calendar.getTime();
+  }
+
+  @Test
+  public void testAndOperator() {
+    SolrQuery query1 = new SolrQuery("field1:value1");
+    SolrQuery query2 = new SolrQuery("field2:value2");
+    SolrQuery result = toTest.and(Arrays.asList(query1, query2));
+    assertThat(result.getQuery(), containsString("AND"));
+    assertThat(result.getQuery(), containsString("field1:value1"));
+    assertThat(result.getQuery(), containsString("field2:value2"));
+  }
+
+  @Test
+  public void testOrOperator() {
+    SolrQuery query1 = new SolrQuery("field1:value1");
+    SolrQuery query2 = new SolrQuery("field2:value2");
+    SolrQuery result = toTest.or(Arrays.asList(query1, query2));
+    assertThat(result.getQuery(), containsString("OR"));
+    assertThat(result.getQuery(), containsString("field1:value1"));
+    assertThat(result.getQuery(), containsString("field2:value2"));
+  }
+
+  @Test
+  public void testNotOperator() {
+    SolrQuery operand = new SolrQuery("field:value");
+    SolrQuery result = toTest.not(operand);
+    assertThat(result.getQuery(), is("(*:* NOT field:value)"));
+  }
+
+  @Test
+  public void testAndWithEmptyOperands() {
+    assertThrows(UnsupportedOperationException.class, () -> toTest.and(Collections.emptyList()));
+  }
+
+  @Test
+  public void testOrWithEmptyOperands() {
+    assertThrows(UnsupportedOperationException.class, () -> toTest.or(Collections.emptyList()));
+  }
+
+  @Test
+  public void testAndWithNullOperand() {
+    SolrQuery query1 = new SolrQuery("field1:value1");
+    assertThrows(
+        UnsupportedOperationException.class, () -> toTest.and(Arrays.asList(query1, null)));
+  }
+
+  @Test
+  public void testOrWithNullOperand() {
+    SolrQuery query1 = new SolrQuery("field1:value1");
+    assertThrows(UnsupportedOperationException.class, () -> toTest.or(Arrays.asList(query1, null)));
+  }
+
+  @Test
+  public void testPropertyIsFuzzy() {
+    when(mockResolver.getField("title", AttributeFormat.STRING, false, Collections.emptyMap()))
+        .thenReturn("title_txt");
+    SolrQuery result = toTest.propertyIsFuzzy("title", "searchPhrase");
+    assertThat(result.getQuery(), containsString("title_txt"));
+    assertThat(result.getQuery(), containsString("~"));
+  }
+
+  @Test
+  public void testPropertyIsFuzzyWithWildcard() {
+    when(mockResolver.anyTextFields())
+        .thenReturn(Collections.singletonList("metadata_txt").stream());
+    when(mockResolver.getSpecialIndexSuffix(AttributeFormat.STRING, Collections.emptyMap()))
+        .thenReturn(SchemaFields.TOKENIZED);
+    SolrQuery result = toTest.propertyIsFuzzy(Metacard.ANY_TEXT, "search*phrase");
+    assertThat(result.getQuery(), containsString("~"));
+  }
+
+  @Test
+  public void testPropertyIsEqualToDate() {
+    when(mockResolver.getField("created", AttributeFormat.DATE, true, Collections.emptyMap()))
+        .thenReturn("created_date");
+    Date testDate = getCannedTime();
+    SolrQuery result = toTest.propertyIsEqualTo(Metacard.CREATED, testDate);
+    assertThat(result.getQuery(), containsString("created_date"));
+    assertThat(result.getQuery(), containsString("1995-11-24"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanInt() {
+    when(mockResolver.getField("count", AttributeFormat.INTEGER, true, Collections.emptyMap()))
+        .thenReturn("count_int");
+    SolrQuery result = toTest.propertyIsGreaterThan("count", 5);
+    assertThat(result.getQuery(), containsString("count_int"));
+    assertThat(result.getQuery(), containsString("{ 5"));
+    assertThat(result.getQuery(), containsString("TO *"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanShort() {
+    when(mockResolver.getField("count", AttributeFormat.SHORT, true, Collections.emptyMap()))
+        .thenReturn("count_shr");
+    short value = 5;
+    SolrQuery result = toTest.propertyIsGreaterThan("count", value);
+    assertThat(result.getQuery(), containsString("count_shr"));
+    assertThat(result.getQuery(), containsString("{ 5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanLong() {
+    when(mockResolver.getField("count", AttributeFormat.LONG, true, Collections.emptyMap()))
+        .thenReturn("count_lng");
+    SolrQuery result = toTest.propertyIsGreaterThan("count", 5L);
+    assertThat(result.getQuery(), containsString("count_lng"));
+    assertThat(result.getQuery(), containsString("{ 5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanFloat() {
+    when(mockResolver.getField("count", AttributeFormat.FLOAT, true, Collections.emptyMap()))
+        .thenReturn("count_flt");
+    SolrQuery result = toTest.propertyIsGreaterThan("count", 5.5f);
+    assertThat(result.getQuery(), containsString("count_flt"));
+    assertThat(result.getQuery(), containsString("{ 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanDouble() {
+    when(mockResolver.getField("count", AttributeFormat.DOUBLE, true, Collections.emptyMap()))
+        .thenReturn("count_dbl");
+    SolrQuery result = toTest.propertyIsGreaterThan("count", 5.5);
+    assertThat(result.getQuery(), containsString("count_dbl"));
+    assertThat(result.getQuery(), containsString("{ 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToShort() {
+    when(mockResolver.getField("count", AttributeFormat.SHORT, true, Collections.emptyMap()))
+        .thenReturn("count_shr");
+    short value = 5;
+    SolrQuery result = toTest.propertyIsGreaterThanOrEqualTo("count", value);
+    assertThat(result.getQuery(), containsString("count_shr"));
+    assertThat(result.getQuery(), containsString("[ 5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToInt() {
+    when(mockResolver.getField("count", AttributeFormat.INTEGER, true, Collections.emptyMap()))
+        .thenReturn("count_int");
+    SolrQuery result = toTest.propertyIsGreaterThanOrEqualTo("count", 5);
+    assertThat(result.getQuery(), containsString("count_int"));
+    assertThat(result.getQuery(), containsString("[ 5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToLong() {
+    when(mockResolver.getField("count", AttributeFormat.LONG, true, Collections.emptyMap()))
+        .thenReturn("count_lng");
+    SolrQuery result = toTest.propertyIsGreaterThanOrEqualTo("count", 5L);
+    assertThat(result.getQuery(), containsString("count_lng"));
+    assertThat(result.getQuery(), containsString("[ 5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToFloat() {
+    when(mockResolver.getField("count", AttributeFormat.FLOAT, true, Collections.emptyMap()))
+        .thenReturn("count_flt");
+    SolrQuery result = toTest.propertyIsGreaterThanOrEqualTo("count", 5.5f);
+    assertThat(result.getQuery(), containsString("count_flt"));
+    assertThat(result.getQuery(), containsString("[ 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsGreaterThanOrEqualToDouble() {
+    when(mockResolver.getField("count", AttributeFormat.DOUBLE, true, Collections.emptyMap()))
+        .thenReturn("count_dbl");
+    SolrQuery result = toTest.propertyIsGreaterThanOrEqualTo("count", 5.5);
+    assertThat(result.getQuery(), containsString("count_dbl"));
+    assertThat(result.getQuery(), containsString("[ 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanShort() {
+    when(mockResolver.getField("count", AttributeFormat.SHORT, true, Collections.emptyMap()))
+        .thenReturn("count_shr");
+    short value = 5;
+    SolrQuery result = toTest.propertyIsLessThan("count", value);
+    assertThat(result.getQuery(), containsString("count_shr"));
+    assertThat(result.getQuery(), containsString("TO 5"));
+    assertThat(result.getQuery(), containsString("}"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanLong() {
+    when(mockResolver.getField("count", AttributeFormat.LONG, true, Collections.emptyMap()))
+        .thenReturn("count_lng");
+    SolrQuery result = toTest.propertyIsLessThan("count", 5L);
+    assertThat(result.getQuery(), containsString("count_lng"));
+    assertThat(result.getQuery(), containsString("TO 5"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanFloat() {
+    when(mockResolver.getField("count", AttributeFormat.FLOAT, true, Collections.emptyMap()))
+        .thenReturn("count_flt");
+    SolrQuery result = toTest.propertyIsLessThan("count", 5.5f);
+    assertThat(result.getQuery(), containsString("count_flt"));
+    assertThat(result.getQuery(), containsString("TO 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanDouble() {
+    when(mockResolver.getField("count", AttributeFormat.DOUBLE, true, Collections.emptyMap()))
+        .thenReturn("count_dbl");
+    SolrQuery result = toTest.propertyIsLessThan("count", 5.5);
+    assertThat(result.getQuery(), containsString("count_dbl"));
+    assertThat(result.getQuery(), containsString("TO 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanOrEqualToShort() {
+    when(mockResolver.getField("count", AttributeFormat.SHORT, true, Collections.emptyMap()))
+        .thenReturn("count_shr");
+    short value = 5;
+    SolrQuery result = toTest.propertyIsLessThanOrEqualTo("count", value);
+    assertThat(result.getQuery(), containsString("count_shr"));
+    assertThat(result.getQuery(), containsString("TO 5"));
+    assertThat(result.getQuery(), containsString("]"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanOrEqualToLong() {
+    when(mockResolver.getField("count", AttributeFormat.LONG, true, Collections.emptyMap()))
+        .thenReturn("count_lng");
+    SolrQuery result = toTest.propertyIsLessThanOrEqualTo("count", 5L);
+    assertThat(result.getQuery(), containsString("count_lng"));
+    assertThat(result.getQuery(), containsString("TO 5"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanOrEqualToFloat() {
+    when(mockResolver.getField("count", AttributeFormat.FLOAT, true, Collections.emptyMap()))
+        .thenReturn("count_flt");
+    SolrQuery result = toTest.propertyIsLessThanOrEqualTo("count", 5.5f);
+    assertThat(result.getQuery(), containsString("count_flt"));
+    assertThat(result.getQuery(), containsString("TO 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsLessThanOrEqualToDouble() {
+    when(mockResolver.getField("count", AttributeFormat.DOUBLE, true, Collections.emptyMap()))
+        .thenReturn("count_dbl");
+    SolrQuery result = toTest.propertyIsLessThanOrEqualTo("count", 5.5);
+    assertThat(result.getQuery(), containsString("count_dbl"));
+    assertThat(result.getQuery(), containsString("TO 5.5"));
+  }
+
+  @Test
+  public void testPropertyIsBetweenDoubles() {
+    when(mockResolver.getField("altitude", AttributeFormat.DOUBLE, true, Collections.emptyMap()))
+        .thenReturn("altitude_dbl");
+    SolrQuery result = toTest.propertyIsBetween("altitude", 10.5, 50.5);
+    assertThat(result.getQuery(), containsString("altitude_dbl"));
+    assertThat(result.getQuery(), containsString("10.5"));
+    assertThat(result.getQuery(), containsString("50.5"));
+  }
+
+  @Test
+  public void testDuringDateRange() {
+    when(mockResolver.getField("created", AttributeFormat.DATE, false, Collections.emptyMap()))
+        .thenReturn("created_date");
+    Date start = getCannedTime();
+    Date end = getCannedTime(1995, Calendar.NOVEMBER, 27, 4);
+    SolrQuery result = toTest.during(Metacard.CREATED, start, end);
+    assertThat(result.getQuery(), containsString("created_date"));
+    assertThat(result.getQuery(), containsString("{"));
+    assertThat(result.getQuery(), containsString("}"));
+  }
+
+  @Test
+  public void testPropertyIsNullQuery() {
+    when(mockResolver.getAnonymousField("title"))
+        .thenReturn(Collections.singletonList("title_txt"));
+    SolrQuery result = toTest.propertyIsNull("title");
+    assertThat(result.getQuery(), containsString("-title_txt"));
+    assertThat(result.getQuery(), containsString("[* TO *]"));
+  }
+
+  @Test
+  public void testPropertyIsNullQueryEmptyFields() {
+    when(mockResolver.getAnonymousField("unknown")).thenReturn(Collections.emptyList());
+    assertThrows(UnsupportedOperationException.class, () -> toTest.propertyIsNull("unknown"));
+  }
+
+  @Test
+  public void testPropertyIsEqualToWithDivisibleByFunction() {
+    when(mockResolver.getAnonymousField(Core.RESOURCE_SIZE))
+        .thenReturn(Collections.singletonList("resource-size_lng"));
+    List<Object> arguments = Arrays.asList(Core.RESOURCE_SIZE, 2L);
+    SolrQuery result =
+        toTest.propertyIsEqualTo(DivisibleByFunction.FUNCTION_NAME_STRING, arguments, true);
+    assertThat(result.getQuery(), containsString("frange"));
+    assertThat(result.getQuery(), containsString("mod"));
+  }
+
+  @Test
+  public void testPropertyIsEqualToWithDivisibleByFunctionNegated() {
+    when(mockResolver.getAnonymousField(Core.RESOURCE_SIZE))
+        .thenReturn(Collections.singletonList("resource-size_lng"));
+    List<Object> arguments = Arrays.asList(Core.RESOURCE_SIZE, 2L);
+    SolrQuery result =
+        toTest.propertyIsEqualTo(DivisibleByFunction.FUNCTION_NAME_STRING, arguments, false);
+    assertThat(result.getQuery(), startsWith("!"));
+  }
+
+  @Test
+  public void testPropertyIsEqualToWithProximityFunction() {
+    when(mockResolver.getField("title", AttributeFormat.STRING, true, Collections.emptyMap()))
+        .thenReturn("title_txt");
+    when(mockResolver.getSpecialIndexSuffix(AttributeFormat.STRING, Collections.emptyMap()))
+        .thenReturn(SchemaFields.TOKENIZED);
+    List<Object> arguments = Arrays.asList("title", 5, "hello world");
+    SolrQuery result =
+        toTest.propertyIsEqualTo(ProximityFunction.FUNCTION_NAME_STRING, arguments, true);
+    assertThat(result.getQuery(), containsString("~5"));
+  }
+
+  @Test
+  public void testPropertyIsEqualToWithUnsupportedFunction() {
+    List<Object> arguments = Arrays.asList("prop", 123);
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.propertyIsEqualTo("unknownFunction", arguments, true));
+  }
+
+  @Test
+  public void testWithinWithPropertyName() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    SolrQuery result = toTest.within("testProperty", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("IsWithin"));
+    assertThat(result.getQuery(), containsString("testProperty_geohash_index"));
+  }
+
+  @Test
+  public void testWithinWithAnyGeo() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.within(Metacard.ANY_GEO, "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("IsWithin"));
+  }
+
+  @Test
+  public void testDisjointWithPropertyName() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    SolrQuery result = toTest.disjoint("testProperty", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("IsDisjointTo"));
+  }
+
+  @Test
+  public void testDisjointWithAnyGeo() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.disjoint(Metacard.ANY_GEO, "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("IsDisjointTo"));
+  }
+
+  @Test
+  public void testOverlapsWithPropertyName() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    SolrQuery result = toTest.overlaps("testProperty", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("Overlaps"));
+  }
+
+  @Test
+  public void testOverlapsWithAnyGeo() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.overlaps(Metacard.ANY_GEO, "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("Overlaps"));
+  }
+
+  @Test
+  public void testContainsWithAnyGeo() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.contains(Metacard.ANY_GEO, "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("Contains"));
+  }
+
+  @Test
+  public void testDwithinWithPoint() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    SolrQuery result = toTest.dwithin("testProperty", "POINT(1 1)", 1000);
+    assertThat(result.getQuery(), containsString("Intersects"));
+    assertThat(result.getQuery(), containsString("BUFFER"));
+  }
+
+  @Test
+  public void testDwithinWithAnyGeoPoint() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.dwithin(Metacard.ANY_GEO, "POINT(1 1)", 1000);
+    assertThat(result.getQuery(), containsString("Intersects"));
+    assertThat(result.getQuery(), containsString("BUFFER"));
+  }
+
+  @Test
+  public void testDwithinWithPolygon() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    SolrQuery result =
+        toTest.dwithin("testProperty", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", 1000);
+    assertThat(result.getQuery(), containsString("Intersects"));
+  }
+
+  @Test
+  public void testDwithinWithAnyGeoPolygon() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result =
+        toTest.dwithin(Metacard.ANY_GEO, "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", 1000);
+    assertThat(result.getQuery(), containsString("Intersects"));
+  }
+
+  @Test
+  public void testDwithinWithInvalidWkt() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.dwithin("testProperty", "INVALID WKT", 1000));
+  }
+
+  @Test
+  public void testNearestNeighborWithPoint() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    SolrQuery result = toTest.nearestNeighbor("testProperty", "POINT(1 1)");
+    assertThat(result.getQuery(), containsString("Intersects"));
+    assertThat(result.getQuery(), containsString("BUFFER"));
+  }
+
+  @Test
+  public void testNearestNeighborWithAnyGeo() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.nearestNeighbor(Metacard.ANY_GEO, "POINT(1 1)");
+    assertThat(result.getQuery(), containsString("Intersects"));
+  }
+
+  @Test
+  public void testNearestNeighborWithPolygon() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    // Polygon should use centroid
+    SolrQuery result =
+        toTest.nearestNeighbor("testProperty", "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("Intersects"));
+  }
+
+  @Test
+  public void testNearestNeighborWithInvalidWkt() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.nearestNeighbor("testProperty", "INVALID WKT"));
+  }
+
+  @Test
+  public void testIntersectsWithAnyGeo() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result =
+        toTest.intersects(Metacard.ANY_GEO, "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))");
+    assertThat(result.getQuery(), containsString("Intersects"));
+  }
+
+  @Test
+  public void testIntersectsWithAnyGeoPoint() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.intersects(Metacard.ANY_GEO, "POINT(1 1)");
+    assertThat(result.getQuery(), containsString("Intersects"));
+    assertThat(result.getQuery(), containsString("BUFFER"));
+  }
+
+  @Test
+  public void testIntersectsWithMultiPointSingleCoord() {
+    when(mockResolver.anyGeoFields()).thenAnswer(invocation -> Stream.of("location_geohash_index"));
+    when(mockResolver.getField(
+            "location_geohash_index", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("location_geohash_index");
+    SolrQuery result = toTest.intersects(Metacard.ANY_GEO, "MULTIPOINT((1 1))");
+    assertThat(result.getQuery(), containsString("Intersects"));
+    assertThat(result.getQuery(), containsString("BUFFER"));
+  }
+
+  @Test
+  public void testRemoveHolesFromPolygon() throws ParseException {
+    String wktWithHole =
+        "POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))";
+    WKTReader reader = new WKTReader();
+    Geometry geo = reader.read(wktWithHole);
+    Geometry result = SolrFilterDelegate.removeHoles(geo);
+    assertThat(result.getNumGeometries(), is(1));
+    // Result should be just the exterior ring (no interior rings / holes)
+  }
+
+  @Test
+  public void testRemoveHolesFromMultiPolygon() throws ParseException {
+    String wktWithHoles =
+        "MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), "
+            + "((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))";
+    WKTReader reader = new WKTReader();
+    Geometry geo = reader.read(wktWithHoles);
+    Geometry result = SolrFilterDelegate.removeHoles(geo);
+    assertThat(result.getNumGeometries(), is(2));
+  }
+
+  @Test
+  public void testRemoveHolesFromPoint() throws ParseException {
+    String wkt = "POINT(1 1)";
+    WKTReader reader = new WKTReader();
+    Geometry geo = reader.read(wkt);
+    Geometry result = SolrFilterDelegate.removeHoles(geo);
+    // Point should be returned unchanged
+    assertThat(result.getGeometryType(), is("Point"));
+  }
+
+  @Test
+  public void testSetSortPolicy() {
+    SortByImpl sortBy =
+        new SortByImpl(
+            new org.geotools.filter.AttributeExpressionImpl("title"), SortOrder.ASCENDING);
+    toTest.setSortPolicy(new SortBy[] {sortBy});
+    // Just verify no exception is thrown
+    assertFalse(toTest.isSortedByDistance());
+  }
+
+  @Test
+  public void testSetSortPolicyWithNull() {
+    toTest.setSortPolicy(null);
+    assertFalse(toTest.isSortedByDistance());
+  }
+
+  @Test
+  public void testIsSortedByDistanceInitiallyFalse() {
+    assertFalse(toTest.isSortedByDistance());
+  }
+
+  @Test
+  public void testGetSortedDistancePointInitiallyNull() {
+    assertThat(toTest.getSortedDistancePoint(), nullValue());
+  }
+
+  @Test
+  public void testIsIdQueryInitiallyFalse() {
+    assertFalse(toTest.isIdQuery());
+  }
+
+  @Test
+  public void testGetIdsInitiallyEmpty() {
+    assertThat(toTest.getIds(), is(empty()));
+  }
+
+  @Test
+  public void testPropertyIsEqualToSetsIdQuery() {
+    when(mockResolver.getField(Metacard.ID, AttributeFormat.STRING, true, Collections.emptyMap()))
+        .thenReturn("id_txt");
+    toTest.propertyIsEqualTo(Metacard.ID, "test-id-123", true);
+    assertTrue(toTest.isIdQuery());
+    assertThat(toTest.getIds().size(), is(1));
+    assertTrue(toTest.getIds().contains("test-id-123"));
+  }
+
+  @Test
+  public void testPropertyIsEqualToCaseInsensitiveThrows() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.propertyIsEqualTo("title", "value", false));
+  }
+
+  @Test
+  public void testPropertyIsInProximityToWithNullPropertyName() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.propertyIsInProximityTo(null, 5, "search terms"));
+  }
+
+  @Test
+  public void testPropertyIsInProximityToWithNegativeDistance() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> toTest.propertyIsInProximityTo("title", -1, "search terms"));
+  }
+
+  @Test
+  public void testOperationToQueryWithEmptyWkt() {
+    when(mockResolver.getField(
+            "testProperty", AttributeFormat.GEOMETRY, false, Collections.emptyMap()))
+        .thenReturn("testProperty_geohash_index");
+    assertThrows(UnsupportedOperationException.class, () -> toTest.contains("testProperty", ""));
+  }
+
+  @Test
+  public void testPropertyIsDivisibleByWithNonExistentField() {
+    when(mockResolver.getAnonymousField("unknown")).thenReturn(Collections.emptyList());
+    assertThrows(
+        UnsupportedOperationException.class, () -> toTest.propertyIsDivisibleBy("unknown", 2L));
+  }
+
+  @Test
+  public void testPropertyIsLikeWithQuotedPhrase() {
+    when(mockResolver.getField("title", AttributeFormat.STRING, true, Collections.emptyMap()))
+        .thenReturn("title_txt");
+    when(mockResolver.getSpecialIndexSuffix(AttributeFormat.STRING, Collections.emptyMap()))
+        .thenReturn(SchemaFields.TOKENIZED);
+    when(mockResolver.getCaseSensitiveField("title_txt_tokenized", Collections.emptyMap()))
+        .thenReturn("title_txt_tokenized_has_case");
+    SolrQuery result = toTest.propertyIsLike("title", "\"exact phrase\"", true);
+    assertThat(result.getQuery(), containsString("*"));
+    assertThat(result.getQuery(), containsString("exact\\ phrase"));
+  }
+
+  @Test
+  public void testPropertyIsLikeWithAnyTextCaseSensitive() {
+    when(mockResolver.anyTextFields())
+        .thenReturn(Collections.singletonList("metadata_txt").stream());
+    when(mockResolver.getSpecialIndexSuffix(AttributeFormat.STRING, Collections.emptyMap()))
+        .thenReturn(SchemaFields.TOKENIZED);
+    when(mockResolver.getCaseSensitiveField("metadata_txt_tokenized", Collections.emptyMap()))
+        .thenReturn("metadata_txt_tokenized_has_case");
+    SolrQuery result = toTest.propertyIsLike(Metacard.ANY_TEXT, "search*", true);
+    assertThat(result.getQuery(), containsString("has_case"));
+  }
+
+  @Test
+  public void testPropertyIsEqualToWithAnyText() {
+    when(mockResolver.anyTextFields())
+        .thenReturn(Collections.singletonList("metadata_txt").stream());
+    when(mockResolver.getField(
+            Metacard.ANY_TEXT, AttributeFormat.STRING, true, Collections.emptyMap()))
+        .thenReturn("any_text");
+    SolrQuery result = toTest.propertyIsEqualTo(Metacard.ANY_TEXT, "exact value", true);
+    assertThat(result.getQuery(), containsString("metadata_txt"));
+  }
+
+  @Test
+  public void testRelativeTimeQuery() {
+    when(mockResolver.getField("created", AttributeFormat.DATE, false, Collections.emptyMap()))
+        .thenReturn("created_date");
+    // 1 hour in milliseconds
+    long duration = 3600000L;
+    SolrQuery result = toTest.relative(Metacard.CREATED, duration);
+    assertThat(result.getQuery(), containsString("created_date"));
+    assertThat(result.getQuery(), containsString("["));
+    assertThat(result.getQuery(), containsString("]"));
   }
 }
