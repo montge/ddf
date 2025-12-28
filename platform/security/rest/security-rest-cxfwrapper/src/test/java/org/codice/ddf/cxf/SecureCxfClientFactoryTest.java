@@ -15,7 +15,11 @@ package org.codice.ddf.cxf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,7 +33,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 import java.nio.file.Paths;
+import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.net.ssl.X509KeyManager;
@@ -39,9 +47,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.shiro.mgt.DefaultSecurityManager;
@@ -53,6 +63,7 @@ import org.codice.ddf.configuration.PropertyResolver;
 import org.codice.ddf.cxf.client.SecureCxfClientFactory;
 import org.codice.ddf.cxf.client.impl.ClientBuilderImpl;
 import org.codice.ddf.cxf.client.impl.ClientKeyInfo;
+import org.codice.ddf.cxf.client.impl.SecureCxfClientFactoryImpl;
 import org.codice.ddf.cxf.client.impl.SecureCxfClientFactoryImpl.AliasSelectorKeyManager;
 import org.codice.ddf.cxf.paos.PaosInInterceptor;
 import org.codice.ddf.cxf.paos.PaosOutInterceptor;
@@ -265,6 +276,332 @@ public class SecureCxfClientFactoryTest {
     String chosenAlias =
         aliasSelectorKeyManager.chooseClientAlias(new String[] {"x509"}, null, null);
     assertThat(chosenAlias, is(alias));
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerWithNullKeyManager() {
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(null, "testAlias");
+    String chosenAlias =
+        aliasSelectorKeyManager.chooseClientAlias(new String[] {"x509"}, null, null);
+    assertThat(chosenAlias, is(nullValue()));
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerWithNullAlias() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String expectedAlias = "defaultAlias";
+    when(keyManager.chooseClientAlias(any(), any(), any())).thenReturn(expectedAlias);
+
+    AliasSelectorKeyManager aliasSelectorKeyManager = new AliasSelectorKeyManager(keyManager, null);
+    String chosenAlias =
+        aliasSelectorKeyManager.chooseClientAlias(new String[] {"x509"}, null, null);
+    assertThat(chosenAlias, is(expectedAlias));
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerAliasNotFound() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String alias = "testAlias";
+    // Return aliases that don't match
+    when(keyManager.getClientAliases(any(), any())).thenReturn(new String[] {"otherAlias"});
+
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(keyManager, alias);
+    String chosenAlias =
+        aliasSelectorKeyManager.chooseClientAlias(new String[] {"x509"}, null, null);
+    assertThat(chosenAlias, is(nullValue()));
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerNullAliasesList() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String alias = "testAlias";
+    when(keyManager.getClientAliases(any(), any())).thenReturn(null);
+
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(keyManager, alias);
+    String chosenAlias =
+        aliasSelectorKeyManager.chooseClientAlias(new String[] {"x509"}, null, null);
+    assertThat(chosenAlias, is(nullValue()));
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerChooseServerAlias() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String alias = "testAlias";
+    String expectedServerAlias = "serverAlias";
+    Socket socket = mock(Socket.class);
+    Principal[] issuers = new Principal[0];
+    when(keyManager.chooseServerAlias(eq("RSA"), any(), any())).thenReturn(expectedServerAlias);
+
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(keyManager, alias);
+    String serverAlias = aliasSelectorKeyManager.chooseServerAlias("RSA", issuers, socket);
+    assertThat(serverAlias, is(expectedServerAlias));
+    verify(keyManager).chooseServerAlias(eq("RSA"), eq(issuers), eq(socket));
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerGetCertificateChain() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String alias = "testAlias";
+    X509Certificate[] expectedCerts = new X509Certificate[] {mock(X509Certificate.class)};
+    when(keyManager.getCertificateChain(anyString())).thenReturn(expectedCerts);
+
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(keyManager, alias);
+    X509Certificate[] certs = aliasSelectorKeyManager.getCertificateChain(alias);
+    assertThat(certs, is(expectedCerts));
+    verify(keyManager).getCertificateChain(alias);
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerGetClientAliases() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String alias = "testAlias";
+    String[] expectedAliases = new String[] {"alias1", "alias2"};
+    Principal[] issuers = new Principal[0];
+    when(keyManager.getClientAliases(eq("RSA"), any())).thenReturn(expectedAliases);
+
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(keyManager, alias);
+    String[] aliases = aliasSelectorKeyManager.getClientAliases("RSA", issuers);
+    assertThat(aliases, is(expectedAliases));
+    verify(keyManager).getClientAliases(eq("RSA"), eq(issuers));
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerGetPrivateKey() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String alias = "testAlias";
+    PrivateKey expectedKey = mock(PrivateKey.class);
+    when(keyManager.getPrivateKey(anyString())).thenReturn(expectedKey);
+
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(keyManager, alias);
+    PrivateKey key = aliasSelectorKeyManager.getPrivateKey(alias);
+    assertThat(key, is(expectedKey));
+    verify(keyManager).getPrivateKey(alias);
+  }
+
+  @Test
+  public void testAliasSelectorKeyManagerGetServerAliases() {
+    X509KeyManager keyManager = mock(X509KeyManager.class);
+    String alias = "testAlias";
+    String[] expectedAliases = new String[] {"serverAlias1", "serverAlias2"};
+    Principal[] issuers = new Principal[0];
+    when(keyManager.getServerAliases(eq("RSA"), any())).thenReturn(expectedAliases);
+
+    AliasSelectorKeyManager aliasSelectorKeyManager =
+        new AliasSelectorKeyManager(keyManager, alias);
+    String[] aliases = aliasSelectorKeyManager.getServerAliases("RSA", issuers);
+    assertThat(aliases, is(expectedAliases));
+    verify(keyManager).getServerAliases(eq("RSA"), eq(issuers));
+  }
+
+  @Test
+  public void testGetSameUriRedirectMax() {
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .build();
+    // Default value should be 3 (SAME_URI_REDIRECT_MAX)
+    assertThat(secureCxfClientFactory.getSameUriRedirectMax(), is(3));
+  }
+
+  @Test
+  public void testWebClientWithUsernamePassword() {
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .username("testUser")
+            .password("testPass")
+            .build();
+    WebClient client = secureCxfClientFactory.getWebClient();
+    assertThat(client, is(notNullValue()));
+    assertThat(client.getBaseURI().toASCIIString(), is(SECURE_ENDPOINT));
+  }
+
+  @Test
+  public void testAddOutInterceptors() {
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .build();
+
+    @SuppressWarnings("unchecked")
+    Interceptor<Message> mockInterceptor = mock(Interceptor.class);
+    secureCxfClientFactory.addOutInterceptors(mockInterceptor);
+    // Verify the client still works after adding interceptor
+    IDummy client = secureCxfClientFactory.getClient();
+    assertThat(client, is(notNullValue()));
+  }
+
+  @Test
+  public void testClientWithKeyInfo() {
+    String alias = "localhost";
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .disableCnCheck(true)
+            .clientKeyInfo(alias, systemKeystoreFile.toPath())
+            .sslProtocol("TLSv1.2")
+            .build();
+    WebClient client = secureCxfClientFactory.getWebClient();
+    assertThat(client, is(notNullValue()));
+  }
+
+  @Test
+  public void testClientWithTimeouts() {
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .connectionTimeout(5000)
+            .receiveTimeout(10000)
+            .build();
+    IDummy client = secureCxfClientFactory.getClient();
+    assertThat(client, is(notNullValue()));
+
+    HTTPConduit httpConduit = WebClient.getConfig(WebClient.client(client)).getHttpConduit();
+    assertThat(httpConduit.getClient().getConnectionTimeout(), is(5000L));
+    assertThat(httpConduit.getClient().getReceiveTimeout(), is(10000L));
+  }
+
+  @Test
+  public void testClientWithNullTimeouts() {
+    // Test that null timeouts use defaults
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .build();
+    IDummy client = secureCxfClientFactory.getClient();
+    assertThat(client, is(notNullValue()));
+
+    HTTPConduit httpConduit = WebClient.getConfig(WebClient.client(client)).getHttpConduit();
+    // Default timeouts: connection=30000, receive=60000
+    assertThat(httpConduit.getClient().getConnectionTimeout(), is(30000L));
+    assertThat(httpConduit.getClient().getReceiveTimeout(), is(60000L));
+  }
+
+  @Test
+  public void testWebClientClass() {
+    // Test using WebClient.class directly as interfaceClass
+    SecureCxfClientFactory<WebClient> secureCxfClientFactory =
+        new ClientBuilderImpl<WebClient>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(WebClient.class)
+            .build();
+    WebClient client = secureCxfClientFactory.getClient();
+    assertThat(client, is(notNullValue()));
+    assertThat(client.getBaseURI().toASCIIString(), is(SECURE_ENDPOINT));
+  }
+
+  @Test
+  public void testClientWithCustomInterceptor() {
+    @SuppressWarnings("unchecked")
+    Interceptor<Message> customInterceptor = mock(Interceptor.class);
+
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .interceptor(customInterceptor)
+            .build();
+    IDummy client = secureCxfClientFactory.getClient();
+    assertThat(client, is(notNullValue()));
+
+    ClientConfiguration config = WebClient.getConfig(WebClient.client(client));
+    assertThat(config.getInInterceptors().contains(customInterceptor), is(true));
+  }
+
+  @Test
+  public void testClientWithOauthDisabled() {
+    // Test without OAuth (useOAuth=false)
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .useOAuth(false)
+            .build();
+    IDummy client = secureCxfClientFactory.getClient();
+    assertThat(client, is(notNullValue()));
+  }
+
+  @Test
+  public void testSecureClientWithAllFeaturesDisabled() {
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .useOAuth(false)
+            .useSamlEcp(false)
+            .build();
+    IDummy client = secureCxfClientFactory.getClient();
+    assertThat(client, is(notNullValue()));
+    // Check that no PAOS interceptors were added
+    assertThat(hasEcpEnabled(client), is(false));
+  }
+
+  @Test
+  public void testSetSameUriRedirectMaxWithValidValue() {
+    SecureCxfClientFactoryImpl<IDummy> secureCxfClientFactory =
+        (SecureCxfClientFactoryImpl<IDummy>)
+            new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+                .endpoint(SECURE_ENDPOINT)
+                .interfaceClass(IDummy.class)
+                .build();
+
+    secureCxfClientFactory.setSameUriRedirectMax(5);
+    assertThat(secureCxfClientFactory.getSameUriRedirectMax(), is(5));
+  }
+
+  @Test
+  public void testSetSameUriRedirectMaxWithNullValue() {
+    SecureCxfClientFactoryImpl<IDummy> secureCxfClientFactory =
+        (SecureCxfClientFactoryImpl<IDummy>)
+            new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+                .endpoint(SECURE_ENDPOINT)
+                .interfaceClass(IDummy.class)
+                .build();
+
+    secureCxfClientFactory.setSameUriRedirectMax(null);
+    // Should not change from default value (3)
+    assertThat(secureCxfClientFactory.getSameUriRedirectMax(), is(3));
+  }
+
+  @Test
+  public void testSetSameUriRedirectMaxWithZeroValue() {
+    SecureCxfClientFactoryImpl<IDummy> secureCxfClientFactory =
+        (SecureCxfClientFactoryImpl<IDummy>)
+            new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+                .endpoint(SECURE_ENDPOINT)
+                .interfaceClass(IDummy.class)
+                .build();
+
+    secureCxfClientFactory.setSameUriRedirectMax(0);
+    // Should not change from default value (3)
+    assertThat(secureCxfClientFactory.getSameUriRedirectMax(), is(3));
+  }
+
+  @Test
+  public void testSetSameUriRedirectMaxWithNegativeValue() {
+    SecureCxfClientFactoryImpl<IDummy> secureCxfClientFactory =
+        (SecureCxfClientFactoryImpl<IDummy>)
+            new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+                .endpoint(SECURE_ENDPOINT)
+                .interfaceClass(IDummy.class)
+                .build();
+
+    secureCxfClientFactory.setSameUriRedirectMax(-5);
+    // Should not change from default value (3)
+    assertThat(secureCxfClientFactory.getSameUriRedirectMax(), is(3));
   }
 
   private boolean hasEcpEnabled(Object client) {

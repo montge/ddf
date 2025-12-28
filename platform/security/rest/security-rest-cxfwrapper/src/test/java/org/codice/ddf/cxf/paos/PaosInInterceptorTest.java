@@ -269,4 +269,140 @@ public class PaosInInterceptorTest {
     assertThat(
         request.getHeaders().get("x-custom-header"), is(Collections.singletonList("Custom")));
   }
+
+  @Test
+  public void handleMessageWithNonPaosContentType() {
+    Message message = new MessageImpl();
+    message.setContent(InputStream.class, new ByteArrayInputStream("test content".getBytes()));
+    message.put(Message.CONTENT_TYPE, "application/xml"); // non-PAOS content type
+
+    // Set up the exchange and out message
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "GET");
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor = new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity());
+    // Should return early without processing due to non-PAOS content type
+    paosInInterceptor.handleMessage(message);
+
+    // Verify content is unchanged
+    assertThat(message.getContent(InputStream.class), is(org.hamcrest.Matchers.notNullValue()));
+  }
+
+  @Test
+  public void handleMessageWithNullContentType() {
+    Message message = new MessageImpl();
+    message.setContent(InputStream.class, new ByteArrayInputStream("test content".getBytes()));
+    message.put(Message.CONTENT_TYPE, null);
+
+    // Set up the exchange and out message
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "GET");
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor = new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity());
+    // Should return early without processing due to null content type
+    paosInInterceptor.handleMessage(message);
+
+    // Verify content is unchanged
+    assertThat(message.getContent(InputStream.class), is(org.hamcrest.Matchers.notNullValue()));
+  }
+
+  @Test
+  public void handleFault() {
+    Message message = new MessageImpl();
+    message.setContent(InputStream.class, new ByteArrayInputStream("test content".getBytes()));
+    message.put(Message.CONTENT_TYPE, "application/xml");
+
+    // Set up the exchange and out message
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "GET");
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor = new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity());
+    // handleFault just delegates to handleMessage
+    paosInInterceptor.handleFault(message);
+
+    // Verify no exception was thrown - the method should just execute handleMessage
+    assertThat(message.getContent(InputStream.class), is(org.hamcrest.Matchers.notNullValue()));
+  }
+
+  @Test
+  public void handleMessageWithPostMethod() throws IOException {
+    Message message = new MessageImpl();
+    message.setContent(
+        InputStream.class,
+        PaosInInterceptorTest.class.getClassLoader().getResource("ecprequest.xml").openStream());
+    message.put(Message.CONTENT_TYPE, "application/vnd.paos+xml");
+
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "POST"); // POST instead of GET
+    protocolHeaders.put("Authorization", Collections.singletonList("BASIC dGVzdDp0ZXN0"));
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor =
+        new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity()) {
+          HttpResponseWrapper getHttpResponse(
+              String responseConsumerURL, String soapResponse, Message message) throws IOException {
+            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper();
+            if (responseConsumerURL.equals("https://sp.example.org/PAOSConsumer")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content = new ByteArrayInputStream("actual content".getBytes());
+              httpResponseWrapper.headers = Collections.emptySet();
+            } else if (responseConsumerURL.equals("https://idp.example.org/saml2/sso")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content =
+                  PaosInInterceptorTest.class
+                      .getClassLoader()
+                      .getResource("idpresponse.xml")
+                      .openStream();
+            }
+            return httpResponseWrapper;
+          }
+        };
+    paosInInterceptor.handleMessage(message);
+    assertThat(IOUtils.toString(message.getContent(InputStream.class)), is("actual content"));
+  }
+
+  @Test
+  public void getHttpUnsuccessfulResponseHandlerNoRedirect() throws IOException {
+    Message message = new MessageImpl();
+    message.put(Message.HTTP_REQUEST_METHOD, "GET");
+
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    message.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+
+    PaosInInterceptor paosInInterceptor =
+        spy(new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity()));
+    doReturn(false)
+        .when(paosInInterceptor)
+        .isRedirect(any(HttpRequest.class), any(HttpResponse.class), any(String.class));
+
+    GenericUrl url = new GenericUrl("https://localhost:8993/PAOSConsumer");
+    HttpRequest request = new MockHttpTransport().createRequestFactory().buildGetRequest(url);
+
+    HttpResponse response = request.execute();
+
+    HttpUnsuccessfulResponseHandler responseHandler =
+        paosInInterceptor.getHttpUnsuccessfulResponseHandler(message);
+    boolean returned = responseHandler.handleResponse(request, response, true);
+
+    assertThat(returned, is(false));
+  }
 }
