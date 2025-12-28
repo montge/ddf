@@ -604,6 +604,32 @@ public class SecureCxfClientFactoryTest {
     assertThat(secureCxfClientFactory.getSameUriRedirectMax(), is(3));
   }
 
+  @Test
+  public void testGetClientForSystemSubject() {
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .build();
+
+    DummySubject subject = getSubject();
+    IDummy client = secureCxfClientFactory.getClientForSystemSubject(subject);
+    assertThat(client, is(notNullValue()));
+  }
+
+  @Test
+  public void testGetWebSystemClient() {
+    SecureCxfClientFactory<IDummy> secureCxfClientFactory =
+        new ClientBuilderImpl<IDummy>(null, samlSecurity, securityLogger, securityManager)
+            .endpoint(SECURE_ENDPOINT)
+            .interfaceClass(IDummy.class)
+            .build();
+
+    WebClient client = secureCxfClientFactory.getWebSystemClient();
+    assertThat(client, is(notNullValue()));
+    assertThat(client.getBaseURI().toASCIIString(), is(SECURE_ENDPOINT));
+  }
+
   private boolean hasEcpEnabled(Object client) {
     ClientConfiguration clientConfig = WebClient.getConfig(client);
     return clientConfig.getOutInterceptors().stream().anyMatch(i -> i instanceof PaosOutInterceptor)

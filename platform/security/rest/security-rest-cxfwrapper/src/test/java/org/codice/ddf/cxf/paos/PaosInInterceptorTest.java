@@ -405,4 +405,239 @@ public class PaosInInterceptorTest {
 
     assertThat(returned, is(false));
   }
+
+  @Test
+  public void isRedirectWithNoFollowRedirects() throws IOException {
+    PaosInInterceptor paosInInterceptor = new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity());
+    GenericUrl url = new GenericUrl("https://localhost:8993/PAOSConsumer");
+    HttpRequest request = new MockHttpTransport().createRequestFactory().buildGetRequest(url);
+    request.setFollowRedirects(false);
+
+    HttpResponse response = request.execute();
+
+    boolean result = paosInInterceptor.isRedirect(request, response, "https://example.com");
+    assertThat(result, is(false));
+  }
+
+  @Test
+  public void isRedirectWithNullRedirectLocation() throws IOException {
+    PaosInInterceptor paosInInterceptor = new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity());
+    GenericUrl url = new GenericUrl("https://localhost:8993/PAOSConsumer");
+    HttpRequest request = new MockHttpTransport().createRequestFactory().buildGetRequest(url);
+    request.setFollowRedirects(true);
+
+    HttpResponse response = request.execute();
+
+    boolean result = paosInInterceptor.isRedirect(request, response, null);
+    assertThat(result, is(false));
+  }
+
+  @Test
+  public void handleMessageWithNoAuthorization() throws IOException {
+    Message message = new MessageImpl();
+    message.setContent(
+        InputStream.class,
+        PaosInInterceptorTest.class.getClassLoader().getResource("ecprequest.xml").openStream());
+    message.put(Message.CONTENT_TYPE, "application/vnd.paos+xml");
+
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "GET");
+    // No Authorization header
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor =
+        new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity()) {
+          HttpResponseWrapper getHttpResponse(
+              String responseConsumerURL, String soapResponse, Message message) throws IOException {
+            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper();
+            if (responseConsumerURL.equals("https://sp.example.org/PAOSConsumer")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content = new ByteArrayInputStream("actual content".getBytes());
+              httpResponseWrapper.headers = Collections.emptySet();
+            } else if (responseConsumerURL.equals("https://idp.example.org/saml2/sso")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content =
+                  PaosInInterceptorTest.class
+                      .getClassLoader()
+                      .getResource("idpresponse.xml")
+                      .openStream();
+            }
+            return httpResponseWrapper;
+          }
+        };
+    paosInInterceptor.handleMessage(message);
+    assertThat(IOUtils.toString(message.getContent(InputStream.class)), is("actual content"));
+  }
+
+  @Test
+  public void handleMessageWithEmptyAuthorizationList() throws IOException {
+    Message message = new MessageImpl();
+    message.setContent(
+        InputStream.class,
+        PaosInInterceptorTest.class.getClassLoader().getResource("ecprequest.xml").openStream());
+    message.put(Message.CONTENT_TYPE, "application/vnd.paos+xml");
+
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "GET");
+    protocolHeaders.put("Authorization", Collections.emptyList()); // Empty auth list
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor =
+        new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity()) {
+          HttpResponseWrapper getHttpResponse(
+              String responseConsumerURL, String soapResponse, Message message) throws IOException {
+            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper();
+            if (responseConsumerURL.equals("https://sp.example.org/PAOSConsumer")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content = new ByteArrayInputStream("actual content".getBytes());
+              httpResponseWrapper.headers = Collections.emptySet();
+            } else if (responseConsumerURL.equals("https://idp.example.org/saml2/sso")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content =
+                  PaosInInterceptorTest.class
+                      .getClassLoader()
+                      .getResource("idpresponse.xml")
+                      .openStream();
+            }
+            return httpResponseWrapper;
+          }
+        };
+    paosInInterceptor.handleMessage(message);
+    assertThat(IOUtils.toString(message.getContent(InputStream.class)), is("actual content"));
+  }
+
+  @Test
+  public void handleMessageWithBasicAuthUsernameOnly() throws IOException {
+    Message message = new MessageImpl();
+    message.setContent(
+        InputStream.class,
+        PaosInInterceptorTest.class.getClassLoader().getResource("ecprequest.xml").openStream());
+    message.put(Message.CONTENT_TYPE, "application/vnd.paos+xml");
+
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "GET");
+    // "user:" encoded in base64
+    protocolHeaders.put(
+        "Authorization",
+        Collections.singletonList(
+            "BASIC " + java.util.Base64.getEncoder().encodeToString("user:".getBytes())));
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor =
+        new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity()) {
+          HttpResponseWrapper getHttpResponse(
+              String responseConsumerURL, String soapResponse, Message message) throws IOException {
+            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper();
+            if (responseConsumerURL.equals("https://sp.example.org/PAOSConsumer")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content = new ByteArrayInputStream("actual content".getBytes());
+              httpResponseWrapper.headers = Collections.emptySet();
+            } else if (responseConsumerURL.equals("https://idp.example.org/saml2/sso")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content =
+                  PaosInInterceptorTest.class
+                      .getClassLoader()
+                      .getResource("idpresponse.xml")
+                      .openStream();
+            }
+            return httpResponseWrapper;
+          }
+        };
+    paosInInterceptor.handleMessage(message);
+    assertThat(IOUtils.toString(message.getContent(InputStream.class)), is("actual content"));
+  }
+
+  @Test
+  public void handleMessageWithHeadMethod() throws IOException {
+    Message message = new MessageImpl();
+    message.setContent(
+        InputStream.class,
+        PaosInInterceptorTest.class.getClassLoader().getResource("ecprequest.xml").openStream());
+    message.put(Message.CONTENT_TYPE, "application/vnd.paos+xml");
+
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "HEAD");
+    protocolHeaders.put("Authorization", Collections.singletonList("BASIC dGVzdDp0ZXN0"));
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor =
+        new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity()) {
+          HttpResponseWrapper getHttpResponse(
+              String responseConsumerURL, String soapResponse, Message message) throws IOException {
+            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper();
+            if (responseConsumerURL.equals("https://sp.example.org/PAOSConsumer")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content = new ByteArrayInputStream("actual content".getBytes());
+              httpResponseWrapper.headers = Collections.emptySet();
+            } else if (responseConsumerURL.equals("https://idp.example.org/saml2/sso")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content =
+                  PaosInInterceptorTest.class
+                      .getClassLoader()
+                      .getResource("idpresponse.xml")
+                      .openStream();
+            }
+            return httpResponseWrapper;
+          }
+        };
+    paosInInterceptor.handleMessage(message);
+    assertThat(IOUtils.toString(message.getContent(InputStream.class)), is("actual content"));
+  }
+
+  @Test
+  public void handleMessageWithConnectMethod() throws IOException {
+    Message message = new MessageImpl();
+    message.setContent(
+        InputStream.class,
+        PaosInInterceptorTest.class.getClassLoader().getResource("ecprequest.xml").openStream());
+    message.put(Message.CONTENT_TYPE, "application/vnd.paos+xml");
+
+    Message outMessage = new MessageImpl();
+    HashMap<String, List> protocolHeaders = new HashMap<>();
+    outMessage.put(Message.PROTOCOL_HEADERS, protocolHeaders);
+    outMessage.put(Message.HTTP_REQUEST_METHOD, "CONNECT");
+    protocolHeaders.put("Authorization", Collections.singletonList("BASIC dGVzdDp0ZXN0"));
+    ExchangeImpl exchange = new ExchangeImpl();
+    exchange.setOutMessage(outMessage);
+    message.setExchange(exchange);
+
+    PaosInInterceptor paosInInterceptor =
+        new PaosInInterceptor(Phase.RECEIVE, new SamlSecurity()) {
+          HttpResponseWrapper getHttpResponse(
+              String responseConsumerURL, String soapResponse, Message message) throws IOException {
+            HttpResponseWrapper httpResponseWrapper = new HttpResponseWrapper();
+            if (responseConsumerURL.equals("https://sp.example.org/PAOSConsumer")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content = new ByteArrayInputStream("actual content".getBytes());
+              httpResponseWrapper.headers = Collections.emptySet();
+            } else if (responseConsumerURL.equals("https://idp.example.org/saml2/sso")) {
+              httpResponseWrapper.statusCode = 200;
+              httpResponseWrapper.content =
+                  PaosInInterceptorTest.class
+                      .getClassLoader()
+                      .getResource("idpresponse.xml")
+                      .openStream();
+            }
+            return httpResponseWrapper;
+          }
+        };
+    paosInInterceptor.handleMessage(message);
+    assertThat(IOUtils.toString(message.getContent(InputStream.class)), is("actual content"));
+  }
 }

@@ -15,6 +15,7 @@ package org.codice.ddf.cxf.paos;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -25,9 +26,27 @@ import javax.ws.rs.core.HttpHeaders;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.phase.Phase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PaosOutInterceptorTest {
+  private String originalEcpEnabled;
+
+  @BeforeEach
+  public void setUp() {
+    originalEcpEnabled = System.getProperty("org.codice.ddf.security.ecp.enabled");
+  }
+
+  @AfterEach
+  public void tearDown() {
+    if (originalEcpEnabled != null) {
+      System.setProperty("org.codice.ddf.security.ecp.enabled", originalEcpEnabled);
+    } else {
+      System.clearProperty("org.codice.ddf.security.ecp.enabled");
+    }
+  }
+
   @Test
   public void testHandleMessageNoAccept() {
     Message message = new MessageImpl();
@@ -68,5 +87,35 @@ public class PaosOutInterceptorTest {
             .get("PAOS")
             .contains(
                 "\"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp\",\"urn:oasis:names:tc:SAML:2.0:profiles:SSO:ecp:2.0:WantAuthnRequestsSigned\""));
+  }
+
+  @Test
+  public void testHandleMessageEcpDisabled() {
+    System.setProperty("org.codice.ddf.security.ecp.enabled", "false");
+    Message message = new MessageImpl();
+    HashMap<String, List<String>> headers = new HashMap<>();
+    message.put(Message.PROTOCOL_HEADERS, headers);
+    PaosOutInterceptor paosOutInterceptor = new PaosOutInterceptor(Phase.POST_LOGICAL);
+    paosOutInterceptor.handleMessage(message);
+    // When ECP is disabled, no PAOS headers should be added
+    assertThat(
+        ((Map<String, List<String>>) message.get(Message.PROTOCOL_HEADERS)).get("PAOS"),
+        nullValue());
+  }
+
+  @Test
+  public void testHandleMessageWithExistingAcceptHeader() {
+    Message message = new MessageImpl();
+    HashMap<String, List<String>> headers = new HashMap<>();
+    List<String> acceptHeaders = new ArrayList<>();
+    acceptHeaders.add("application/json");
+    headers.put(HttpHeaders.ACCEPT, acceptHeaders);
+    message.put(Message.PROTOCOL_HEADERS, headers);
+    PaosOutInterceptor paosOutInterceptor = new PaosOutInterceptor(Phase.POST_LOGICAL);
+    paosOutInterceptor.handleMessage(message);
+    // PAOS content type should be added to existing accept headers
+    assertThat(
+        ((Map<String, List<String>>) message.get(Message.PROTOCOL_HEADERS)).get(HttpHeaders.ACCEPT),
+        contains("application/json", "application/vnd.paos+xml"));
   }
 }

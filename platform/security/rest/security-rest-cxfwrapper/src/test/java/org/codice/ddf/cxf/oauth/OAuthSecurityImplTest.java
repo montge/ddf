@@ -482,4 +482,11 @@ public class OAuthSecurityImplTest {
       return webClient;
     }
   }
+
+  @Test
+  public void testCreateWebClient() {
+    OAuthSecurityImpl oauthSecurityReal = new OAuthSecurityImpl(tokenStorage);
+    WebClient webClient = oauthSecurityReal.createWebClient(URI.create("http://localhost:8080"));
+    assertTrue(webClient != null);
+  }
 }

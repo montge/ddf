@@ -162,4 +162,18 @@ class BodyWriterTest {
         NullPointerException.class,
         () -> bodyWriter.writeBody(body, message, String.class, String.class));
   }
+
+  @Test
+  void testWriteBodyWithNullClass() {
+    // writeBody with null class should still attempt to work
+    String body = "test body";
+    MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
+    headers.add("Content-Type", "text/plain");
+    when(message.get(Message.PROTOCOL_HEADERS)).thenReturn(headers);
+
+    // This will throw NPE from ClientProviderFactory.getInstance(outMessage) since there's no CXF
+    // Bus
+    assertThrows(
+        NullPointerException.class, () -> bodyWriter.writeBody(body, message, null, String.class));
+  }
 }
