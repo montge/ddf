@@ -14,7 +14,9 @@
 package ddf.catalog.filter.delegate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -312,5 +314,249 @@ class FilterToTextDelegateTest {
   void testOrWithSingleOperand() {
     String result = delegate.or(Arrays.asList("only"));
     assertThat(result, is("or(only)"));
+  }
+
+  // Custom function tests
+  @Test
+  void testPropertyIsEqualToWithDivisibleByFunction() {
+    String result =
+        delegate.propertyIsEqualTo("divisibleBy", Arrays.asList("number", 5L), Boolean.TRUE);
+    assertThat(result, containsString("number%5l=0"));
+  }
+
+  @Test
+  void testPropertyIsEqualToWithProximityFunction() {
+    String result =
+        delegate.propertyIsEqualTo("proximity", Arrays.asList("content", 3, "term"), Boolean.TRUE);
+    assertThat(result, containsString("proximity(content,3,term)"));
+  }
+
+  @Test
+  void testPropertyIsEqualToWithUnsupportedFunction() {
+    assertThrows(
+        UnsupportedOperationException.class,
+        () -> delegate.propertyIsEqualTo("unknownFunction", Arrays.asList("arg"), "value"));
+  }
+
+  // Date property tests
+  @Test
+  void testPropertyIsEqualToDate() {
+    Date date = new Date(0);
+    assertThat(delegate.propertyIsEqualTo("created", date), is("created=" + date));
+  }
+
+  @Test
+  void testPropertyIsEqualToDateWithRange() {
+    Date start = new Date(0);
+    Date end = new Date(1000);
+    assertThat(
+        delegate.propertyIsEqualTo("modified", start, end), is("modified=" + start + " to " + end));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToDate() {
+    Date date = new Date(0);
+    assertThat(delegate.propertyIsNotEqualTo("created", date), is("created!=" + date));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToDateWithRange() {
+    Date start = new Date(0);
+    Date end = new Date(1000);
+    assertThat(
+        delegate.propertyIsNotEqualTo("modified", start, end),
+        is("modified!=" + start + " to " + end));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToBytes() {
+    byte[] bytes = new byte[] {1, 2, 3};
+    assertThat(delegate.propertyIsNotEqualTo("data", bytes), is("data!={1,2,3}b"));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToShort() {
+    assertThat(delegate.propertyIsNotEqualTo("num", (short) 10), is("num!=10s"));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToLong() {
+    assertThat(delegate.propertyIsNotEqualTo("bignum", 100L), is("bignum!=100l"));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToDouble() {
+    assertThat(delegate.propertyIsNotEqualTo("decimal", 3.14d), is("decimal!=3.14d"));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToFloat() {
+    assertThat(delegate.propertyIsNotEqualTo("floatval", 2.5f), is("floatval!=2.5f"));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToBoolean() {
+    assertThat(delegate.propertyIsNotEqualTo("flag", false), is("flag!=false"));
+  }
+
+  @Test
+  void testPropertyIsNotEqualToObject() {
+    assertThat(delegate.propertyIsNotEqualTo("obj", "objValue"), is("obj!=objValueo"));
+  }
+
+  // Greater than tests
+  @Test
+  void testPropertyIsGreaterThanDate() {
+    Date date = new Date(0);
+    assertThat(delegate.propertyIsGreaterThan("created", date), is("created>" + date));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanShort() {
+    assertThat(delegate.propertyIsGreaterThan("num", (short) 5), is("num>5s"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanLong() {
+    assertThat(delegate.propertyIsGreaterThan("bignum", 1000L), is("bignum>1000l"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanDouble() {
+    assertThat(delegate.propertyIsGreaterThan("decimal", 1.5d), is("decimal>1.5d"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanFloat() {
+    assertThat(delegate.propertyIsGreaterThan("floatval", 0.5f), is("floatval>0.5f"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanObject() {
+    assertThat(delegate.propertyIsGreaterThan("obj", "objValue"), is("obj>objValue"));
+  }
+
+  // Greater than or equal to tests
+  @Test
+  void testPropertyIsGreaterThanOrEqualToDate() {
+    Date date = new Date(0);
+    assertThat(delegate.propertyIsGreaterThanOrEqualTo("created", date), is("created>=" + date));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanOrEqualToInt() {
+    assertThat(delegate.propertyIsGreaterThanOrEqualTo("count", 10), is("count>=10i"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanOrEqualToShort() {
+    assertThat(delegate.propertyIsGreaterThanOrEqualTo("num", (short) 5), is("num>=5s"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanOrEqualToDouble() {
+    assertThat(delegate.propertyIsGreaterThanOrEqualTo("decimal", 1.5d), is("decimal>=1.5d"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanOrEqualToFloat() {
+    assertThat(delegate.propertyIsGreaterThanOrEqualTo("floatval", 0.5f), is("floatval>=0.5f"));
+  }
+
+  @Test
+  void testPropertyIsGreaterThanOrEqualToObject() {
+    assertThat(delegate.propertyIsGreaterThanOrEqualTo("obj", "objValue"), is("obj>=objValue"));
+  }
+
+  // Less than tests
+  @Test
+  void testPropertyIsLessThanDate() {
+    Date date = new Date(0);
+    assertThat(delegate.propertyIsLessThan("created", date), is("created<" + date));
+  }
+
+  @Test
+  void testPropertyIsLessThanInt() {
+    assertThat(delegate.propertyIsLessThan("count", 100), is("count<100i"));
+  }
+
+  @Test
+  void testPropertyIsLessThanShort() {
+    assertThat(delegate.propertyIsLessThan("num", (short) 50), is("num<50s"));
+  }
+
+  @Test
+  void testPropertyIsLessThanLong() {
+    assertThat(delegate.propertyIsLessThan("bignum", 999L), is("bignum<999l"));
+  }
+
+  @Test
+  void testPropertyIsLessThanFloat() {
+    assertThat(delegate.propertyIsLessThan("floatval", 9.9f), is("floatval<9.9f"));
+  }
+
+  @Test
+  void testPropertyIsLessThanObject() {
+    assertThat(delegate.propertyIsLessThan("obj", "objValue"), is("obj<objValue"));
+  }
+
+  // Less than or equal to tests
+  @Test
+  void testPropertyIsLessThanOrEqualToDate() {
+    Date date = new Date(0);
+    assertThat(delegate.propertyIsLessThanOrEqualTo("created", date), is("created<=" + date));
+  }
+
+  @Test
+  void testPropertyIsLessThanOrEqualToInt() {
+    assertThat(delegate.propertyIsLessThanOrEqualTo("count", 100), is("count<=100i"));
+  }
+
+  @Test
+  void testPropertyIsLessThanOrEqualToShort() {
+    assertThat(delegate.propertyIsLessThanOrEqualTo("num", (short) 50), is("num<=50s"));
+  }
+
+  @Test
+  void testPropertyIsLessThanOrEqualToLong() {
+    assertThat(delegate.propertyIsLessThanOrEqualTo("bignum", 999L), is("bignum<=999l"));
+  }
+
+  @Test
+  void testPropertyIsLessThanOrEqualToDouble() {
+    assertThat(delegate.propertyIsLessThanOrEqualTo("decimal", 99.9d), is("decimal<=99.9d"));
+  }
+
+  @Test
+  void testPropertyIsLessThanOrEqualToObject() {
+    assertThat(delegate.propertyIsLessThanOrEqualTo("obj", "objValue"), is("obj<=objValue"));
+  }
+
+  // Between tests
+  @Test
+  void testPropertyIsBetweenDate() {
+    Date start = new Date(0);
+    Date end = new Date(1000);
+    assertThat(delegate.propertyIsBetween("created", start, end), is(start + "<=created<=" + end));
+  }
+
+  @Test
+  void testPropertyIsBetweenShort() {
+    assertThat(delegate.propertyIsBetween("num", (short) 1, (short) 10), is("1s<=num<=10s"));
+  }
+
+  @Test
+  void testPropertyIsBetweenFloat() {
+    assertThat(delegate.propertyIsBetween("floatval", 0.5f, 9.5f), is("0.5f<=floatval<=9.5f"));
+  }
+
+  @Test
+  void testPropertyIsBetweenDouble() {
+    assertThat(delegate.propertyIsBetween("decimal", 1.0d, 10.0d), is("1.0d<=decimal<=10.0d"));
+  }
+
+  @Test
+  void testPropertyIsBetweenObject() {
+    assertThat(delegate.propertyIsBetween("obj", "a", "z"), is("a<=obj<=z"));
   }
 }
