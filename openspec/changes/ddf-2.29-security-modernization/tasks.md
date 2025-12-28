@@ -199,6 +199,8 @@
 - [x] 6.1.2 Create basic E2E test for search workflow ✅ (2025-12-12)
 - [x] 6.1.3 Add Playwright to CI pipeline ✅ (2025-12-12)
 - [ ] 6.1.4 Migrate CasperJS tests to Playwright
+  - Scope: 3 files, 456 lines in admin-modules-installer and admin-modules-configuration
+  - Tests: Simple selector-based checks for admin wizard UI
 - [ ] 6.1.5 Retire CasperJS/PhantomJS
 
 ### 6.2 Bootstrap Upgrade
