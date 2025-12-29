@@ -91,7 +91,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-incremental-java-${{ matrix.java }}
           path: '**/target/surefire-reports/*.xml'
@@ -99,7 +99,7 @@ jobs:
 
       - name: Upload JaCoCo reports
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jacoco-reports-incremental-java-${{ matrix.java }}
           path: '**/target/site/jacoco/*.xml'
@@ -139,7 +139,7 @@ jobs:
 
       - name: Upload distribution artifacts
         if: matrix.java == '17'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ddf-distribution
           path: distribution/ddf/target/ddf-*.zip
@@ -147,7 +147,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-full-java-${{ matrix.java }}
           path: '**/target/surefire-reports/*.xml'
@@ -155,7 +155,7 @@ jobs:
 
       - name: Upload JaCoCo reports
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jacoco-reports-full-java-${{ matrix.java }}
           path: '**/target/site/jacoco/*.xml'
@@ -163,7 +163,7 @@ jobs:
 
       - name: Upload build logs on failure
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: build-logs-java-${{ matrix.java }}
           path: |

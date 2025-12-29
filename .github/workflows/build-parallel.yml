@@ -173,7 +173,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-libs
           path: '**/target/surefire-reports/*.xml'
@@ -210,7 +210,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-platform
           path: '**/target/surefire-reports/*.xml'
@@ -247,7 +247,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-catalog-core
           path: '**/target/surefire-reports/*.xml'
@@ -284,7 +284,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-catalog-spatial
           path: '**/target/surefire-reports/*.xml'
@@ -326,7 +326,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-catalog-rest
           path: '**/target/surefire-reports/*.xml'
@@ -375,7 +375,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-catalog-other
           path: '**/target/surefire-reports/*.xml'
@@ -420,7 +420,7 @@ jobs:
             -Dfmt.skip=true
 
       - name: Upload distribution
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ddf-distribution
           path: distribution/ddf/target/ddf-*.zip
