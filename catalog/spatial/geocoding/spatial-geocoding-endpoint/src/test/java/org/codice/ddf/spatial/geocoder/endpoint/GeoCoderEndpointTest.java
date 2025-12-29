@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import org.codice.ddf.spatial.geocoding.GeoCoderService;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;
 import org.junit.jupiter.api.BeforeEach;

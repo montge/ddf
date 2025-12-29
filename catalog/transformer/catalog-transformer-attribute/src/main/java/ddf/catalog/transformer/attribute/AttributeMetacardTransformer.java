@@ -19,11 +19,11 @@ import ddf.catalog.data.Metacard;
 import ddf.catalog.data.impl.BinaryContentImpl;
 import ddf.catalog.transform.CatalogTransformerException;
 import ddf.catalog.transform.MetacardTransformer;
+import jakarta.activation.MimeType;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import javax.activation.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

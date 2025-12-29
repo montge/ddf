@@ -66,14 +66,16 @@
                             <descriptors>
                                 <!-- Include pax-cdi-features explicitly since recursive resolution is disabled -->
                                 <descriptor>mvn:org.ops4j.pax.cdi/pax-cdi-features/${pax.cdi.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</descriptor>
-                                <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</descriptor>
-                                <!-- Spring 5.3.x feature is provided by ddf.features/kernel -->
-                                <descriptor>mvn:org.apache.karaf.decanter/apache-karaf-decanter/${decanter.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.features/specs/${karaf.version}/xml/features</descriptor>
+                                <!-- Karaf spring repository is NOT included - DDF provides Spring 6.2.x with security fixes -->
                                 <descriptor>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</descriptor>
-
+                                <!-- Spring 6.2.x features are provided by ddf.features/kernel - must be before CXF -->
                                 <descriptor>mvn:ddf.features/kernel/${project.version}/xml/features</descriptor>
+                                <descriptor>mvn:ddf.libs/ddf-cxf-karaf-features/${project.version}/xml/features</descriptor>
+                                <!-- Use DDF's modified Camel features that reference Spring 6.2.x -->
+                                <descriptor>mvn:ddf.features/camel-karaf/${project.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.apache.karaf.decanter/apache-karaf-decanter/${decanter.version}/xml/features</descriptor>
                                 <descriptor>mvn:ddf.features/install-profiles/${project.version}/xml/features</descriptor>
                                 <descriptor>mvn:ddf.features/apps/${project.version}/xml/features</descriptor>
                                 <descriptor>mvn:ddf.features/admin/${project.version}/xml/features</descriptor>
@@ -310,17 +312,18 @@
             <classifier>features</classifier>
             <type>xml</type>
         </dependency>
+        <!-- Use DDF's modified Camel features that reference Spring 6.2.x -->
         <dependency>
-            <groupId>org.apache.camel.karaf</groupId>
-            <artifactId>apache-camel</artifactId>
-            <version>${camel.version}</version>
+            <groupId>ddf.features</groupId>
+            <artifactId>camel-karaf</artifactId>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf.karaf</groupId>
-            <artifactId>apache-cxf</artifactId>
-            <version>${cxf.version}</version>
+            <groupId>ddf.libs</groupId>
+            <artifactId>ddf-cxf-karaf-features</artifactId>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

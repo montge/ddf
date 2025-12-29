@@ -13,13 +13,14 @@
  */
 package org.codice.ddf.spatial.ogc.wfs.v110.catalog.source;
 
+import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
@@ -29,7 +30,6 @@ import net.opengis.ows.v_1_0_0.ExceptionReport;
 import net.opengis.ows.v_1_0_0.ExceptionType;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.client.ResponseExceptionMapper;
-import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsException;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsInvalidEntityException;
 import org.codice.ddf.spatial.ogc.wfs.catalog.common.WfsNullResponseException;
@@ -75,11 +75,7 @@ public class WfsResponseExceptionMapper implements ResponseExceptionMapper<WfsEx
   private WfsException unmarshalResponseEntity(String msg) {
     WfsException wfsEx;
     try {
-      JAXBElementProvider<ExceptionReport> provider = new JAXBElementProvider<>();
-      Unmarshaller um =
-          provider
-              .getJAXBContext(ExceptionReport.class, ExceptionReport.class)
-              .createUnmarshaller();
+      Unmarshaller um = JAXBContext.newInstance(ExceptionReport.class).createUnmarshaller();
       XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
       xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
       xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);

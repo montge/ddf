@@ -23,6 +23,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,8 +32,6 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.SystemUtils;

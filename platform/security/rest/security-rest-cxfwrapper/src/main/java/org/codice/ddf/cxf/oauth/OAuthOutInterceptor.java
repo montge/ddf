@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.cxf.oauth;
 
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION;
 import static org.codice.ddf.cxf.oauth.OAuthSecurity.OAUTH;
 
 import java.util.List;

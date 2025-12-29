@@ -24,6 +24,11 @@
     <name>DDF :: Spatial :: Geocoding :: Geonames.org WebService</name>
     <dependencies>
         <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>${jakarta.ws.rs-api.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.codice.ddf.spatial</groupId>
             <artifactId>spatial-geocoding-geocoder</artifactId>
             <version>${project.version}</version>

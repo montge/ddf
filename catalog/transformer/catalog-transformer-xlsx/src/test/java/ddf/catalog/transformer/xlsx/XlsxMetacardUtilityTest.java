@@ -24,11 +24,11 @@ import ddf.catalog.data.Metacard;
 import ddf.catalog.data.impl.AttributeImpl;
 import ddf.catalog.data.impl.MetacardImpl;
 import ddf.catalog.data.types.Core;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.UUID;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import org.junit.jupiter.api.Test;
 
 public class XlsxMetacardUtilityTest {

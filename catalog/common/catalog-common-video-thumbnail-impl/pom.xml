@@ -30,6 +30,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>2.1.3</version>
+        </dependency>
+        <dependency>
             <groupId>ddf.catalog.common</groupId>
             <artifactId>video-thumbnail</artifactId>
             <version>${project.version}</version>

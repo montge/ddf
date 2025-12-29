@@ -14,12 +14,12 @@
 package ddf.mime.mapper;
 
 import ddf.mime.MimeTypeToTransformerMapper;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

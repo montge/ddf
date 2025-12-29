@@ -13,10 +13,10 @@
  */
 package org.codice.ddf.parser;
 
+import jakarta.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Configuration helper for setting up necessary environment for underlying parser implementations.

@@ -29,6 +29,11 @@
         <zookeeper.port>10784</zookeeper.port>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>${jakarta.ws.rs-api.version}</version>
+        </dependency>
         <!-- Pax Exam Karaf container dependencies -->
         <dependency>
             <groupId>org.ops4j.pax.exam</groupId>

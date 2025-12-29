@@ -17,9 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 
+import jakarta.ws.rs.WebApplicationException;
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import javax.ws.rs.WebApplicationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.junit.jupiter.api.AfterAll;

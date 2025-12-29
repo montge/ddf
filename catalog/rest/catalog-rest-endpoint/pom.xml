@@ -29,6 +29,7 @@
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>${jakarta.ws.rs-api.version}</version>
         </dependency>
         <dependency>
             <groupId>net.minidev</groupId>
@@ -118,18 +119,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf.karaf</groupId>
-            <artifactId>apache-cxf</artifactId>
+            <groupId>ddf.libs</groupId>
+            <artifactId>ddf-cxf-karaf-features</artifactId>
+            <version>${project.version}</version>
             <classifier>features</classifier>
             <type>xml</type>
-            <version>${cxf.version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.activemq</groupId>
-                    <artifactId>activemq-broker</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>ddf.features</groupId>

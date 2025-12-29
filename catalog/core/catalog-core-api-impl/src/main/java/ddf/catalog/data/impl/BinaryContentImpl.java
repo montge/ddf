@@ -14,10 +14,10 @@
 package ddf.catalog.data.impl;
 
 import ddf.catalog.data.BinaryContent;
+import jakarta.activation.MimeType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.activation.MimeType;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

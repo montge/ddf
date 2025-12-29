@@ -104,7 +104,7 @@ public class ExportCommandTest {
         .thenReturn(
             new ddf.catalog.data.impl.BinaryContentImpl(
                 new java.io.ByteArrayInputStream("test".getBytes()),
-                new javax.activation.MimeType("text/xml")));
+                new jakarta.activation.MimeType("text/xml")));
 
     exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "*";

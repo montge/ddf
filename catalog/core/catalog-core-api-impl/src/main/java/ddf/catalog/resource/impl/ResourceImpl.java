@@ -15,9 +15,9 @@ package ddf.catalog.resource.impl;
 
 import ddf.catalog.data.impl.BinaryContentImpl;
 import ddf.catalog.resource.Resource;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.io.InputStream;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

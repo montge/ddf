@@ -13,11 +13,11 @@
  */
 package ddf.catalog.services.xsltlistener;
 
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;

@@ -217,7 +217,7 @@ public class RestEndpointIT extends AbstractComponentTest {
         final String[] kernelFeatures = {"kernel", "apache-commons", "guava"};
 
         return super.getFeatureOptions()
-            .addFeatures("org.apache.cxf.karaf", "apache-cxf", cxfFeatures)
+            .addFeatures("ddf.libs", "ddf-cxf-karaf-features", cxfFeatures)
             .addFeatures("ddf.features", "utilities", utilitiesFeatures)
             .addFeatures("ddf.features", "kernel", kernelFeatures)
             .addFeatureFrom("ddf.features", "test-utilities", "features", "rest-assured")

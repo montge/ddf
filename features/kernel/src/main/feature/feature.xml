@@ -19,13 +19,29 @@
     <repository>mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features</repository>
     <repository>mvn:org.apache.karaf.features/specs/${karaf.version}/xml/features</repository>
     <repository>mvn:org.ops4j.pax.web/pax-web-features/${pax.web.version}/xml/features</repository>
-    <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
+    <!-- Note: We do NOT include Karaf's spring repository here to avoid duplication.
+         Our spring features below provide Spring 6.2.8 via ServiceMix OSGi bundles. -->
 
     <!--
         Spring 6.2.x features for DDF
-        These features override Karaf's default spring features to provide Spring 6.2.x,
-        which includes security fixes for CVE-2025-41249 and CVE-2025-41254.
+        These features override Karaf's default spring 6.1.x features to provide Spring 6.2.8.
+
+        SECURITY NOTE: Spring 6.2.8 does NOT include fixes for:
+        - CVE-2025-41249 (fixed in 6.2.11) - Annotation detection vulnerability
+        - CVE-2025-41254 (fixed in 6.2.12) - STOMP CSRF vulnerability
+        ServiceMix OSGi bundles for 6.2.11+ are not yet available (as of 2025-07).
+        Monitor: https://repo1.maven.org/maven2/org/apache/servicemix/bundles/org.apache.servicemix.bundles.spring-core/
+
+        Note: We provide two versions of spring:
+        - Version 0.0.0 (default) for unversioned feature references like <feature>spring</feature>
+        - Version ${spring.osgi.bundle.version} for explicit version references from Camel
     -->
+    <!-- Default spring feature (version 0.0.0) that delegates to the versioned one -->
+    <feature name="spring" description="Spring 6.2.x support (default)" version="0.0.0">
+        <feature version="${spring.osgi.bundle.version}">spring</feature>
+    </feature>
+
+    <!-- Versioned spring feature for explicit version references -->
     <feature name="spring" description="Spring 6.2.x support" version="${spring.osgi.bundle.version}">
         <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/1.0_6</bundle>
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-core/${spring.osgi.bundle.version}</bundle>
@@ -51,14 +67,25 @@
         <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/${spring.osgi.bundle.version}</bundle>
     </feature>
 
-    <!--
-        CXF RS Security SSO SAML feature
-        This feature was removed from CXF 3.6.x but the bundle still exists.
-        DDF requires this for SAML SSO support.
-    -->
-    <feature name="cxf-rs-security-sso-saml" description="CXF RS Security SSO SAML" version="${cxf.version}">
-        <feature version="${cxf.version}">cxf-rs-security-xml</feature>
-        <bundle start-level="40">mvn:org.apache.cxf/cxf-rt-rs-security-sso-saml/${cxf.version}</bundle>
+    <feature name="spring-jms" description="Spring 6.2.x JMS support" version="${spring.osgi.bundle.version}">
+        <feature version="${spring.osgi.bundle.version}">spring-tx</feature>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-jms/${spring.osgi.bundle.version}</bundle>
+    </feature>
+
+    <feature name="spring-oxm" description="Spring 6.2.x OXM support" version="${spring.osgi.bundle.version}">
+        <feature version="${spring.osgi.bundle.version}">spring</feature>
+        <bundle start-level="30">wrap:mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-oxm/${spring.osgi.bundle.version}</bundle>
+    </feature>
+
+    <feature name="spring-test" description="Spring 6.2.x Test support" version="${spring.osgi.bundle.version}">
+        <feature version="${spring.osgi.bundle.version}">spring</feature>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-test/${spring.osgi.bundle.version}</bundle>
+    </feature>
+
+    <feature name="spring-web" description="Spring 6.2.x Web support" version="${spring.osgi.bundle.version}">
+        <feature version="${spring.osgi.bundle.version}">spring</feature>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-web/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-webmvc/${spring.osgi.bundle.version}</bundle>
     </feature>
 
     <feature name="kernel" version="${project.version}"

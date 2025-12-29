@@ -78,6 +78,12 @@
                 Vulnerabilities: CVE-2008-0732, CVE-2011-5034
                 -->
                 <exclude>**/org/apache/geronimo/bundles/commons-discovery/**/*</exclude>
+
+                <!--
+                Exclude Karaf's Spring 6.1.x features - DDF provides Spring 6.2.x with
+                security fixes for CVE-2025-41249 and CVE-2025-41254.
+                -->
+                <exclude>**/org/apache/karaf/features/spring/**</exclude>
             </excludes>
         </fileSet>
 

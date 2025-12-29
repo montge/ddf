@@ -27,6 +27,8 @@ import ddf.catalog.transform.MetacardTransformer;
 import ddf.catalog.transform.QueryResponseTransformer;
 import ddf.catalog.transformer.output.rtf.model.ExportCategory;
 import ddf.catalog.transformer.output.rtf.model.RtfCategory;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -37,8 +39,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import org.apache.commons.lang3.StringUtils;
 
 public class RtfQueryResponseAndMetacardTransformer

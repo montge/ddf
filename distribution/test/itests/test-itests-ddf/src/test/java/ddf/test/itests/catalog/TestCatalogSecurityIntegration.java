@@ -31,10 +31,10 @@ import static org.hamcrest.Matchers.hasXPath;
 import static org.hamcrest.Matchers.not;
 
 import ddf.catalog.data.Metacard;
+import jakarta.ws.rs.core.MediaType;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.concurrent.TimeUnit;
-import javax.ws.rs.core.MediaType;
 import org.apache.http.HttpStatus;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.annotations.BeforeExam;

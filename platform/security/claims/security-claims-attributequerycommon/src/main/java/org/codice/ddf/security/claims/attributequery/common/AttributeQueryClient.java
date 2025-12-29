@@ -15,13 +15,13 @@ package org.codice.ddf.security.claims.attributequery.common;
 
 import ddf.security.samlp.impl.SamlProtocol;
 import ddf.security.samlp.impl.SimpleSign;
+import jakarta.xml.ws.Dispatch;
 import java.io.IOException;
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.ws.Dispatch;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.platform.util.TransformerProperties;
 import org.codice.ddf.platform.util.XMLUtils;

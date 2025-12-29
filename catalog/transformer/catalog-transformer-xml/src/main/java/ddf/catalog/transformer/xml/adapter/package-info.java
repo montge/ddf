@@ -29,8 +29,8 @@
 })
 package ddf.catalog.transformer.xml.adapter;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.MetacardType;

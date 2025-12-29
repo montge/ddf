@@ -15,8 +15,8 @@ package ddf.catalog.services.xsltlistener;
 
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.impl.BinaryContentImpl;
+import jakarta.activation.MimeType;
 import java.io.ByteArrayInputStream;
-import javax.activation.MimeType;
 
 public class XsltTransformedContent extends BinaryContentImpl implements BinaryContent {
 

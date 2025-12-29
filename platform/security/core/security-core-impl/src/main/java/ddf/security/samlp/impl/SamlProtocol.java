@@ -15,6 +15,7 @@ package ddf.security.samlp.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import ddf.security.samlp.LogoutWrapper;
+import jakarta.xml.soap.SOAPPart;
 import java.io.StringReader;
 import java.time.Duration;
 import java.util.HashMap;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
-import javax.xml.soap.SOAPPart;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;

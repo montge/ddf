@@ -25,6 +25,11 @@
     <packaging>bundle</packaging>
     <dependencies>
         <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>${jakarta.ws.rs-api.version}</version>
+        </dependency>
+        <dependency>
             <groupId>ddf.catalog.confluence</groupId>
             <artifactId>catalog-confluence-common</artifactId>
             <version>${project.version}</version>
@@ -105,6 +110,7 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>ddf.security.core</groupId>

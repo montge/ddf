@@ -23,8 +23,8 @@ public class CxfFeatures {
   public static Option start(String... features) {
     return features(
         maven()
-            .groupId("org.apache.cxf.karaf")
-            .artifactId("apache-cxf")
+            .groupId("ddf.libs")
+            .artifactId("ddf-cxf-karaf-features")
             .versionAsInProject()
             .classifier("features")
             .type("xml"),

@@ -14,10 +14,10 @@
 package org.codice.ddf.spatial.ogc.csw.catalog.endpoint;
 
 import ddf.catalog.transform.QueryFilterTransformerProvider;
+import jakarta.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 import net.opengis.cat.csw.v_2_0_2.QueryType;
 import org.apache.commons.lang3.StringUtils;

@@ -46,6 +46,10 @@ import ddf.catalog.source.SourceUnavailableException;
 import ddf.catalog.source.UnsupportedQueryException;
 import ddf.mime.MimeTypeResolver;
 import ddf.mime.MimeTypeToTransformerMapper;
+import jakarta.activation.DataHandler;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
@@ -55,11 +59,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.activation.DataHandler;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
@@ -494,7 +494,7 @@ public class AbstractCatalogServiceTest {
         .delete(any());
 
     assertThrows(
-        javax.ws.rs.InternalServerErrorException.class, () -> catalogService.deleteDocument(id));
+        jakarta.ws.rs.InternalServerErrorException.class, () -> catalogService.deleteDocument(id));
   }
 
   @Test
@@ -827,7 +827,7 @@ public class AbstractCatalogServiceTest {
         .thenThrow(new FederationException("Federation failed"));
 
     assertThrows(
-        javax.ws.rs.InternalServerErrorException.class,
+        jakarta.ws.rs.InternalServerErrorException.class,
         () ->
             catalogService.getDocument(
                 null, encodedId, null, uri, queryParams, httpServletRequest));
@@ -843,7 +843,7 @@ public class AbstractCatalogServiceTest {
         .thenThrow(new SourceUnavailableException("Source unavailable"));
 
     assertThrows(
-        javax.ws.rs.InternalServerErrorException.class,
+        jakarta.ws.rs.InternalServerErrorException.class,
         () ->
             catalogService.getDocument(
                 null, encodedId, null, uri, queryParams, httpServletRequest));

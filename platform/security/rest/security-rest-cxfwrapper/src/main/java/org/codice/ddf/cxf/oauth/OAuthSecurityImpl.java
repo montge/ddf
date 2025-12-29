@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.cxf.oauth;
 
+import static jakarta.ws.rs.core.HttpHeaders.AUTHORIZATION;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static javax.ws.rs.core.HttpHeaders.AUTHORIZATION;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.codice.gsonsupport.GsonTypeAdapters.MAP_STRING_TO_OBJECT_TYPE;
 
@@ -33,6 +33,8 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.oauth2.sdk.token.TypelessAccessToken;
 import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import ddf.security.Subject;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -44,8 +46,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.client.Client;
@@ -321,7 +321,7 @@ public class OAuthSecurityImpl implements OAuthSecurity {
     Form formParam = new Form(GRANT_TYPE, grantType);
     formParam.param(SCOPE, OPENID_SCOPE);
     queryParameters.forEach(formParam::param);
-    javax.ws.rs.core.Response response = webClient.form(formParam);
+    jakarta.ws.rs.core.Response response = webClient.form(formParam);
 
     String body;
     try {

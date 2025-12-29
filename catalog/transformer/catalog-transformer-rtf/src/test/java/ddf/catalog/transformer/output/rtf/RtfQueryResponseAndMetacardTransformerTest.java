@@ -28,12 +28,12 @@ import ddf.catalog.data.Metacard;
 import ddf.catalog.data.Result;
 import ddf.catalog.operation.SourceResponse;
 import ddf.catalog.transform.CatalogTransformerException;
+import jakarta.activation.MimeTypeParseException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.activation.MimeTypeParseException;
 import org.junit.jupiter.api.Test;
 
 public class RtfQueryResponseAndMetacardTransformerTest extends BaseTestConfiguration {

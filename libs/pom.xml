@@ -38,5 +38,6 @@
         <module>tlmatcher</module>
         <module>alerts</module>
         <module>test-common</module>
+        <module>ddf-cxf-karaf</module>
     </modules>
 </project>

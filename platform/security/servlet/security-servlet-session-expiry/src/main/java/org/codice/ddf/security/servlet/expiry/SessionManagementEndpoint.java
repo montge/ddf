@@ -13,12 +13,12 @@
  */
 package org.codice.ddf.security.servlet.expiry;
 
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
 import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import org.codice.ddf.security.session.management.service.SessionManagementService;
 
 @Path("/")

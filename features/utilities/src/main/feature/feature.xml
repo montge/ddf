@@ -17,13 +17,13 @@
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0">
 
     <repository>mvn:ddf.features/kernel/${project.version}/xml/features</repository>
-    <!-- Spring 5.3.x feature is provided by ddf.features/kernel -->
+    <!-- Spring feature is provided via Karaf's spring repository in ddf.features/kernel -->
 
     <feature name="platform-util" version="${project.version}"
              description="Platform Utilities">
         <feature>dev-failsafe</feature>
         <feature>common-system</feature>
-        <feature version="${spring.feature.version}">spring</feature>
+        <feature>spring</feature>
         <feature>guava</feature>
         <bundle>mvn:ddf.platform.util/platform-util/${project.version}</bundle>
     </feature>
@@ -82,7 +82,7 @@
              description="MIME Core">
         <feature>mime-core-api</feature>
         <feature>guava</feature>
-        <feature version="${spring.feature.version}">spring</feature>
+        <feature>spring</feature>
         <feature>common-system</feature>
         <feature>slf4j</feature>
         <feature>platform-util</feature>
@@ -165,7 +165,8 @@
 
     <!-- Start of app features -->
 
-    <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
+    <!-- CXF 4.x features from ddf-cxf-karaf -->
+    <repository>mvn:ddf.libs/ddf-cxf-karaf-features/${project.version}/xml/features</repository>
 
     <feature name="platform-api" version="${project.version}"
              description="Top Level Platform API">

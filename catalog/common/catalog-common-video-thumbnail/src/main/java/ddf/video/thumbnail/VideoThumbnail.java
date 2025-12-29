@@ -13,10 +13,10 @@
  */
 package ddf.video.thumbnail;
 
+import jakarta.activation.MimeType;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import javax.activation.MimeType;
 
 public interface VideoThumbnail {
 

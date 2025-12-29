@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright (c) Codice Foundation
+ *
+ * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
+ * General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details. A copy of the GNU Lesser General Public License
+ * is distributed along with this program and can be found at <http://www.gnu.org/licenses/lgpl.html>.
+ *
+ **/
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ddf.libs</groupId>
+        <artifactId>ddf-cxf-karaf</artifactId>
+        <version>2.30.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>cxf-core-all</artifactId>
+    <packaging>bundle</packaging>
+    <name>DDF :: Libs :: CXF Karaf :: Core All-in-One</name>
+    <description>
+        Shaded OSGi bundle containing Apache CXF 4.x core modules.
+        Provides JAX-RS, JAX-WS, SOAP, and transport functionality with proper OSGi metadata.
+    </description>
+
+    <properties>
+        <!-- OSGi Bundle Configuration -->
+        <bundle.symbolicName>ddf.libs.cxf-core-all</bundle.symbolicName>
+    </properties>
+
+    <dependencies>
+        <!-- CXF Core -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-core</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- JAX-RS Frontend -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- JAX-WS Frontend -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- Simple Frontend -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-simple</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- SOAP Bindings -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-bindings-soap</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- XML Bindings -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-bindings-xml</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- JAXB Databinding -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-databinding-jaxb</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- HTTP Transport -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- WSDL Support -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-wsdl</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- WS-Addressing -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-addr</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- WS-Policy -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- RS Client -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- Logging Feature -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-features-logging</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- Management -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-management</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- Security -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-security</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- RS Security XML -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-xml</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- RS Security SAML SSO -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-sso-saml</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- RS Security OAuth2 -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-oauth2</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- WS-Security -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-security</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- RS Service Description -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-service-description</artifactId>
+            <version>${cxf4.version}</version>
+        </dependency>
+
+        <!-- OSGi -->
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Jakarta APIs (provided - from Karaf) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.ws</groupId>
+            <artifactId>jakarta.xml.ws-api</artifactId>
+            <version>4.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Shade all CXF modules into one JAR -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.apache.cxf:*</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <!-- Merge META-INF/services files -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <!-- Merge CXF extension files -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/cxf/bus-extensions.txt</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generate OSGi bundle manifest -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-Activator>org.codice.ddf.cxf.osgi.CxfActivator</Bundle-Activator>
+
+                        <Export-Package>
+                            org.apache.cxf.*;version="${cxf4.version}"
+                        </Export-Package>
+
+                        <Import-Package>
+                            <!-- Jakarta EE APIs -->
+                            jakarta.activation;version="[2.1,3)",
+                            jakarta.annotation.*;version="[2.1,3)",
+                            jakarta.servlet.*;version="[6.0,7)",
+                            jakarta.ws.rs.*;version="[3.1,4)",
+                            jakarta.xml.bind.*;version="[4.0,5)",
+                            jakarta.xml.ws.*;version="[4.0,5)",
+                            jakarta.jws.*;version="[3.0,4)",
+                            jakarta.xml.soap.*;version="[3.0,4)",
+
+                            <!-- OSGi -->
+                            org.osgi.framework.*;version="[1.8,2)",
+                            org.osgi.service.*;version="[1.3,2)",
+                            org.osgi.util.*;version="[1.0,2)",
+
+                            <!-- Standard Java -->
+                            javax.xml.*,
+                            javax.management.*,
+                            javax.crypto.*,
+                            javax.net.*,
+                            javax.security.*,
+                            org.xml.sax.*,
+                            org.w3c.dom.*,
+
+                            <!-- Optional dependencies -->
+                            com.sun.xml.*;resolution:=optional,
+                            org.springframework.*;resolution:=optional;version="[6.0,7)",
+                            org.slf4j.*;resolution:=optional;version="[2.0,3)",
+                            net.sf.cglib.*;resolution:=optional,
+                            org.objectweb.asm.*;resolution:=optional,
+
+                            <!-- WS dependencies -->
+                            org.apache.ws.*;resolution:=optional,
+                            org.apache.neethi.*;resolution:=optional,
+                            javax.wsdl.*
+                        </Import-Package>
+
+                        <DynamicImport-Package>
+                            org.apache.cxf.bus,
+                            org.apache.cxf.*
+                        </DynamicImport-Package>
+
+                        <Private-Package>
+                            org.codice.ddf.cxf.osgi
+                        </Private-Package>
+
+                        <Embed-Dependency>*;scope=compile;inline=true</Embed-Dependency>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

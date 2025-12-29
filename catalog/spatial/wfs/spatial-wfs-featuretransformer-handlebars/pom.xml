@@ -24,6 +24,11 @@
     <name>DDF :: Spatial :: WFS :: FeatureTransformer :: Handlebars</name>
     <dependencies>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.codice.ddf.spatial</groupId>
             <artifactId>spatial-wfs-featuretransformer-api</artifactId>
             <version>${project.version}</version>
@@ -119,6 +124,7 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
         </dependency>
     </dependencies>
     <build>

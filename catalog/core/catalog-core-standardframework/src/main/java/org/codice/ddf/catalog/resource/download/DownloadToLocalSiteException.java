@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.catalog.resource.download;
 
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response.Status;
 
 public class DownloadToLocalSiteException extends RuntimeException {
 

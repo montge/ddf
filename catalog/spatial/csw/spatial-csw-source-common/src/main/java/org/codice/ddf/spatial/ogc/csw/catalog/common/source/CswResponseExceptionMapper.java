@@ -13,11 +13,12 @@
  */
 package org.codice.ddf.spatial.ogc.csw.catalog.common.source;
 
+import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.List;
-import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
@@ -29,7 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.common.util.CollectionUtils;
 import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.jaxrs.client.ResponseExceptionMapper;
-import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
 import org.codice.ddf.spatial.ogc.csw.catalog.common.CswException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,11 +84,7 @@ public class CswResponseExceptionMapper implements ResponseExceptionMapper<CswEx
         }
         if (msg != null) {
           try {
-            JAXBElementProvider<ExceptionReport> provider = new JAXBElementProvider<>();
-            Unmarshaller um =
-                provider
-                    .getJAXBContext(ExceptionReport.class, ExceptionReport.class)
-                    .createUnmarshaller();
+            Unmarshaller um = JAXBContext.newInstance(ExceptionReport.class).createUnmarshaller();
             XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
             xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);

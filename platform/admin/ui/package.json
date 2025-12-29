@@ -1,0 +1,15 @@
+{
+  "name": "ddf-admin-ui",
+  "version": "2.30.0-SNAPSHOT",
+  "description": "DDF Admin Console E2E Tests",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

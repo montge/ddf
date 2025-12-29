@@ -14,9 +14,9 @@
 package ddf.catalog.content.data;
 
 import ddf.catalog.data.Metacard;
+import jakarta.activation.MimeType;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.activation.MimeType;
 
 /**
  * ContentItem is the POJO representing the information about the content to be stored in the {@link

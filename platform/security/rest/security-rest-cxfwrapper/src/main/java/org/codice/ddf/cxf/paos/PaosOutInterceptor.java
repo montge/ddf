@@ -13,10 +13,10 @@
  */
 package org.codice.ddf.cxf.paos;
 
+import jakarta.ws.rs.core.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.HttpHeaders;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;

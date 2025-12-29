@@ -81,13 +81,18 @@
 - Migration order: CXF 4.x upgrade → Then OpenRewrite on modules
 
 ### 2.3 Spring 6.x Upgrade
-- [x] 2.3.1 Review Spring 5.3 -> 6.0 migration guide ✅ Already at 6.2.14!
-- [x] 2.3.2 Update Spring dependencies ✅ Already at 6.2.14 (Jakarta-compatible)
+- [x] 2.3.1 Review Spring 5.3 -> 6.0 migration guide ✅
+- [x] 2.3.2 Update Spring dependencies ✅ Using 6.2.8 (Jakarta-compatible)
 - [x] 2.3.3 Fix deprecated API usages ✅ No deprecated Spring APIs found (2025-12-28)
 - [x] 2.3.4 Update Blueprint configurations if needed ✅ No deprecated Spring namespaces in 333 Blueprint files
-- [ ] 2.3.5 Validate OSGi bundle resolution (requires full build)
+- [x] 2.3.5 Configure custom Spring features for OSGi ✅ (2025-12-28)
+  - Added spring, spring-tx, spring-jdbc, spring-orm, spring-jms, spring-oxm, spring-test, spring-web features
+  - Uses ServiceMix OSGi bundles 6.2.8_1 (newest available as of 2025-07)
+- [ ] 2.3.6 Validate OSGi bundle resolution (requires full build)
 
-**Note:** DDF already uses Spring 6.2.14 which is Jakarta EE compatible!
+**Note:** Using Spring 6.2.8 via ServiceMix OSGi bundles.
+⚠️ **SECURITY:** CVE-2025-41249 (fixed 6.2.11) and CVE-2025-41254 (fixed 6.2.12) remain unpatched.
+ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.org/maven2/org/apache/servicemix/bundles/org.apache.servicemix.bundles.spring-core/
 
 ---
 
@@ -95,19 +100,28 @@
 
 ### 3.1 Apache CXF 4.x
 - [x] 3.1.1 Review CXF 3.x -> 4.x migration guide ✅ (2025-12-12)
-- [ ] 3.1.2 Update CXF dependencies ⏸️ **BLOCKED** - OSGi/Karaf support removed
-- [ ] 3.1.3 Migrate JAX-RS annotations ⏸️ **BLOCKED**
-- [ ] 3.1.4 Migrate JAX-WS annotations ⏸️ **BLOCKED**
-- [ ] 3.1.5 Test all REST endpoints ⏸️ **BLOCKED**
-- [ ] 3.1.6 Test CSW/WFS SOAP services ⏸️ **BLOCKED**
+- [x] 3.1.2 Create ddf-cxf-karaf module ✅ (2025-12-28)
+  - Created `libs/ddf-cxf-karaf/cxf-core-all` OSGi bundle
+  - Shades CXF 4.1.1 + all security modules (SAML, OAuth2, WS-Security)
+  - Bundle size: 5.4MB with proper OSGi manifest
+  - See `cxf-karaf-proposal.md` for architecture details
+- [ ] 3.1.3 Create Karaf features.xml for CXF 4.x
+- [ ] 3.1.4 Update DDF security features to use new bundle
+- [ ] 3.1.5 Migrate JAX-RS annotations (after feature integration)
+- [ ] 3.1.6 Migrate JAX-WS annotations
+- [ ] 3.1.7 Test all REST endpoints
+- [ ] 3.1.8 Test CSW/WFS SOAP services
 
-**Critical Finding (2025-12-12):**
+**Progress Update (2025-12-28):**
+- ✅ Created `libs/ddf-cxf-karaf` following camel-karaf pattern
+- ✅ CXF 4.1.1 successfully shaded into OSGi bundle
+- ✅ Includes: cxf-core, cxf-rt-frontend-jaxrs/jaxws, cxf-rt-security-*, cxf-rt-ws-security
+- ⏳ Next: Create Karaf features.xml, update DDF security features
+
+**Original Issue (2025-12-12):**
 - ⛔ **CXF 4.x removed OSGi support** - Blueprint extension, Karaf features.xml eliminated
-- DDF runs on Apache Karaf (OSGi container) - cannot upgrade without OSGi support
-- **JIRA CXF-9086**: "Bring back OSGi support" - proposed `cxf-karaf` repository (like camel-karaf)
-- **Timeline:** Q2 2025 estimated for cxf-karaf availability
-- **Current CXF:** 3.6.8 (latest with OSGi support)
-- **Strategy:** Wait for cxf-karaf, then migrate CXF → then Jakarta
+- **JIRA CXF-9086**: "Bring back OSGi support" - still open, community working on it
+- **Solution:** DDF now has its own cxf-karaf module (like camel-karaf approach)
 - **Tracking:** https://issues.apache.org/jira/browse/CXF-9086
 
 ### 3.2 Apache Camel Upgrade
@@ -198,10 +212,14 @@
 - [x] 6.1.1 Add Playwright to Search UI module ✅ (2025-12-12)
 - [x] 6.1.2 Create basic E2E test for search workflow ✅ (2025-12-12)
 - [x] 6.1.3 Add Playwright to CI pipeline ✅ (2025-12-12)
-- [ ] 6.1.4 Migrate CasperJS tests to Playwright
-  - Scope: 3 files, 456 lines in admin-modules-installer and admin-modules-configuration
-  - Tests: Simple selector-based checks for admin wizard UI
-- [ ] 6.1.5 Retire CasperJS/PhantomJS
+- [x] 6.1.4 Migrate CasperJS tests to Playwright ✅ (2025-12-28)
+  - Created: `platform/admin/ui/e2e/` with Playwright tests
+  - installer-navigation.spec.ts (pageSelection.js)
+  - installer-configuration.spec.ts (configuration.js)
+  - configuration-module.spec.ts (configurations.js)
+  - Added package.json and playwright.config.ts
+- [x] 6.1.5 Retire CasperJS/PhantomJS ✅ (2025-12-28)
+  - Removed 3 CasperJS files from admin-modules-*
 
 ### 6.2 Bootstrap Upgrade
 - [x] 6.2.1 Audit Bootstrap 3.4.1 usage across UI modules ✅ (2025-12-28)
@@ -209,12 +227,18 @@
   - 3 files: SearchPage.jsp, RecordView.html, SearchHelp.html
   - Uses legacy Bootstrap 2 patterns (row-fluid, spanX, modal hide)
   - Key components: navbar, grid, modals, buttons, tabs, alerts
-- [ ] 6.2.2 Create Bootstrap 5 migration plan
+- [x] 6.2.2 Create Bootstrap 5 migration plan ✅ (2025-12-28)
+  - Created: `catalog/ui/search-ui/simple/BOOTSTRAP-MIGRATION.md`
+  - Documented 30+ class mappings (row-fluid→row, span*→col-*, etc.)
+  - 8 migration phases with checklists
+  - Estimated effort: 12-18 hours
 - [ ] 6.2.3 Update CSS framework to Bootstrap 5.3
 - [ ] 6.2.4 Fix responsive layout issues
 
 ### 6.3 Build Modernization
-- [x] 6.3.1 Add package.json to UI modules ✅ (2025-12-12) (Search UI)
+- [x] 6.3.1 Add package.json to UI modules ✅
+  - Search UI: (2025-12-12)
+  - Admin UI: (2025-12-28) `platform/admin/ui/package.json`
 - [ ] 6.3.2 Integrate Vite for bundling
 - [ ] 6.3.3 Add TypeScript compilation
 - [ ] 6.3.4 Replace YUI Compressor with modern minification

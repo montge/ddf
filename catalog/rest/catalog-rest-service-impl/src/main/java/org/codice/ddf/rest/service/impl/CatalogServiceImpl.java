@@ -25,6 +25,7 @@ import ddf.catalog.source.SourceDescriptor;
 import ddf.catalog.source.SourceUnavailableException;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.minidev.json.JSONArray;
@@ -47,6 +48,19 @@ public class CatalogServiceImpl extends AbstractCatalogService {
       List<StorageProvider> storageProviders,
       List<ChecksumProvider> checksumProviders) {
     super(framework, attachmentParser, attributeRegistry, storageProviders, checksumProviders);
+  }
+
+  /** Constructor for backward compatibility with tests. */
+  public CatalogServiceImpl(
+      CatalogFramework framework,
+      AttachmentParser attachmentParser,
+      AttributeRegistry attributeRegistry) {
+    this(
+        framework,
+        attachmentParser,
+        attributeRegistry,
+        Collections.emptyList(),
+        Collections.emptyList());
   }
 
   @Override

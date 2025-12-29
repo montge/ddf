@@ -16,9 +16,16 @@
           xmlns="http://karaf.apache.org/xmlns/features/v1.3.0"
           xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0">
 
-    <!-- Spring 5.3.x feature is provided by ddf.features/kernel -->
-    <repository>mvn:org.apache.cxf.karaf/apache-cxf/${cxf.version}/xml/features</repository>
+    <!-- Spring feature is provided via Karaf's spring repository in ddf.features/kernel -->
     <repository>mvn:ddf.features/kernel/${project.version}/xml/features</repository>
+
+    <!--
+        DDF CXF 4.x Karaf Features
+        Provides Apache CXF 4.1.1 with Jakarta EE namespace support.
+        Replaces the upstream CXF Karaf features which were removed in CXF 4.x.
+        See: libs/ddf-cxf-karaf and https://issues.apache.org/jira/browse/CXF-9086
+    -->
+    <repository>mvn:ddf.libs/ddf-cxf-karaf-features/${project.version}/xml/features</repository>
     <repository>mvn:ddf.features/utilities/${project.version}/xml/features</repository>
     <repository>mvn:ddf.features/branding/${project.version}/xml/features</repository>
     <repository>mvn:ddf.features/camel-karaf/${project.version}/xml/features</repository>
@@ -30,15 +37,13 @@
         <feature>pax-web-http-whiteboard</feature>
         <feature>pax-web-jetty-websockets</feature>
         <feature>scr</feature>
-        <feature version="${spring.feature.version}">spring</feature>
+        <feature>spring</feature>
 
         <!-- External DDF Features -->
         <feature version="${project.version}">jackson</feature>
         <feature>wss4j</feature>
-        <feature>cxf-ws-security</feature>
-        <feature>cxf-jaxrs</feature>
-        <feature>cxf-bindings-soap</feature>
-        <feature>cxf-features-logging</feature>
+        <!-- CXF 4.x with Jakarta EE support (from ddf-cxf-karaf) -->
+        <feature version="${project.version}">cxf-secure</feature>
         <feature>common-system</feature>
 
         <!-- NimbusDS -->
@@ -144,7 +149,7 @@
     <feature name="security-core-services-dependencies" version="${project.version}"
              description="Dependencies for core security services.">
         <!-- Third Party Features -->
-        <feature version="${spring.feature.version}">spring</feature>
+        <feature>spring</feature>
         <feature>war</feature>
         <feature>pax-web-jetty</feature>
         <feature>pax-web-http-jetty</feature>
@@ -152,14 +157,9 @@
         <!-- External DDF Features -->
         <feature>apache-commons</feature>
         <feature>guava</feature>
-        <feature>cxf-core</feature>
-        <feature>cxf-rt-security</feature>
-        <feature>cxf-ws-policy</feature>
-        <feature>cxf-frontend-javascript</feature>
-        <feature>cxf-rs-security-oauth2</feature>
-        <feature>cxf-rs-security-xml</feature>
+        <!-- CXF 4.x with Jakarta EE support (from ddf-cxf-karaf) -->
+        <feature version="${project.version}">cxf-secure</feature>
         <bundle start-level="40" dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax-cache-api/${javax.cache.bundle.version}</bundle>
-        <bundle start-level="40">mvn:org.apache.cxf/cxf-rt-rs-security-sso-saml/${cxf.version}</bundle>
         <feature>action-core-impl</feature>
         <feature>error-api</feature>
         <feature>util-uuidgenerator</feature>

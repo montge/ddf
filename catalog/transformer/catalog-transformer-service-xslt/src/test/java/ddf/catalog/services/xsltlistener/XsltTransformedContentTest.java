@@ -19,11 +19,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import ddf.catalog.data.BinaryContent;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import org.junit.jupiter.api.Test;
 
 class XsltTransformedContentTest {

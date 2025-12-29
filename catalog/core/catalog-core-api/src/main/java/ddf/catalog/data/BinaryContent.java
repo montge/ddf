@@ -13,9 +13,9 @@
  */
 package ddf.catalog.data;
 
+import jakarta.activation.MimeType;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.activation.MimeType;
 
 /**
  * {@link BinaryContent} is used to return a format that has been transformed by a Transformer.

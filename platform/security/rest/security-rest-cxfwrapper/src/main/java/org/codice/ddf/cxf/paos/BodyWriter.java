@@ -13,12 +13,12 @@
  */
 package org.codice.ddf.cxf.paos;
 
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.WriterInterceptor;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.List;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.WriterInterceptor;
 import javax.xml.stream.XMLStreamWriter;
 import org.apache.cxf.interceptor.AbstractOutDatabindingInterceptor;
 import org.apache.cxf.interceptor.Fault;

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright (c) Codice Foundation
+ *
+ * This is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser
+ * General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details. A copy of the GNU Lesser General Public License
+ * is distributed along with this program and can be found at <http://www.gnu.org/licenses/lgpl.html>.
+ *
+ **/
+ -->
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0"
+          name="ddf-cxf-${project.version}">
+
+    <!--
+        DDF CXF 4.x Features
+
+        These features provide Apache CXF 4.x with Jakarta EE namespace support
+        for use in Apache Karaf. They replace the upstream CXF Karaf features
+        which were removed in CXF 4.x.
+
+        See: https://issues.apache.org/jira/browse/CXF-9086
+    -->
+
+    <!-- Jakarta EE API features (prerequisites) -->
+    <feature name="jakarta-annotation" version="${project.version}" description="Jakarta Annotation API">
+        <bundle>mvn:jakarta.annotation/jakarta.annotation-api/2.1.1</bundle>
+    </feature>
+
+    <feature name="jakarta-activation" version="${project.version}" description="Jakarta Activation API">
+        <bundle>mvn:jakarta.activation/jakarta.activation-api/2.1.3</bundle>
+        <bundle>mvn:org.eclipse.angus/angus-activation/2.0.2</bundle>
+    </feature>
+
+    <feature name="jakarta-xml-bind" version="${project.version}" description="Jakarta XML Binding API">
+        <feature>jakarta-activation</feature>
+        <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/4.0.2</bundle>
+        <bundle>mvn:org.glassfish.jaxb/jaxb-runtime/4.0.5</bundle>
+        <bundle>mvn:org.glassfish.jaxb/jaxb-core/4.0.5</bundle>
+        <bundle>mvn:com.sun.istack/istack-commons-runtime/4.1.2</bundle>
+    </feature>
+
+    <feature name="jakarta-xml-ws" version="${project.version}" description="Jakarta XML Web Services API">
+        <feature>jakarta-xml-bind</feature>
+        <feature>jakarta-annotation</feature>
+        <bundle>mvn:jakarta.xml.ws/jakarta.xml.ws-api/4.0.2</bundle>
+        <bundle>mvn:jakarta.jws/jakarta.jws-api/3.0.0</bundle>
+        <bundle>mvn:jakarta.xml.soap/jakarta.xml.soap-api/3.0.2</bundle>
+    </feature>
+
+    <feature name="jakarta-ws-rs" version="${project.version}" description="Jakarta RESTful Web Services API">
+        <feature>jakarta-annotation</feature>
+        <bundle>mvn:jakarta.ws.rs/jakarta.ws.rs-api/3.1.0</bundle>
+        <bundle>mvn:jakarta.validation/jakarta.validation-api/3.0.2</bundle>
+    </feature>
+
+    <!-- CXF 4.x Core Feature -->
+    <feature name="cxf-core" version="${project.version}" description="Apache CXF 4.x Core">
+        <feature>jakarta-annotation</feature>
+        <feature>jakarta-activation</feature>
+        <feature>jakarta-xml-bind</feature>
+
+        <!-- Woodstox XML processor -->
+        <bundle>mvn:org.codehaus.woodstox/stax2-api/4.2.2</bundle>
+        <bundle>mvn:com.fasterxml.woodstox/woodstox-core/6.7.0</bundle>
+
+        <!-- Apache XMLSchema -->
+        <bundle>mvn:org.apache.ws.xmlschema/xmlschema-core/2.3.1</bundle>
+
+        <!-- WSDL4J -->
+        <bundle>wrap:mvn:wsdl4j/wsdl4j/1.6.3</bundle>
+
+        <!-- Apache Neethi (WS-Policy) -->
+        <bundle>mvn:org.apache.neethi/neethi/3.2.0</bundle>
+
+        <!-- CXF Core All-in-One bundle -->
+        <bundle start-level="40">mvn:ddf.libs/cxf-core-all/${project.version}</bundle>
+    </feature>
+
+    <!-- CXF JAX-RS Feature -->
+    <feature name="cxf-jaxrs" version="${project.version}" description="Apache CXF 4.x JAX-RS">
+        <feature>cxf-core</feature>
+        <feature>jakarta-ws-rs</feature>
+    </feature>
+
+    <!-- CXF JAX-WS Feature -->
+    <feature name="cxf-jaxws" version="${project.version}" description="Apache CXF 4.x JAX-WS">
+        <feature>cxf-core</feature>
+        <feature>jakarta-xml-ws</feature>
+    </feature>
+
+    <!-- CXF SOAP Bindings Feature -->
+    <feature name="cxf-bindings-soap" version="${project.version}" description="Apache CXF 4.x SOAP Bindings">
+        <feature>cxf-core</feature>
+        <feature>jakarta-xml-ws</feature>
+    </feature>
+
+    <!-- CXF HTTP Transport Feature -->
+    <feature name="cxf-http" version="${project.version}" description="Apache CXF 4.x HTTP Transport">
+        <feature>cxf-core</feature>
+        <feature>pax-web-http</feature>
+    </feature>
+
+    <!-- CXF WS-Security Feature -->
+    <feature name="cxf-ws-security" version="${project.version}" description="Apache CXF 4.x WS-Security">
+        <feature>cxf-core</feature>
+        <feature>cxf-bindings-soap</feature>
+
+        <!-- Apache WSS4J -->
+        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-common/4.0.0</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-dom/4.0.0</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-stax/4.0.0</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-policy/4.0.0</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-bindings/4.0.0</bundle>
+
+        <!-- Apache Santuario (XML Security) -->
+        <bundle>mvn:org.apache.santuario/xmlsec/4.0.3</bundle>
+    </feature>
+
+    <!-- CXF RS Security SAML Feature -->
+    <feature name="cxf-rs-security-saml" version="${project.version}" description="Apache CXF 4.x RS Security SAML">
+        <feature>cxf-jaxrs</feature>
+        <feature>cxf-ws-security</feature>
+    </feature>
+
+    <!-- CXF RS Security OAuth2 Feature -->
+    <feature name="cxf-rs-security-oauth2" version="${project.version}" description="Apache CXF 4.x RS Security OAuth2">
+        <feature>cxf-jaxrs</feature>
+    </feature>
+
+    <!-- Combined CXF Feature (convenience) -->
+    <feature name="cxf" version="${project.version}" description="Apache CXF 4.x Complete">
+        <feature>cxf-jaxrs</feature>
+        <feature>cxf-jaxws</feature>
+        <feature>cxf-http</feature>
+    </feature>
+
+    <!-- CXF with Security (convenience) -->
+    <feature name="cxf-secure" version="${project.version}" description="Apache CXF 4.x with Security">
+        <feature>cxf</feature>
+        <feature>cxf-ws-security</feature>
+        <feature>cxf-rs-security-saml</feature>
+        <feature>cxf-rs-security-oauth2</feature>
+    </feature>
+
+</features>

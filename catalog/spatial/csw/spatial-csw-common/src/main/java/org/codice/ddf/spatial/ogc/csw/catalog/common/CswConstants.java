@@ -14,10 +14,10 @@
 package org.codice.ddf.spatial.ogc.csw.catalog.common;
 
 import com.google.common.net.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.ws.rs.core.MediaType;
 import javax.xml.namespace.QName;
 
 public final class CswConstants {

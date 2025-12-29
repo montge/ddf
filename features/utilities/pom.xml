@@ -381,9 +381,9 @@
 
         <!--feature dependencies-->
         <dependency>
-            <groupId>org.apache.cxf.karaf</groupId>
-            <artifactId>apache-cxf</artifactId>
-            <version>${cxf.version}</version>
+            <groupId>ddf.libs</groupId>
+            <artifactId>ddf-cxf-karaf-features</artifactId>
+            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>

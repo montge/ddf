@@ -19,11 +19,11 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.List;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.stream.XMLStreamWriter;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;

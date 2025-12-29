@@ -14,11 +14,11 @@
 package ddf.camel.component.catalog.converter;
 
 import ddf.catalog.data.impl.BinaryContentImpl;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 import java.io.InputStream;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import org.apache.camel.Exchange;
 import org.apache.camel.support.TypeConverterSupport;
 import org.slf4j.Logger;

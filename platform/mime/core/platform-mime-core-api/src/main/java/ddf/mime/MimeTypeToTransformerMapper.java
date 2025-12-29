@@ -13,8 +13,8 @@
  */
 package ddf.mime;
 
+import jakarta.activation.MimeType;
 import java.util.List;
-import javax.activation.MimeType;
 
 /** @author Ashraf Barakat */
 public interface MimeTypeToTransformerMapper {

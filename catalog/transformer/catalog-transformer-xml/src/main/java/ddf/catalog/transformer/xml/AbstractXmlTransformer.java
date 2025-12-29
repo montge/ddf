@@ -15,10 +15,10 @@ package ddf.catalog.transformer.xml;
 
 import ddf.catalog.transformer.xml.adapter.AdaptedMetacard;
 import ddf.catalog.transformer.xml.binding.MetacardElement;
+import jakarta.activation.MimeType;
+import jakarta.activation.MimeTypeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import net.opengis.gml.v_3_1_1.AbstractGeometryType;
 import org.codice.ddf.parser.Parser;
 import org.codice.ddf.parser.ParserConfigurator;
