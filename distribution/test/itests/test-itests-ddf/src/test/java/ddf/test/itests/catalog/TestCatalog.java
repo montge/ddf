@@ -708,7 +708,7 @@ public class TestCatalog extends AbstractIntegrationTest {
   }
 
   @Test
-  @Ignore("https://github.com/codice/ddf/issues/6798")
+  @Disabled("https://github.com/codice/ddf/issues/6798")
   public void testCswUtmQuery() {
     Response response = ingestXmlViaCsw();
     response.then();
@@ -1583,7 +1583,7 @@ public class TestCatalog extends AbstractIntegrationTest {
   }
 
   @Test
-  @Ignore("https://github.com/codice/ddf/issues/6798")
+  @Disabled("https://github.com/codice/ddf/issues/6798")
   public void testPptxTumbnail() throws Exception {
     final String file = "testPPT.pptx";
 
@@ -1611,7 +1611,7 @@ public class TestCatalog extends AbstractIntegrationTest {
   }
 
   @Test
-  @Ignore("https://github.com/codice/ddf/issues/6798")
+  @Disabled("https://github.com/codice/ddf/issues/6798")
   public void testContentDirectoryMonitor() throws Exception {
     final String TMP_PREFIX = "tcdm_";
     Path tmpDir = Files.createTempDirectory(TMP_PREFIX);
