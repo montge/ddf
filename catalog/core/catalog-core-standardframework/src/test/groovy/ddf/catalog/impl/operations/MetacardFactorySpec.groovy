@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 import spock.lang.Shared
 import spock.lang.Specification
 
-import javax.activation.MimeType
+import jakarta.activation.MimeType
 import java.nio.file.Path
 import java.nio.file.Paths
 
