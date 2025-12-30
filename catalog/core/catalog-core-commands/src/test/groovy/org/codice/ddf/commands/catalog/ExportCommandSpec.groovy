@@ -39,7 +39,7 @@ import org.osgi.framework.ServiceReference
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import javax.activation.MimeType
+import jakarta.activation.MimeType
 import java.nio.file.Paths
 import java.util.zip.ZipFile
 
