@@ -13,11 +13,11 @@
  */
 package ddf.catalog.transformer.xml;
 
-import jakarta.xml.bind.ValidationEvent;
-import jakarta.xml.bind.ValidationEventLocator;
-import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 import java.net.URL;
 import java.text.MessageFormat;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventLocator;
+import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;

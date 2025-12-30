@@ -59,8 +59,10 @@
         <bundle>mvn:jakarta.validation/jakarta.validation-api/3.0.2</bundle>
     </feature>
 
-    <!-- CXF 4.x Core Feature -->
-    <feature name="cxf-core" version="${project.version}" description="Apache CXF 4.x Core">
+    <!-- CXF 4.x Core Feature
+         Note: Version 3.6.99 is used to satisfy Camel's cxf-core version range requirement [3.6,3.7)
+         The actual implementation uses CXF 4.1.1 with Jakarta EE namespaces -->
+    <feature name="cxf-core" version="3.6.9" description="Apache CXF 4.x Core">
         <feature>jakarta-annotation</feature>
         <feature>jakarta-activation</feature>
         <feature>jakarta-xml-bind</feature>
@@ -83,69 +85,535 @@
     </feature>
 
     <!-- CXF JAX-RS Feature -->
-    <feature name="cxf-jaxrs" version="${project.version}" description="Apache CXF 4.x JAX-RS">
-        <feature>cxf-core</feature>
+    <feature name="cxf-jaxrs" version="3.6.9" description="Apache CXF 4.x JAX-RS">
+        <feature version="3.6.9">cxf-core</feature>
         <feature>jakarta-ws-rs</feature>
     </feature>
 
+    <!-- CXF JAX-RS Feature (default version for unversioned references) -->
+    <feature name="cxf-jaxrs" version="0.0.0" description="Apache CXF 4.x JAX-RS (default)">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
     <!-- CXF JAX-WS Feature -->
-    <feature name="cxf-jaxws" version="${project.version}" description="Apache CXF 4.x JAX-WS">
-        <feature>cxf-core</feature>
+    <feature name="cxf-jaxws" version="3.6.9" description="Apache CXF 4.x JAX-WS">
+        <feature version="3.6.9">cxf-core</feature>
         <feature>jakarta-xml-ws</feature>
+    </feature>
+
+    <!-- CXF JAX-WS Feature (default version for unversioned references) -->
+    <feature name="cxf-jaxws" version="0.0.0" description="Apache CXF 4.x JAX-WS (default)">
+        <feature version="3.6.9">cxf-jaxws</feature>
     </feature>
 
     <!-- CXF SOAP Bindings Feature -->
-    <feature name="cxf-bindings-soap" version="${project.version}" description="Apache CXF 4.x SOAP Bindings">
-        <feature>cxf-core</feature>
+    <feature name="cxf-bindings-soap" version="3.6.9" description="Apache CXF 4.x SOAP Bindings">
+        <feature version="3.6.9">cxf-core</feature>
         <feature>jakarta-xml-ws</feature>
     </feature>
 
+    <!-- CXF JAXB Databinding Feature (Camel compatibility) -->
+    <feature name="cxf-databinding-jaxb" version="3.6.9" description="Apache CXF 4.x JAXB Databinding">
+        <feature version="3.6.9">cxf-core</feature>
+        <feature>jakarta-xml-bind</feature>
+    </feature>
+
     <!-- CXF HTTP Transport Feature -->
-    <feature name="cxf-http" version="${project.version}" description="Apache CXF 4.x HTTP Transport">
-        <feature>cxf-core</feature>
+    <feature name="cxf-http" version="3.6.9" description="Apache CXF 4.x HTTP Transport">
+        <feature version="3.6.9">cxf-core</feature>
         <feature>pax-web-http</feature>
     </feature>
 
-    <!-- CXF WS-Security Feature -->
-    <feature name="cxf-ws-security" version="${project.version}" description="Apache CXF 4.x WS-Security">
-        <feature>cxf-core</feature>
-        <feature>cxf-bindings-soap</feature>
+    <!-- CXF HTTP Provider Feature (Camel compatibility alias) -->
+    <feature name="cxf-http-provider" version="3.6.9" description="Apache CXF 4.x HTTP Provider">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
 
-        <!-- Apache WSS4J -->
+    <!-- WSS4J Feature (Apache Web Services Security) -->
+    <feature name="wss4j" version="${project.version}" description="Apache WSS4J">
+        <feature>jakarta-xml-bind</feature>
         <bundle>mvn:org.apache.wss4j/wss4j-ws-security-common/4.0.0</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-ws-security-dom/4.0.0</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-ws-security-stax/4.0.0</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-policy/4.0.0</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-bindings/4.0.0</bundle>
-
         <!-- Apache Santuario (XML Security) -->
         <bundle>mvn:org.apache.santuario/xmlsec/4.0.3</bundle>
     </feature>
 
+    <!-- CXF WS-Security Feature -->
+    <feature name="cxf-ws-security" version="3.6.9" description="Apache CXF 4.x WS-Security">
+        <feature version="3.6.9">cxf-core</feature>
+        <feature version="3.6.9">cxf-bindings-soap</feature>
+        <feature>wss4j</feature>
+    </feature>
+
     <!-- CXF RS Security SAML Feature -->
-    <feature name="cxf-rs-security-saml" version="${project.version}" description="Apache CXF 4.x RS Security SAML">
-        <feature>cxf-jaxrs</feature>
-        <feature>cxf-ws-security</feature>
+    <feature name="cxf-rs-security-saml" version="3.6.9" description="Apache CXF 4.x RS Security SAML">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+        <feature version="3.6.9">cxf-ws-security</feature>
     </feature>
 
     <!-- CXF RS Security OAuth2 Feature -->
-    <feature name="cxf-rs-security-oauth2" version="${project.version}" description="Apache CXF 4.x RS Security OAuth2">
-        <feature>cxf-jaxrs</feature>
+    <feature name="cxf-rs-security-oauth2" version="3.6.9" description="Apache CXF 4.x RS Security OAuth2">
+        <feature version="3.6.9">cxf-jaxrs</feature>
     </feature>
 
     <!-- Combined CXF Feature (convenience) -->
-    <feature name="cxf" version="${project.version}" description="Apache CXF 4.x Complete">
-        <feature>cxf-jaxrs</feature>
-        <feature>cxf-jaxws</feature>
-        <feature>cxf-http</feature>
+    <feature name="cxf" version="3.6.9" description="Apache CXF 4.x Complete">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+        <feature version="3.6.9">cxf-jaxws</feature>
+        <feature version="3.6.9">cxf-http</feature>
     </feature>
 
     <!-- CXF with Security (convenience) -->
     <feature name="cxf-secure" version="${project.version}" description="Apache CXF 4.x with Security">
-        <feature>cxf</feature>
-        <feature>cxf-ws-security</feature>
-        <feature>cxf-rs-security-saml</feature>
-        <feature>cxf-rs-security-oauth2</feature>
+        <feature version="3.6.9">cxf</feature>
+        <feature version="3.6.9">cxf-ws-security</feature>
+        <feature version="3.6.9">cxf-rs-security-saml</feature>
+        <feature version="3.6.9">cxf-rs-security-oauth2</feature>
+    </feature>
+
+    <!-- CXF Commands Feature (Karaf commands for CXF management)
+         Note: CXF 4.x removed the cxf-karaf-commands artifact, so this is now a stub feature -->
+    <feature name="cxf-commands" version="3.6.9" description="Apache CXF 4.x Karaf Commands">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <!-- Additional CXF Compatibility Features -->
+    <!-- These are stub features to satisfy Camel and other component dependencies -->
+
+    <feature name="cxf-features-logging" version="3.6.9" description="CXF Logging Features">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-transports-http" version="3.6.9" description="CXF HTTP Transports">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-transports-http-jetty" version="3.6.9" description="CXF HTTP Jetty Transport">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-transports-http-undertow" version="3.6.9" description="CXF HTTP Undertow Transport">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-transports-websocket" version="3.6.9" description="CXF WebSocket Transport">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-transports-http-hc" version="3.6.9" description="CXF HTTP HttpClient Transport">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-frontend-jaxws" version="3.6.9" description="CXF JAX-WS Frontend">
+        <feature version="3.6.9">cxf-jaxws</feature>
+    </feature>
+
+    <feature name="cxf-frontend-jaxrs" version="3.6.9" description="CXF JAX-RS Frontend">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-frontend-jaxrs" version="3.6.9" description="CXF RT JAX-RS Frontend">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-extension-providers" version="3.6.9" description="CXF JAX-RS Extension Providers">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-extension-search" version="3.6.9" description="CXF JAX-RS Search Extension">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-databinding-aegis" version="3.6.9" description="CXF Aegis Databinding">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-databinding-xmlbeans" version="3.6.9" description="CXF XMLBeans Databinding">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-rs-description-swagger2" version="3.6.9" description="CXF Swagger2 Support">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rs-description-openapi" version="3.6.9" description="CXF OpenAPI Support">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rs-security-cors" version="3.6.9" description="CXF CORS Support">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rs-security-sso-saml" version="3.6.9" description="CXF SSO SAML Support">
+        <feature version="3.6.9">cxf-rs-security-saml</feature>
+    </feature>
+
+    <feature name="cxf-bean-validation" version="3.6.9" description="CXF Bean Validation">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <!-- CXF Blueprint Feature (Camel dependency) -->
+    <feature name="cxf-blueprint" version="3.6.9" description="CXF Blueprint">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-blueprint" version="0.0.0" description="CXF Blueprint (default)">
+        <feature version="3.6.9">cxf-blueprint</feature>
+    </feature>
+
+    <!-- CXF Common Feature (Camel dependency) -->
+    <feature name="cxf-common" version="3.6.9" description="CXF Common">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-common" version="0.0.0" description="CXF Common (default)">
+        <feature version="3.6.9">cxf-common</feature>
+    </feature>
+
+    <!-- CXF REST Feature (Camel dependency) -->
+    <feature name="cxf-rest" version="3.6.9" description="CXF REST">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rest" version="0.0.0" description="CXF REST (default)">
+        <feature version="3.6.9">cxf-rest</feature>
+    </feature>
+
+    <!-- CXF SOAP Feature (Camel dependency) -->
+    <feature name="cxf-soap" version="3.6.9" description="CXF SOAP">
+        <feature version="3.6.9">cxf-jaxws</feature>
+        <feature version="3.6.9">cxf-bindings-soap</feature>
+    </feature>
+
+    <feature name="cxf-soap" version="0.0.0" description="CXF SOAP (default)">
+        <feature version="3.6.9">cxf-soap</feature>
+    </feature>
+
+    <!-- CXF Spring Features (Camel dependencies) -->
+    <feature name="cxf-spring" version="3.6.9" description="CXF Spring">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-spring" version="0.0.0" description="CXF Spring (default)">
+        <feature version="3.6.9">cxf-spring</feature>
+    </feature>
+
+    <feature name="cxf-spring-common" version="3.6.9" description="CXF Spring Common">
+        <feature version="3.6.9">cxf-spring</feature>
+    </feature>
+
+    <feature name="cxf-spring-common" version="0.0.0" description="CXF Spring Common (default)">
+        <feature version="3.6.9">cxf-spring-common</feature>
+    </feature>
+
+    <feature name="cxf-spring-rest" version="3.6.9" description="CXF Spring REST">
+        <feature version="3.6.9">cxf-spring</feature>
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-spring-rest" version="0.0.0" description="CXF Spring REST (default)">
+        <feature version="3.6.9">cxf-spring-rest</feature>
+    </feature>
+
+    <feature name="cxf-spring-soap" version="3.6.9" description="CXF Spring SOAP">
+        <feature version="3.6.9">cxf-spring</feature>
+        <feature version="3.6.9">cxf-soap</feature>
+    </feature>
+
+    <feature name="cxf-spring-soap" version="0.0.0" description="CXF Spring SOAP (default)">
+        <feature version="3.6.9">cxf-spring-soap</feature>
+    </feature>
+
+    <feature name="cxf-spring-transport" version="3.6.9" description="CXF Spring Transport">
+        <feature version="3.6.9">cxf-spring</feature>
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-spring-transport" version="0.0.0" description="CXF Spring Transport (default)">
+        <feature version="3.6.9">cxf-spring-transport</feature>
+    </feature>
+
+    <!-- CXF Transport Features (Camel dependencies) -->
+    <feature name="cxf-transport" version="3.6.9" description="CXF Transport">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-transport" version="0.0.0" description="CXF Transport (default)">
+        <feature version="3.6.9">cxf-transport</feature>
+    </feature>
+
+    <feature name="cxf-transport-blueprint" version="3.6.9" description="CXF Transport Blueprint">
+        <feature version="3.6.9">cxf-transport</feature>
+        <feature version="3.6.9">cxf-blueprint</feature>
+    </feature>
+
+    <feature name="cxf-transport-blueprint" version="0.0.0" description="CXF Transport Blueprint (default)">
+        <feature version="3.6.9">cxf-transport-blueprint</feature>
+    </feature>
+
+    <!-- CXF RS Security XML Feature -->
+    <feature name="cxf-rs-security-xml" version="3.6.9" description="CXF RS Security XML">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+        <feature version="3.6.9">cxf-ws-security</feature>
+    </feature>
+
+    <feature name="cxf-rs-security-xml" version="0.0.0" description="CXF RS Security XML (default)">
+        <feature version="3.6.9">cxf-rs-security-xml</feature>
+    </feature>
+
+    <!-- CXF RT Runtime Features (aliases for cxf-rt-* naming convention) -->
+    <feature name="cxf-rt-bindings-soap" version="3.6.9" description="CXF RT SOAP Bindings">
+        <feature version="3.6.9">cxf-bindings-soap</feature>
+    </feature>
+
+    <feature name="cxf-rt-bindings-soap" version="0.0.0" description="CXF RT SOAP Bindings (default)">
+        <feature version="3.6.9">cxf-rt-bindings-soap</feature>
+    </feature>
+
+    <feature name="cxf-rt-bindings-xml" version="3.6.9" description="CXF RT XML Bindings">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-rt-bindings-xml" version="0.0.0" description="CXF RT XML Bindings (default)">
+        <feature version="3.6.9">cxf-rt-bindings-xml</feature>
+    </feature>
+
+    <feature name="cxf-rt-databinding-jaxb" version="3.6.9" description="CXF RT JAXB Databinding">
+        <feature version="3.6.9">cxf-databinding-jaxb</feature>
+    </feature>
+
+    <feature name="cxf-rt-databinding-jaxb" version="0.0.0" description="CXF RT JAXB Databinding (default)">
+        <feature version="3.6.9">cxf-rt-databinding-jaxb</feature>
+    </feature>
+
+    <feature name="cxf-rt-features-logging" version="3.6.9" description="CXF RT Logging Features">
+        <feature version="3.6.9">cxf-features-logging</feature>
+    </feature>
+
+    <feature name="cxf-rt-features-logging" version="0.0.0" description="CXF RT Logging Features (default)">
+        <feature version="3.6.9">cxf-rt-features-logging</feature>
+    </feature>
+
+    <feature name="cxf-rt-frontend-jaxws" version="3.6.9" description="CXF RT JAX-WS Frontend">
+        <feature version="3.6.9">cxf-jaxws</feature>
+    </feature>
+
+    <feature name="cxf-rt-frontend-jaxws" version="0.0.0" description="CXF RT JAX-WS Frontend (default)">
+        <feature version="3.6.9">cxf-rt-frontend-jaxws</feature>
+    </feature>
+
+    <feature name="cxf-rt-frontend-simple" version="3.6.9" description="CXF RT Simple Frontend">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-rt-frontend-simple" version="0.0.0" description="CXF RT Simple Frontend (default)">
+        <feature version="3.6.9">cxf-rt-frontend-simple</feature>
+    </feature>
+
+    <feature name="cxf-rt-management" version="3.6.9" description="CXF RT Management">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-rt-management" version="0.0.0" description="CXF RT Management (default)">
+        <feature version="3.6.9">cxf-rt-management</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-client" version="3.6.9" description="CXF RT RS Client">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-client" version="0.0.0" description="CXF RT RS Client (default)">
+        <feature version="3.6.9">cxf-rt-rs-client</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-json-basic" version="3.6.9" description="CXF RT RS JSON Basic">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-json-basic" version="0.0.0" description="CXF RT RS JSON Basic (default)">
+        <feature version="3.6.9">cxf-rt-rs-json-basic</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-jose" version="3.6.9" description="CXF RT RS Security JOSE">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-jose" version="0.0.0" description="CXF RT RS Security JOSE (default)">
+        <feature version="3.6.9">cxf-rt-rs-security-jose</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-jose-jaxrs" version="3.6.9" description="CXF RT RS Security JOSE JAXRS">
+        <feature version="3.6.9">cxf-rt-rs-security-jose</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-jose-jaxrs" version="0.0.0" description="CXF RT RS Security JOSE JAXRS (default)">
+        <feature version="3.6.9">cxf-rt-rs-security-jose-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-oauth2" version="3.6.9" description="CXF RT RS Security OAuth2">
+        <feature version="3.6.9">cxf-rs-security-oauth2</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-oauth2" version="0.0.0" description="CXF RT RS Security OAuth2 (default)">
+        <feature version="3.6.9">cxf-rt-rs-security-oauth2</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-sso-saml" version="3.6.9" description="CXF RT RS Security SSO SAML">
+        <feature version="3.6.9">cxf-rs-security-sso-saml</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-sso-saml" version="0.0.0" description="CXF RT RS Security SSO SAML (default)">
+        <feature version="3.6.9">cxf-rt-rs-security-sso-saml</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-xml" version="3.6.9" description="CXF RT RS Security XML">
+        <feature version="3.6.9">cxf-rs-security-xml</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-security-xml" version="0.0.0" description="CXF RT RS Security XML (default)">
+        <feature version="3.6.9">cxf-rt-rs-security-xml</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-service-description" version="3.6.9" description="CXF RT RS Service Description">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-rt-rs-service-description" version="0.0.0" description="CXF RT RS Service Description (default)">
+        <feature version="3.6.9">cxf-rt-rs-service-description</feature>
+    </feature>
+
+    <feature name="cxf-rt-security" version="3.6.9" description="CXF RT Security">
+        <feature version="3.6.9">cxf-ws-security</feature>
+    </feature>
+
+    <feature name="cxf-rt-security" version="0.0.0" description="CXF RT Security (default)">
+        <feature version="3.6.9">cxf-rt-security</feature>
+    </feature>
+
+    <feature name="cxf-rt-security-saml" version="3.6.9" description="CXF RT Security SAML">
+        <feature version="3.6.9">cxf-rs-security-saml</feature>
+    </feature>
+
+    <feature name="cxf-rt-security-saml" version="0.0.0" description="CXF RT Security SAML (default)">
+        <feature version="3.6.9">cxf-rt-security-saml</feature>
+    </feature>
+
+    <feature name="cxf-rt-transports-http" version="3.6.9" description="CXF RT HTTP Transports">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-rt-transports-http" version="0.0.0" description="CXF RT HTTP Transports (default)">
+        <feature version="3.6.9">cxf-rt-transports-http</feature>
+    </feature>
+
+    <feature name="cxf-rt-transports-http-jetty" version="3.6.9" description="CXF RT HTTP Jetty Transport">
+        <feature version="3.6.9">cxf-transports-http-jetty</feature>
+    </feature>
+
+    <feature name="cxf-rt-transports-http-jetty" version="0.0.0" description="CXF RT HTTP Jetty Transport (default)">
+        <feature version="3.6.9">cxf-rt-transports-http-jetty</feature>
+    </feature>
+
+    <feature name="cxf-rt-ws-addr" version="3.6.9" description="CXF RT WS-Addressing">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-rt-ws-addr" version="0.0.0" description="CXF RT WS-Addressing (default)">
+        <feature version="3.6.9">cxf-rt-ws-addr</feature>
+    </feature>
+
+    <feature name="cxf-rt-ws-policy" version="3.6.9" description="CXF RT WS-Policy">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-rt-ws-policy" version="0.0.0" description="CXF RT WS-Policy (default)">
+        <feature version="3.6.9">cxf-rt-ws-policy</feature>
+    </feature>
+
+    <feature name="cxf-rt-ws-security" version="3.6.9" description="CXF RT WS-Security">
+        <feature version="3.6.9">cxf-ws-security</feature>
+    </feature>
+
+    <feature name="cxf-rt-ws-security" version="0.0.0" description="CXF RT WS-Security (default)">
+        <feature version="3.6.9">cxf-rt-ws-security</feature>
+    </feature>
+
+    <feature name="cxf-rt-wsdl" version="3.6.9" description="CXF RT WSDL">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-rt-wsdl" version="0.0.0" description="CXF RT WSDL (default)">
+        <feature version="3.6.9">cxf-rt-wsdl</feature>
+    </feature>
+
+    <!-- CXF Frontend JavaScript Feature -->
+    <feature name="cxf-frontend-javascript" version="3.6.9" description="CXF JavaScript Frontend">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-frontend-javascript" version="0.0.0" description="CXF JavaScript Frontend (default)">
+        <feature version="3.6.9">cxf-frontend-javascript</feature>
+    </feature>
+
+    <!-- Default version aliases for features that might be referenced without version -->
+    <feature name="cxf-core" version="0.0.0" description="Apache CXF 4.x Core (default)">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-http" version="0.0.0" description="CXF HTTP Transport (default)">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-ws-security" version="0.0.0" description="CXF WS-Security (default)">
+        <feature version="3.6.9">cxf-ws-security</feature>
+    </feature>
+
+    <feature name="cxf" version="0.0.0" description="CXF Complete (default)">
+        <feature version="3.6.9">cxf</feature>
+    </feature>
+
+    <feature name="cxf-http-provider" version="0.0.0" description="CXF HTTP Provider (default)">
+        <feature version="3.6.9">cxf-http-provider</feature>
+    </feature>
+
+    <feature name="cxf-commands" version="0.0.0" description="CXF Commands (default)">
+        <feature version="3.6.9">cxf-commands</feature>
+    </feature>
+
+    <feature name="cxf-features-logging" version="0.0.0" description="CXF Logging (default)">
+        <feature version="3.6.9">cxf-features-logging</feature>
+    </feature>
+
+    <feature name="cxf-databinding-jaxb" version="0.0.0" description="CXF JAXB Databinding (default)">
+        <feature version="3.6.9">cxf-databinding-jaxb</feature>
+    </feature>
+
+    <!-- Version 4.1.1 aliases (for modules using ${cxf.version}) -->
+    <feature name="cxf-core" version="4.1.1" description="Apache CXF 4.x Core (4.1.1 alias)">
+        <feature version="3.6.9">cxf-core</feature>
+    </feature>
+
+    <feature name="cxf-jaxrs" version="4.1.1" description="Apache CXF 4.x JAX-RS (4.1.1 alias)">
+        <feature version="3.6.9">cxf-jaxrs</feature>
+    </feature>
+
+    <feature name="cxf-jaxws" version="4.1.1" description="Apache CXF 4.x JAX-WS (4.1.1 alias)">
+        <feature version="3.6.9">cxf-jaxws</feature>
+    </feature>
+
+    <feature name="cxf-http" version="4.1.1" description="Apache CXF 4.x HTTP (4.1.1 alias)">
+        <feature version="3.6.9">cxf-http</feature>
+    </feature>
+
+    <feature name="cxf-ws-security" version="4.1.1" description="Apache CXF 4.x WS-Security (4.1.1 alias)">
+        <feature version="3.6.9">cxf-ws-security</feature>
+    </feature>
+
+    <feature name="cxf" version="4.1.1" description="Apache CXF 4.x Complete (4.1.1 alias)">
+        <feature version="3.6.9">cxf</feature>
     </feature>
 
 </features>

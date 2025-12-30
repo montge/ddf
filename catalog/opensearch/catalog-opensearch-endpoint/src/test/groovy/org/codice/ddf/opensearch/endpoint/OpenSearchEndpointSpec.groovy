@@ -26,8 +26,8 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.core.MultivaluedMap
-import javax.ws.rs.core.UriInfo
+import jakarta.ws.rs.core.MultivaluedMap
+import jakarta.ws.rs.core.UriInfo
 
 @RunWith(JUnitPlatform.class)
 class OpenSearchEndpointSpec extends Specification {

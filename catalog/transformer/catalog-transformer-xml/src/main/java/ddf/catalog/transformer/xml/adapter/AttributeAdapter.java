@@ -33,8 +33,8 @@ import ddf.catalog.transformer.xml.binding.ObjectElement;
 import ddf.catalog.transformer.xml.binding.ShortElement;
 import ddf.catalog.transformer.xml.binding.StringElement;
 import ddf.catalog.transformer.xml.binding.StringxmlElement;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.transform.TransformerException;
 import org.jvnet.ogc.gml.v_3_1_1.jts.ConversionFailedException;
 

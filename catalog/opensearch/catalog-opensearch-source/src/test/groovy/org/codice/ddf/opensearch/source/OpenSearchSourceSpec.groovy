@@ -44,7 +44,7 @@ import org.osgi.framework.ServiceReference
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import javax.ws.rs.core.Response
+import jakarta.ws.rs.core.Response
 import java.nio.charset.StandardCharsets
 
 @RunWith(JUnitPlatform.class)

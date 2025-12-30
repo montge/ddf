@@ -15,12 +15,12 @@ package org.codice.ddf.parser.xml;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
-import jakarta.xml.bind.ValidationEventHandler;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.ValidationEventHandler;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.codice.ddf.parser.ParserConfigurator;
 
 public class XmlParserConfigurator implements ParserConfigurator {

@@ -16,8 +16,8 @@ package ddf.catalog.transformer.xml.adapter;
 import ddf.catalog.data.Attribute;
 import ddf.catalog.data.impl.AttributeImpl;
 import ddf.catalog.transformer.xml.binding.IntElement;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.io.Serializable;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 public class IntAdapter extends XmlAdapter<IntElement, Attribute> {
 
