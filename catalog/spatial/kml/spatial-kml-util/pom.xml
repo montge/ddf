@@ -55,9 +55,11 @@
             <artifactId>gt-main</artifactId>
             <version>${org.geotools.version}</version>
         </dependency>
+        <!-- JAXB 2.x runtime for javax.xml.bind compatibility -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>
