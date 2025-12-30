@@ -140,6 +140,21 @@
             <artifactId>cxf-rt-features-logging</artifactId>
         </dependency>
 
+        <!-- Jakarta EE APIs needed by CXF 4.x -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>com.auth0</groupId>
