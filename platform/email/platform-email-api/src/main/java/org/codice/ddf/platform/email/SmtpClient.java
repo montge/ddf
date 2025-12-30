@@ -13,14 +13,14 @@
  */
 package org.codice.ddf.platform.email;
 
+import jakarta.mail.Message;
+import jakarta.mail.Session;
 import java.util.concurrent.Future;
-import javax.mail.Message;
-import javax.mail.Session;
 
 /**
- * Provides a light-weight interface to javax.mail. The user should call {@link #createSession()} to
- * get a session that is preconfigured with the hostname and port number of the email server. Next,
- * construct a {@link Message} and submit it to {@link #send(Message)}.
+ * Provides a light-weight interface to Jakarta Mail. The user should call {@link #createSession()}
+ * to get a session that is preconfigured with the hostname and port number of the email server.
+ * Next, construct a {@link Message} and submit it to {@link #send(Message)}.
  *
  * <p>Example:
  *

@@ -19,19 +19,19 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.security.audit.SecurityLogger;
 import ddf.security.encryption.EncryptionService;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Provider;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.annotation.Nullable;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Provider;
-import javax.mail.Session;
-import javax.mail.Transport;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.platform.email.SmtpClient;
 import org.codice.ddf.platform.util.StandardThreadFactoryBuilder;
@@ -135,7 +135,7 @@ public class SmtpClientImpl implements SmtpClient {
     properties.setProperty(SMTP_PORT_PROPERTY, portNumber.toString());
 
     // Jakarta Mail uses java.util.ServiceLoader.load() to look for service implementations, in
-    // this case of the javax.mail.Provider interface. ServiceLoader relies on the Thread Context
+    // this case of the jakarta.mail.Provider interface. ServiceLoader relies on the Thread Context
     // Classloader which is not necessarily the correct behavior in an OSGi context and may result
     // in services not being found.
     //
