@@ -34,7 +34,7 @@
         <bundle>mvn:org.eclipse.jetty.http2/http2-http-client-transport/${solr.jetty.version}</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${solr.httpcore.version}</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${solr.httpclient.version}</bundle>
-        <bundle>mvn:com.sun.mail/jakarta.mail/${jakarta.mail.version}</bundle>
+        <bundle>mvn:org.eclipse.angus/angus-mail/${angus-mail.version}</bundle>
         <bundle>mvn:ddf.platform.solr/solr-dependencies/${project.version}</bundle>
     </feature>
 

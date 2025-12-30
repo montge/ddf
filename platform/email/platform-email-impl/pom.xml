@@ -46,10 +46,11 @@
             <artifactId>jakarta.mail-api</artifactId>
             <version>${jakarta.mail.version}</version>
         </dependency>
+        <!-- Eclipse Angus Mail - Jakarta Mail implementation for Jakarta EE 10 -->
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>jakarta.mail</artifactId>
-            <version>${jakarta.mail.version}</version>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
+            <version>${angus-mail.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

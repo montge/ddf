@@ -58,7 +58,7 @@
 
         <!-- Miscellaneous -->
         <bundle dependency="true">mvn:org.apache.shiro/shiro-core/${apache.shiro.version}</bundle>
-        <bundle>mvn:com.sun.mail/jakarta.mail/${jakarta.mail.version}</bundle>
+        <bundle>mvn:org.eclipse.angus/angus-mail/${angus-mail.version}</bundle>
         <bundle>mvn:org.apache.commons/commons-text/${commons-text.version}</bundle>
 
         <!--
