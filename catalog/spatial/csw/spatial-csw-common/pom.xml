@@ -112,11 +112,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
-        <!-- JAXB 2.x runtime for javax.xml.bind compatibility -->
+        <!-- JAXB 4.x runtime for jakarta.xml.bind (required by CXF 4.x) -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.9</version>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.codice.ddf.spatial</groupId>

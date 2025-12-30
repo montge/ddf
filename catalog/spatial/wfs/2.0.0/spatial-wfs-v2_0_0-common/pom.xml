@@ -121,6 +121,12 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>4.0.2</version>
         </dependency>
+        <!-- JAXB 4.x runtime for jakarta.xml.bind (required by CXF 4.x) -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.2</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

@@ -13,7 +13,6 @@
  */
 package org.codice.ddf.spatial.ogc.csw.catalog.common;
 
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
+import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
