@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.Optional;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -86,7 +87,12 @@ public class LocalLogoutServlet extends HttpServlet {
         principalHolder.remove();
       }
       removeTokens(session.getId());
-      request.logout();
+      try {
+        request.logout();
+      } catch (ServletException e) {
+        LOGGER.debug("Error during logout", e);
+      }
+      session.invalidate();
       deleteJSessionId(response);
     }
   }
