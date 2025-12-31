@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.platform.filter;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import java.io.IOException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 public interface SecurityFilterChain {
   void doFilter(ServletRequest var1, ServletResponse var2)

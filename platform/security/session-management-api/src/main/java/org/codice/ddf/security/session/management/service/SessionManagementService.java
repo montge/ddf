@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.security.session.management.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
+import javax.servlet.http.HttpServletRequest;
 
 public interface SessionManagementService {
 
