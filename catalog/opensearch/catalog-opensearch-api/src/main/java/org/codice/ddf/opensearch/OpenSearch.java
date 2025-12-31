@@ -13,13 +13,13 @@
  */
 package org.codice.ddf.opensearch;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import javax.servlet.http.HttpServletRequest;
 
 @Path("/")
 public interface OpenSearch {

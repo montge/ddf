@@ -41,8 +41,9 @@
             <version>${net.minidev.asm.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta.servlet-api.version}</version>
         </dependency>
         <dependency>
             <groupId>ddf.catalog.rest</groupId>

@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.endpoints.rest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -25,7 +26,6 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import java.io.InputStream;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 
 /** REST endpoint interface */
