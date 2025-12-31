@@ -16,6 +16,8 @@ package org.codice.ddf.rest.api;
 import ddf.catalog.data.BinaryContent;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.resource.DataUsageLimitExceededException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.InputStream;
@@ -24,8 +26,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.codice.ddf.attachment.AttachmentInfo;
 

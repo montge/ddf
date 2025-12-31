@@ -66,9 +66,9 @@
 - [x] 2.2.2 Identify all javax.ws.rs usages ✅ **421 occurrences in 129 files** (2025-12-12)
 - [x] 2.2.3 Identify all javax.xml.bind usages ✅ **195 occurrences in 89 files** (2025-12-12)
 - [x] 2.2.4 Create migration plan per module ✅ See `jakarta-migration-plan.md` (2025-12-12)
-- [ ] 2.2.5 Migrate platform/security modules first ⏸️ **BLOCKED** on CXF 4.x
-- [ ] 2.2.6 Migrate catalog modules ⏸️ **BLOCKED** on CXF 4.x
-- [ ] 2.2.7 Migrate remaining modules ⏸️ **BLOCKED** on CXF 4.x
+- [ ] 2.2.5 Migrate platform/security modules first ⏳ **UNBLOCKED** (CXF 4.x ready)
+- [ ] 2.2.6 Migrate catalog modules ⏳ **UNBLOCKED** (CXF 4.x ready)
+- [ ] 2.2.7 Migrate remaining modules ⏳ **UNBLOCKED** (CXF 4.x ready)
 
 **Additional Analysis (2025-12-12):**
 - javax.annotation: 82 occurrences in 77 files
@@ -105,18 +105,25 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Shades CXF 4.1.1 + all security modules (SAML, OAuth2, WS-Security)
   - Bundle size: 5.4MB with proper OSGi manifest
   - See `cxf-karaf-proposal.md` for architecture details
-- [ ] 3.1.3 Create Karaf features.xml for CXF 4.x
-- [ ] 3.1.4 Update DDF security features to use new bundle
+- [x] 3.1.3 Create Karaf features.xml for CXF 4.x ✅ (2025-12-31)
+  - Created `libs/ddf-cxf-karaf/features/src/main/feature/feature.xml`
+  - 60+ features including jakarta-*, cxf-*, wss4j, cxf-secure
+  - Version aliases: 3.6.9, 4.1.1, 0.0.0 (default) for Camel compatibility
+- [x] 3.1.4 Update DDF security features to use new bundle ✅ (2025-12-31)
+  - `features/security/src/main/feature/feature.xml` already references ddf-cxf-karaf-features
+  - Uses `cxf-secure` feature (lines 46, 161)
 - [ ] 3.1.5 Migrate JAX-RS annotations (after feature integration)
 - [ ] 3.1.6 Migrate JAX-WS annotations
 - [ ] 3.1.7 Test all REST endpoints
 - [ ] 3.1.8 Test CSW/WFS SOAP services
 
-**Progress Update (2025-12-28):**
+**Progress Update (2025-12-31):**
 - ✅ Created `libs/ddf-cxf-karaf` following camel-karaf pattern
-- ✅ CXF 4.1.1 successfully shaded into OSGi bundle
+- ✅ CXF 4.1.1 successfully shaded into OSGi bundle (5.6MB)
 - ✅ Includes: cxf-core, cxf-rt-frontend-jaxrs/jaxws, cxf-rt-security-*, cxf-rt-ws-security
-- ⏳ Next: Create Karaf features.xml, update DDF security features
+- ✅ Karaf features.xml created with 60+ CXF features
+- ✅ DDF security features updated to use new cxf-secure feature
+- ⏳ Next: Migrate javax→jakarta namespace in source code
 
 **Original Issue (2025-12-12):**
 - ⛔ **CXF 4.x removed OSGi support** - Blueprint extension, Karaf features.xml eliminated
