@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.ws.rs.core.MultivaluedMap
 import jakarta.ws.rs.core.UriInfo
 
