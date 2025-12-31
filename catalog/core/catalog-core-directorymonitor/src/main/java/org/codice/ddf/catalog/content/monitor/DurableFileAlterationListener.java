@@ -16,9 +16,9 @@ package org.codice.ddf.catalog.content.monitor;
 import static ddf.catalog.Constants.CDM_LOGGER_NAME;
 
 import ddf.catalog.data.types.Core;
+import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.util.Collections;
-import javax.validation.constraints.NotNull;
 import org.apache.camel.Exchange;
 import org.apache.camel.spi.Synchronization;
 import org.apache.commons.codec.digest.DigestUtils;

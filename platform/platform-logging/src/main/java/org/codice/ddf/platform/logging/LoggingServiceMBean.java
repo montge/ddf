@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.platform.logging;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import javax.validation.constraints.NotNull;
 
 /**
  * The {@link LoggingServiceMBean} interface is an MBean interface that defines logging event

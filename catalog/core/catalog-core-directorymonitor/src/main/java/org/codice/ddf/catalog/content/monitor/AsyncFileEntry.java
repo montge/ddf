@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.catalog.content.monitor;
 
+import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListSet;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
 /**
  * The core of this file is based upon {@link org.apache.commons.io.monitor.FileEntry}, modified to

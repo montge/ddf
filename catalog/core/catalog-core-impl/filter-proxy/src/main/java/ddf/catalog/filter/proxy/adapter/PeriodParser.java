@@ -13,13 +13,13 @@
  */
 package ddf.catalog.filter.proxy.adapter;
 
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.validation.constraints.NotNull;
 import org.joda.time.Period;
 
 /* Parses a period similar to ISO8601 format that contains decimal values. ISO8601 doesn't allow
