@@ -54,10 +54,10 @@ import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.codice.ddf.test.common.annotations.PaxExamRule;
 import org.codice.ddf.test.common.features.FeatureUtilities;
 import org.codice.ddf.test.common.features.TestUtilitiesFeatures;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.After;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.Rule;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
 import org.ops4j.pax.exam.Option;
@@ -117,7 +117,7 @@ public class ITSynchronizedInstaller {
     syncInstaller.waitForBundles();
   }
 
-  @AfterEach
+  @After
   public void afterTest() throws Exception {
     startExampleBundle();
     featuresService.installFeature(EXAMPLE_FEATURE);

@@ -38,9 +38,9 @@ import org.codice.ddf.itests.common.catalog.CatalogTestCommons;
 import org.codice.ddf.test.common.LoggingUtils;
 import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -79,7 +79,7 @@ public class TestFanout extends AbstractIntegrationTest {
     getCatalogBundle().waitForCatalogProvider();
   }
 
-  @BeforeEach
+  @Before
   public void setup() throws IOException, InterruptedException {
     // Start with empty blacklist
     getCatalogBundle().setFanoutTagBlacklist(Collections.emptyList());
@@ -92,7 +92,7 @@ public class TestFanout extends AbstractIntegrationTest {
     }
   }
 
-  @AfterEach
+  @After
   public void tearDown() throws Exception {
     clearCatalog();
   }

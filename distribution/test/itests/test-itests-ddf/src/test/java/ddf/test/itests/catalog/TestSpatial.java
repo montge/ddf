@@ -62,9 +62,9 @@ import org.codice.ddf.itests.common.catalog.CatalogTestCommons;
 import org.codice.ddf.test.common.LoggingUtils;
 import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
+import org.junit.After;
 import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
@@ -441,7 +441,7 @@ public class TestSpatial extends AbstractIntegrationTest {
         .then(Action.success(), Action.stringContent(response));
   }
 
-  @AfterEach
+  @After
   public void tearDown() throws Exception {
     clearCatalogAndWait();
   }

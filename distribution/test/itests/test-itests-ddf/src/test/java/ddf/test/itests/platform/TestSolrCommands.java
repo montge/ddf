@@ -30,9 +30,9 @@ import org.apache.commons.io.FileUtils;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.LoggingUtils;
 import org.codice.ddf.test.common.annotations.BeforeExam;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.After;
+import org.junit.Test;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -68,7 +68,7 @@ public class TestSolrCommands extends AbstractIntegrationTest {
     }
   }
 
-  @AfterEach
+  @After
   public void tearDown() {
     cleanUpBackups(CATALOG_CORE_NAME);
   }

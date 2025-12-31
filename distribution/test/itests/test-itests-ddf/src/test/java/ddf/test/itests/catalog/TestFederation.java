@@ -96,10 +96,10 @@ import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
 import org.glassfish.grizzly.http.Method;
 import org.hamcrest.Matcher;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
@@ -322,7 +322,7 @@ public class TestFederation extends AbstractIntegrationTest {
     }
   }
 
-  @BeforeEach
+  @Before
   public void setup() throws Exception {
 
     getCatalogBundle().setDownloadRetryDelayInSeconds(1);
@@ -342,7 +342,7 @@ public class TestFederation extends AbstractIntegrationTest {
     cswServer.reset();
   }
 
-  @AfterEach
+  @After
   public void tearDown() throws Exception {
 
     clearCatalog();

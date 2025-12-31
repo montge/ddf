@@ -75,8 +75,8 @@ import org.codice.ddf.itests.common.catalog.CatalogTestCommons;
 import org.codice.ddf.test.common.LoggingUtils;
 import org.codice.ddf.test.common.annotations.AfterExam;
 import org.codice.ddf.test.common.annotations.BeforeExam;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -386,7 +386,7 @@ public class TestSecurity extends AbstractIntegrationTest {
     }
   }
 
-  @AfterEach
+  @After
   public void teardown() throws Exception {
     clearCatalog();
   }

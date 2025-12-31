@@ -31,10 +31,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.codice.ddf.itests.common.AbstractIntegrationTest;
 import org.codice.ddf.test.common.annotations.BeforeExam;
+import org.junit.After;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
@@ -68,7 +68,7 @@ public class TestFederationSecurityIntegration extends AbstractIntegrationTest {
     getSecurityPolicy().configureRestForGuest();
   }
 
-  @AfterEach
+  @After
   public void tearDown() {
     clearCatalog();
   }
