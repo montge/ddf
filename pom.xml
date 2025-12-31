@@ -348,7 +348,7 @@
         <spring-osgi-mock.version>1.2.1</spring-osgi-mock.version>
         <tika.version>3.2.3</tika.version>
         <usng4j.version>0.4</usng4j.version>
-        <validation.version>1.1.0.Final</validation.version>
+        <validation.version>3.0.2</validation.version>
         <woodstox.core.version>6.6.2</woodstox.core.version>
         <woodstox.stax2-api.version>4.2.1</woodstox.stax2-api.version>
         <wss4j.neethi.version>3.2.1</wss4j.neethi.version>

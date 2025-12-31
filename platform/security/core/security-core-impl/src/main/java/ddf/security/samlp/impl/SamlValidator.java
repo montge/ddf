@@ -17,13 +17,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import ddf.security.samlp.SignatureException;
+import jakarta.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import javax.validation.constraints.NotNull;
 import org.codice.ddf.platform.util.HttpUtils;
 import org.joda.time.DateTime;
 import org.opensaml.core.xml.XMLObject;

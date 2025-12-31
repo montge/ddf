@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.security.handler.api;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 

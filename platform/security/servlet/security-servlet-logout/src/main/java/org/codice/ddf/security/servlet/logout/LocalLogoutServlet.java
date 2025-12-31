@@ -17,15 +17,15 @@ import ddf.security.SecurityConstants;
 import ddf.security.assertion.SecurityAssertion;
 import ddf.security.audit.SecurityLogger;
 import ddf.security.common.PrincipalHolder;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Comparator;
 import java.util.Optional;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -86,7 +86,7 @@ public class LocalLogoutServlet extends HttpServlet {
         principalHolder.remove();
       }
       removeTokens(session.getId());
-      session.invalidate();
+      request.logout();
       deleteJSessionId(response);
     }
   }
@@ -108,7 +108,6 @@ public class LocalLogoutServlet extends HttpServlet {
     cookie.setSecure(true);
     cookie.setMaxAge(0);
     cookie.setPath("/");
-    cookie.setComment("EXPIRING COOKIE at " + System.currentTimeMillis());
     response.addCookie(cookie);
   }
 

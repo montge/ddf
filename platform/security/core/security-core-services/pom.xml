@@ -44,8 +44,9 @@
             <artifactId>slf4j-ext</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+      <version>6.0.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
@@ -95,8 +96,9 @@
             <artifactId>osgi.cmpn</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+      <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

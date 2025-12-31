@@ -32,6 +32,7 @@
             <groupId>jakarta.xml.ws</groupId>
             <artifactId>jakarta.xml.ws-api</artifactId>
             <version>4.0.2</version>
+      <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>

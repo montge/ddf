@@ -122,8 +122,9 @@
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+      <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -163,7 +164,7 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.2</version>
+            <version>4.0.4</version>
         </dependency>
         <dependency>
             <groupId>jakarta.ws.rs</groupId>

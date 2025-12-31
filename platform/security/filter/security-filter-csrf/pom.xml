@@ -39,6 +39,11 @@
             <groupId>ddf.security.core</groupId>
             <artifactId>security-core-api</artifactId>
         </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>6.0.0</version>
+    </dependency>
         <dependency>
             <groupId>ddf.lib</groupId>
             <artifactId>common-system</artifactId>

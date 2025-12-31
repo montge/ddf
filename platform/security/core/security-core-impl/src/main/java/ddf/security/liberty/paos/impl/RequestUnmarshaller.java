@@ -14,7 +14,7 @@
 package ddf.security.liberty.paos.impl;
 
 import ddf.security.liberty.paos.Request;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import javax.xml.namespace.QName;
 import net.shibboleth.utilities.java.support.xml.QNameSupport;
 import org.opensaml.core.xml.XMLObject;

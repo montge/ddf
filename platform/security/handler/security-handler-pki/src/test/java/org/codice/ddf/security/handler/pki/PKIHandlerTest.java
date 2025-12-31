@@ -24,6 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.security.SecurityConstants;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -31,8 +33,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
 import org.codice.ddf.security.handler.AuthenticationTokenFactory;
