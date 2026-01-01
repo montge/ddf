@@ -22,176 +22,174 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link href="lib/bootstrap-3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/bootstrap-5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="lib/fontawesome-6.5.1/css/all.min.css" rel="stylesheet">
     <link href="css/help.css?bust=${timestamp}" rel="stylesheet">
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="/search/shim/html5.js"></script>
-    <![endif]-->
-
 </head>
-<body data-spy="scroll" data-target=".docs-sidebar">
+<body data-bs-spy="scroll" data-bs-target=".docs-sidebar">
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="brand" href="SearchPage.jsp"><i class="icon-globe icon-white"></i> <span class="branding">DDF</span></a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="SearchPage.jsp"><i class="fa-solid fa-globe text-white"></i> <span class="branding">DDF</span></a>
 
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li><a href="SearchPage.jsp">Search</a></li>
-                </ul>
-                <ul class="nav pull-right">
-                    <li class="active"><a href="#">Help</a></li>
-                </ul>
-            </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="SearchPage.jsp">Search</a></li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link active" href="#">Help</a></li>
+            </ul>
         </div>
     </div>
-</div>
+</nav>
 
-<header class="jumbotron" id="overview">
+<header class="bg-light py-5 mt-5" id="overview">
     <div class="container">
-        <h1><span class="branding">DDF</span> Search</h1>
+        <h1 class="display-4"><span class="branding">DDF</span> Search</h1>
 
         <p class="lead">This widget allows users to search metadata and find holdings that have been
             exposed through the <span class="branding">DDF</span> federation</p>
     </div>
 </header>
 
-<div class="container">
+<div class="container py-4">
     <div class="row">
-        <div class="span3 docs-sidebar">
-            <ul class="nav nav-list docs-sidenav" data-spy="affix" data-offset-top="228">
-                <li><a href="#layout"><i class="icon-chevron-right"></i> Layout</a></li>
-                <li><a href="#inputs"><i class="icon-chevron-right"></i> Inputs</a></li>
-                <li><a href="#results"><i class="icon-chevron-right"></i> Results List</a></li>
-                <li><a href="#singleResult"><i class="icon-chevron-right"></i> Metacard View</a>
-                </li>
-            </ul>
+        <div class="col-md-3 docs-sidebar">
+            <nav id="navbar-docs" class="navbar navbar-light bg-light flex-column align-items-stretch p-3" style="position: sticky; top: 80px;">
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link" href="#layout"><i class="fa-solid fa-chevron-right me-2"></i> Layout</a>
+                    <a class="nav-link" href="#inputs"><i class="fa-solid fa-chevron-right me-2"></i> Inputs</a>
+                    <a class="nav-link" href="#results"><i class="fa-solid fa-chevron-right me-2"></i> Results List</a>
+                    <a class="nav-link" href="#singleResult"><i class="fa-solid fa-chevron-right me-2"></i> Metacard View</a>
+                </nav>
+            </nav>
         </div>
-        <div class="span9">
+        <div class="col-md-9">
             <section id="layout">
-                <div class="page-header">
+                <div class="border-bottom pb-2 mb-3">
                     <h2>Search Page Layout</h2>
                 </div>
                 <h4>The Search Page contains several panels</h4>
-                <dl class="dl-horizontal">
-                    <dt>Classification Banners</dt>
-                    <dd>A optional Banner along the top and bottom which states the maximum
+                <dl class="row">
+                    <dt class="col-sm-3">Classification Banners</dt>
+                    <dd class="col-sm-9">A optional Banner along the top and bottom which states the maximum
                         classification of data available from this system
                     </dd>
-                    <dt>Menu Bar</dt>
-                    <dd>Includes links to this help page and back to the search page</dd>
-                    <dt><a href="#inputs">Query Pane</a></dt>
-                    <dd>A panel on the left side of the page which provides a form for entering
+                    <dt class="col-sm-3">Menu Bar</dt>
+                    <dd class="col-sm-9">Includes links to this help page and back to the search page</dd>
+                    <dt class="col-sm-3"><a href="#inputs">Query Pane</a></dt>
+                    <dd class="col-sm-9">A panel on the left side of the page which provides a form for entering
                         query parameters
                     </dd>
-                    <dt><a href="#results">Query Results Table</a></dt>
-                    <dd>A panel to the right of the Query Pane for displaying results from the
+                    <dt class="col-sm-3"><a href="#results">Query Results Table</a></dt>
+                    <dd class="col-sm-9">A panel to the right of the Query Pane for displaying results from the
                         current query in tabular form
                     </dd>
                 </dl>
             </section>
-            <section id="inputs">
-                <div class="page-header">
+            <section id="inputs" class="mt-5">
+                <div class="border-bottom pb-2 mb-3">
                     <h2>Search Page Query Input Form</h2>
                 </div>
                 <h4>The Input form allows the user to specify <em>keyword</em>, <em>geospatial</em>, <em>temporal</em>, and
                     <em>type</em> query parameters. It also allows the user to select the sources to search
                     and the number of results to return.</h4>
-                <dl class="dl-horizontal">
-                    <dt>Keyword Search</dt>
-                    <dd>A text box allowing the user to enter a textual query. This supports the use
+                <dl class="row">
+                    <dt class="col-sm-3">Keyword Search</dt>
+                    <dd class="col-sm-9">A text box allowing the user to enter a textual query. This supports the use
                         of (*) wildcards. If blank, the query will contain a contextual component.
                     </dd>
-                    <dt>Temporal Query</dt>
-                    <dd>Select from any, relative, or absolute. Selecting <em>Any</em> results in no temporal
+                    <dt class="col-sm-3">Temporal Query</dt>
+                    <dd class="col-sm-9">Select from any, relative, or absolute. Selecting <em>Any</em> results in no temporal
                         restrictions to the query, selecting <em>relative</em> allows the user to query a period from
                         some length of time in the past until now, and selecting <em>absolute</em> allows the user to
                         specify a <em>start</em> and <em>stop</em> date range.
                     </dd>
-                    <dt>Spatial Search</dt>
-                    <dd>Select from <em>any</em>, <em>point-radius</em>, and <em>bounding box</em>. Selecting <em>Any</em> results in no spatial
+                    <dt class="col-sm-3">Spatial Search</dt>
+                    <dd class="col-sm-9">Select from <em>any</em>, <em>point-radius</em>, and <em>bounding box</em>. Selecting <em>Any</em> results in no spatial
                         restrictions on the query, selecting <em>point-radius</em> allows the user to specify a <em>lat/lon</em>
                         and <em>radius</em> to search, and a <em>bounding box</em> allows the user to specify an
                         <em>eastern</em>, <em>western</em>, <em>southern</em> and <em>northern</em> boundary to search within.
                     </dd>
-                    <dt>Type Search</dt>
-                    <dd>Select from <em>any</em>, or a <em>specific type</em>. Selecting <em>Any</em> results in no type restrictions on
+                    <dt class="col-sm-3">Type Search</dt>
+                    <dd class="col-sm-9">Select from <em>any</em>, or a <em>specific type</em>. Selecting <em>Any</em> results in no type restrictions on
                         the query, and <em>specific types</em> shows a list of known content types on the
                         federation, and allows the user to select a specific type to search for.
                     </dd>
-                    <dt>Sources</dt>
-                    <dd>Select from <em>none</em>, <em>all sources</em>, or <em>specific sources</em>. Selecting <em>None</em> results in querying
+                    <dt class="col-sm-3">Sources</dt>
+                    <dd class="col-sm-9">Select from <em>none</em>, <em>all sources</em>, or <em>specific sources</em>. Selecting <em>None</em> results in querying
                         only the local provider, selecting <em>all sources</em> results in an enterprise search where
                         all federations are queried, and selecting <em>specific sources</em> allows the user to select
                         which sources are queried.
                     </dd>
-                    <dt>Results per Page</dt>
-                    <dd>Select the number of results to be returned by a single query</dd>
-                    <dt>Submit</dt>
-                    <dd>Submits the search, and refresh with the result</dd>
-                    <dt>Clear</dt>
-                    <dd>Removes all user entered data from the query form</dd>
+                    <dt class="col-sm-3">Results per Page</dt>
+                    <dd class="col-sm-9">Select the number of results to be returned by a single query</dd>
+                    <dt class="col-sm-3">Submit</dt>
+                    <dd class="col-sm-9">Submits the search, and refresh with the result</dd>
+                    <dt class="col-sm-3">Clear</dt>
+                    <dd class="col-sm-9">Removes all user entered data from the query form</dd>
                 </dl>
             </section>
-            <section id="results">
-                <div class="page-header">
+            <section id="results" class="mt-5">
+                <div class="border-bottom pb-2 mb-3">
                     <h2>Search Page Results Table</h2>
                 </div>
                 <h4>The table of results shows the details of the results found, as well as a link
                     to download the product if applicable.</h4>
-                <dl class="dl-horizontal">
-                    <dt>Result Count</dt>
-                    <dd>Total Number of Results available for this query. If There are more results
+                <dl class="row">
+                    <dt class="col-sm-3">Result Count</dt>
+                    <dd class="col-sm-9">Total Number of Results available for this query. If There are more results
                         than the number displayed per page then a page navigation links will appear
                         to the right
                     </dd>
-                    <dt>Pages</dt>
-                    <dd>Provides page navigation, which generate queries for requesting additional
+                    <dt class="col-sm-3">Pages</dt>
+                    <dd class="col-sm-9">Provides page navigation, which generate queries for requesting additional
                         pages of results.
                     </dd>
-                    <dt>Results List</dt>
-                    <dd>This provides a preview and links of the results.</dd>
+                    <dt class="col-sm-3">Results List</dt>
+                    <dd class="col-sm-9">This provides a preview and links of the results.</dd>
                 </dl>
                 <h4>The following is a list of columns in in the results table</h4>
-                <dl class="dl-horizontal">
-                    <dt>Title</dt>
-                    <dd>Displays title of the metacard. This will be a link which can clicked to
+                <dl class="row">
+                    <dt class="col-sm-3">Title</dt>
+                    <dd class="col-sm-9">Displays title of the metacard. This will be a link which can clicked to
                         view the metacard in the <a href="#singleResult">Metacard View.</a></dd>
-                    <dt>Source</dt>
-                    <dd>Displays where the metadata came from, which could be the local provider or
+                    <dt class="col-sm-3">Source</dt>
+                    <dd class="col-sm-9">Displays where the metadata came from, which could be the local provider or
                         a federated source.
                     </dd>
-                    <dt>Location</dt>
-                    <dd>Displays the WKT Location of the metacard, if available</dd>
-                    <dt>Time</dt>
-                    <dd>Shows the Received (Created) and Effective times of the metacard, if
+                    <dt class="col-sm-3">Location</dt>
+                    <dd class="col-sm-9">Displays the WKT Location of the metacard, if available</dd>
+                    <dt class="col-sm-3">Time</dt>
+                    <dd class="col-sm-9">Shows the Received (Created) and Effective times of the metacard, if
                         available
                     </dd>
-                    <dt>Thumbnail</dt>
-                    <dd>Shows the thumbnail of the metacard, if available</dd>
-                    <dt>Download</dt>
-                    <dd>A download link to retrieve the product associated with the metacard, when
+                    <dt class="col-sm-3">Thumbnail</dt>
+                    <dd class="col-sm-9">Shows the thumbnail of the metacard, if available</dd>
+                    <dt class="col-sm-3">Download</dt>
+                    <dd class="col-sm-9">A download link to retrieve the product associated with the metacard, when
                         applicable, if available
                     </dd>
                 </dl>
             </section>
-            <section id="singleResult">
-                <div class="page-header">
+            <section id="singleResult" class="mt-5">
+                <div class="border-bottom pb-2 mb-3">
                     <h2>Metacard View</h2>
                 </div>
                 <h4>This view shows more detailed look at a metacard.</h4>
-                <dl class="dl-horizontal">
-                    <dt>Back to Results Button</dt>
-                    <dd>Returns the view back to the <a href="#results">Results Table</a></dd>
-                    <dt>Previous &amp; Next</dt>
-                    <dd>Navigation to page through the metacards one by one</dd>
-                    <dt>Metacard Table</dt>
-                    <dd>Provides the list of properties and associated values of the metacard</dd>
-                    <dt>Metadata</dt>
-                    <dd>The metadata, when expanded, displays a tree structure representing the
+                <dl class="row">
+                    <dt class="col-sm-3">Back to Results Button</dt>
+                    <dd class="col-sm-9">Returns the view back to the <a href="#results">Results Table</a></dd>
+                    <dt class="col-sm-3">Previous &amp; Next</dt>
+                    <dd class="col-sm-9">Navigation to page through the metacards one by one</dd>
+                    <dt class="col-sm-3">Metacard Table</dt>
+                    <dd class="col-sm-9">Provides the list of properties and associated values of the metacard</dd>
+                    <dt class="col-sm-3">Metadata</dt>
+                    <dd class="col-sm-9">The metadata, when expanded, displays a tree structure representing the
                         metacard&apos;s custom metadata
                     </dd>
                 </dl>
@@ -202,7 +200,7 @@
 
 <script src="lib/jquery/js/jquery-3.7.1.min.js"></script>
 <script src="lib/jquery/js/plugin/purl.js?bust=${timestamp}"></script>
-<script src="lib/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
 
 <script type="text/javascript">
         if ($.url().param('title')) {

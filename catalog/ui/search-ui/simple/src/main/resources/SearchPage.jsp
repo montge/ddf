@@ -26,8 +26,8 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<link href="lib/bootstrap-3.4.1/css/bootstrap.min.css" rel="stylesheet">
-<link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<link href="lib/bootstrap-5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="lib/fontawesome-6.5.1/css/all.min.css" rel="stylesheet">
 
 <link href="lib/jquery/css/smoothness/jquery-ui-1.13.3.custom.min.css" rel="stylesheet">
 <link href="lib/jquery/css/plugin/jquery-ui-timepicker-addon.css" rel="stylesheet">
@@ -47,123 +47,126 @@
 		color: <%=props.getColor()%>;
 		background: <%=props.getBackground()%>;
 	}
+	/* Bootstrap 5 compatibility styles */
+	.search-controls {
+		position: sticky;
+		top: 60px;
+	}
+	.add-on-label {
+		min-width: 80px;
+	}
 </style>
-
-
-<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-		<script src="lib/shim/html5.js"></script>
-	<![endif]-->
-<!--[if IE 7]>
-  <link rel="stylesheet" href="lib/font-awesome/css/font-awesome-ie7.min.css">
-<![endif]-->
 
 </head>
 <body>
 
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 
 		 <% String h = props.getHeader();
 		    if(h.trim().length() > 0) { %>
-             <div class="banner"><%=h %></div>
+             <div class="banner w-100 text-center"><%=h %></div>
 		 <% } %>
 
-		<div class="navbar-inner">
-			<div class="container">
-				<a class="brand" href="#">
-				    <i class="icon-globe icon-white"></i> <%=props.getProductName()%>
-                </a>
-				<div class="nav-collapse collapse">
-					<ul class="nav">
-						<li class="active"><a href="#">Search</a></li>
-					</ul>
-					<ul class="nav pull-right">
-						<li>
-						    <a href="SearchHelp.html?title=<%=props.getProductName()%>">
-						        Help
-                            </a>
-                        </li>
-					</ul>
+		<div class="container">
+			<a class="navbar-brand" href="#">
+			    <i class="fa-solid fa-globe text-white"></i> <%=props.getProductName()%>
+            </a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link active" href="#">Search</a></li>
+				</ul>
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item">
+					    <a class="nav-link" href="SearchHelp.html?title=<%=props.getProductName()%>">
+					        Help
+                        </a>
+                    </li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- Metacard Modal -->
+	<div id="metacardModal" class="modal fade" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">title</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
+				<div class="modal-body"></div>
 			</div>
 		</div>
 	</div>
 
-	<!-- Metacard Modal -->
-	<div id="metacardModal" class="modal hide" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			<h3>title</h3>
-		</div>
-		<div class="modal-body"></div>
-	</div>
-
-	<div class="main" class="container-fluid clear-top">
-		<div class="row-fluid">
+	<div class="main container-fluid clear-top">
+		<div class="row">
 
 
-			<div class="span3">
-				<form id="searchForm" class="partialaffix span3 search-controls"
+			<div class="col-md-3">
+				<form id="searchForm" class="search-controls"
 					action="../../services/catalog/query" method="get">
-					<ul class="nav nav-list well well-small">
+					<ul class="list-group rounded p-3 bg-light">
 						<input type="hidden" name="format" value="geojson"></input>
 						<input type="hidden" name="start" value="1"></input>
 
 
-						<li class="nav-header">Keywords</li>
-						<li>
-							<div class="input-append">
-								<input name="q" type="text" class="span12">
+						<li class="list-group-item bg-light border-0 fw-bold">Keywords</li>
+						<li class="list-group-item bg-light border-0">
+							<div class="input-group">
+								<input name="q" type="text" class="form-control">
 							</div>
 						</li>
 
-						<li class="divider"></li>
+						<li class="list-group-item bg-light border-0"><hr class="my-2"></li>
 
-						<li class="nav-header">Time</li>
-						<li>
-							<div class="btn-group" data-toggle="buttons-radio">
-								<button type="button" class="btn btn-mini active"
-									name="noTemporalButton" data-target="#notemporal"
-									data-toggle="tab">Any</button>
-								<button type="button" class="btn btn-mini"
-									name="relativeTimeButton" data-target="#time_relative"
-									data-toggle="tab">Relative</button>
-								<button type="button" class="btn btn-mini"
-									name="absoluteTimeButton" data-target="#time_absolute"
-									data-toggle="tab">Absolute</button>
+						<li class="list-group-item bg-light border-0 fw-bold">Time</li>
+						<li class="list-group-item bg-light border-0">
+							<div class="btn-group" role="group">
+								<input type="radio" class="btn-check" name="timeRadio" id="noTemporalBtn" autocomplete="off" checked>
+								<label class="btn btn-outline-secondary btn-sm" for="noTemporalBtn" data-bs-toggle="tab" data-bs-target="#notemporal">Any</label>
+
+								<input type="radio" class="btn-check" name="timeRadio" id="relativeTimeBtn" autocomplete="off">
+								<label class="btn btn-outline-secondary btn-sm" for="relativeTimeBtn" data-bs-toggle="tab" data-bs-target="#time_relative">Relative</label>
+
+								<input type="radio" class="btn-check" name="timeRadio" id="absoluteTimeBtn" autocomplete="off">
+								<label class="btn btn-outline-secondary btn-sm" for="absoluteTimeBtn" data-bs-toggle="tab" data-bs-target="#time_absolute">Absolute</label>
 							</div>
-							<div class="tab-content">
-								<div id="notemporal" name="notemporal" class="tab-pane"></div>
+							<div class="tab-content mt-2">
+								<div id="notemporal" name="notemporal" class="tab-pane show active"></div>
 								<div id="time_absolute" name="time_absolute" class="tab-pane">
 									<input type="hidden" name="dtstart" value=""> <input
 										type="hidden" name="dtend" value="">
 
-									<div class="input-prepend">
-										<span class="add-on add-on-label">Begin <i
-											class="icon-time"></i></span> <input id="absoluteStartTime"
-											name="absoluteStartTime" type="text" class="span8" />
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">Begin <i
+											class="fa-solid fa-clock ms-1"></i></span>
+										<input id="absoluteStartTime"
+											name="absoluteStartTime" type="text" class="form-control" />
 									</div>
-									<div class="input-prepend">
-										<span class="add-on add-on-label">End <i
-											class="icon-time"></i></span> <input id="absoluteEndTime"
-											name="absoluteEndTime" type="text" class="span8" />
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">End <i
+											class="fa-solid fa-clock ms-1"></i></span>
+										<input id="absoluteEndTime"
+											name="absoluteEndTime" type="text" class="form-control" />
 									</div>
-									<div class="alert alert-block span11" id="timeAbsoluteWarning">
+									<div class="alert alert-warning" id="timeAbsoluteWarning">
 										Warning! If either value is unpopulated, the search will not
 										use any temporal filters</div>
 
 								</div>
 								<div id="time_relative" name="time_relative" class="tab-pane">
-									<div class="row-fluid">
+									<div class="row">
 										<input type="hidden" name="dtoffset" value="">
-										<div class="span11 input-prepend input-append">
-											<div class="span7">
-												<span class="add-on add-on-label">Last</span> <input
-													id="offsetTime" class="span5" name="offsetTime"
-													type="number" onchange="updateOffset()" />
-											</div>
-											<select id="offsetTimeUnits" class="add-on span3"
+										<div class="col-12 input-group mb-2">
+											<span class="input-group-text add-on-label">Last</span>
+											<input id="offsetTime" class="form-control" name="offsetTime"
+												type="number" onchange="updateOffset()" />
+											<select id="offsetTimeUnits" class="form-select"
 												name="offsetTimeUnits" onchange="updateOffset()">
 												<option value="seconds">seconds</option>
 												<option value="minutes" selected="selected">minutes</option>
@@ -174,7 +177,7 @@
 												<option value="years">years</option>
 											</select>
 										</div>
-										<div class="alert alert-block span11" id="timeRelativeWarning">
+										<div class="alert alert-warning" id="timeRelativeWarning">
 											Warning! If the 'Last' duration is unpopulated, the search
 											will not use any temporal filters</div>
 									</div>
@@ -182,54 +185,51 @@
 							</div>
 						</li>
 
-						<li class="divider"></li>
+						<li class="list-group-item bg-light border-0"><hr class="my-2"></li>
 
-						<li class="nav-header">Location</li>
-						<li>
-							<div class="btn-group" data-toggle="buttons-radio">
-								<button type="button" name="noLocationButton"
-									class="btn btn-mini active" data-target="#nogeo"
-									data-toggle="tab">Any</button>
-								<button type="button" name="pointRadiusButton"
-									class="btn btn-mini" data-target="#pointradius"
-									data-toggle="tab">Point-Radius</button>
-								<button type="button" name="bboxButton" class="btn btn-mini"
-									data-target="#boundingbox" data-toggle="tab">Bounding
-									Box</button>
-								<!--
-								<button type="button" name="wktButton" class="btn btn-mini" data-target="#wkt" data-toggle="tab">WKT</button>
--->
+						<li class="list-group-item bg-light border-0 fw-bold">Location</li>
+						<li class="list-group-item bg-light border-0">
+							<div class="btn-group" role="group">
+								<input type="radio" class="btn-check" name="locationRadio" id="noLocationBtn" autocomplete="off" checked>
+								<label class="btn btn-outline-secondary btn-sm" for="noLocationBtn" data-bs-toggle="tab" data-bs-target="#nogeo">Any</label>
+
+								<input type="radio" class="btn-check" name="locationRadio" id="pointRadiusBtn" autocomplete="off">
+								<label class="btn btn-outline-secondary btn-sm" for="pointRadiusBtn" data-bs-toggle="tab" data-bs-target="#pointradius">Point-Radius</label>
+
+								<input type="radio" class="btn-check" name="locationRadio" id="bboxBtn" autocomplete="off">
+								<label class="btn btn-outline-secondary btn-sm" for="bboxBtn" data-bs-toggle="tab" data-bs-target="#boundingbox">Bounding Box</label>
 							</div>
-							<div class="tab-content">
-								<div id="nogeo" class="tab-pane"></div>
+							<div class="tab-content mt-2">
+								<div id="nogeo" class="tab-pane show active"></div>
 								<div id="pointradius" class="tab-pane">
 									<input type="hidden" name="radius" value=""> <input
 										type="hidden" name="lat" value=""> <input
 										type="hidden" name="lon" value="">
 
-									<div class="span11 input-prepend input-append">
-										<span class="add-on add-on-label">Latitude<i
-											class="icon-globe"></i></span> <input class="span7" id="latitude"
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">Latitude<i
+											class="fa-solid fa-globe ms-1"></i></span>
+										<input class="form-control" id="latitude"
 											name="latitude" type="number" min="-90" max="90" step="any"
-											onchange="updatePointRadius()" placeholder="" /> <label
-											class="add-on">&deg;</label>
+											onchange="updatePointRadius()" placeholder="" />
+										<span class="input-group-text">&deg;</span>
 									</div>
-									<div class="span11 input-prepend input-append">
-										<span class="add-on add-on-label">Longitude<i
-											class="icon-globe"></i></span> <input class="span7" id="longitude"
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">Longitude<i
+											class="fa-solid fa-globe ms-1"></i></span>
+										<input class="form-control" id="longitude"
 											name="longitude" type="number" min="-180" max="180"
 											step="any" onchange="updatePointRadius()" placeholder="" />
-										<label class="add-on">&deg;</label>
+										<span class="input-group-text">&deg;</span>
 									</div>
 
-									<div class="span11 input-prepend input-append">
-										<div class="span7">
-											<span class="add-on add-on-label">Radius<i
-												class="icon-plus"></i></span> <input class="span5" id="radiusValue"
-												name="radiusValue" type="number" min="0" step="any" placeholder=""
-												onchange="updatePointRadius()" />
-										</div>
-										<select id="radiusUnits" class="add-on span4"
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">Radius<i
+											class="fa-solid fa-plus ms-1"></i></span>
+										<input class="form-control" id="radiusValue"
+											name="radiusValue" type="number" min="0" step="any" placeholder=""
+											onchange="updatePointRadius()" />
+										<select id="radiusUnits" class="form-select"
 											name="radiusUnits" onchange="updatePointRadius()">
 											<option value="meters" selected="selected">meters</option>
 											<option value="kilometers">kilometers</option>
@@ -238,111 +238,113 @@
 											<option value="miles">miles</option>
 										</select>
 									</div>
-									<div class="alert alert-block span11" id="pointRadiusWarning">
+									<div class="alert alert-warning" id="pointRadiusWarning">
 										Warning! If any Point-Radius value is unpopulated, the search
 										will not use any location filters</div>
 								</div>
 
 								<div id="boundingbox" class="tab-pane">
 									<input type="hidden" name="bbox" value="">
-									<div class="span11 input-prepend input-append">
-										<span class="add-on add-on-label">West <i
-											class="icon-globe"></i></span> <input class="span7" id="west"
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">West <i
+											class="fa-solid fa-globe ms-1"></i></span>
+										<input class="form-control" id="west"
 											name="west" type="number" min="-180" max="180" step="any"
-											onchange="updateBoundingBox()" placeholder="" /> <label
-											class="add-on">&deg;</label>
+											onchange="updateBoundingBox()" placeholder="" />
+										<span class="input-group-text">&deg;</span>
 									</div>
-									<div class="span11 input-prepend input-append">
-										<span class="add-on add-on-label">South <i
-											class="icon-globe"></i></span> <input class="span7" id="south"
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">South <i
+											class="fa-solid fa-globe ms-1"></i></span>
+										<input class="form-control" id="south"
 											name="south" type="number" min="-90" max="90" step="any"
-											onchange="updateBoundingBox()" placeholder="" /> <label
-											class="add-on">&deg;</label>
+											onchange="updateBoundingBox()" placeholder="" />
+										<span class="input-group-text">&deg;</span>
 									</div>
-									<div class="span11 input-prepend input-append">
-										<span class="add-on add-on-label">East <i
-											class="icon-globe"></i></span> <input class="span7" id="east"
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">East <i
+											class="fa-solid fa-globe ms-1"></i></span>
+										<input class="form-control" id="east"
 											name="east" type="number" min="-180" max="180" step="any"
-											onchange="updateBoundingBox()" placeholder="" /> <label
-											class="add-on">&deg;</label>
+											onchange="updateBoundingBox()" placeholder="" />
+										<span class="input-group-text">&deg;</span>
 									</div>
-									<div class="span11 input-prepend input-append">
-										<span class="add-on add-on-label">North <i
-											class="icon-globe"></i></span> <input class="span7" id="north"
+									<div class="input-group mb-2">
+										<span class="input-group-text add-on-label">North <i
+											class="fa-solid fa-globe ms-1"></i></span>
+										<input class="form-control" id="north"
 											name="north" type="number" min="-90" max="90" step="any"
-											onchange="updateBoundingBox()" placeholder="" /> <label
-											class="add-on">&deg;</label>
+											onchange="updateBoundingBox()" placeholder="" />
+										<span class="input-group-text">&deg;</span>
 									</div>
-									<div class="alert alert-block span11" id="boundingBoxWarning">
+									<div class="alert alert-warning" id="boundingBoxWarning">
 										Warning! If any field is unpopulated, the search will not use
 										any location filters</div>
 								</div>
 
 								<div id="wkt" class="tab-pane">
-									<textarea rows="3" class="span12"></textarea>
+									<textarea rows="3" class="form-control"></textarea>
 								</div>
 							</div>
 						</li>
 
-						<li class="divider"></li>
+						<li class="list-group-item bg-light border-0"><hr class="my-2"></li>
 
-						<li class="nav-header">Type</li>
-						<li>
-							<div class="btn-group" data-toggle="buttons-radio">
-								<button type="button" name="noTypeButton"
-									class="btn btn-mini active" data-target="#noTypeTab"
-									data-toggle="tab">Any</button>
-								<button type="button" name="typeButton" class="btn btn-mini"
-									data-target="#typeTab" data-toggle="tab">Specific
-									Types</button>
+						<li class="list-group-item bg-light border-0 fw-bold">Type</li>
+						<li class="list-group-item bg-light border-0">
+							<div class="btn-group" role="group">
+								<input type="radio" class="btn-check" name="typeRadio" id="noTypeBtn" autocomplete="off" checked>
+								<label class="btn btn-outline-secondary btn-sm" for="noTypeBtn" data-bs-toggle="tab" data-bs-target="#noTypeTab">Any</label>
+
+								<input type="radio" class="btn-check" name="typeRadio" id="typeBtn" autocomplete="off">
+								<label class="btn btn-outline-secondary btn-sm" for="typeBtn" data-bs-toggle="tab" data-bs-target="#typeTab">Specific Types</label>
 							</div>
-							<div class="tab-content">
-								<div id="noTypeTab" class="tab-pane"></div>
+							<div class="tab-content mt-2">
+								<div id="noTypeTab" class="tab-pane show active"></div>
 								<div id="typeTab" class="tab-pane">
-									<input type="hidden" name="type" value=""> <select
-										id="typeList" name="typeList" class="span12"
+									<input type="hidden" name="type" value="">
+									<select id="typeList" name="typeList" class="form-select"
 										onchange="updateType()">
 									</select>
 								</div>
 							</div>
 						</li>
 
-						<li class="divider"></li>
+						<li class="list-group-item bg-light border-0"><hr class="my-2"></li>
 
-						<li class="nav-header">Additional Sources</li>
-						<li><input type="hidden" name="src" value="">
-							<div class="btn-group" data-toggle="buttons-radio">
-								<button type="button" class="btn btn-mini active"
-									name="noFederationButton" data-target="#nofed"
-									data-toggle="tab">None</button>
-								<button type="button" class="btn btn-mini"
-									name="enterpriseFederationButton" data-target="#nofed"
-									data-toggle="tab">All Sources</button>
-								<button type="button" class="btn btn-mini"
-									name="selectedFederationButton" data-target="#sources"
-									data-toggle="tab">Specific Sources</button>
+						<li class="list-group-item bg-light border-0 fw-bold">Additional Sources</li>
+						<li class="list-group-item bg-light border-0"><input type="hidden" name="src" value="">
+							<div class="btn-group" role="group">
+								<input type="radio" class="btn-check" name="fedRadio" id="noFedBtn" autocomplete="off" checked>
+								<label class="btn btn-outline-secondary btn-sm" for="noFedBtn" data-bs-toggle="tab" data-bs-target="#nofed">None</label>
+
+								<input type="radio" class="btn-check" name="fedRadio" id="enterpriseFedBtn" autocomplete="off">
+								<label class="btn btn-outline-secondary btn-sm" for="enterpriseFedBtn" data-bs-toggle="tab" data-bs-target="#nofed">All Sources</label>
+
+								<input type="radio" class="btn-check" name="fedRadio" id="selectedFedBtn" autocomplete="off">
+								<label class="btn btn-outline-secondary btn-sm" for="selectedFedBtn" data-bs-toggle="tab" data-bs-target="#sources">Specific Sources</label>
 							</div>
-							<div class="tab-content">
-								<div id="nofed" class="tab-pane"></div>
+							<div class="tab-content mt-2">
+								<div id="nofed" class="tab-pane show active"></div>
 								<div id="sources" class="tab-pane">
 									<div id="scrollableSources" class="scrollable">
-										<select id="federationSources" multiple="multiple"
+										<select id="federationSources" class="form-select" multiple="multiple"
 											onchange="updateFederation()">
 										</select>
 									</div>
-									<div class="alert alert-block" id="federationListWarning">
+									<div class="alert alert-warning" id="federationListWarning">
 										Warning! If no selections are made, the search will use 'All
 										Sources'</div>
 								</div>
 							</div></li>
 
-						<li class="divider"></li>
+						<li class="list-group-item bg-light border-0"><hr class="my-2"></li>
 
-						<li class="nav-header">Page Size</li>
-						<li>
-							<div class="input-prepend">
-								<span class="add-on">Results per Page</span> <select id="count"
-									class="span5" type="number" name="count">
+						<li class="list-group-item bg-light border-0 fw-bold">Page Size</li>
+						<li class="list-group-item bg-light border-0">
+							<div class="input-group">
+								<span class="input-group-text">Results per Page</span>
+								<select id="count" class="form-select" type="number" name="count">
 									<option value="5">5</option>
 									<option value="10" selected="selected">10</option>
 									<option value="25">25</option>
@@ -353,30 +355,34 @@
 							</div>
 						</li>
 
-						<li>
-							<div class="form-actions">
-								<button class="btn btn-primary " type="submit">
-									<i class="icon-search icon-white"></i> Search
+						<li class="list-group-item bg-light border-0">
+							<div class="d-flex gap-2">
+								<button class="btn btn-primary" type="submit">
+									<i class="fa-solid fa-magnifying-glass"></i> Search
 								</button>
-								<button class="btn " type="reset" onClick="resetForm()">Clear</button>
+								<button class="btn btn-secondary" type="reset" onClick="resetForm()">Clear</button>
 							</div>
 						</li>
 					</ul>
 				</form>
 			</div>
-			<div id="contentView" class="span9">
+			<div id="contentView" class="col-md-9">
 				<div id="recordView" class="record-view" style="display: none;">
-					<div id="recordViewHeader" class='affix results-header row-fluid'>
-						<div class='pagination pull-left span6'>
-							<ul>
-								<li id="backToResultsBtn"><a>Back to Results</a></li>
-							</ul>
+					<div id="recordViewHeader" class='results-header row' style="position: sticky; top: 60px; background: white; z-index: 100;">
+						<div class='col-6'>
+							<nav aria-label="Record navigation">
+								<ul class="pagination">
+									<li id="backToResultsBtn" class="page-item"><a class="page-link">Back to Results</a></li>
+								</ul>
+							</nav>
 						</div>
-						<div class='pagination pull-right span6'>
-							<ul>
-								<li id="previousRecordLi"><a>Previous</a></li>
-								<li id="nextRecordLi"><a>Next</a></li>
-							</ul>
+						<div class='col-6 text-end'>
+							<nav aria-label="Record navigation">
+								<ul class="pagination justify-content-end">
+									<li id="previousRecordLi" class="page-item"><a class="page-link">Previous</a></li>
+									<li id="nextRecordLi" class="page-item"><a class="page-link">Next</a></li>
+								</ul>
+							</nav>
 						</div>
 					</div>
 
@@ -400,24 +406,26 @@
 					<div class="msgViewContainer">
 						<div class="msgViewContents">
 							<p>
-							<span class="icon-exclamation icon-2x"></span> <strong>Error!</strong>
-							<button type="btn" onClick="hideError()">&times; Close</button>
+							<span class="fa-solid fa-exclamation fa-2x"></span> <strong>Error!</strong>
+							<button type="btn" class="btn btn-sm btn-outline-secondary" onClick="hideError()">&times; Close</button>
 							<div id="errorText"></div>
 						</div>
 					</div>
 				</div>
 					<div id="resultsView">
-						<div class="affix results-header row-fluid">
+						<div class="results-header row" style="position: sticky; top: 60px; background: white; z-index: 100;">
 
-							<div class="resultsCount pull-left span6">
+							<div class="resultsCount col-6">
 								<p id="countTotal" class="lead">Total Results: 0</p>
 							</div>
-							<div class="pagination pull-right span6">
-								<ul id="pages">
-								</ul>
+							<div class="col-6 text-end">
+								<nav aria-label="Page navigation">
+									<ul id="pages" class="pagination justify-content-end">
+									</ul>
+								</nav>
 							</div>
 						</div>
-					<div class="row-fluid results">
+					<div class="row results">
 						<table class="table table-striped">
 							<thead>
 								<tr>
@@ -431,8 +439,8 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="row-fluid">
-						<p class="pull-right">
+					<div class="row">
+						<p class="text-end">
 							<a href="#">Back to top</a>
 						</p>
 						<br>
@@ -444,8 +452,9 @@
 
 	<% String f = props.getFooter();
 		if(f.trim().length() > 0) { %>
-		   <div class="navbar-fixed-bottom banner"><%=f %></div>
+		   <div class="fixed-bottom banner text-center"><%=f %></div>
         <% } %>
+
 
 	<!-- Placed at the end of the document so the pages load faster -->
 
@@ -455,8 +464,7 @@
     <script type="text/javascript" src="lib/underscore-1.13.7/underscore-min.js"></script>
 
 
-	<script type="text/javascript" src="lib/bootstrap-3.4.1/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="lib/bootstrap-extensions/js/partial-affix.js"></script>
+	<script type="text/javascript" src="lib/bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/purl.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/jquery-ui-datepicker-4digitYearOverride-addon.js"></script>
 	<script type="text/javascript" src="lib/jquery/js/plugin/jquery-ui-timepicker-addon.js"></script>
@@ -482,20 +490,25 @@
         <!-- Do not allow users to click outside of the modal to dismiss it, the OK button must be pressed -->
         <script>
             jQuery(function () {
-                $('#usageModal').modal({
+                const usageModal = new bootstrap.Modal(document.getElementById('usageModal'), {
                     backdrop: 'static',
                     keyboard: false
-                })
+                });
+                usageModal.show();
             })
         </script>
-        <div id="usageModal" class="modal hide" tabindex="-1" role="dialog"
+        <div id="usageModal" class="modal fade" tabindex="-1" role="dialog"
             aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-header">
-                <h3><%=props.getSystemUsageTitle()%></h3>
-            </div>
-            <div class="modal-body"><%=props.getSystemUsageMessage()%></div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><%=props.getSystemUsageTitle()%></h5>
+                    </div>
+                    <div class="modal-body"><%=props.getSystemUsageMessage()%></div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-bs-dismiss="modal" aria-hidden="true">OK</button>
+                    </div>
+                </div>
             </div>
         </div>
     <% } %>
