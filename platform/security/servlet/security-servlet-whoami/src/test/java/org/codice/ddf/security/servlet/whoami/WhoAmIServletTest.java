@@ -176,7 +176,7 @@ public class WhoAmIServletTest {
 
   @Test
   public void testExtendsHttpServlet() {
-    assertThat(servlet instanceof jakarta.servlet.http.HttpServlet, is(true));
+    assertThat(servlet instanceof javax.servlet.http.HttpServlet, is(true));
   }
 
   private void setupValidSubject() {

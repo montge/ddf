@@ -1921,12 +1921,14 @@
             </activation>
             <properties>
                 <skipTests>true</skipTests>
+                <skipITs>true</skipITs>
                 <checkstyle.skip>true</checkstyle.skip>
                 <dependency-check.skip>true</dependency-check.skip>
                 <enforcer.skip>true</enforcer.skip>
                 <maven.javadoc.skip>true</maven.javadoc.skip>
                 <maven.source.skip>true</maven.source.skip>
                 <fmt.skip>true</fmt.skip>
+                <jacoco.skip>true</jacoco.skip>
             </properties>
         </profile>
 

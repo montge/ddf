@@ -76,13 +76,13 @@
             <artifactId>asm-analysis</artifactId>
             <version>${asm.version}</version>
         </dependency>
-        <!--test dependencies-->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${jakarta.servlet-api.version}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
+        <!--test dependencies-->
         <dependency>
             <groupId>ddf.catalog.core</groupId>
             <artifactId>filter-proxy</artifactId>
