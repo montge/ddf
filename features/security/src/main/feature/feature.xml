@@ -38,6 +38,22 @@
         <feature>pax-web-jetty-websockets</feature>
         <feature>scr</feature>
         <feature>spring</feature>
+        <!-- Log4j API 2.25+ for org.apache.logging.log4j.util package -->
+        <feature version="${project.version}">log4j-api</feature>
+
+        <!-- BouncyCastle 1.83 for cryptography (overrides Camel's 1.74) -->
+        <bundle>mvn:org.bouncycastle/bcprov-jdk18on/${bouncy.version}</bundle>
+        <bundle>mvn:org.bouncycastle/bcpkix-jdk18on/${bouncy.version}</bundle>
+        <bundle>mvn:org.bouncycastle/bcutil-jdk18on/${bouncy.version}</bundle>
+
+        <!-- Jakarta Annotation API for @Nullable etc. -->
+        <bundle>mvn:jakarta.annotation/jakarta.annotation-api/${jakarta.annotation.version}</bundle>
+
+        <!-- Dropwizard Metrics 3.x for OpenSAML (uses com.codahale.metrics package) -->
+        <bundle>mvn:io.dropwizard.metrics/metrics-core/3.2.6</bundle>
+
+        <!-- Commons Codec -->
+        <bundle>mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
 
         <!-- External DDF Features -->
         <feature version="${project.version}">jackson</feature>

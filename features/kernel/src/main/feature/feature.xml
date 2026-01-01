@@ -124,6 +124,12 @@
         <bundle>mvn:org.slf4j/slf4j-ext/${org.slf4j.version}</bundle>
     </feature>
 
+    <!-- Log4j API bundle to provide org.apache.logging.log4j.util package at version 2.25+
+         Required because Pax Logging 2.3.0 only exports log4j 2.24.x -->
+    <feature name="log4j-api" version="${project.version}">
+        <bundle>mvn:org.apache.logging.log4j/log4j-api/${apache-log4j.version}</bundle>
+    </feature>
+
     <feature name="pax-swissbox" version="${project.version}">
         <bundle>
             mvn:org.ops4j.pax.swissbox/pax-swissbox-lifecycle/${org.ops4j.pax.swissbox.version}
