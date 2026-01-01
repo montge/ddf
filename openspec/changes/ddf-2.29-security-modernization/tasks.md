@@ -154,7 +154,11 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - FrameworkProducerTest: All tests passing
   - Previous issues resolved
 - [~] 3.2.5 Test directory monitor routes ⚠️ Requires full build (features artifacts)
-- [ ] 3.2.6 Plan Camel 4.x upgrade (requires Jakarta EE) ⏸️ **BLOCKED** on CXF 4.x
+- [~] 3.2.6 Plan Camel 4.x upgrade (requires Jakarta EE) ⚠️ **REQUIRED** for CXF 4.x
+  - **Finding (2026-01-01):** Camel CXF 3.22.4 requires `org.apache.cxf.common.i18n` version [3.6.0,3.7.0)
+  - Our cxf-core-all exports version 4.1.1 - incompatible with Camel 3.x
+  - Camel 4.x is designed for Jakarta EE + CXF 4.x
+  - This upgrade is now a **prerequisite** for full CXF 4.x integration
 
 ### 3.3 Logback 1.5.x (CVE-2025-11226 fix)
 - [x] 3.3.1 Update SLF4J to 2.x ✅ 1.7.36 -> 2.0.17 (2025-12-12)
@@ -204,18 +208,23 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Distribution builds successfully: ddf-2.30.0-SNAPSHOT.zip (553MB)
   - All Jakarta EE migration changes validated
   - Fixed: fast profile now skips JaCoCo and integration tests
-- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **BLOCKED** - OSGi resolution issues (2026-01-01)
-  - SolrCloud starts successfully via Docker Compose
-  - DDF startup fails due to OSGi package resolution issues
-  - **Fixes applied:**
-    - Fixed cxf-core-all manifest (was missing entirely)
-    - Added log4j-api 2.25.x to kernel features
-    - Added BouncyCastle 1.83 bundles to security features
-    - Added jakarta.annotation-api 3.0.0
-    - Added Dropwizard Metrics 3.2.6 (for OpenSAML)
-    - Added commons-codec 1.19.0
-  - **Remaining issue:** CXF Export-Package uses wildcard (`org.apache.cxf.*;version="4.1.1"`)
-    which may not resolve correctly in OSGi. Needs explicit package listing.
+- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **BLOCKED** by Camel/CXF incompatibility (2026-01-01)
+
+**OSGi Dependency Resolution (2026-01-01):**
+Fixed multiple OSGi package resolution issues during integration testing:
+1. ✅ cxf-core-all Export-Package: Explicit 238-package list (wildcard didn't resolve)
+2. ✅ jakarta.servlet-api: Added for CXF 4.x [5.0,7) requirement
+3. ✅ jakarta.mail-api: Added for platform-email-api [2.1,3) requirement
+4. ✅ slf4j-api: Added 2.0.17 (Pax Logging only exports 2.0.6)
+5. ✅ commons-collections 3.x: Added for security-pdp-authzrealm
+6. ✅ WSS4J: Downgraded to 2.4.3 (4.0+ needs Jakarta EE code migration)
+7. ✅ javax.mail: Added for WSS4J 2.4.x (javax namespace, not jakarta)
+8. ✅ cxf-rt-rs-extension-providers: Added for JSONP support
+
+**Remaining Blocker:**
+- ⛔ Camel CXF 3.22.4 imports `org.apache.cxf.common.i18n` version [3.6.0,3.7.0)
+- cxf-core-all exports version 4.1.1 - outside Camel's import range
+- **Resolution:** Upgrade Camel to 4.x (requires Jakarta EE + CXF 4.x)
 - [ ] 5.1.3 Test SAML authentication flow
 - [ ] 5.1.4 Test OIDC authentication flow
 - [ ] 5.1.5 Test catalog create/query/delete
