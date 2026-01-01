@@ -1,6 +1,6 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2025-12-31)
+**Status:** In Progress (Last updated: 2026-01-01)
 **Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
@@ -257,8 +257,19 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Documented 30+ class mappings (row-fluid→row, span*→col-*, etc.)
   - 8 migration phases with checklists
   - Estimated effort: 12-18 hours
-- [ ] 6.2.3 Update CSS framework to Bootstrap 5.3
-- [ ] 6.2.4 Fix responsive layout issues
+- [x] 6.2.3 Update CSS framework to Bootstrap 5.3 ✅ (2026-01-01)
+  - Added Bootstrap 5.3.3 and Font Awesome 6.5.1 libraries
+  - Migrated SearchPage.jsp, RecordView.html, SearchHelp.html
+  - Navbar: navbar-expand-lg, navbar-brand, navbar-toggler
+  - Grid: row-fluid → row, span* → col-md-*
+  - Buttons: btn-mini → btn-sm, btn-check radio pattern
+  - Modals: modal-dialog/modal-content structure
+  - Icons: icon-* → fa-solid fa-*
+  - Data attributes: data-toggle → data-bs-toggle
+- [x] 6.2.4 Fix responsive layout issues ✅ (2026-01-01)
+  - Responsive grid system properly applied
+  - Sticky sidebar in help page
+  - Mobile navbar with collapse toggle
 
 ### 6.3 Build Modernization
 - [x] 6.3.1 Add package.json to UI modules ✅
@@ -278,9 +289,10 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
 3. ~~Hazelcast decision (removes 4 CVEs)~~ ✅ **REMOVED**
 4. ~~Jakarta transformation setup~~ ✅ OpenRewrite verified, migration plan created
 5. ~~CXF 4.x upgrade~~ ⏸️ **BLOCKED** (OSGi removed, waiting for cxf-karaf Q2 2025)
-6. Security test coverage expansion ← **CURRENT** (unblocked work)
-7. Non-blocking dependency upgrades
-8. Jakarta namespace migration (after CXF 4.x + cxf-karaf)
+6. ~~Bootstrap 5 upgrade~~ ✅ Simple Search UI migrated (2026-01-01)
+7. Integration testing ← **CURRENT** (DDF with SolrCloud)
+8. Non-blocking dependency upgrades
+9. Jakarta namespace migration (after CXF 4.x + cxf-karaf)
 
 ### Commands
 ```bash
