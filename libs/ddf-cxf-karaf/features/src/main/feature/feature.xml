@@ -129,16 +129,20 @@
         <feature version="3.6.9">cxf-http</feature>
     </feature>
 
-    <!-- WSS4J Feature (Apache Web Services Security) -->
+    <!-- WSS4J Feature (Apache Web Services Security)
+         Uses WSS4J 2.4.x for compatibility with existing security-core-impl code.
+         WSS4J 4.0+ would require Jakarta EE namespace migration in security code. -->
     <feature name="wss4j" version="${project.version}" description="Apache WSS4J">
         <feature>jakarta-xml-bind</feature>
-        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-common/4.0.0</bundle>
-        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-dom/4.0.0</bundle>
-        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-stax/4.0.0</bundle>
-        <bundle>mvn:org.apache.wss4j/wss4j-policy/4.0.0</bundle>
-        <bundle>mvn:org.apache.wss4j/wss4j-bindings/4.0.0</bundle>
-        <!-- Apache Santuario (XML Security) -->
-        <bundle>mvn:org.apache.santuario/xmlsec/4.0.3</bundle>
+        <!-- javax.mail needed by WSS4J 2.4.x (uses javax.mail, not jakarta.mail) -->
+        <bundle>mvn:com.sun.mail/javax.mail/1.6.2</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-common/${wss4j.version}</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-dom/${wss4j.version}</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-ws-security-stax/${wss4j.version}</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-policy/${wss4j.version}</bundle>
+        <bundle>mvn:org.apache.wss4j/wss4j-bindings/${wss4j.version}</bundle>
+        <!-- Apache Santuario (XML Security) - use 2.3.x for WSS4J 2.4.x compatibility -->
+        <bundle>mvn:org.apache.santuario/xmlsec/${xmlsec.version}</bundle>
     </feature>
 
     <!-- CXF WS-Security Feature -->

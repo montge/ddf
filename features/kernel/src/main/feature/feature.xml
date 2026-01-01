@@ -122,12 +122,20 @@
     <feature name="slf4j" version="${project.version}">
         <bundle>mvn:org.codice.thirdparty/cal10n-api/${cal10n.thirdparty.bundle.version}</bundle>
         <bundle>mvn:org.slf4j/slf4j-ext/${org.slf4j.version}</bundle>
+        <!-- SLF4J API 2.0.17 to supplement Pax Logging's SLF4J 2.0.6 export
+             Required by solr-dependencies which needs SLF4J 2.0.17+ -->
+        <bundle>mvn:org.slf4j/slf4j-api/${org.slf4j.version}</bundle>
     </feature>
 
     <!-- Log4j API bundle to provide org.apache.logging.log4j.util package at version 2.25+
          Required because Pax Logging 2.3.0 only exports log4j 2.24.x -->
     <feature name="log4j-api" version="${project.version}">
         <bundle>mvn:org.apache.logging.log4j/log4j-api/${apache-log4j.version}</bundle>
+    </feature>
+
+    <!-- Jakarta EE APIs for CXF 4.x and other Jakarta-based libraries -->
+    <feature name="jakarta-servlet-api" version="${project.version}">
+        <bundle>mvn:jakarta.servlet/jakarta.servlet-api/${jakarta.servlet-api.version}</bundle>
     </feature>
 
     <feature name="pax-swissbox" version="${project.version}">

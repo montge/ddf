@@ -49,11 +49,20 @@
         <!-- Jakarta Annotation API for @Nullable etc. -->
         <bundle>mvn:jakarta.annotation/jakarta.annotation-api/${jakarta.annotation.version}</bundle>
 
+        <!-- Jakarta Servlet API for CXF 4.x (requires jakarta.servlet 5.0+) -->
+        <feature version="${project.version}">jakarta-servlet-api</feature>
+
+        <!-- Jakarta Mail API for platform-email-api (requires jakarta.mail 2.1+) -->
+        <bundle>mvn:jakarta.mail/jakarta.mail-api/${jakarta.mail.version}</bundle>
+
         <!-- Dropwizard Metrics 3.x for OpenSAML (uses com.codahale.metrics package) -->
         <bundle>mvn:io.dropwizard.metrics/metrics-core/3.2.6</bundle>
 
         <!-- Commons Codec -->
         <bundle>mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
+
+        <!-- Commons Collections 3.x for security-pdp-authzrealm (not commons-collections4) -->
+        <bundle>mvn:commons-collections/commons-collections/3.2.2</bundle>
 
         <!-- External DDF Features -->
         <feature version="${project.version}">jackson</feature>
