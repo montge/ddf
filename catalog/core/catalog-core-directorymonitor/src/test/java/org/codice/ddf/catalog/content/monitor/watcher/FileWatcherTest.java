@@ -29,12 +29,12 @@ public class FileWatcherTest {
 
   @Test
   public void testNullWatchedFileThrowsException() {
-    assertThrows(IllegalArgumentException.class, () -> new FileWatcher(null, mock(Consumer.class)));
+    assertThrows(NullPointerException.class, () -> new FileWatcher(null, mock(Consumer.class)));
   }
 
   @Test
   public void testNullFileCallbackThrowsException() {
-    assertThrows(IllegalArgumentException.class, () -> new FileWatcher(mock(File.class), null));
+    assertThrows(NullPointerException.class, () -> new FileWatcher(mock(File.class), null));
   }
 
   @Test

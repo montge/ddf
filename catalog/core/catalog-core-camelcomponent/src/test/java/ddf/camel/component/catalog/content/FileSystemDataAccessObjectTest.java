@@ -92,7 +92,7 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testStoreAndLoadString() {
-    String key = "string-key";
+    String key = "/string-key";
     String value = "test-value";
 
     fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, key, value);
@@ -105,7 +105,7 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testStoreAndLoadSerializable() {
-    String key = "serializable-key";
+    String key = "/serializable-key";
     TestSerializable value = new TestSerializable("data", 100);
 
     fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, key, value);
@@ -130,7 +130,7 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testStoreOverwritesExistingValue() {
-    String key = "overwrite-key";
+    String key = "/overwrite-key";
     String original = "original-value";
     String updated = "updated-value";
 
@@ -146,7 +146,7 @@ public class FileSystemDataAccessObjectTest {
   public void testLoadFromPersistenceWithNonExistentKey() {
     Object loaded =
         fileSystemDataAccessObject.loadFromPersistence(
-            testDir.getPath(), TEST_SUFFIX, "non-existent");
+            testDir.getPath(), TEST_SUFFIX, "/non-existent");
     assertThat(loaded, is(nullValue()));
   }
 
@@ -160,9 +160,9 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testLoadAllKeys() {
-    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "key1", "value1");
-    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "key2", "value2");
-    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "key3", "value3");
+    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "/key1", "value1");
+    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "/key2", "value2");
+    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "/key3", "value3");
 
     FilenameFilter filter = fileSystemDataAccessObject.getFilenameFilter(TEST_SUFFIX);
     Set<String> keys =
@@ -198,9 +198,9 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testClear() {
-    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "key1", "value1");
-    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "key2", "value2");
-    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "key3", "value3");
+    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "/key1", "value1");
+    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "/key2", "value2");
+    fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "/key3", "value3");
 
     FilenameFilter filter = fileSystemDataAccessObject.getFilenameFilter(TEST_SUFFIX);
     fileSystemDataAccessObject.clear(testDir.getPath(), filter);
@@ -221,9 +221,9 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testGetFilenameFilter() {
-    fileSystemDataAccessObject.store(testDir.getPath(), ".txt", "doc1", "text content");
-    fileSystemDataAccessObject.store(testDir.getPath(), ".xml", "doc2", "xml content");
-    fileSystemDataAccessObject.store(testDir.getPath(), ".txt", "doc3", "more text");
+    fileSystemDataAccessObject.store(testDir.getPath(), ".txt", "/doc1", "text content");
+    fileSystemDataAccessObject.store(testDir.getPath(), ".xml", "/doc2", "xml content");
+    fileSystemDataAccessObject.store(testDir.getPath(), ".txt", "/doc3", "more text");
 
     FilenameFilter txtFilter = fileSystemDataAccessObject.getFilenameFilter(".txt");
     Set<String> txtKeys =
@@ -258,7 +258,7 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testStoreWithSpecialCharactersInKey() {
-    String key = "key-with-special_chars.123";
+    String key = "/key-with-special_chars.123";
     String value = "special-value";
 
     fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, key, value);
@@ -270,7 +270,7 @@ public class FileSystemDataAccessObjectTest {
 
   @Test
   public void testStoreNullValue() {
-    String key = "null-key";
+    String key = "/null-key";
 
     fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, key, null);
     Object loaded =
@@ -282,29 +282,30 @@ public class FileSystemDataAccessObjectTest {
   @Test
   public void testMultipleStoreAndLoad() {
     for (int i = 0; i < 10; i++) {
-      fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "key" + i, "value" + i);
+      fileSystemDataAccessObject.store(testDir.getPath(), TEST_SUFFIX, "/key" + i, "value" + i);
     }
 
     for (int i = 0; i < 10; i++) {
       Object loaded =
-          fileSystemDataAccessObject.loadFromPersistence(testDir.getPath(), TEST_SUFFIX, "key" + i);
+          fileSystemDataAccessObject.loadFromPersistence(
+              testDir.getPath(), TEST_SUFFIX, "/key" + i);
       assertThat(loaded, is(equalTo("value" + i)));
     }
   }
 
   @Test
   public void testClearOnlyRemovesMatchingFiles() {
-    fileSystemDataAccessObject.store(testDir.getPath(), ".ser", "key1", "value1");
-    fileSystemDataAccessObject.store(testDir.getPath(), ".dat", "key2", "value2");
+    fileSystemDataAccessObject.store(testDir.getPath(), ".ser", "/key1", "value1");
+    fileSystemDataAccessObject.store(testDir.getPath(), ".dat", "/key2", "value2");
 
     FilenameFilter serFilter = fileSystemDataAccessObject.getFilenameFilter(".ser");
     fileSystemDataAccessObject.clear(testDir.getPath(), serFilter);
 
     assertThat(
-        fileSystemDataAccessObject.loadFromPersistence(testDir.getPath(), ".ser", "key1"),
+        fileSystemDataAccessObject.loadFromPersistence(testDir.getPath(), ".ser", "/key1"),
         is(nullValue()));
     assertThat(
-        fileSystemDataAccessObject.loadFromPersistence(testDir.getPath(), ".dat", "key2"),
+        fileSystemDataAccessObject.loadFromPersistence(testDir.getPath(), ".dat", "/key2"),
         is(notNullValue()));
   }
 
@@ -321,10 +322,10 @@ public class FileSystemDataAccessObjectTest {
   @Test
   public void testStoreWithoutTrailingSlash() {
     String pathWithoutSlash = testDir.getPath();
-    fileSystemDataAccessObject.store(pathWithoutSlash, TEST_SUFFIX, "key", "value");
+    fileSystemDataAccessObject.store(pathWithoutSlash, TEST_SUFFIX, "/key", "value");
 
     Object loaded =
-        fileSystemDataAccessObject.loadFromPersistence(pathWithoutSlash, TEST_SUFFIX, "key");
+        fileSystemDataAccessObject.loadFromPersistence(pathWithoutSlash, TEST_SUFFIX, "/key");
     assertThat(loaded, is(equalTo("value")));
   }
 

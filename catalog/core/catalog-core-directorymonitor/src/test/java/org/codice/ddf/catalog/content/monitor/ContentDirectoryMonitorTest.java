@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.catalog.content.monitor;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -43,7 +44,7 @@ import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.model.SetHeaderDefinition;
 import org.apache.camel.model.ThreadsDefinition;
 import org.apache.camel.model.ToDefinition;
-import org.apache.camel.test.junit4.ExchangeTestSupport;
+import org.apache.camel.test.junit5.ExchangeTestSupport;
 import org.apache.commons.io.FileUtils;
 import org.codice.ddf.security.impl.Security;
 import org.codice.junit.rules.RestoreSystemProperties;
@@ -102,6 +103,9 @@ public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
   public void destroy() throws Exception {
     monitor.destroy(1);
     camelContext.stop();
+    // Clean up system properties set by blacklist tests
+    System.clearProperty("bad.file.extensions");
+    System.clearProperty("bad.files");
   }
 
   @Test
@@ -129,11 +133,11 @@ public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
     submitConfigOptions(monitor, monitoredDirectoryPath, ContentDirectoryMonitor.DELETE);
     assertThat(
         "The content directory monitor should not have any route definitions",
-        camelContext.adapt(ModelCamelContext.class).getRouteDefinitions(),
+        ((ModelCamelContext) camelContext).getRouteDefinitions(),
         empty());
     assertThat(
         "The camel context should not have any route definitions",
-        camelContext.adapt(ModelCamelContext.class).getRouteDefinitions(),
+        ((ModelCamelContext) camelContext).getRouteDefinitions(),
         empty());
   }
 
@@ -156,10 +160,10 @@ public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
     submitConfigOptions(monitor, monitoredDirectoryPath, processingMechanism);
     assertThat(
         "The content directory monitor should only have one route definition",
-        camelContext.adapt(ModelCamelContext.class).getRouteDefinitions(),
+        ((ModelCamelContext) camelContext).getRouteDefinitions(),
         hasSize(1));
     RouteDefinition routeDefinition =
-        camelContext.adapt(ModelCamelContext.class).getRouteDefinitions().get(0);
+        ((ModelCamelContext) camelContext).getRouteDefinitions().get(0);
     verifyRoute(routeDefinition, monitoredDirectoryPath, processingMechanism);
   }
 
@@ -246,7 +250,7 @@ public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
         1,
         1000);
     RouteDefinition routeDefinition =
-        camelContext.adapt(ModelCamelContext.class).getRouteDefinitions().get(0);
+        ((ModelCamelContext) camelContext).getRouteDefinitions().get(0);
 
     ProcessorDefinition<?> firstProcessor = routeDefinition.getOutputs().get(0);
     assertThat(firstProcessor, is(instanceOf(SetHeaderDefinition.class)));
@@ -294,11 +298,11 @@ public class ContentDirectoryMonitorTest extends ExchangeTestSupport {
     submitConfigOptions(monitor, "", ContentDirectoryMonitor.MOVE);
     assertThat(
         "Camel context should not have any route definitions",
-        camelContext.adapt(ModelCamelContext.class).getRouteDefinitions(),
+        ((ModelCamelContext) camelContext).getRouteDefinitions(),
         empty());
     assertThat(
         "Content directory monitor should not have any route definitions",
-        camelContext.adapt(ModelCamelContext.class).getRouteDefinitions(),
+        ((ModelCamelContext) camelContext).getRouteDefinitions(),
         empty());
   }
 

@@ -24,7 +24,6 @@ import static org.hamcrest.Matchers.empty;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +46,9 @@ public class FileSystemPersistenceProviderTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    persistenceProvider = new TestFileSystemPersistenceProvider(testMapName, temporaryFolder);
+    persistenceProvider =
+        new TestFileSystemPersistenceProvider(
+            testMapName, temporaryFolder.getRoot().getAbsolutePath());
   }
 
   @Test
@@ -210,12 +211,10 @@ public class FileSystemPersistenceProviderTest {
 
   @Test
   public void testLoadAllKeysWithNonExistentDirectory() throws IOException {
-    File tempDir = temporaryFolder.newFolder("test-non-existent");
+    // Use a path that doesn't exist
+    String nonExistentPath = temporaryFolder.getRoot().getAbsolutePath() + "/non-existent-dir";
     FileSystemPersistenceProvider provider =
-        new TestFileSystemPersistenceProvider("non-existent", temporaryFolder);
-
-    // Delete the directory to simulate non-existent case
-    Files.delete(new File(tempDir.getParent(), "non-existent").toPath());
+        new TestFileSystemPersistenceProviderNoCreate("non-existent", nonExistentPath);
 
     Set<String> keys = provider.loadAllKeys();
     assertThat(keys, is(notNullValue()));
@@ -306,16 +305,62 @@ public class FileSystemPersistenceProviderTest {
    * testing purposes
    */
   private static class TestFileSystemPersistenceProvider extends FileSystemPersistenceProvider {
-    private final TemporaryFolder temporaryFolder;
+    private String persistencePath;
 
-    public TestFileSystemPersistenceProvider(String mapName, TemporaryFolder temporaryFolder) {
-      super(mapName);
-      this.temporaryFolder = temporaryFolder;
+    public TestFileSystemPersistenceProvider(String mapName, String persistencePath) {
+      // Use the no-arg constructor to avoid calling getPersistencePath() before field is set
+      super();
+      this.persistencePath = persistencePath;
+      // Manually set the mapName after construction
+      setMapName(mapName);
+      // Create the directory if needed
+      File dir = new File(getPersistencePath());
+      if (!dir.exists()) {
+        dir.mkdir();
+      }
     }
 
     @Override
     String getPersistencePath() {
-      return temporaryFolder.getRoot().getAbsolutePath();
+      return persistencePath;
+    }
+
+    private void setMapName(String name) {
+      try {
+        java.lang.reflect.Field field =
+            FileSystemPersistenceProvider.class.getDeclaredField("mapName");
+        field.setAccessible(true);
+        field.set(this, name);
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to set mapName", e);
+      }
+    }
+  }
+
+  /**
+   * Test implementation that does not create the directory - for testing non-existent directory
+   * scenarios
+   */
+  private static class TestFileSystemPersistenceProviderNoCreate
+      extends FileSystemPersistenceProvider {
+    private String persistencePath;
+
+    public TestFileSystemPersistenceProviderNoCreate(String mapName, String persistencePath) {
+      super();
+      this.persistencePath = persistencePath;
+      try {
+        java.lang.reflect.Field field =
+            FileSystemPersistenceProvider.class.getDeclaredField("mapName");
+        field.setAccessible(true);
+        field.set(this, mapName);
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to set mapName", e);
+      }
+    }
+
+    @Override
+    String getPersistencePath() {
+      return persistencePath;
     }
   }
 

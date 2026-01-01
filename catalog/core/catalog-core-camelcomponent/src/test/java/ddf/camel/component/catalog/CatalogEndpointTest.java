@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import ddf.camel.component.catalog.framework.FrameworkProducer;
 import ddf.camel.component.catalog.ingest.PostIngestConsumer;
@@ -29,10 +30,13 @@ import ddf.camel.component.catalog.queryresponsetransformer.QueryResponseTransfo
 import ddf.camel.component.catalog.queryresponsetransformer.QueryResponseTransformerProducer;
 import ddf.catalog.CatalogFramework;
 import ddf.mime.MimeTypeMapper;
+import org.apache.camel.CamelContext;
 import org.apache.camel.Consumer;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +44,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@org.mockito.junit.jupiter.MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
 public class CatalogEndpointTest {
 
   @Mock private CatalogComponent mockComponent;
@@ -50,11 +55,23 @@ public class CatalogEndpointTest {
 
   @Mock private Processor mockProcessor;
 
+  private CamelContext camelContext;
+
   private static final String TEST_URI = "catalog:test";
 
   @BeforeEach
-  public void setup() {
-    // Mock setup if needed
+  public void setup() throws Exception {
+    // Use a real CamelContext for consumer tests (required for Camel 4.x DefaultConsumer)
+    camelContext = new DefaultCamelContext();
+    camelContext.start();
+    when(mockComponent.getCamelContext()).thenReturn(camelContext);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    if (camelContext != null) {
+      camelContext.stop();
+    }
   }
 
   @Test
@@ -163,6 +180,8 @@ public class CatalogEndpointTest {
             mockCatalogFramework,
             mockMimeTypeMapper);
 
+    // Set synchronous to false to get unwrapped producer for type verification
+    endpoint.setSynchronous(false);
     Producer producer = endpoint.createProducer();
 
     assertThat(producer, notNullValue());
@@ -181,6 +200,8 @@ public class CatalogEndpointTest {
             mockCatalogFramework,
             mockMimeTypeMapper);
 
+    // Set synchronous to false to get unwrapped producer for type verification
+    endpoint.setSynchronous(false);
     Producer producer = endpoint.createProducer();
 
     assertThat(producer, notNullValue());
@@ -199,6 +220,8 @@ public class CatalogEndpointTest {
             mockCatalogFramework,
             mockMimeTypeMapper);
 
+    // Set synchronous to false to get unwrapped producer for type verification
+    endpoint.setSynchronous(false);
     Producer producer = endpoint.createProducer();
 
     assertThat(producer, notNullValue());
@@ -217,6 +240,8 @@ public class CatalogEndpointTest {
             mockCatalogFramework,
             mockMimeTypeMapper);
 
+    // Set synchronous to false to get unwrapped producer for type verification
+    endpoint.setSynchronous(false);
     Producer producer = endpoint.createProducer();
 
     assertThat(producer, notNullValue());

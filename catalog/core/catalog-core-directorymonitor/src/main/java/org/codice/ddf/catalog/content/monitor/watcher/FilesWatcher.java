@@ -75,7 +75,8 @@ public class FilesWatcher {
         Executors.newSingleThreadScheduledExecutor(
             StandardThreadFactoryBuilder.newThreadFactory("cdmFileWatcher"));
 
-    executorService.scheduleAtFixedRate(this::checkFiles, 10, executorPollTime, TimeUnit.SECONDS);
+    executorService.scheduleAtFixedRate(
+        this::checkFiles, executorPollTime, executorPollTime, TimeUnit.SECONDS);
   }
 
   /**

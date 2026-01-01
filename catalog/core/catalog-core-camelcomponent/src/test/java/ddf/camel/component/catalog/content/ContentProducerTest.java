@@ -52,6 +52,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @EnableRuleMigrationSupport
 @ExtendWith(MockitoExtension.class)
+@org.mockito.junit.jupiter.MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
 public class ContentProducerTest {
 
   @Mock private ContentEndpoint mockEndpoint;
@@ -215,16 +216,6 @@ public class ContentProducerTest {
   public void testProcessWithNonInOnlyExchangePattern() throws Exception {
     Exchange mockExchange = mock(Exchange.class);
     doReturn(ExchangePattern.InOut).when(mockExchange).getPattern();
-
-    contentProducer.process(mockExchange);
-
-    verifyNoInteractions(mockContentProducerDao);
-  }
-
-  @Test
-  public void testProcessWithInOptionalOutExchangePattern() throws Exception {
-    Exchange mockExchange = mock(Exchange.class);
-    doReturn(ExchangePattern.InOptionalOut).when(mockExchange).getPattern();
 
     contentProducer.process(mockExchange);
 

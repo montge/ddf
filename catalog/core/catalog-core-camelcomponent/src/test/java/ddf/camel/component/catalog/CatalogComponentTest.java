@@ -13,6 +13,11 @@
  */
 package ddf.camel.component.catalog;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
@@ -41,7 +46,7 @@ import org.apache.camel.FailedToCreateProducerException;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
-import org.apache.camel.test.junit4.CamelTestSupport;
+import org.apache.camel.test.junit5.CamelTestSupport;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
@@ -182,8 +187,8 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (FailedToCreateProducerException e) {
       LOGGER.error("Failed to create producer", e);
       assertTrue(
-          "Should be an IllegalArgumentException exception",
-          e.getCause() instanceof IllegalArgumentException);
+          e.getCause() instanceof IllegalArgumentException,
+          "Should be an IllegalArgumentException exception");
       assertEquals(
           "Unable to create producer for context path [unknown]", e.getCause().getMessage());
     }
@@ -198,7 +203,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (Exception e) {
       LOGGER.error("Failed testInvalidContextPathForProducer2", e);
       assertTrue(
-          "Should be an IllegalArgumentException exception", e instanceof IllegalArgumentException);
+          e instanceof IllegalArgumentException, "Should be an IllegalArgumentException exception");
       assertEquals("Unable to create producer for context path [unknown]", e.getMessage());
     }
   }
@@ -217,7 +222,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     } catch (Exception e) {
       LOGGER.error("Failed testInvalidContextPathForConsumer", e);
       assertTrue(
-          "Should be an IllegalArgumentException exception", e instanceof IllegalArgumentException);
+          e instanceof IllegalArgumentException, "Should be an IllegalArgumentException exception");
       assertEquals("Unable to create consumer for context path [unknown]", e.getMessage());
     }
   }
@@ -242,7 +247,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull("InputTransformer for text/xml;id=identity not found", transformer);
+    assertNotNull(transformer, "InputTransformer for text/xml;id=identity not found");
 
     // Attempt to transform the XML input into a Metacard
     try {
@@ -276,7 +281,7 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull("InputTransformer for text/xml;id=identity not found", transformer);
+    assertNotNull(transformer, "InputTransformer for text/xml;id=identity not found");
 
     // Attempt to transform the XML input into a Metacard
     try {
@@ -320,13 +325,13 @@ public class CatalogComponentTest extends CamelTestSupport {
     // Get the InputTransformer registered with the ID associated with the
     // <from> node in the Camel route
     InputTransformer transformer = getTransformer("text/xml", "identity");
-    assertNotNull("InputTransformer for mimeType=text/xml&id=identity not found", transformer);
+    assertNotNull(transformer, "InputTransformer for mimeType=text/xml&id=identity not found");
 
     // Transform the XML input into a Metacard
     Metacard metacard = transformer.transform(input);
     assertNotNull(metacard);
 
-    assertMockEndpointsSatisfied();
+    MockEndpoint.assertIsSatisfied(context);
   }
 
   /**

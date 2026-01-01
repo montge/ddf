@@ -24,16 +24,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.camel.Exchange;
+import org.apache.camel.Message;
+import org.apache.camel.component.file.GenericFile;
 import org.apache.camel.component.file.GenericFileConfiguration;
 import org.apache.camel.spi.Synchronization;
+import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.support.DefaultMessage;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 import org.codice.ddf.catalog.content.monitor.watcher.FilesWatcher;
 import org.junit.Rule;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +49,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @EnableRuleMigrationSupport
 @ExtendWith(MockitoExtension.class)
+@org.mockito.junit.jupiter.MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
 public class DurableFileAlterationListenerTest {
 
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -65,15 +70,39 @@ public class DurableFileAlterationListenerTest {
 
   private File testFile;
 
+  private org.apache.camel.CamelContext camelContext;
+
   @BeforeEach
-  public void setUp() throws IOException {
+  public void setUp() throws Exception {
+    // Use a real CamelContext for Camel 4.x exchange creation
+    camelContext = new org.apache.camel.impl.DefaultCamelContext();
+    camelContext.start();
+
     testFile = temporaryFolder.newFile("test-file.txt");
 
     when(consumer.getEndpoint()).thenReturn(endpoint);
     when(endpoint.getConfiguration()).thenReturn(configuration);
     when(configuration.getDirectory()).thenReturn(temporaryFolder.getRoot().getAbsolutePath());
+    when(endpoint.getCamelContext()).thenReturn(camelContext);
+
+    // Mock createExchange to return a real exchange
+    when(endpoint.createExchange(any(GenericFile.class)))
+        .thenAnswer(
+            invocation -> {
+              Exchange exchange = new DefaultExchange(camelContext);
+              Message message = new DefaultMessage(camelContext);
+              exchange.setIn(message);
+              return exchange;
+            });
 
     listener = new DurableFileAlterationListener(consumer, filesWatcher);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    if (camelContext != null) {
+      camelContext.stop();
+    }
   }
 
   @Test

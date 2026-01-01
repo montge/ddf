@@ -25,12 +25,11 @@ import ddf.catalog.operation.DeleteResponse;
 import ddf.catalog.operation.UpdateResponse;
 import java.util.Dictionary;
 import org.apache.camel.CamelContext;
-import org.apache.camel.Consumer;
 import org.apache.camel.Exchange;
-import org.apache.camel.ExtendedCamelContext;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
-import org.apache.camel.spi.ExchangeFactory;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
@@ -57,16 +56,16 @@ public class PostIngestConsumerTest {
 
   private BundleContext mockBundleContext = mock(BundleContext.class);
 
-  private CamelContext camelContext = mock(CamelContext.class);
-
-  private ExtendedCamelContext extendedCamelContext = mock(ExtendedCamelContext.class);
-
-  private ExchangeFactory exchangeFactory = mock(ExchangeFactory.class);
+  // Use a real CamelContext for Camel 4.x DefaultConsumer requirements
+  private CamelContext camelContext;
 
   private PostIngestConsumer postIngestConsumer;
 
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws Exception {
+    camelContext = new DefaultCamelContext();
+    camelContext.start();
+
     when(mockEndpoint.getComponent()).thenReturn(mockCatalogComponent);
     when(mockCatalogComponent.getBundleContext()).thenReturn(mockBundleContext);
     when(mockEndpoint
@@ -76,13 +75,16 @@ public class PostIngestConsumerTest {
         .thenReturn(mockRegistration);
     when(mockEndpoint.createExchange()).thenReturn(mockExchange);
     when(mockExchange.getIn()).thenReturn(mockMessage);
-
     when(mockEndpoint.getCamelContext()).thenReturn(camelContext);
-    when(camelContext.adapt(ExtendedCamelContext.class)).thenReturn(extendedCamelContext);
-    when(extendedCamelContext.getExchangeFactory()).thenReturn(exchangeFactory);
-    when(exchangeFactory.newExchangeFactory(any(Consumer.class))).thenReturn(exchangeFactory);
 
     postIngestConsumer = new PostIngestConsumer(mockEndpoint, mockProcessor);
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    if (camelContext != null) {
+      camelContext.stop();
+    }
   }
 
   @Test

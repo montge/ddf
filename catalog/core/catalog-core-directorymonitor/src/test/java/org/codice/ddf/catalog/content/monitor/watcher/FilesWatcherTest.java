@@ -191,14 +191,28 @@ public class FilesWatcherTest {
   public void testWatchSameFileTwice() throws Exception {
     File testFile = temporaryFolder.newFile("test.txt");
     AtomicInteger count = new AtomicInteger(0);
+    CountDownLatch latch = new CountDownLatch(1);
 
-    FileWatcher watcher1 = new FileWatcher(testFile, file -> count.incrementAndGet());
-    FileWatcher watcher2 = new FileWatcher(testFile, file -> count.incrementAndGet());
+    FileWatcher watcher1 =
+        new FileWatcher(
+            testFile,
+            file -> {
+              count.incrementAndGet();
+              latch.countDown();
+            });
+    FileWatcher watcher2 =
+        new FileWatcher(
+            testFile,
+            file -> {
+              count.incrementAndGet();
+              latch.countDown();
+            });
 
     watcher.watch(watcher1);
     watcher.watch(watcher2);
 
-    Thread.sleep(TEST_POLL_TIME * 1000 + 500);
+    // Wait for callback (file needs 2 checks to stabilize)
+    latch.await(5, TimeUnit.SECONDS);
 
     // Only the second watcher should remain (same file replaces first)
     assertThat(count.get(), is(1));

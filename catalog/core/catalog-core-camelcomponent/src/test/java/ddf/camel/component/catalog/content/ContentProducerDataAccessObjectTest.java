@@ -149,10 +149,21 @@ public class ContentProducerDataAccessObjectTest {
 
   @Test
   public void testProcessNullFileOnEntryDelete() throws Exception {
-    Map<String, Object> headers = mock(Map.class);
+    Map<String, Object> headers = new HashMap<>();
+    String testUri = "file:///test/path/testfile.txt";
+    String safeKey = DigestUtils.sha1Hex(testUri);
+    headers.put(Constants.STORE_REFERENCE_KEY, testUri);
+
     CatalogFramework mockCatalogFramework = mock(CatalogFramework.class);
     FileSystemPersistenceProvider mockFileSystemPersistenceProvider =
         mock(FileSystemPersistenceProvider.class);
+
+    // Setup the persistence provider to return the safe key and a test ID
+    Set<String> keys = new HashSet<>(Collections.singletonList(safeKey));
+    doReturn(keys).when(mockFileSystemPersistenceProvider).loadAllKeys();
+    doReturn("test-metacard-id")
+        .when(mockFileSystemPersistenceProvider)
+        .loadFromPersistence(safeKey);
 
     ContentComponent mockComponent = mock(ContentComponent.class);
     doReturn(mockCatalogFramework).when(mockComponent).getCatalogFramework();

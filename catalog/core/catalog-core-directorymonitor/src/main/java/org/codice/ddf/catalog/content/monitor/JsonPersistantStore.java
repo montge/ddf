@@ -71,7 +71,7 @@ public class JsonPersistantStore implements ObjectPersistentStore {
   @Override
   public void store(String key, Object toStore) {
     File dir = getPath().toFile();
-    if (!dir.exists() && !dir.mkdir()) {
+    if (!dir.exists() && !dir.mkdirs()) {
       LOGGER.debug("Unable to create directory: {}", dir.getAbsolutePath());
     }
     String shaKey = getShaFor(key);
