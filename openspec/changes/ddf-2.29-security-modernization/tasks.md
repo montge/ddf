@@ -204,7 +204,18 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Distribution builds successfully: ddf-2.30.0-SNAPSHOT.zip (553MB)
   - All Jakarta EE migration changes validated
   - Fixed: fast profile now skips JaCoCo and integration tests
-- [ ] 5.1.2 Start DDF with SolrCloud
+- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **BLOCKED** - OSGi resolution issues (2026-01-01)
+  - SolrCloud starts successfully via Docker Compose
+  - DDF startup fails due to OSGi package resolution issues
+  - **Fixes applied:**
+    - Fixed cxf-core-all manifest (was missing entirely)
+    - Added log4j-api 2.25.x to kernel features
+    - Added BouncyCastle 1.83 bundles to security features
+    - Added jakarta.annotation-api 3.0.0
+    - Added Dropwizard Metrics 3.2.6 (for OpenSAML)
+    - Added commons-codec 1.19.0
+  - **Remaining issue:** CXF Export-Package uses wildcard (`org.apache.cxf.*;version="4.1.1"`)
+    which may not resolve correctly in OSGi. Needs explicit package listing.
 - [ ] 5.1.3 Test SAML authentication flow
 - [ ] 5.1.4 Test OIDC authentication flow
 - [ ] 5.1.5 Test catalog create/query/delete
@@ -290,9 +301,10 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
 4. ~~Jakarta transformation setup~~ ✅ OpenRewrite verified, migration plan created
 5. ~~CXF 4.x upgrade~~ ⏸️ **BLOCKED** (OSGi removed, waiting for cxf-karaf Q2 2025)
 6. ~~Bootstrap 5 upgrade~~ ✅ Simple Search UI migrated (2026-01-01)
-7. Integration testing ← **CURRENT** (DDF with SolrCloud)
-8. Non-blocking dependency upgrades
-9. Jakarta namespace migration (after CXF 4.x + cxf-karaf)
+7. Fix OSGi runtime issues ← **CURRENT** (cxf-core-all Export-Package)
+8. Integration testing (DDF with SolrCloud) - after OSGi fixes
+9. Non-blocking dependency upgrades
+10. Jakarta namespace migration (after CXF 4.x + cxf-karaf)
 
 ### Commands
 ```bash
