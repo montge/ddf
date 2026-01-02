@@ -65,9 +65,7 @@ public class FeatureTransformationServiceTest {
     this.camelContext = new DefaultCamelContext(registry);
     camelContext.setTracing(true);
     camelContext.addRoutes(new WfsRouteBuilder());
-    camelContext
-        .adapt(ExtendedCamelContext.class)
-        .setErrorHandlerFactory(new NoErrorHandlerBuilder());
+    ((ExtendedCamelContext) camelContext).setErrorHandlerFactory(new NoErrorHandlerBuilder());
 
     Endpoint endpoint = camelContext.getEndpoint(WfsRouteBuilder.FEATURECOLLECTION_ENDPOINT_URL);
     featureTransformationService =

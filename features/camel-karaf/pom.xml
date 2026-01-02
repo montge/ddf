@@ -73,9 +73,8 @@
                         </goals>
                         <configuration>
                             <target>
-                                <replaceregexp file="${project.basedir}/target/dependency/apache-camel-${camel.version}-features.xml" match="(&lt;repository&gt;.*&lt;/repository&gt;)" replace="" byline="true" />
-                                <replaceregexp file="${project.basedir}/target/dependency/apache-camel-${camel.version}-features.xml" match="(\[5,6\))" replace="${spring.feature.version}" byline="true" />
-                                <!-- Camel 4.x natively uses CXF 4.x, no version hack needed -->
+                                <!-- Camel 4.x natively uses Spring 6.2.x which matches DDF's Spring 6.2.x
+                                     No modifications needed to the original features file -->
                             </target>
                         </configuration>
                     </execution>

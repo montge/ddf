@@ -638,7 +638,7 @@ public class TestCatalog extends AbstractIntegrationTest {
     await("Camel route definitions were not found")
         .atMost(30, TimeUnit.SECONDS)
         .pollDelay(5, TimeUnit.SECONDS)
-        .until(camelContext.adapt(ModelCamelContext.class)::getRouteDefinitions, hasSize(2));
+        .until(((ModelCamelContext) camelContext)::getRouteDefinitions, hasSize(2));
 
     camelContext.getRouteController().startAllRoutes();
 

@@ -19,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.List;
+import java.util.function.Supplier;
 import org.apache.camel.Exchange;
-import org.apache.camel.ExtendedExchange;
 import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.component.file.FileConsumer;
@@ -60,7 +60,7 @@ public abstract class AbstractDurableFileConsumer extends FileConsumer {
   }
 
   @Override
-  protected boolean isMatched(GenericFile<File> file, String doneFileName, File[] files) {
+  protected boolean isMatched(Supplier<GenericFile<File>> file, String doneFileName, File[] files) {
     return false;
   }
 
@@ -123,7 +123,7 @@ public abstract class AbstractDurableFileConsumer extends FileConsumer {
     }
 
     ExchangeHelper addSynchronization(Synchronization synchronization) {
-      exchange.adapt(ExtendedExchange.class).addOnCompletion(synchronization);
+      exchange.getExchangeExtension().addOnCompletion(synchronization);
       return this;
     }
 

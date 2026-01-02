@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 
 class HttpProxyWrappedCleanRequestTest {
@@ -102,7 +102,7 @@ class HttpProxyWrappedCleanRequestTest {
     HttpProxyWrappedCleanRequest wrappedRequest = new HttpProxyWrappedCleanRequest(mockRequest);
 
     assertThat(
-        javax.servlet.http.HttpServletRequestWrapper.class.isAssignableFrom(
+        jakarta.servlet.http.HttpServletRequestWrapper.class.isAssignableFrom(
             wrappedRequest.getClass()),
         is(true));
   }

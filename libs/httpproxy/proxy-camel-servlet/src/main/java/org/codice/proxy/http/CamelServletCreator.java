@@ -46,6 +46,6 @@ public class CamelServletCreator {
     props.put("osgi.http.whiteboard.servlet.pattern", SERVLET_PATH);
     props.put("osgi.http.whiteboard.servlet.name", SERVLET_NAME);
     bundleContext.registerService(
-        "javax.servlet.Servlet", new HttpProxyCamelHttpTransportServlet(camelContext), props);
+        "jakarta.servlet.Servlet", new HttpProxyCamelHttpTransportServlet(camelContext), props);
   }
 }

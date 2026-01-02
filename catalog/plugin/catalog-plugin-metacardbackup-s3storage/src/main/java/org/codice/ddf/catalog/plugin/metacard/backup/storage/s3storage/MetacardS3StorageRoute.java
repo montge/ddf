@@ -24,9 +24,6 @@ import java.util.Map;
 import java.util.UUID;
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.aws2.s3.AWS2S3Constants;
-import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.support.DefaultRegistry;
-import org.apache.camel.support.SimpleRegistry;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.catalog.plugin.metacard.backup.common.MetacardStorageRoute;
 import org.codice.ddf.catalog.plugin.metacard.backup.common.MetacardTemplate;
@@ -79,8 +76,6 @@ public class MetacardS3StorageRoute extends MetacardStorageRoute {
 
   private List<String> routeIds = new ArrayList<>();
 
-  private final SimpleRegistry registry;
-
   private MetacardTemplate metacardTemplate = null;
 
   private S3Client s3Client = null;
@@ -89,9 +84,6 @@ public class MetacardS3StorageRoute extends MetacardStorageRoute {
 
   public MetacardS3StorageRoute(CamelContext camelContext) {
     super(camelContext);
-    registry = new SimpleRegistry();
-    DefaultRegistry defaultRegistry = new DefaultRegistry(camelContext.getRegistry(), registry);
-    ((DefaultCamelContext) camelContext).setRegistry(defaultRegistry);
   }
 
   public String getObjectTemplate() {
@@ -160,8 +152,8 @@ public class MetacardS3StorageRoute extends MetacardStorageRoute {
 
     DeleteBean deleteBean = new DeleteBean(s3Client, s3Bucket);
 
-    registry.bind("s3Client", s3Client);
-    registry.bind("deleteBean", deleteBean);
+    getContext().getRegistry().bind("s3Client", s3Client);
+    getContext().getRegistry().bind("deleteBean", deleteBean);
     addOption(options, AWS_S3_CLIENT_PROP, "#s3Client");
 
     addOption(options, AWS_S3_DELETE_AFTER_WRITE_PROP, "false");

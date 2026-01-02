@@ -38,12 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@UriEndpoint(
-    scheme = "durable",
-    title = "Durable File Endpoint",
-    syntax = "durable:directoryName",
-    consumerClass = AbstractDurableFileConsumer.class,
-    label = "codice,file")
+@UriEndpoint(scheme = "durable", title = "Durable File Endpoint", syntax = "durable:directoryName")
 public class DurableFileEndpoint extends FileEndpoint {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CDM_LOGGER_NAME);

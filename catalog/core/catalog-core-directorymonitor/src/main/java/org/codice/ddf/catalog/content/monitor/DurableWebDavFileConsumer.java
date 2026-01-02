@@ -80,7 +80,7 @@ public class DurableWebDavFileConsumer extends AbstractDurableFileConsumer {
       fileSystemPersistenceProvider.store(sha1, observer);
       return true;
     } else {
-      return isMatched(null, null, null);
+      return isMatched(() -> null, null, null);
     }
   }
 
