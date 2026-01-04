@@ -17,6 +17,9 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0"
           name="ddf-cxf-${project.version}">
 
+    <!-- Repository reference to kernel features for guava -->
+    <repository>mvn:ddf.features/kernel/${project.version}/xml/features</repository>
+
     <!--
         DDF CXF 4.x Features
 
@@ -132,16 +135,43 @@
 
     <!-- WSS4J Feature (Apache Web Services Security)
          Uses WSS4J 2.4.x for compatibility with existing security-core-impl code.
-         WSS4J 4.0+ would require Jakarta EE namespace migration in security code. -->
+         WSS4J 4.0+ would require Jakarta EE namespace migration in security code.
+
+         WSS4J 2.4.x dependencies:
+         - OpenSAML 4.x: Required for org.opensaml.core.config package
+         - joda-time: Required for date/time handling
+         - java-support: Required by OpenSAML 4.x (Shibboleth library) -->
     <feature name="wss4j" version="${project.version}" description="Apache WSS4J">
         <feature>jakarta-xml-bind</feature>
+        <!-- Guava required by OpenSAML 4.x (com.google.common.base package) -->
+        <feature>guava</feature>
+
+        <!-- Dropwizard Metrics 4.x required by OpenSAML 4.x (com.codahale.metrics package) -->
+        <bundle>mvn:io.dropwizard.metrics/metrics-core/4.2.30</bundle>
+
+        <!-- joda-time required by WSS4J 2.4.x and OpenSAML 4.x -->
+        <bundle>mvn:joda-time/joda-time/${joda-time.version}</bundle>
+
+        <!-- Shibboleth java-support required by OpenSAML 4.x -->
+        <bundle>wrap:mvn:net.shibboleth.utilities/java-support/${java-support.version}</bundle>
+
+        <!-- Cryptacular required by OpenSAML 4.x -->
+        <bundle>wrap:mvn:org.cryptacular/cryptacular/1.2.4</bundle>
+
+        <!-- OpenSAML 4.x ServiceMix bundle - required by WSS4J 2.4.x
+             Provides org.opensaml.core.config and other OpenSAML packages -->
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.opensaml/${opensaml.osgi.version}</bundle>
+
         <!-- javax.mail needed by WSS4J 2.4.x (uses javax.mail, not jakarta.mail) -->
         <bundle>mvn:com.sun.mail/javax.mail/1.6.2</bundle>
+
+        <!-- WSS4J 2.4.x bundles -->
         <bundle>mvn:org.apache.wss4j/wss4j-ws-security-common/${wss4j.version}</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-ws-security-dom/${wss4j.version}</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-ws-security-stax/${wss4j.version}</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-policy/${wss4j.version}</bundle>
         <bundle>mvn:org.apache.wss4j/wss4j-bindings/${wss4j.version}</bundle>
+
         <!-- Apache Santuario (XML Security) - use 2.3.x for WSS4J 2.4.x compatibility -->
         <bundle>mvn:org.apache.santuario/xmlsec/${xmlsec.version}</bundle>
     </feature>
@@ -165,6 +195,9 @@
     <!-- CXF RS Security OAuth2 Feature -->
     <feature name="cxf-rs-security-oauth2" version="3.6.9" description="Apache CXF 4.x RS Security OAuth2">
         <feature version="3.6.9">cxf-jaxrs</feature>
+        <!-- CXF JOSE bundles for JWT/JWS/JWE support (required by OAuth2) -->
+        <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-jose/${cxf.version}</bundle>
+        <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-jose-jaxrs/${cxf.version}</bundle>
         <!-- Standalone CXF OAuth2 bundle - provides org.apache.cxf.rs.security.oauth2.* packages
              that are NOT exported by camel-cxf-all -->
         <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-oauth2/${cxf.version}</bundle>

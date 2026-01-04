@@ -69,6 +69,16 @@
         <!-- CXF RS Security bundles - standalone bundles for packages NOT exported by camel-cxf-all -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-jose</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-security-jose-jaxrs</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-security-oauth2</artifactId>
             <version>${cxf.version}</version>
         </dependency>
@@ -76,6 +86,33 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-security-sso-saml</artifactId>
             <version>${cxf.version}</version>
+        </dependency>
+
+        <!-- WSS4J dependencies -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.shibboleth.utilities</groupId>
+            <artifactId>java-support</artifactId>
+            <version>${java-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cryptacular</groupId>
+            <artifactId>cryptacular</artifactId>
+            <version>1.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.opensaml</artifactId>
+            <version>${opensaml.osgi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>4.2.30</version>
         </dependency>
     </dependencies>
 

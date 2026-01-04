@@ -289,8 +289,12 @@
         <objenesis.version>3.4</objenesis.version>
         <ogc-tools-gml-jts.version>1.2.0</ogc-tools-gml-jts.version>
         <opendj-embedded.app.version>1.3.3</opendj-embedded.app.version>
-        <opensaml.version>4.0.1</opensaml.version>
-        <opensaml.osgi.version>3.4.5_2</opensaml.osgi.version>
+        <opensaml.version>4.3.2</opensaml.version>
+        <!-- ServiceMix OpenSAML OSGi bundle - must match opensaml.version
+             WSS4J 2.4.x requires OpenSAML 4.x for org.opensaml.core.config package
+             CXF 4.1.1 requires OpenSAML 4.2.0+ for org.opensaml.core.xml package
+             Note: 4.3.2_1 has MANIFEST bug, use 4.3.2_2 -->
+        <opensaml.osgi.version>4.3.2_2</opensaml.osgi.version>
         <!-- Shibboleth java-support version required by OpenSAML 4.x -->
         <java-support.version>8.0.0</java-support.version>
         <nimbus.version>8.14.1</nimbus.version>
