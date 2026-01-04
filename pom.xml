@@ -235,7 +235,9 @@
         <javax.cache.bundle.version>1.1.1_1</javax.cache.bundle.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
+        <!-- CXF 4.1.1 bundles require jakarta.servlet version [5.0,6.0)
+             so we must use 5.0.0, not 6.1.0 which is outside that range -->
+        <jakarta.servlet-api.version>5.0.0</jakarta.servlet-api.version>
         <javax.ws.rs.version>2.1.6</javax.ws.rs.version>
         <javax-el.version>3.0.0</javax-el.version>
         <soap-api.version>1.4.2</soap-api.version>

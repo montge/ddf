@@ -1,6 +1,6 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2026-01-03)
+**Status:** In Progress (Last updated: 2026-01-04)
 **Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
@@ -210,15 +210,17 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Distribution builds successfully: ddf-2.30.0-SNAPSHOT.zip (553MB)
   - All Jakarta EE migration changes validated
   - Fixed: fast profile now skips JaCoCo and integration tests
-- [x] 5.1.2 Start DDF with SolrCloud ✅ **WORKING** (2026-01-03)
-  - DDF boots to 100% with Java 21 and SolrCloud
-  - Karaf started in 1s. Bundle stats: 23 active, 23 total
-  - Camel 4.10.7 + CXF 4.1.1 integration working
+- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **BLOCKED** by Karaf race condition (2026-01-04)
+  - Kernel boots to 100% with Java 21 (23 active bundles)
+  - Boot features installation fails with race condition in Deployer
+  - Error: "Module has been uninstalled" during handlePrerequisites()
+  - **Root cause:** Karaf 4.4.x + Java 21 + Equinox OSGi race condition
+  - **Workaround needed:** Manual feature installation or Karaf 4.5.x upgrade
 
-**OSGi Dependency Resolution (2026-01-01 - 2026-01-03):**
+**OSGi Dependency Resolution (2026-01-01 - 2026-01-04):**
 Fixed multiple OSGi package resolution issues during integration testing:
 1. ✅ cxf-core-all Export-Package: Explicit 238-package list (wildcard didn't resolve)
-2. ✅ jakarta.servlet-api: Added for CXF 4.x [5.0,7) requirement
+2. ✅ jakarta.servlet-api: Downgraded 6.1.0 → 5.0.0 (CXF 4.1.1 requires [5.0,6.0)) (2026-01-04)
 3. ✅ jakarta.mail-api: Added for platform-email-api [2.1,3) requirement
 4. ✅ slf4j-api: Added 2.0.17 (Pax Logging only exports 2.0.6)
 5. ✅ commons-collections 3.x: Added for security-pdp-authzrealm
@@ -235,6 +237,15 @@ Fixed multiple OSGi package resolution issues during integration testing:
 - Added standalone CXF bundles for packages NOT exported by `camel-cxf-all`:
   - `cxf-rt-rs-security-oauth2` (for security-rest-cxfwrapper)
   - `cxf-rt-rs-security-sso-saml` (for security-handler-saml)
+
+**Karaf 4.4.x + Java 21 Race Condition (2026-01-04):**
+- **Issue:** Deployer.handlePrerequisites() crashes with "Module has been uninstalled"
+- **Cause:** Race condition when bundles are refreshed during feature installation
+- **Affected bundles:** jasypt, jline, pax-web-websocket (randomly)
+- **Workaround options:**
+  1. Manual feature installation after kernel boot
+  2. Upgrade to Karaf 4.5.x when available
+  3. Use Felix framework instead of Equinox
 - [ ] 5.1.3 Test SAML authentication flow
 - [ ] 5.1.4 Test OIDC authentication flow
 - [ ] 5.1.5 Test catalog create/query/delete
@@ -320,9 +331,11 @@ Fixed multiple OSGi package resolution issues during integration testing:
 4. ~~Jakarta transformation setup~~ ✅ OpenRewrite verified, migration plan created
 5. ~~CXF 4.x upgrade~~ ✅ **COMPLETE** (Camel 4.10.7 with camel-cxf-all)
 6. ~~Bootstrap 5 upgrade~~ ✅ Simple Search UI migrated (2026-01-01)
-7. ~~Fix OSGi runtime issues~~ ✅ **COMPLETE** (2026-01-03)
-8. ~~Integration testing (DDF with SolrCloud)~~ ✅ Boot verified (2026-01-03)
-9. Complete SAML/OIDC authentication testing ← **NEXT**
+7. ~~Fix OSGi package resolution~~ ✅ **COMPLETE** (2026-01-03)
+8. Resolve Karaf 4.4.x + Java 21 race condition ← **BLOCKED**
+   - Kernel boots but boot features fail with race condition
+   - Options: Karaf 4.5.x upgrade or manual feature install
+9. Complete SAML/OIDC authentication testing (after Karaf fix)
 10. Jakarta namespace migration (after authentication testing)
 
 ### Commands
