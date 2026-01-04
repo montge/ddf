@@ -235,7 +235,8 @@
                             zookeeper-jute
                         </Embed-Dependency>
                         <Import-Package>
-                            org.slf4j;version=${org.slf4j.version},
+                            <!-- Use version range to accept Pax Logging's SLF4J 2.0.6 export -->
+                            org.slf4j;version="[2.0,3.0)",
                             javax.annotation,
                             javax.crypto,
                             javax.crypto.spec,

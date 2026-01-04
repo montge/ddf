@@ -24,6 +24,10 @@
     <artifactId>camel-karaf</artifactId>
     <packaging>pom</packaging>
 
+    <properties>
+        <setup.folder>${project.build.directory}/dependency</setup.folder>
+    </properties>
+
     <!-- This is a workaround for KARAF-5999/KARAF-7428 -->
 
     <dependencies>
@@ -73,8 +77,33 @@
                         </goals>
                         <configuration>
                             <target>
-                                <!-- Camel 4.x natively uses Spring 6.2.x which matches DDF's Spring 6.2.x
-                                     No modifications needed to the original features file -->
+                                <!-- Remove the spring-features repository reference since DDF provides
+                                     its own Spring features and Camel's spring-features requires
+                                     Spring 6.2.11 which doesn't exist yet -->
+                                <replaceregexp file="${setup.folder}/apache-camel-${camel.version}-features.xml"
+                                    match="&lt;repository&gt;mvn:org\.apache\.camel\.karaf/apache-camel/[^&lt;]+/xml/spring-features&lt;/repository&gt;"
+                                    replace=""
+                                    flags="g" />
+                                <!-- Add Karaf standard/specs features repository references which
+                                     define xml-specs-api and other dependencies Camel needs -->
+                                <replaceregexp file="${setup.folder}/apache-camel-${camel.version}-features.xml"
+                                    match="(&lt;features[^&gt;]*&gt;)"
+                                    replace="\1&#10;    &lt;repository&gt;mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features&lt;/repository&gt;&#10;    &lt;repository&gt;mvn:org.apache.karaf.features/specs/${karaf.version}/xml/features&lt;/repository&gt;"
+                                    flags="s" />
+                                <!-- Remove jakarta-xml-bind 3.0.1 feature definition to avoid conflicts.
+                                     All JAXB consumers should use 4.0.2 (jakarta namespace, backwards compatible). -->
+                                <replaceregexp file="${setup.folder}/apache-camel-${camel.version}-features.xml"
+                                    match="&lt;feature name=&quot;jakarta-xml-bind&quot; version=&quot;3\.0\.1&quot;&gt;[^&lt;]*&lt;feature[^&lt;]*&lt;/feature&gt;[^&lt;]*&lt;bundle[^&lt;]*&lt;/bundle&gt;[^&lt;]*&lt;/feature&gt;"
+                                    replace=""
+                                    flags="gs" />
+                                <!-- Change jaxb-runtime 3.0.2 to use jakarta-xml-bind [4,5) instead of [3,4) -->
+                                <replaceregexp file="${setup.folder}/apache-camel-${camel.version}-features.xml"
+                                    match="(&lt;feature name=&quot;jaxb-runtime&quot; version=&quot;3\.0\.2&quot;&gt;[^&lt;]*&lt;feature version=&quot;)\[3,4\)(&quot;&gt;jakarta-xml-bind&lt;/feature&gt;)"
+                                    replace="\1[4,5)\2"
+                                    flags="gs" />
+                                <!-- CXF packages are provided by camel-cxf-all (from Camel's camel-cxf feature).
+                                     DDF's cxf-core feature no longer installs cxf-core-all to avoid
+                                     split-package conflicts that cause LinkageErrors at runtime. -->
                             </target>
                         </configuration>
                     </execution>

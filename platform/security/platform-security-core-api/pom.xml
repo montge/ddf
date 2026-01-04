@@ -77,6 +77,15 @@
                             ddf.security*;version=${project.version},
                             org.codice.ddf.security*;version=${project.version}
                         </Export-Package>
+                        <Import-Package>
+                            <!--
+                            Log4j API is provided by pax-logging-api at version 2.24.3.
+                            Widen version ranges to accept pax-logging's exports.
+                            -->
+                            org.apache.logging.log4j;version="[2.20,3)",
+                            org.apache.logging.log4j.util;version="[2.20,3)",
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

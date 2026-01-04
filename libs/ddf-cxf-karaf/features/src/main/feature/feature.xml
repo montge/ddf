@@ -60,8 +60,9 @@
     </feature>
 
     <!-- CXF 4.x Core Feature
-         Note: Version 3.6.99 is used to satisfy Camel's cxf-core version range requirement [3.6,3.7)
-         The actual implementation uses CXF 4.1.1 with Jakarta EE namespaces -->
+         Note: Version 3.6.9 is used to satisfy Camel's cxf-core version range requirement [3.6,3.7)
+         The actual CXF implementation comes from Camel's camel-cxf-all bundle (CXF 4.1.1).
+         DDF no longer installs its own cxf-core-all to avoid split-package conflicts. -->
     <feature name="cxf-core" version="3.6.9" description="Apache CXF 4.x Core">
         <feature>jakarta-annotation</feature>
         <feature>jakarta-activation</feature>
@@ -80,8 +81,8 @@
         <!-- Apache Neethi (WS-Policy) -->
         <bundle>mvn:org.apache.neethi/neethi/3.2.0</bundle>
 
-        <!-- CXF Core All-in-One bundle -->
-        <bundle start-level="40">mvn:ddf.libs/cxf-core-all/${project.version}</bundle>
+        <!-- CXF packages come from Camel's camel-cxf-all bundle.
+             Do NOT install cxf-core-all here as it creates split-package conflict. -->
     </feature>
 
     <!-- CXF JAX-RS Feature -->
@@ -156,11 +157,17 @@
     <feature name="cxf-rs-security-saml" version="3.6.9" description="Apache CXF 4.x RS Security SAML">
         <feature version="3.6.9">cxf-jaxrs</feature>
         <feature version="3.6.9">cxf-ws-security</feature>
+        <!-- Standalone CXF SAML SSO bundle - provides org.apache.cxf.rs.security.saml.sso package
+             that is NOT exported by camel-cxf-all -->
+        <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-sso-saml/${cxf.version}</bundle>
     </feature>
 
     <!-- CXF RS Security OAuth2 Feature -->
     <feature name="cxf-rs-security-oauth2" version="3.6.9" description="Apache CXF 4.x RS Security OAuth2">
         <feature version="3.6.9">cxf-jaxrs</feature>
+        <!-- Standalone CXF OAuth2 bundle - provides org.apache.cxf.rs.security.oauth2.* packages
+             that are NOT exported by camel-cxf-all -->
+        <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-oauth2/${cxf.version}</bundle>
     </feature>
 
     <!-- Combined CXF Feature (convenience) -->

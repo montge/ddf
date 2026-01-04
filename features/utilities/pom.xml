@@ -322,9 +322,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.picocontainer</groupId>
+            <groupId>org.codice.thirdparty</groupId>
             <artifactId>picocontainer</artifactId>
-            <version>1.2</version>
+            <version>${picocontainer.version}</version>
         </dependency>
         <!-- END -->
 

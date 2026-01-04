@@ -247,9 +247,9 @@
         <jcodec.version>0.2.0_1</jcodec.version>
         <jdom.bundle.version>1.1_4</jdom.bundle.version>
         <jdom2.bundle.version>2.0.6.1_1</jdom2.bundle.version>
-        <jetty.version>9.4.58.v20250814</jetty.version>
-        <!-- CVE-2025-5115 fixed in 9.4.58 -->
-        <karaf.jetty.version>9.4.58.v20250814</karaf.jetty.version>
+        <!-- Must match Pax Web 8.0.33's expected Jetty version -->
+        <jetty.version>9.4.57.v20241219</jetty.version>
+        <karaf.jetty.version>9.4.57.v20241219</karaf.jetty.version>
         <jgroups.version>3.6.13.Final</jgroups.version>
         <joda-convert.version>1.7</joda-convert.version>
         <dev.failsafe.version>3.2.4</dev.failsafe.version>
@@ -1351,6 +1351,19 @@
                         <instructions>
                             <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                             <_noee>true</_noee>
+                            <!--
+                            Log4j API is provided by pax-logging-api at version 2.24.3.
+                            Override the default version ranges to accept pax-logging's exports.
+                            This prevents OSGi resolution failures when bundles get wired to
+                            log4j 2.25+ at compile time but pax-logging only provides 2.24.3.
+                            -->
+                            <Import-Package>
+                                org.apache.logging.log4j;version="[2.20,3)",
+                                org.apache.logging.log4j.util;version="[2.20,3)",
+                                org.apache.logging.log4j.spi;version="[2.20,3)",
+                                org.apache.logging.log4j.message;version="[2.20,3)",
+                                *
+                            </Import-Package>
                         </instructions>
                     </configuration>
                 </plugin>

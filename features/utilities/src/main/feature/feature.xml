@@ -244,7 +244,8 @@
         <bundle>wrap:mvn:org.geotools/gt-main/${org.geotools.version}$Bundle-Name=gt-main&amp;Bundle-SymbolicName=gt-main</bundle>
         <bundle>wrap:mvn:org.geotools/gt-cql/${org.geotools.version}$Bundle-Name=gt-cql&amp;Bundle-SymbolicName=gt-cql</bundle>
         <bundle>wrap:mvn:org.geotools/gt-xml/${org.geotools.version}$Bundle-Name=gt-xml&amp;Bundle-SymbolicName=gt-xml</bundle>
-        <bundle>wrap:mvn:org.picocontainer/picocontainer/1.2$Bundle-Name=picocontainer&amp;Bundle-SymbolicName=picocontainer</bundle>
+        <!-- Use codice thirdparty picocontainer which has proper OSGi exports -->
+        <bundle>mvn:org.codice.thirdparty/picocontainer/${picocontainer.version}</bundle>
         <bundle>mvn:ddf.thirdparty/eclipse-emf/${project.version}</bundle>
         <bundle>wrap:mvn:org.geotools.xsd/gt-xsd-core/${org.geotools.version}$Bundle-Name=gt-xsd-core&amp;Bundle-SymbolicName=gt-xsd-core</bundle>
         <bundle>wrap:mvn:org.geotools.xsd/gt-xsd-gml2/${org.geotools.version}$Bundle-Name=gt-xsd-gml2&amp;Bundle-SymbolicName=gt-xsd-gml2</bundle>

@@ -38,8 +38,8 @@
         <feature>pax-web-jetty-websockets</feature>
         <feature>scr</feature>
         <feature>spring</feature>
-        <!-- Log4j API 2.25+ for org.apache.logging.log4j.util package -->
-        <feature version="${project.version}">log4j-api</feature>
+        <!-- Note: Log4j API is provided by pax-logging-api (version 2.24.3).
+             Do NOT add log4j-api here as it conflicts with pax-logging. -->
 
         <!-- BouncyCastle 1.83 for cryptography (overrides Camel's 1.74) -->
         <bundle>mvn:org.bouncycastle/bcprov-jdk18on/${bouncy.version}</bundle>

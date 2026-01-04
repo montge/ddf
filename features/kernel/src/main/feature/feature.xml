@@ -96,6 +96,8 @@
         <feature version="${karaf.version}">pax-web-http-war</feature>
         <feature version="${pax.web.version}">pax-web-karaf</feature>
         <bundle>mvn:javax.servlet/javax.servlet-api/${javax.servlet-api.version}</bundle>
+        <!-- Jakarta Servlet 6.x API for CXF 4.x and other Jakarta EE 10+ libraries -->
+        <feature>jakarta-servlet-api</feature>
         <!--Added wrap at the end so features before this can startup up while we block on the wrap feature-->
         <feature prerequisite="true">wrap</feature>
     </feature>
@@ -122,16 +124,14 @@
     <feature name="slf4j" version="${project.version}">
         <bundle>mvn:org.codice.thirdparty/cal10n-api/${cal10n.thirdparty.bundle.version}</bundle>
         <bundle>mvn:org.slf4j/slf4j-ext/${org.slf4j.version}</bundle>
-        <!-- SLF4J API 2.0.17 to supplement Pax Logging's SLF4J 2.0.6 export
-             Required by solr-dependencies which needs SLF4J 2.0.17+ -->
-        <bundle>mvn:org.slf4j/slf4j-api/${org.slf4j.version}</bundle>
+        <!-- Note: SLF4J API is provided by Pax Logging (version 2.0.6)
+             solr-dependencies uses version range [2.0,3.0) to accept this -->
     </feature>
 
-    <!-- Log4j API bundle to provide org.apache.logging.log4j.util package at version 2.25+
-         Required because Pax Logging 2.3.0 only exports log4j 2.24.x -->
-    <feature name="log4j-api" version="${project.version}">
-        <bundle>mvn:org.apache.logging.log4j/log4j-api/${apache-log4j.version}</bundle>
-    </feature>
+    <!-- Note: Log4j API is provided by pax-logging-api at version 2.24.3.
+         Do NOT add a separate log4j-api bundle as it will conflict with pax-logging.
+         Bundles requiring log4j should import with version range [2.20,3) to accept
+         pax-logging's exports. -->
 
     <!-- Jakarta EE APIs for CXF 4.x and other Jakarta-based libraries -->
     <feature name="jakarta-servlet-api" version="${project.version}">
