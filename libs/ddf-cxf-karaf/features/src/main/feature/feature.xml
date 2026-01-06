@@ -187,6 +187,16 @@
     <feature name="cxf-rs-security-saml" version="3.6.9" description="Apache CXF 4.x RS Security SAML">
         <feature version="3.6.9">cxf-jaxrs</feature>
         <feature version="3.6.9">cxf-ws-security</feature>
+        <!-- Jakarta XML Bind 3.0.1 - CXF 4.1.1 security bundles import [3.0,4.0) -->
+        <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/3.0.1</bundle>
+        <!-- JCache API - CXF SAML SSO imports javax.cache [1.1,2.0) -->
+        <bundle>mvn:javax.cache/cache-api/1.1.1</bundle>
+        <!-- CXF RT Security bundle - provides org.apache.cxf.rt.security.* -->
+        <bundle>mvn:org.apache.cxf/cxf-rt-security/${cxf.version}</bundle>
+        <!-- CXF RT Security SAML - provides org.apache.cxf.rt.security.saml.* -->
+        <bundle>mvn:org.apache.cxf/cxf-rt-security-saml/${cxf.version}</bundle>
+        <!-- CXF security XML bundle - provides org.apache.cxf.rs.security.common -->
+        <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-xml/${cxf.version}</bundle>
         <!-- Standalone CXF SAML SSO bundle - provides org.apache.cxf.rs.security.saml.sso package
              that is NOT exported by camel-cxf-all -->
         <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-sso-saml/${cxf.version}</bundle>
