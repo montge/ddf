@@ -247,15 +247,26 @@ Fixed multiple OSGi package resolution issues during integration testing:
   - java-support:8.0.0 (Shibboleth library for OpenSAML)
   - cryptacular:1.2.4 (crypto library for OpenSAML)
 
-**BLOCKER: Jakarta XML Bind Version Conflict (2026-01-04):**
-- `cxf-rt-rs-security-sso-saml/4.1.1` imports `jakarta.xml.bind.annotation` version [3.0.0,4.0.0)
-- `cxf-rt-rs-security-oauth2/4.1.1` imports `org.apache.cxf.rs.security.jose.jaxrs` version [4.1.0,5.0.0)
-- `security-pep-interceptor` imports `org.apache.cxf.ws.security.tokenstore` version [4.1.0,5.0.0)
-- **Root cause:** CXF 4.1.1 security bundles have conflicting Jakarta EE version requirements
-- **Options:**
-  1. Upgrade to CXF 4.1.2+ (check if JAXB import versions are fixed)
-  2. Use `camel-cxf-all` for WS-Security packages (if exported)
-  3. Stay on Camel 3.22.4 with CXF 3.5.x until DDF code migrates to Jakarta namespaces
+**BLOCKER: CXF 4.1.1 Security Bundle Dependencies (2026-01-05):**
+CXF 4.1.1 security bundles have complex OSGi dependencies not satisfied by `camel-cxf-all`:
+
+1. ✅ Fixed: `jakarta.xml.bind.annotation` version [3.0,4.0) - added JAXB 3.0.1 bundle
+2. ✅ Fixed: `javax.cache` version [1.1,2.0) - added cache-api 1.1.1
+3. ✅ Fixed: `org.apache.cxf.rs.security.common` - added cxf-rt-rs-security-xml
+4. ✅ Fixed: `org.apache.cxf.rt.security.saml.*` - added cxf-rt-security, cxf-rt-security-saml
+5. ⛔ **BLOCKER:** `net.shibboleth.shared.xml` - CXF 4.1.1 security-saml imports Shibboleth shared libs
+6. ⛔ **BLOCKER:** `org.apache.cxf.ws.security.wss4j` - DDF bundles import WS-Security packages
+
+**Root cause:** CXF 4.x removed OSGi/Karaf support. The security bundles have many interdependencies
+on Shibboleth libraries and internal CXF packages that require careful OSGi wiring.
+
+**Options to proceed:**
+1. **Build shaded CXF security uber-bundle** - Like camel-cxf-all but for security modules
+2. **Wrap Shibboleth libraries** - Add OSGi manifests to shibboleth-shared jars
+3. **Wait for CXF-9086** - Apache CXF is working on restoring OSGi support
+4. **Stay on Camel 3.22.4** - Revert to stable Camel 3.x with CXF 3.5.x until upstream fixes
+
+See: https://issues.apache.org/jira/browse/CXF-9086
 
 **Karaf 4.4.x + Java 21 Race Condition (2026-01-04):**
 - **Issue:** Deployer.handlePrerequisites() crashes with "Module has been uninstalled"
