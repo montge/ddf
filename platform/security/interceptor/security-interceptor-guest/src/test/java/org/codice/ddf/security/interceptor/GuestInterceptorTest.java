@@ -38,9 +38,6 @@ import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.security.SecurityContext;
-import org.apache.cxf.transport.http.AbstractHTTPDestination;
-import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
-import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.security.handler.GuestAuthenticationToken;
@@ -54,6 +51,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /** Comprehensive test coverage for GuestInterceptor to achieve 85%+ coverage. */
 @ExtendWith(MockitoExtension.class)
 public class GuestInterceptorTest {
+
+  // CXF HTTP request key (replacing HTTP_REQUEST constant)
+  private static final String HTTP_REQUEST = "HTTP.REQUEST";
+
+  // WSS4J interceptor class names (avoid importing cxf-rt-ws-security)
+  private static final String WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor";
+  private static final String POLICY_WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor";
 
   private GuestInterceptor interceptor;
 
@@ -76,8 +82,8 @@ public class GuestInterceptorTest {
     GuestInterceptor newInterceptor = new GuestInterceptor(securityManager);
 
     assertEquals(Phase.PRE_PROTOCOL, newInterceptor.getPhase());
-    assertTrue(newInterceptor.getBefore().contains(WSS4JInInterceptor.class.getName()));
-    assertTrue(newInterceptor.getBefore().contains(PolicyBasedWSS4JInInterceptor.class.getName()));
+    assertTrue(newInterceptor.getBefore().contains(WSS4J_IN_INTERCEPTOR));
+    assertTrue(newInterceptor.getBefore().contains(POLICY_WSS4J_IN_INTERCEPTOR));
   }
 
   @Test
@@ -88,7 +94,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testHandleMessageCreatesGuestSubject() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -102,8 +108,7 @@ public class GuestInterceptorTest {
 
     verify(securityManager, times(1)).getSubject(any(GuestAuthenticationToken.class));
     verify(soapMessage, times(1)).put(eq(SecurityContext.class), any());
-    verify(soapMessage, times(1))
-        .put(eq(WSS4JInInterceptor.class.getName() + ".DONE"), eq(Boolean.TRUE));
+    verify(soapMessage, times(1)).put(eq(WSS4J_IN_INTERCEPTOR + ".DONE"), eq(Boolean.TRUE));
 
     GuestAuthenticationToken token = tokenCaptor.getValue();
     assertThat(token, is(notNullValue()));
@@ -111,7 +116,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testHandleMessageUsesRemoteAddr() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("10.0.0.1");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -125,19 +130,19 @@ public class GuestInterceptorTest {
 
   @Test
   public void testHandleMessageWithNullSubject() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
     when(securityManager.getSubject(any(GuestAuthenticationToken.class))).thenReturn(null);
 
     interceptor.handleMessage(soapMessage);
 
     verify(soapMessage, never()).put(eq(SecurityContext.class), any());
-    verify(soapMessage, never()).put(eq(WSS4JInInterceptor.class.getName() + ".DONE"), any());
+    verify(soapMessage, never()).put(eq(WSS4J_IN_INTERCEPTOR + ".DONE"), any());
   }
 
   @Test
   public void testHandleMessageWithNullSecurityAssertion() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -147,13 +152,12 @@ public class GuestInterceptorTest {
     interceptor.handleMessage(soapMessage);
 
     verify(soapMessage, times(1)).put(eq(SecurityContext.class), any());
-    verify(soapMessage, times(1))
-        .put(eq(WSS4JInInterceptor.class.getName() + ".DONE"), eq(Boolean.TRUE));
+    verify(soapMessage, times(1)).put(eq(WSS4J_IN_INTERCEPTOR + ".DONE"), eq(Boolean.TRUE));
   }
 
   @Test
   public void testHandleMessageSecurityManagerThrowsException() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
     when(securityManager.getSubject(any(GuestAuthenticationToken.class)))
         .thenThrow(new SecurityServiceException("Test exception"));
@@ -166,7 +170,7 @@ public class GuestInterceptorTest {
     interceptor = new GuestInterceptor(null);
     interceptor.setSecurityLogger(securityLogger);
 
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     assertThrows(Fault.class, () -> interceptor.handleMessage(soapMessage));
@@ -174,7 +178,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testCachedSubjectReused() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -193,7 +197,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testDifferentIPAddressesCreateDifferentSubjects() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
     when(principalCollection.oneByType(SecurityAssertion.class)).thenReturn(securityAssertion);
@@ -213,7 +217,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testSecurityServiceExceptionLogged() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
     when(securityManager.getSubject(any(GuestAuthenticationToken.class)))
         .thenThrow(new SecurityServiceException("Test exception"));
@@ -234,7 +238,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testHandleMessageWithPrincipalCreated() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -253,7 +257,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testHandleMessageWithNullPrincipal() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -272,7 +276,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testWSS4JCheckStringSet() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -281,13 +285,12 @@ public class GuestInterceptorTest {
 
     interceptor.handleMessage(soapMessage);
 
-    verify(soapMessage, times(1))
-        .put(eq(WSS4JInInterceptor.class.getName() + ".DONE"), eq(Boolean.TRUE));
+    verify(soapMessage, times(1)).put(eq(WSS4J_IN_INTERCEPTOR + ".DONE"), eq(Boolean.TRUE));
   }
 
   @Test
   public void testMultipleCallsSameIPUseCache() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -305,7 +308,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testNullHttpRequestHandled() {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(null);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(null);
 
     try {
       interceptor.handleMessage(soapMessage);
@@ -318,7 +321,7 @@ public class GuestInterceptorTest {
   public void testSecurityManagerNullThrowsAuthenticationException() throws Exception {
     GuestInterceptor nullManagerInterceptor = new GuestInterceptor(null);
 
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     try {
@@ -333,7 +336,7 @@ public class GuestInterceptorTest {
   public void testGetSubjectWithNullSecurityManager() throws Exception {
     GuestInterceptor nullManagerInterceptor = new GuestInterceptor(null);
 
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     try {
@@ -349,7 +352,7 @@ public class GuestInterceptorTest {
   @Test
   public void testCacheExpiration() throws Exception {
     // This test verifies cache behavior (expiration is 1 minute)
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -364,7 +367,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testSubjectWithPrincipalsReturned() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);
@@ -379,7 +382,7 @@ public class GuestInterceptorTest {
 
   @Test
   public void testSecurityContextSetWithNullPrincipal() throws Exception {
-    when(soapMessage.get(AbstractHTTPDestination.HTTP_REQUEST)).thenReturn(httpRequest);
+    when(soapMessage.get(HTTP_REQUEST)).thenReturn(httpRequest);
     when(httpRequest.getRemoteAddr()).thenReturn("192.168.1.100");
 
     when(subject.getPrincipals()).thenReturn(principalCollection);

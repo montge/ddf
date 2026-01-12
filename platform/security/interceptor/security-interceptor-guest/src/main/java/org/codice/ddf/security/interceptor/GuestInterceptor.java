@@ -26,14 +26,11 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.cxf.binding.soap.SoapMessage;
+import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.security.DefaultSecurityContext;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.security.SecurityContext;
-import org.apache.cxf.transport.http.AbstractHTTPDestination;
-import org.apache.cxf.ws.security.wss4j.AbstractWSS4JInterceptor;
-import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
-import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.security.handler.GuestAuthenticationToken;
@@ -41,11 +38,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Interceptor for guest access to SOAP endpoints. */
-public class GuestInterceptor extends AbstractWSS4JInterceptor {
+public class GuestInterceptor extends AbstractSoapInterceptor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GuestInterceptor.class);
 
-  private static final String WSS4J_CHECK_STRING = WSS4JInInterceptor.class.getName() + ".DONE";
+  // WSS4J interceptor class names for ordering (avoid importing cxf-rt-ws-security)
+  private static final String WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor";
+  private static final String POLICY_WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor";
+  private static final String WSS4J_CHECK_STRING = WSS4J_IN_INTERCEPTOR + ".DONE";
+
+  // CXF HTTP request key (replacing AbstractHTTPDestination.HTTP_REQUEST constant)
+  private static final String HTTP_REQUEST = "HTTP.REQUEST";
 
   private SecurityManager securityManager;
 
@@ -55,15 +60,14 @@ public class GuestInterceptor extends AbstractWSS4JInterceptor {
       CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
 
   public GuestInterceptor(SecurityManager securityManager) {
-    super();
+    super(Phase.PRE_PROTOCOL);
     LOGGER.trace("Constructing Legacy Guest Interceptor.");
     this.securityManager = securityManager;
-    setPhase(Phase.PRE_PROTOCOL);
     // make sure this interceptor runs before the WSS4J one in the same Phase, otherwise it won't
     // work
     Set<String> before = getBefore();
-    before.add(WSS4JInInterceptor.class.getName());
-    before.add(PolicyBasedWSS4JInInterceptor.class.getName());
+    before.add(WSS4J_IN_INTERCEPTOR);
+    before.add(POLICY_WSS4J_IN_INTERCEPTOR);
     LOGGER.trace("Exiting Legacy Guest Interceptor constructor.");
   }
 
@@ -72,8 +76,7 @@ public class GuestInterceptor extends AbstractWSS4JInterceptor {
 
     if (message != null) {
 
-      HttpServletRequest request =
-          (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
+      HttpServletRequest request = (HttpServletRequest) message.get(HTTP_REQUEST);
       LOGGER.debug("Getting new Guest user token");
       Principal principal = null;
 

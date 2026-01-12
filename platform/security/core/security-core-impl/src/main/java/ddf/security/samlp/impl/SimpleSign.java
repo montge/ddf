@@ -33,7 +33,6 @@ import java.util.Base64;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.xml.stream.XMLStreamException;
-import org.apache.cxf.rs.security.saml.sso.SSOConstants;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.CryptoType;
@@ -90,6 +89,10 @@ public class SimpleSign {
   private static final String DSA_ALGO_URI = ALGO_ID_SIGNATURE_DSA_SHA256;
   private static final String DSA_ALGO_JCE =
       JCEMapper.translateURItoJCEID(ALGO_ID_SIGNATURE_DSA_SHA256);
+
+  // SAML SSO constants (replacing CXF SSOConstants)
+  private static final String SIG_ALG = "SigAlg";
+  private static final String SIGNATURE = "Signature";
 
   private final SystemCrypto crypto;
 
@@ -178,8 +181,7 @@ public class SimpleSign {
     PrivateKey privateKey = getSignaturePrivateKey();
     java.security.Signature signature = initSign(certificates[0], privateKey);
 
-    String requestToSign =
-        queryParams + "&" + SSOConstants.SIG_ALG + "=" + URLEncoder.encode(sigAlgo, UTF_8);
+    String requestToSign = queryParams + "&" + SIG_ALG + "=" + URLEncoder.encode(sigAlgo, UTF_8);
 
     try {
       signature.update(requestToSign.getBytes(UTF_8));
@@ -194,10 +196,9 @@ public class SimpleSign {
       throw new SignatureException(e);
     }
 
-    uriBuilder.queryParam(SSOConstants.SIG_ALG, URLEncoder.encode(sigAlgo, UTF_8));
+    uriBuilder.queryParam(SIG_ALG, URLEncoder.encode(sigAlgo, UTF_8));
     uriBuilder.queryParam(
-        SSOConstants.SIGNATURE,
-        URLEncoder.encode(Base64.getEncoder().encodeToString(signatureBytes), UTF_8));
+        SIGNATURE, URLEncoder.encode(Base64.getEncoder().encodeToString(signatureBytes), UTF_8));
   }
 
   private java.security.Signature initSign(X509Certificate certificate, PrivateKey privateKey)

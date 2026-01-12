@@ -32,7 +32,6 @@ import java.util.Properties;
 import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.cxf.rs.security.saml.sso.SAMLProtocolResponseValidator;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
@@ -86,6 +85,10 @@ public class SamlAssertionValidatorImpl implements SamlAssertionValidator {
   }
 
   private static final XMLUtils XML_UTILS = XMLUtils.getInstance();
+
+  // SAML 2.0 status code (replacing CXF SAML2_STATUSCODE_SUCCESS)
+  private static final String SAML2_STATUSCODE_SUCCESS =
+      "urn:oasis:names:tc:SAML:2.0:status:Success";
 
   private static final ThreadLocal<DocumentBuilder> BUILDER =
       ThreadLocal.withInitial(
@@ -153,7 +156,7 @@ public class SamlAssertionValidatorImpl implements SamlAssertionValidator {
           createSamlResponse(
               token.getRequestURI(),
               assertion.getIssuerString(),
-              createStatus(SAMLProtocolResponseValidator.SAML2_STATUSCODE_SUCCESS, null));
+              createStatus(SAML2_STATUSCODE_SUCCESS, null));
 
       BUILDER.get().reset();
       Document doc = BUILDER.get().newDocument();

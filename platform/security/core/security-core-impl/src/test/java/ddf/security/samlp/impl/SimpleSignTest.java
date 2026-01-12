@@ -34,7 +34,6 @@ import java.security.cert.Certificate;
 import java.util.Base64;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
-import org.apache.cxf.jaxrs.impl.UriBuilderImpl;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.wss4j.common.crypto.Merlin;
@@ -250,7 +249,7 @@ public class SimpleSignTest {
             URLEncoder.encode(deflatedSamlResponse, "UTF-8"),
             URLEncoder.encode(RELAY_STATE_VAL, "UTF-8"));
     String idpRequest = SINGLE_SIGN_ON_LOCATION + "?" + queryParams;
-    UriBuilder idpUri = new UriBuilderImpl(new URI(idpRequest));
+    UriBuilder idpUri = UriBuilder.fromUri(new URI(idpRequest));
     simpleSign.signUriString(queryParams, idpUri);
 
     String signatureAlgorithm = URLEncodedUtils.parse(idpUri.build(), "UTF-8").get(2).getValue();
@@ -286,7 +285,7 @@ public class SimpleSignTest {
             URLEncoder.encode(deflatedSamlResponse, "UTF-8"),
             URLEncoder.encode(RELAY_STATE_VAL, "UTF-8"));
     String idpRequest = SINGLE_SIGN_ON_LOCATION + "?" + queryParams;
-    UriBuilder idpUri = new UriBuilderImpl(new URI(idpRequest));
+    UriBuilder idpUri = UriBuilder.fromUri(new URI(idpRequest));
     simpleSign.signUriString(queryParams, idpUri);
     idpUri.queryParam("RelayState", "changedit");
 

@@ -2,7 +2,6 @@ package ddf.security.samlp.impl
 
 import ddf.security.encryption.EncryptionService
 import ddf.security.samlp.LogoutWrapper
-import org.apache.cxf.rs.security.saml.sso.SSOConstants
 import org.junit.Rule
 import org.junit.platform.runner.JUnitPlatform
 import org.junit.rules.TemporaryFolder
@@ -33,6 +32,11 @@ class LogoutMessageSpec extends Specification {
 
     String IN_RESPONSE_TO = "InResponseToID"
     String SESSION_INDEX = "MySessionIndex";
+
+    // SAML SSO constants (replacing CXF SSOConstants)
+    static final String RELAY_STATE = "RelayState"
+    static final String SAML_REQUEST = "SAMLRequest"
+    static final String SAML_RESPONSE = "SAMLResponse"
 
     void setup() {
         System.setProperty("org.codice.ddf.system.hostname", "localhost")
@@ -147,9 +151,9 @@ class LogoutMessageSpec extends Specification {
         signedRequest.toString().
                 startsWith(target.toString())
         signedRequest.toString().
-                contains("${SSOConstants.RELAY_STATE}=")
+                contains("${RELAY_STATE}=")
         signedRequest.toString().
-                contains("${SSOConstants.SAML_REQUEST}=")
+                contains("${SAML_REQUEST}=")
 
     }
 
@@ -167,8 +171,8 @@ class LogoutMessageSpec extends Specification {
         signedRequest.toString().
                 startsWith(target.toString())
         signedRequest.toString().
-                contains("${SSOConstants.RELAY_STATE}=")
+                contains("${RELAY_STATE}=")
         signedRequest.toString().
-                contains("${SSOConstants.SAML_RESPONSE}=")
+                contains("${SAML_RESPONSE}=")
     }
 }

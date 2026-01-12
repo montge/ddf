@@ -33,8 +33,6 @@ import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.phase.PhaseInterceptor;
-import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
-import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +45,12 @@ import org.osgi.framework.ServiceReference;
 /** Comprehensive test coverage for GuestInterceptorWrapper. */
 @ExtendWith(MockitoExtension.class)
 public class GuestInterceptorWrapperTest {
+
+  // WSS4J interceptor class names (avoid importing cxf-rt-ws-security)
+  private static final String WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor";
+  private static final String POLICY_WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor";
 
   private GuestInterceptorWrapper wrapper;
 
@@ -71,8 +75,7 @@ public class GuestInterceptorWrapperTest {
     assertThat(newWrapper.getBefore(), notNullValue());
     assertThat(
         newWrapper.getBefore(),
-        containsInAnyOrder(
-            WSS4JInInterceptor.class.getName(), PolicyBasedWSS4JInInterceptor.class.getName()));
+        containsInAnyOrder(WSS4J_IN_INTERCEPTOR, POLICY_WSS4J_IN_INTERCEPTOR));
   }
 
   @Test
@@ -241,10 +244,7 @@ public class GuestInterceptorWrapperTest {
 
     assertThat(newWrapper.getBefore(), notNullValue());
     assertThat(newWrapper.getBefore().size(), is(2));
-    assertThat(
-        newWrapper.getBefore(),
-        contains(
-            WSS4JInInterceptor.class.getName(), PolicyBasedWSS4JInInterceptor.class.getName()));
+    assertThat(newWrapper.getBefore(), contains(WSS4J_IN_INTERCEPTOR, POLICY_WSS4J_IN_INTERCEPTOR));
   }
 
   @Test

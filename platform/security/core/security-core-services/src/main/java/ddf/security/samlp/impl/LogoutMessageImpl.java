@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 import javax.servlet.http.Cookie;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.lang3.Validate;
-import org.apache.cxf.rs.security.saml.sso.SSOConstants;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
@@ -66,6 +65,11 @@ public class LogoutMessageImpl implements LogoutMessage {
   private static final String SAML_SOAP_ACTION = "http://www.oasis-open.org/committees/security";
 
   private static final String ISSUER_CANNOT_BE_NULL_MSG = "Issuer cannot be null";
+
+  // SAML SSO constants (replacing CXF SSOConstants)
+  private static final String SAML_REQUEST = "SAMLRequest";
+  private static final String SAML_RESPONSE = "SAMLResponse";
+  private static final String RELAY_STATE = "RelayState";
 
   private SystemCrypto systemCrypto;
   private UuidGenerator uuidGenerator;
@@ -293,14 +297,14 @@ public class LogoutMessageImpl implements LogoutMessage {
   public URI signSamlGetResponse(LogoutWrapper samlObject, URI target, String relayState)
       throws LogoutSecurityException, SignatureException, IOException {
 
-    return signSamlGet(samlObject, target, relayState, SSOConstants.SAML_RESPONSE);
+    return signSamlGet(samlObject, target, relayState, SAML_RESPONSE);
   }
 
   @Override
   public URI signSamlGetRequest(LogoutWrapper samlObject, URI target, String relayState)
       throws LogoutSecurityException, SignatureException, IOException {
 
-    return signSamlGet(samlObject, target, relayState, SSOConstants.SAML_REQUEST);
+    return signSamlGet(samlObject, target, relayState, SAML_REQUEST);
   }
 
   private URI signSamlGet(
@@ -313,11 +317,10 @@ public class LogoutMessageImpl implements LogoutMessage {
           URLEncoder.encode(
               samlSecurity.deflateAndBase64Encode(DOM2Writer.nodeToString(element)), "UTF-8");
       String requestToSign =
-          String.format(
-              "%s=%s&%s=%s", requestType, encodedResponse, SSOConstants.RELAY_STATE, relayState);
+          String.format("%s=%s&%s=%s", requestType, encodedResponse, RELAY_STATE, relayState);
       UriBuilder uriBuilder = UriBuilder.fromUri(target);
       uriBuilder.queryParam(requestType, encodedResponse);
-      uriBuilder.queryParam(SSOConstants.RELAY_STATE, relayState);
+      uriBuilder.queryParam(RELAY_STATE, relayState);
       new SimpleSign(systemCrypto).signUriString(requestToSign, uriBuilder);
       return uriBuilder.build();
     } catch (MarshallingException e) {

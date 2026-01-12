@@ -32,9 +32,10 @@
             <groupId>ddf.security.core</groupId>
             <artifactId>security-core-api</artifactId>
         </dependency>
+        <!-- Removed cxf-rt-ws-security - using AbstractSoapInterceptor from cxf-core instead -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
+            <artifactId>cxf-rt-bindings-soap</artifactId>
         </dependency>
         <dependency>
             <groupId>ddf.platform</groupId>
@@ -100,6 +101,7 @@
                             httpcore
                         </Embed-Dependency>
                         <Export-Package />
+                        <!-- No explicit import needed - using AbstractSoapInterceptor from cxf-core -->
                     </instructions>
                 </configuration>
             </plugin>

@@ -52,10 +52,6 @@
             <artifactId>security-saml-util</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-security-sso-saml</artifactId>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

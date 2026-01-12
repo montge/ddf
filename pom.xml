@@ -267,7 +267,7 @@
         <jts.spatial4j.version>1.17.1</jts.spatial4j.version>
         <jvnet-ogc.version>2.6.1</jvnet-ogc.version>
         <jwnl.version>1.3.3</jwnl.version>
-        <karaf.version>4.4.8</karaf.version>
+        <karaf.version>4.4.9</karaf.version>
         <jansi.version>2.4.2</jansi.version>
         <org.osgi.util.promise.version>1.2.0</org.osgi.util.promise.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
@@ -291,8 +291,8 @@
         <opendj-embedded.app.version>1.3.3</opendj-embedded.app.version>
         <opensaml.version>4.3.2</opensaml.version>
         <!-- ServiceMix OpenSAML OSGi bundle - must match opensaml.version
-             WSS4J 2.4.x requires OpenSAML 4.x for org.opensaml.core.config package
-             CXF 4.1.1 requires OpenSAML 4.2.0+ for org.opensaml.core.xml package
+             DDF security code uses OpenSAML 4.x APIs
+             CXF 4.1.1 SAML features require OpenSAML 5.x but are optional
              Note: 4.3.2_1 has MANIFEST bug, use 4.3.2_2 -->
         <opensaml.osgi.version>4.3.2_2</opensaml.osgi.version>
         <!-- Shibboleth java-support version required by OpenSAML 4.x -->
@@ -358,6 +358,7 @@
         <woodstox.core.version>6.6.2</woodstox.core.version>
         <woodstox.stax2-api.version>4.2.1</woodstox.stax2-api.version>
         <wss4j.neethi.version>3.2.1</wss4j.neethi.version>
+        <!-- WSS4J 2.4.x for javax namespace (DDF security code uses javax APIs) -->
         <wss4j.version>2.4.3</wss4j.version>
         <xalan.bundle.version>2.7.3_1</xalan.bundle.version>
         <xalan.version>2.7.3</xalan.version>
@@ -365,6 +366,7 @@
         <xerces.bundle.version>2.12.2_1</xerces.bundle.version>
         <xml-apis.version>1.4.01</xml-apis.version>
         <xmlbeans.version>5.0.3</xmlbeans.version>
+        <!-- Apache Santuario 2.3.x for WSS4J 2.4.x compatibility -->
         <xmlsec.version>2.3.4</xmlsec.version>
         <xpp3.bundle.version>1.1.4c_6</xpp3.bundle.version>
         <xstream.bundle.version>1.4.20_1</xstream.bundle.version>
@@ -1143,6 +1145,7 @@
                 <artifactId>java-support</artifactId>
                 <version>${java-support.version}</version>
             </dependency>
+
             <!-- Override PlantUML version to latest to eliminate CVEs -->
             <dependency>
                 <groupId>net.sourceforge.plantuml</groupId>
@@ -2247,6 +2250,15 @@
             <id>osgeo</id>
             <name>OSGeo Release Repository</name>
             <url>https://repo.osgeo.org/repository/release/</url>
+        </repository>
+        <!-- Shibboleth repository for OpenSAML 5.x and related artifacts -->
+        <repository>
+            <id>shibboleth</id>
+            <name>Shibboleth Repository</name>
+            <url>https://build.shibboleth.net/maven/releases/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories>

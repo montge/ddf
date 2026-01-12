@@ -34,7 +34,6 @@ import org.apache.cxf.interceptor.security.AccessDeniedException;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.service.model.BindingOperationInfo;
-import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.junit.jupiter.api.Test;
 
 public class PepInterceptorInvalidSubjectTest {
@@ -50,15 +49,12 @@ public class PepInterceptorInvalidSubjectTest {
     interceptor.setSecurityManager(mockSecurityManager);
 
     Message messageWithInvalidSecurityAssertion = mock(Message.class);
-    SecurityToken mockSecurityToken = mock(SecurityToken.class);
+    Object mockToken = new Object();
     Subject mockSubject = mock(Subject.class);
     assertNotNull(mockSecurityAssertion);
 
-    // SecurityLogger is already stubbed out
-    when(mockSecurityAssertion.getToken()).thenReturn(mockSecurityToken);
-    when(mockSecurityToken.getToken()).thenReturn(null);
-
-    when(mockSecurityManager.getSubject(mockSecurityToken)).thenReturn(mockSubject);
+    when(mockSecurityAssertion.getToken()).thenReturn(mockToken);
+    when(mockSecurityManager.getSubject(mockToken)).thenReturn(mockSubject);
 
     QName op = new QName("urn:catalog:query", "search", "ns1");
     QName port = new QName("urn:catalog:query", "query-port", "ns1");

@@ -54,8 +54,6 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
-import org.apache.cxf.jaxrs.impl.UriBuilderImpl;
-import org.apache.cxf.rs.security.saml.sso.SamlpRequestComponentBuilder;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.wss4j.common.ext.WSSecurityException;
@@ -88,10 +86,12 @@ import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.opensaml.saml.saml2.core.IDPEntry;
 import org.opensaml.saml.saml2.core.IDPList;
 import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.NameIDPolicy;
 import org.opensaml.saml.saml2.core.RequestedAuthnContext;
 import org.opensaml.saml.saml2.core.impl.AuthnContextClassRefBuilder;
 import org.opensaml.saml.saml2.core.impl.IDPEntryBuilder;
 import org.opensaml.saml.saml2.core.impl.IDPListBuilder;
+import org.opensaml.saml.saml2.core.impl.NameIDPolicyBuilder;
 import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.ecp.RelayState;
 import org.opensaml.saml.saml2.ecp.impl.RelayStateBuilder;
@@ -530,7 +530,7 @@ public class IdpHandler implements AuthenticationHandler {
         queryParams.append("&RelayState=").append(URLEncoder.encode(relayState, "UTF-8"));
       }
       idpRequest = idpMetadata.getSingleSignOnLocation() + "?" + queryParams;
-      UriBuilder idpUri = new UriBuilderImpl(new URI(idpRequest));
+      UriBuilder idpUri = UriBuilder.fromUri(new URI(idpRequest));
 
       simpleSign.signUriString(queryParams.toString(), idpUri);
 
@@ -602,8 +602,7 @@ public class IdpHandler implements AuthenticationHandler {
 
     authnRequest.setProtocolBinding(SamlProtocol.POST_BINDING);
     authnRequest.setNameIDPolicy(
-        SamlpRequestComponentBuilder.createNameIDPolicy(
-            true, SAML2Constants.NAMEID_FORMAT_PERSISTENT, spIssuerId));
+        createNameIDPolicy(true, SAML2Constants.NAMEID_FORMAT_PERSISTENT, spIssuerId));
 
     RequestedAuthnContextBuilder requestedAuthnContextBuilder = new RequestedAuthnContextBuilder();
     RequestedAuthnContext requestedAuthnContext = requestedAuthnContextBuilder.buildObject();
@@ -628,6 +627,24 @@ public class IdpHandler implements AuthenticationHandler {
 
   private String getSpIssuerId() {
     return SystemBaseUrl.EXTERNAL.constructUrl("/saml", true);
+  }
+
+  /**
+   * Creates a NameIDPolicy object for SAML AuthnRequest.
+   *
+   * @param allowCreate whether to allow the IdP to create a new identifier
+   * @param format the NameID format
+   * @param spNameQualifier the SP name qualifier
+   * @return the NameIDPolicy object
+   */
+  private NameIDPolicy createNameIDPolicy(
+      boolean allowCreate, String format, String spNameQualifier) {
+    NameIDPolicyBuilder nameIDPolicyBuilder = new NameIDPolicyBuilder();
+    NameIDPolicy nameIDPolicy = nameIDPolicyBuilder.buildObject();
+    nameIDPolicy.setAllowCreate(allowCreate);
+    nameIDPolicy.setFormat(format);
+    nameIDPolicy.setSPNameQualifier(spNameQualifier);
+    return nameIDPolicy;
   }
 
   private String serializeAndSign(boolean isPost, boolean wantSigned, AuthnRequest authnRequest)

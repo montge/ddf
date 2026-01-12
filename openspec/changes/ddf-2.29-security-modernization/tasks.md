@@ -1,6 +1,6 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2026-01-04)
+**Status:** In Progress (Last updated: 2026-01-11)
 **Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
@@ -247,35 +247,34 @@ Fixed multiple OSGi package resolution issues during integration testing:
   - java-support:8.0.0 (Shibboleth library for OpenSAML)
   - cryptacular:1.2.4 (crypto library for OpenSAML)
 
-**BLOCKER: CXF 4.1.1 Security Bundle Dependencies (2026-01-05):**
+**CXF 4.1.1 Security Bundle Dependencies (2026-01-05, Updated 2026-01-11):**
 CXF 4.1.1 security bundles have complex OSGi dependencies not satisfied by `camel-cxf-all`:
 
-1. ✅ Fixed: `jakarta.xml.bind.annotation` version [3.0,4.0) - added JAXB 3.0.1 bundle
+1. ✅ Fixed: `jakarta.xml.bind.annotation` version [3.0,4.0) - added JAXB 3.0.1 bundle (2026-01-11)
 2. ✅ Fixed: `javax.cache` version [1.1,2.0) - added cache-api 1.1.1
 3. ✅ Fixed: `org.apache.cxf.rs.security.common` - added cxf-rt-rs-security-xml
 4. ✅ Fixed: `org.apache.cxf.rt.security.saml.*` - added cxf-rt-security, cxf-rt-security-saml
-5. ⛔ **BLOCKER:** `net.shibboleth.shared.xml` - CXF 4.1.1 security-saml imports Shibboleth shared libs
-6. ⛔ **BLOCKER:** `org.apache.cxf.ws.security.wss4j` - DDF bundles import WS-Security packages
+5. ✅ N/A: `net.shibboleth.shared.xml` - DDF does NOT use CXF security-saml bundle (uses direct OpenSAML 4.x)
+6. ✅ N/A: `org.apache.cxf.ws.security.wss4j` - DDF does NOT import this (refactored to direct WSS4J APIs)
 
-**Root cause:** CXF 4.x removed OSGi/Karaf support. The security bundles have many interdependencies
-on Shibboleth libraries and internal CXF packages that require careful OSGi wiring.
-
-**Options to proceed:**
-1. **Build shaded CXF security uber-bundle** - Like camel-cxf-all but for security modules
-2. **Wrap Shibboleth libraries** - Add OSGi manifests to shibboleth-shared jars
-3. **Wait for CXF-9086** - Apache CXF is working on restoring OSGi support
-4. **Stay on Camel 3.22.4** - Revert to stable Camel 3.x with CXF 3.5.x until upstream fixes
+**Resolution (2026-01-11):** DDF security code was refactored to use direct WSS4J/OpenSAML APIs
+instead of CXF's WS-Security wrappers. The remaining "blockers" do not affect DDF because:
+- `cxf-rs-security-saml` bundle is NOT installed (DDF uses OpenSAML 4.x directly)
+- `cxf-rt-ws-security` bundle is NOT installed (DDF uses WSS4J 2.4.x directly)
+- Only `cxf-rt-rs-security-oauth2` is needed and now resolves correctly with JAXB 3.0.1
 
 See: https://issues.apache.org/jira/browse/CXF-9086
 
-**Karaf 4.4.x + Java 21 Race Condition (2026-01-04):**
+**Karaf 4.4.x + Java 21 Race Condition (2026-01-04, Still Active 2026-01-11):**
 - **Issue:** Deployer.handlePrerequisites() crashes with "Module has been uninstalled"
 - **Cause:** Race condition when bundles are refreshed during feature installation
-- **Affected bundles:** jasypt, jline, pax-web-websocket (randomly)
+- **Affected bundles:** pax-web-compatibility-el2, jasypt, jline (randomly)
+- **Latest test (2026-01-11):** Kernel boots 100% (23 bundles), boot feature fails
 - **Workaround options:**
   1. Manual feature installation after kernel boot
   2. Upgrade to Karaf 4.5.x when available
   3. Use Felix framework instead of Equinox
+  4. Disable boot features, install manually via script
 - [ ] 5.1.3 Test SAML authentication flow
 - [ ] 5.1.4 Test OIDC authentication flow
 - [ ] 5.1.5 Test catalog create/query/delete
@@ -359,18 +358,22 @@ See: https://issues.apache.org/jira/browse/CXF-9086
 2. ~~OWASP suppression file (reduces noise)~~ ✅ Already comprehensive
 3. ~~Hazelcast decision (removes 4 CVEs)~~ ✅ **REMOVED**
 4. ~~Jakarta transformation setup~~ ✅ OpenRewrite verified, migration plan created
-5. ~~CXF 4.x upgrade~~ ⚠️ **PARTIAL** - Camel 4.10.7 with camel-cxf-all works, but security bundles blocked
+5. ~~CXF 4.x upgrade~~ ✅ Camel 4.10.7 with camel-cxf-all + CXF 4.1.1 security bundles
 6. ~~Bootstrap 5 upgrade~~ ✅ Simple Search UI migrated (2026-01-01)
-7. ~~Fix OSGi package resolution~~ ⚠️ **PARTIAL** - Core packages resolved, security bundles have version conflicts
-8. **BLOCKER:** Jakarta JAXB version conflict ← **IN PROGRESS**
-   - CXF 4.1.1 SAML/OAuth2 bundles require jakarta.xml.bind [3.0,4.0)
-   - Our jakarta-xml-bind feature provides 4.0.2
-   - Options: CXF version upgrade, different bundle configuration, or stay on Camel 3.x
-9. Resolve Karaf 4.4.x + Java 21 race condition (after Jakarta fix)
-   - Kernel boots but boot features fail with race condition
-   - Options: Karaf 4.5.x upgrade or manual feature install
-10. Complete SAML/OIDC authentication testing (after Karaf fix)
-11. Jakarta namespace migration in DDF code (after authentication testing)
+7. ~~Fix OSGi package resolution~~ ✅ All CXF packages resolved with 4.1.1 versions
+8. ~~Jakarta JAXB version conflict~~ ✅ **FIXED** (2026-01-11)
+   - Added JAXB 3.0.1 bundle to cxf-rs-security-oauth2 feature
+   - CXF 4.1.1 OAuth2/JOSE bundles now resolve correctly
+   - Distribution builds successfully (575MB)
+9. ~~CXF 3.5.9 vs 4.1.1 version mismatch~~ ✅ **FIXED** (2026-01-11)
+   - Changed cxf-rt-security from 3.5.9 to 4.1.1
+   - OSGi package resolution now works (no more import version conflicts)
+10. **BLOCKER:** Karaf 4.4.x + Java 21 race condition ← **ACTIVE**
+   - Kernel boots 100% (23 bundles) but boot feature install fails
+   - Error: "Module has been uninstalled" during Deployer.handlePrerequisites()
+   - Options: Karaf 4.5.x upgrade, Felix framework, or manual feature install
+11. Complete SAML/OIDC authentication testing (after Karaf fix)
+12. Jakarta namespace migration in DDF code (after authentication testing)
 
 ### Commands
 ```bash

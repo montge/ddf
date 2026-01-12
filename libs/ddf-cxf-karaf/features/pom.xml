@@ -72,7 +72,8 @@
             <version>2.1.3</version>
         </dependency>
 
-        <!-- CXF RS Security bundles - standalone bundles for packages NOT exported by camel-cxf-all -->
+        <!-- Note: cxf-rt-ws-security removed - DDF uses direct WSS4J/OpenSAML APIs -->
+        <!-- CXF 4.1.1 RS Security bundles for JOSE/OAuth2 (don't require SAML/WSS4J) -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-rs-security-jose</artifactId>
@@ -89,32 +90,40 @@
             <version>${cxf.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-security-sso-saml</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-security</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-security-saml</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-security-xml</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
             <version>1.1.1</version>
         </dependency>
 
-        <!-- WSS4J dependencies -->
+        <!-- javax.* APIs required by CXF 3.5.x (uses old javax namespace) -->
+        <dependency>
+            <groupId>javax.xml.soap</groupId>
+            <artifactId>javax.xml.soap-api</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <!-- stax-ex required by saaj-impl (provides org.jvnet.staxex package) -->
+        <dependency>
+            <groupId>org.jvnet.staxex</groupId>
+            <artifactId>stax-ex</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.messaging.saaj</groupId>
+            <artifactId>saaj-impl</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>javax.jws-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <!-- WSS4J 2.4.x / OpenSAML 4.x dependencies -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
@@ -139,6 +148,17 @@
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
             <version>4.2.30</version>
+        </dependency>
+        <!-- CXF 4.1.1 cxf-rt-security (must match camel-cxf-all's CXF package versions) -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-security</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.10.8</version>
         </dependency>
     </dependencies>
 

@@ -15,20 +15,13 @@ package org.codice.ddf.security.jaxrs.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.cxf.helpers.DOMUtils;
-import org.apache.cxf.helpers.IOUtils;
-import org.apache.cxf.rs.security.saml.DeflateEncoderDecoder;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -53,23 +46,6 @@ public class SamlSecurityTest {
     // db.setErrorHandler( new MyErrorHandler());
 
     return db.parse(is);
-  }
-
-  @Test
-  public void testInflateDeflateWithTokenDuplication() throws Exception {
-    String token = "valid_grant valid_grant valid_grant valid_grant valid_grant valid_grant";
-
-    DeflateEncoderDecoder deflateEncoderDecoder = new DeflateEncoderDecoder();
-    byte[] deflatedToken = deflateEncoderDecoder.deflateToken(token.getBytes());
-
-    String cxfInflatedToken = IOUtils.toString(deflateEncoderDecoder.inflateToken(deflatedToken));
-
-    String streamInflatedToken =
-        IOUtils.toString(
-            new InflaterInputStream(new ByteArrayInputStream(deflatedToken), new Inflater(true)));
-
-    assertNotSame(cxfInflatedToken, token);
-    assertEquals(streamInflatedToken, token);
   }
 
   @Test

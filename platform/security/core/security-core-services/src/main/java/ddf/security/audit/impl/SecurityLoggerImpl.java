@@ -32,7 +32,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
-import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import org.apache.karaf.jaas.boot.principal.UserPrincipal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +58,9 @@ public final class SecurityLoggerImpl implements ddf.security.audit.SecurityLogg
   public static final String TRACE_ID = "trace-id";
 
   private static final String LOOPBACK_ADDRESS = "127.0.0.1";
+
+  // CXF HTTP request key (replacing AbstractHTTPDestination.HTTP_REQUEST constant)
+  private static final String HTTP_REQUEST = "HTTP.REQUEST";
 
   private final SubjectOperations subjectOperations;
 
@@ -130,8 +132,7 @@ public final class SecurityLoggerImpl implements ddf.security.audit.SecurityLogg
           ThreadContextProperties.getRemotePort(),
           messageBuilder);
     } else {
-      HttpServletRequest servletRequest =
-          (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
+      HttpServletRequest servletRequest = (HttpServletRequest) message.get(HTTP_REQUEST);
       // pull out the ip and port of the incoming connection so we know
       // who is trying to get access
       if (servletRequest != null) {

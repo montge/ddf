@@ -17,12 +17,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import org.apache.cxf.binding.soap.SoapMessage;
+import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.phase.PhaseInterceptor;
-import org.apache.cxf.ws.security.wss4j.AbstractWSS4JInterceptor;
-import org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor;
-import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -31,17 +29,22 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GuestInterceptorWrapper extends AbstractWSS4JInterceptor {
+public class GuestInterceptorWrapper extends AbstractSoapInterceptor {
   private static final Logger LOGGER = LoggerFactory.getLogger(GuestInterceptorWrapper.class);
 
+  // WSS4J interceptor class names for ordering (avoid importing cxf-rt-ws-security)
+  private static final String WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor";
+  private static final String POLICY_WSS4J_IN_INTERCEPTOR =
+      "org.apache.cxf.ws.security.wss4j.PolicyBasedWSS4JInInterceptor";
+
   public GuestInterceptorWrapper() {
-    super();
-    setPhase(Phase.PRE_PROTOCOL);
+    super(Phase.PRE_PROTOCOL);
     // make sure this interceptor runs before the WSS4J one in the same Phase, otherwise it won't
     // work
     Set<String> before = getBefore();
-    before.add(WSS4JInInterceptor.class.getName());
-    before.add(PolicyBasedWSS4JInInterceptor.class.getName());
+    before.add(WSS4J_IN_INTERCEPTOR);
+    before.add(POLICY_WSS4J_IN_INTERCEPTOR);
   }
 
   protected BundleContext getContext() {

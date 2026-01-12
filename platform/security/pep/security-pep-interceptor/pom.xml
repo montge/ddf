@@ -32,9 +32,14 @@
             <groupId>ddf.security.core</groupId>
             <artifactId>security-core-api</artifactId>
         </dependency>
+        <!-- Removed cxf-rt-ws-security to avoid OpenSAML 3.x version conflict -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
+            <artifactId>cxf-rt-bindings-soap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-ws-policy</artifactId>
         </dependency>
         <dependency>
             <groupId>ddf.security.policy</groupId>
@@ -70,6 +75,15 @@
             <groupId>ddf.security.core</groupId>
             <artifactId>security-core-impl</artifactId>
         </dependency>
+        <!-- WSS4J dependencies for SecurityAssertionStore SAML token extraction -->
+        <dependency>
+            <groupId>org.apache.wss4j</groupId>
+            <artifactId>wss4j-ws-security-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wss4j</groupId>
+            <artifactId>wss4j-ws-security-dom</artifactId>
+        </dependency>
 
     </dependencies>
     <build>
@@ -83,6 +97,18 @@
                         <Export-Package>
                             ddf.security.pep.interceptor
                         </Export-Package>
+                        <!-- Widen CXF import range to allow CXF 3.5.x bundles -->
+                        <!-- Removed tokenstore import - no longer using CXF TokenStore -->
+                        <Import-Package>
+                            org.apache.cxf.interceptor;version="[3.5,5)",
+                            org.apache.cxf.interceptor.security;version="[3.5,5)",
+                            org.apache.cxf.message;version="[3.5,5)",
+                            org.apache.cxf.phase;version="[3.5,5)",
+                            org.apache.cxf.service.model;version="[3.5,5)",
+                            org.apache.cxf.ws.addressing;version="[3.5,5)",
+                            org.apache.cxf.ws.policy;version="[3.5,5)",
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

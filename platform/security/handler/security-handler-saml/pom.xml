@@ -54,10 +54,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-security-sso-saml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-ws-security</artifactId>
         </dependency>
         <dependency>
@@ -205,6 +201,12 @@
                             httpclient,
                             httpcore
                         </Embed-Dependency>
+                        <!-- Widen CXF import range to allow CXF 3.5.x bundles for SAML security -->
+                        <Import-Package>
+                            org.apache.cxf.helpers;version="[3.5,5)",
+                            org.apache.cxf.staxutils;version="[3.5,5)",
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

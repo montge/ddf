@@ -79,10 +79,6 @@
             <artifactId>cxf-rt-bindings-soap</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-security-sso-saml</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
         </dependency>
@@ -175,6 +171,12 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${apache-log4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- JAX-RS implementation for test (UriBuilder.fromUri) -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

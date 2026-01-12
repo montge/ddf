@@ -133,15 +133,15 @@
         <feature version="3.6.9">cxf-http</feature>
     </feature>
 
-    <!-- WSS4J Feature (Apache Web Services Security)
-         Uses WSS4J 2.4.x for compatibility with existing security-core-impl code.
-         WSS4J 4.0+ would require Jakarta EE namespace migration in security code.
+    <!-- WSS4J 2.4.x Feature (Apache Web Services Security)
+         Uses WSS4J 2.4.x for DDF's existing security code which uses javax APIs.
+         WSS4J 4.0.x would require jakarta namespace migration.
 
          WSS4J 2.4.x dependencies:
          - OpenSAML 4.x: Required for org.opensaml.core.config package
          - joda-time: Required for date/time handling
          - java-support: Required by OpenSAML 4.x (Shibboleth library) -->
-    <feature name="wss4j" version="${project.version}" description="Apache WSS4J">
+    <feature name="wss4j" version="${project.version}" description="Apache WSS4J 2.4.x">
         <feature>jakarta-xml-bind</feature>
         <!-- Guava required by OpenSAML 4.x (com.google.common.base package) -->
         <feature>guava</feature>
@@ -176,35 +176,49 @@
         <bundle>mvn:org.apache.santuario/xmlsec/${xmlsec.version}</bundle>
     </feature>
 
-    <!-- CXF WS-Security Feature -->
-    <feature name="cxf-ws-security" version="3.6.9" description="Apache CXF 4.x WS-Security">
+    <!-- CXF WS-Security Feature
+         Note: The cxf-rt-ws-security bundle has been removed because it imports OpenSAML 3.x
+         packages which conflict with DDF's use of OpenSAML 4.x. DDF security code has been
+         refactored to use:
+         - AbstractSoapInterceptor instead of AbstractWSS4JInterceptor
+         - Direct WSS4J 2.4.x APIs instead of CXF WS-Security wrappers
+         - Simple token caching instead of CXF TokenStore -->
+    <feature name="cxf-ws-security" version="3.6.9" description="Apache CXF WS-Security">
         <feature version="3.6.9">cxf-core</feature>
         <feature version="3.6.9">cxf-bindings-soap</feature>
         <feature>wss4j</feature>
+        <!-- javax.* APIs for SAAJ/JAX-WS support -->
+        <bundle>mvn:javax.xml.soap/javax.xml.soap-api/1.4.0</bundle>
+        <!-- stax-ex required by saaj-impl (provides org.jvnet.staxex package) -->
+        <bundle>mvn:org.jvnet.staxex/stax-ex/1.8.3</bundle>
+        <bundle>mvn:com.sun.xml.messaging.saaj/saaj-impl/1.5.3</bundle>
+        <bundle>mvn:javax.jws/javax.jws-api/1.1</bundle>
+        <bundle>mvn:javax.xml.ws/jaxws-api/2.3.1</bundle>
+        <!-- CXF 4.1.1 cxf-rt-security bundle (base security, no OpenSAML dependency)
+             Note: Must use 4.1.1 to match camel-cxf-all's CXF package versions -->
+        <bundle>mvn:org.apache.cxf/cxf-rt-security/${cxf.version}</bundle>
     </feature>
 
-    <!-- CXF RS Security SAML Feature -->
-    <feature name="cxf-rs-security-saml" version="3.6.9" description="Apache CXF 4.x RS Security SAML">
+    <!-- CXF RS Security SAML Feature
+         Note: DDF's SAML code has been refactored to use direct OpenSAML 4.x APIs,
+         eliminating the dependency on CXF RS Security SAML bundles which require
+         incompatible OpenSAML versions. This feature is a minimal stub. -->
+    <feature name="cxf-rs-security-saml" version="3.6.9" description="Apache CXF RS Security SAML (Stub)">
         <feature version="3.6.9">cxf-jaxrs</feature>
         <feature version="3.6.9">cxf-ws-security</feature>
-        <!-- Jakarta XML Bind 3.0.1 - CXF 4.1.1 security bundles import [3.0,4.0) -->
-        <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/3.0.1</bundle>
-        <!-- JCache API - CXF SAML SSO imports javax.cache [1.1,2.0) -->
+        <!-- JCache API and EHCache for SAML caching -->
         <bundle>mvn:javax.cache/cache-api/1.1.1</bundle>
-        <!-- CXF RT Security bundle - provides org.apache.cxf.rt.security.* -->
-        <bundle>mvn:org.apache.cxf/cxf-rt-security/${cxf.version}</bundle>
-        <!-- CXF RT Security SAML - provides org.apache.cxf.rt.security.saml.* -->
-        <bundle>mvn:org.apache.cxf/cxf-rt-security-saml/${cxf.version}</bundle>
-        <!-- CXF security XML bundle - provides org.apache.cxf.rs.security.common -->
-        <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-xml/${cxf.version}</bundle>
-        <!-- Standalone CXF SAML SSO bundle - provides org.apache.cxf.rs.security.saml.sso package
-             that is NOT exported by camel-cxf-all -->
-        <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-sso-saml/${cxf.version}</bundle>
+        <bundle>mvn:org.ehcache/ehcache/3.10.8</bundle>
+        <!-- Note: CXF RS Security SAML bundles removed - DDF now uses direct OpenSAML 4.x APIs -->
     </feature>
 
     <!-- CXF RS Security OAuth2 Feature -->
     <feature name="cxf-rs-security-oauth2" version="3.6.9" description="Apache CXF 4.x RS Security OAuth2">
         <feature version="3.6.9">cxf-jaxrs</feature>
+        <!-- JAXB 3.0.1 required by CXF 4.1.1 security bundles which import
+             jakarta.xml.bind.annotation;version="[3.0,4.0)" - must be installed
+             before the 4.0.x version from jakarta-xml-bind feature -->
+        <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/3.0.1</bundle>
         <!-- CXF JOSE bundles for JWT/JWS/JWE support (required by OAuth2) -->
         <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-jose/${cxf.version}</bundle>
         <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-jose-jaxrs/${cxf.version}</bundle>
