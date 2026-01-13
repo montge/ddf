@@ -379,8 +379,31 @@ See: https://issues.apache.org/jira/browse/CXF-9086
    - Switched from Equinox to Felix framework in custom.properties
    - Felix 7.0.5 does not have the race condition
    - Kernel and features boot without "Module has been uninstalled" errors
-11. **NEXT:** Complete SAML/OIDC authentication testing
-12. Jakarta namespace migration in DDF code (after authentication testing)
+11. **ACTIVE BLOCKER:** CXF 4.1.1 / Jakarta EE version mismatch (2026-01-13)
+   - ✅ **PARTIALLY FIXED:** Updated `jakarta-xml-bind` feature to use JAXB 3.0.x
+   - Changed jakarta.xml.bind-api from 4.0.2 → 3.0.1
+   - Changed jaxb-runtime from 4.0.5 → 3.0.2
+   - Changed jaxb-core from 4.0.5 → 3.0.2
+
+   **Remaining issues:**
+   - Camel's features also install JAXB 4.0.x (both 3.0.1 AND 4.0.2 end up installed)
+   - CXF security features have complex dependency graphs causing resolver timeout
+   - Feature resolver gets stuck for 5+ minutes on `cxf-secure` feature
+   - The CXF 4.1.1 bundles need `org.apache.cxf` packages from Camel's `camel-cxf-all` bundle
+
+   **Working installation order (tested 2026-01-13):**
+   1. `feature:install scr` - OSGi Declarative Services
+   2. `feature:install camel-core` - Camel basics
+   3. `feature:install camel-cxf` - Brings in `camel-cxf-all` with CXF packages
+   4. Then CXF security features should resolve (but resolver is slow)
+
+   **Root cause analysis:**
+   - DDF's `cxf-core` feature intentionally doesn't install CXF bundles (to avoid split-package conflict with Camel)
+   - CXF security features need `org.apache.cxf` package from Camel's `camel-cxf-all`
+   - Must install Camel before CXF security features
+   - Feature resolver is O(n²) or worse with complex dependency graphs
+
+12. Jakarta namespace migration in DDF code (after feature resolution is stable)
 
 ### Commands
 ```bash

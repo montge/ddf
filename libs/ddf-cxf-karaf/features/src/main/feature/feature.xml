@@ -40,11 +40,14 @@
         <bundle>mvn:org.eclipse.angus/angus-activation/2.0.2</bundle>
     </feature>
 
+    <!-- JAXB 3.0.x for Jakarta EE 9 compatibility with CXF 4.1.1
+         CXF 4.1.1 OSGi bundles import jakarta.xml.bind;version="[3,4)"
+         meaning they require JAXB 3.x, not 4.x (Jakarta EE 10) -->
     <feature name="jakarta-xml-bind" version="${project.version}" description="Jakarta XML Binding API">
         <feature>jakarta-activation</feature>
-        <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/4.0.2</bundle>
-        <bundle>mvn:org.glassfish.jaxb/jaxb-runtime/4.0.5</bundle>
-        <bundle>mvn:org.glassfish.jaxb/jaxb-core/4.0.5</bundle>
+        <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/3.0.1</bundle>
+        <bundle>mvn:org.glassfish.jaxb/jaxb-runtime/3.0.2</bundle>
+        <bundle>mvn:org.glassfish.jaxb/jaxb-core/3.0.2</bundle>
         <bundle>mvn:com.sun.istack/istack-commons-runtime/4.1.2</bundle>
     </feature>
 
