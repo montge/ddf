@@ -274,9 +274,14 @@ See: https://issues.apache.org/jira/browse/CXF-9086
   - Felix 7.0.5 (bundled with Karaf 4.4.9) does not have the race condition
   - Kernel boots successfully: 22 active bundles, 23 total
   - No "Module has been uninstalled" errors during feature installation
-- **Remaining issue:** Feature resolution for ddf-boot-features is slow (~5+ minutes)
-  - This is a separate issue from the race condition
-  - Complex dependency graph calculation for CXF 4.x + Camel 4.x features
+- **Remaining issue:** Feature resolution for ddf-boot-features is slow (~10+ minutes)
+  - ddf-boot-features has 300+ bundles in its dependency graph
+  - Karaf feature resolver calculates entire graph before installing (no logging during this phase)
+  - Optimization opportunities identified:
+    1. Lazy-load GeoTools (35+ bundles) - only if geospatial features needed
+    2. Lazy-load Tika (47+ bundles) - only if document parsing needed
+    3. Split Solr into "solr-embedded" vs "solr-client" features
+    4. Consider more granular boot stages
 - [ ] 5.1.3 Test SAML authentication flow
 - [ ] 5.1.4 Test OIDC authentication flow
 - [ ] 5.1.5 Test catalog create/query/delete
