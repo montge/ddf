@@ -1,6 +1,6 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2026-01-11)
+**Status:** In Progress (Last updated: 2026-01-12)
 **Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
@@ -265,16 +265,18 @@ instead of CXF's WS-Security wrappers. The remaining "blockers" do not affect DD
 
 See: https://issues.apache.org/jira/browse/CXF-9086
 
-**Karaf 4.4.x + Java 21 Race Condition (2026-01-04, Still Active 2026-01-11):**
+**Karaf 4.4.x + Java 21 Race Condition (2026-01-04, RESOLVED 2026-01-12):**
 - **Issue:** Deployer.handlePrerequisites() crashes with "Module has been uninstalled"
-- **Cause:** Race condition when bundles are refreshed during feature installation
+- **Cause:** Race condition when bundles are refreshed during feature installation (Equinox-specific)
 - **Affected bundles:** pax-web-compatibility-el2, jasypt, jline (randomly)
-- **Latest test (2026-01-11):** Kernel boots 100% (23 bundles), boot feature fails
-- **Workaround options:**
-  1. Manual feature installation after kernel boot
-  2. Upgrade to Karaf 4.5.x when available
-  3. Use Felix framework instead of Equinox
-  4. Disable boot features, install manually via script
+- **Solution:** ✅ **Switched from Equinox to Felix framework** (2026-01-12)
+  - Changed `karaf.framework=equinox` to `karaf.framework=felix` in custom.properties
+  - Felix 7.0.5 (bundled with Karaf 4.4.9) does not have the race condition
+  - Kernel boots successfully: 22 active bundles, 23 total
+  - No "Module has been uninstalled" errors during feature installation
+- **Remaining issue:** Feature resolution for ddf-boot-features is slow (~5+ minutes)
+  - This is a separate issue from the race condition
+  - Complex dependency graph calculation for CXF 4.x + Camel 4.x features
 - [ ] 5.1.3 Test SAML authentication flow
 - [ ] 5.1.4 Test OIDC authentication flow
 - [ ] 5.1.5 Test catalog create/query/delete
@@ -368,11 +370,11 @@ See: https://issues.apache.org/jira/browse/CXF-9086
 9. ~~CXF 3.5.9 vs 4.1.1 version mismatch~~ ✅ **FIXED** (2026-01-11)
    - Changed cxf-rt-security from 3.5.9 to 4.1.1
    - OSGi package resolution now works (no more import version conflicts)
-10. **BLOCKER:** Karaf 4.4.x + Java 21 race condition ← **ACTIVE**
-   - Kernel boots 100% (23 bundles) but boot feature install fails
-   - Error: "Module has been uninstalled" during Deployer.handlePrerequisites()
-   - Options: Karaf 4.5.x upgrade, Felix framework, or manual feature install
-11. Complete SAML/OIDC authentication testing (after Karaf fix)
+10. ~~Karaf 4.4.x + Java 21 race condition~~ ✅ **FIXED** (2026-01-12)
+   - Switched from Equinox to Felix framework in custom.properties
+   - Felix 7.0.5 does not have the race condition
+   - Kernel and features boot without "Module has been uninstalled" errors
+11. **NEXT:** Complete SAML/OIDC authentication testing
 12. Jakarta namespace migration in DDF code (after authentication testing)
 
 ### Commands
