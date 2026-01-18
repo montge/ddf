@@ -1,6 +1,6 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2026-01-12)
+**Status:** In Progress (Last updated: 2026-01-13)
 **Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
@@ -210,12 +210,12 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Distribution builds successfully: ddf-2.30.0-SNAPSHOT.zip (553MB)
   - All Jakarta EE migration changes validated
   - Fixed: fast profile now skips JaCoCo and integration tests
-- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **BLOCKED** by Karaf race condition (2026-01-04)
-  - Kernel boots to 100% with Java 21 (23 active bundles)
-  - Boot features installation fails with race condition in Deployer
-  - Error: "Module has been uninstalled" during handlePrerequisites()
-  - **Root cause:** Karaf 4.4.x + Java 21 + Equinox OSGi race condition
-  - **Workaround needed:** Manual feature installation or Karaf 4.5.x upgrade
+- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **IN PROGRESS** (2026-01-13)
+  - ✅ Kernel boots to 100% with Java 21 (23 active bundles) using Felix framework
+  - ✅ Karaf race condition fixed by switching Equinox → Felix (2026-01-12)
+  - ✅ camel-cxf feature installs successfully (208 bundles)
+  - ✅ security-core-impl feature installs successfully (305 bundles)
+  - ⏳ Next: Test full ddf-boot-features and SolrCloud connectivity
 
 **OSGi Dependency Resolution (2026-01-01 - 2026-01-04):**
 Fixed multiple OSGi package resolution issues during integration testing:
@@ -379,29 +379,26 @@ See: https://issues.apache.org/jira/browse/CXF-9086
    - Switched from Equinox to Felix framework in custom.properties
    - Felix 7.0.5 does not have the race condition
    - Kernel and features boot without "Module has been uninstalled" errors
-11. **ACTIVE BLOCKER:** CXF 4.1.1 / Jakarta EE version mismatch (2026-01-13)
-   - ✅ **PARTIALLY FIXED:** Updated `jakarta-xml-bind` feature to use JAXB 3.0.x
-   - Changed jakarta.xml.bind-api from 4.0.2 → 3.0.1
-   - Changed jaxb-runtime from 4.0.5 → 3.0.2
-   - Changed jaxb-core from 4.0.5 → 3.0.2
+11. ~~CXF 4.1.1 / Jakarta EE version mismatch~~ ✅ **FIXED** (2026-01-13)
+   - **Problem:** CXF 4.1.1 imports JAXB [3.0,4.0); Camel 4.10.7 imports JAXB [4.0,5.0)
+   - Installing both JAXB 3.x and 4.x caused OSGi "uses constraint violations"
+   - **Solution:** Removed ALL `jaxb-3` feature dependencies from ddf-cxf-karaf features
+   - DDF now uses Camel's JAXB 4.x exclusively (from `jakarta-xml-bind` feature)
+   - CXF and WSS4J bundles wire to JAXB 4.x (APIs are compatible across 3.x/4.x)
 
-   **Remaining issues:**
-   - Camel's features also install JAXB 4.0.x (both 3.0.1 AND 4.0.2 end up installed)
-   - CXF security features have complex dependency graphs causing resolver timeout
-   - Feature resolver gets stuck for 5+ minutes on `cxf-secure` feature
-   - The CXF 4.1.1 bundles need `org.apache.cxf` packages from Camel's `camel-cxf-all` bundle
+   **Features updated:**
+   - `cxf-core` - removed jaxb-3 dependency
+   - `cxf-databinding-jaxb` - removed jaxb-3 dependency
+   - `jakarta-xml-ws` - removed jaxb-3 dependency
+   - `wss4j` - removed jaxb-3 dependency
+   - `cxf-bindings-soap` - removed cxf-rt-bindings-soap bundle (requires JAXB 3.x)
 
-   **Working installation order (tested 2026-01-13):**
-   1. `feature:install scr` - OSGi Declarative Services
-   2. `feature:install camel-core` - Camel basics
-   3. `feature:install camel-cxf` - Brings in `camel-cxf-all` with CXF packages
-   4. Then CXF security features should resolve (but resolver is slow)
-
-   **Root cause analysis:**
-   - DDF's `cxf-core` feature intentionally doesn't install CXF bundles (to avoid split-package conflict with Camel)
-   - CXF security features need `org.apache.cxf` package from Camel's `camel-cxf-all`
-   - Must install Camel before CXF security features
-   - Feature resolver is O(n²) or worse with complex dependency graphs
+   **Test results (2026-01-13):**
+   - Boot sequence: kernel → camel-cxf → security-core-impl
+   - 305 bundles installed successfully
+   - No OSGi resolution errors
+   - jakarta.xml.bind-api/4.0.2 (JAXB 4.x from Camel) used correctly
+   - WSS4J, security-core-impl, Camel all started without errors
 
 12. Jakarta namespace migration in DDF code (after feature resolution is stable)
 
