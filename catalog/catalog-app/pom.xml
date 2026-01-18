@@ -731,6 +731,18 @@
             <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
             <version>${xerces.bundle.version}</version>
         </dependency>
+        <!-- xml-resolver is required by xerces (imports org.apache.xml.resolver) -->
+        <dependency>
+            <groupId>xml-resolver</groupId>
+            <artifactId>xml-resolver</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!-- BCEL is required by xalan (imports org.apache.bcel.classfile) -->
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.bcel</artifactId>
+            <version>5.2_4</version>
+        </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>serializer</artifactId>

@@ -1,6 +1,6 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2026-01-13)
+**Status:** In Progress (Last updated: 2026-01-18)
 **Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
@@ -223,9 +223,25 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
     - Pax Web 8.x continues to use Jetty 9.x without conflicts
   - ✅ solr-dependencies feature installs successfully (310 bundles)
   - ✅ solr-core feature installs successfully (366 bundles)
-  - ⏳ Next: Fix catalog-core-impl dependency (xerces/xml-resolver), then test catalog operations
+  - ✅ xml-resolver dependency for xerces fixed (2026-01-18)
+  - ✅ BCEL dependency for xalan fixed (2026-01-18)
+  - ✅ **catalog-core-impl feature installs successfully** (292 bundles, 2026-01-18)
+  - ⏳ Next: Test catalog operations (create/query/delete)
 
   **Java 21 Required:** Java 22 causes "Invalid Java version 66" error in Aries Blueprint proxy generation
+
+  **xml-resolver for xerces (2026-01-18):**
+  - **Problem:** servicemix.xerces bundle imports `org.apache.xml.resolver [1.2,3.0)` but no OSGi bundle provides it
+  - Error: `Unable to resolve servicemix.xerces: missing org.apache.xml.resolver [1.2,3.0)`
+  - **Solution:** Added wrapped xml-resolver 1.2 bundle to catalog-core-impl feature using Karaf's wrap: protocol
+  - Bundle declaration exports all required packages: resolver, apps, helpers, readers, tools
+  - Added xml-resolver 1.2 as Maven dependency in catalog-app pom.xml
+
+  **BCEL for xalan (2026-01-18):**
+  - **Problem:** servicemix.xalan bundle imports `org.apache.bcel.classfile [5.1.0,6.0.0)` but no OSGi bundle provides it
+  - Error: `Unable to resolve org.apache.servicemix.bundles.xalan: missing org.apache.bcel.classfile`
+  - **Solution:** Added ServiceMix BCEL bundle (5.2_4) to catalog-core-impl feature
+  - Added org.apache.servicemix.bundles.bcel as Maven dependency in catalog-app pom.xml
 
   **Jetty 10.x vs 9.x Resolution (2026-01-18):**
   - **Problem:** Solr 9.x required Jetty 10.x HTTP/2 client, but Pax Web 8.x uses Jetty 9.x
@@ -235,13 +251,15 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Solr now uses Apache HttpClient (already included) for HTTP/1.1 connections
   - Jetty packages imported as `optional` in solr-dependencies bundle, so Solr works without them
 
-  **Remaining Issue:** catalog-core-impl fails with missing xml-resolver for xerces bundle
-  - Error: `Unable to resolve servicemix.xerces: missing org.apache.xml.resolver [1.2,3.0)`
-  - This is unrelated to the Solr/Jetty fix - separate dependency issue to resolve
+  **Resolved (2026-01-18):** catalog-core-impl xml-resolver dependency fixed
+  - Added wrapped xml-resolver bundle to catalog-core-impl feature
+  - See "xml-resolver for xerces" section above for details
 
-**OSGi Dependency Resolution (2026-01-01 - 2026-01-04):**
+**OSGi Dependency Resolution (2026-01-01 - 2026-01-18):**
 Fixed multiple OSGi package resolution issues during integration testing:
 1. ✅ cxf-core-all Export-Package: Explicit 238-package list (wildcard didn't resolve)
+12. ✅ xml-resolver: Added wrapped xml-resolver 1.2 bundle for servicemix.xerces (2026-01-18)
+13. ✅ bcel: Added ServiceMix BCEL 5.2_4 bundle for servicemix.xalan (2026-01-18)
 2. ✅ jakarta.servlet-api: Downgraded 6.1.0 → 5.0.0 (CXF 4.1.1 requires [5.0,6.0)) (2026-01-04)
 3. ✅ jakarta.mail-api: Added for platform-email-api [2.1,3) requirement
 4. ✅ slf4j-api: Added 2.0.17 (Pax Logging only exports 2.0.6)

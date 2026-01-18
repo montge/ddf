@@ -49,10 +49,14 @@
         <feature version="${cxf.version}">cxf-jaxrs</feature>
 
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.jdom/${jdom2.bundle.version}</bundle>
+        <!-- BCEL is required by xalan (imports org.apache.bcel.classfile) -->
+        <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.bcel/5.2_4</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan/${xalan.bundle.version}</bundle>
         <bundle>
             mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xalan-serializer/${xalan.bundle.version}
         </bundle>
+        <!-- xml-resolver is required by xerces (imports org.apache.xml.resolver) -->
+        <bundle>wrap:mvn:xml-resolver/xml-resolver/1.2$Bundle-SymbolicName=xml-resolver&amp;Bundle-Version=1.2&amp;Export-Package=org.apache.xml.resolver;version="1.2",org.apache.xml.resolver.apps;version="1.2",org.apache.xml.resolver.helpers;version="1.2",org.apache.xml.resolver.readers;version="1.2",org.apache.xml.resolver.tools;version="1.2"</bundle>
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.xerces/${xerces.bundle.version}</bundle>
 
         <bundle>mvn:ddf.catalog.core/catalog-core-commons/${project.version}</bundle>
