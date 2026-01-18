@@ -210,12 +210,16 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - Distribution builds successfully: ddf-2.30.0-SNAPSHOT.zip (553MB)
   - All Jakarta EE migration changes validated
   - Fixed: fast profile now skips JaCoCo and integration tests
-- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **IN PROGRESS** (2026-01-13)
-  - ✅ Kernel boots to 100% with Java 21 (23 active bundles) using Felix framework
+- [~] 5.1.2 Start DDF with SolrCloud ⚠️ **IN PROGRESS** (2026-01-18)
+  - ✅ Kernel boots to 100% with Java 21 (111 active bundles) using Felix framework
   - ✅ Karaf race condition fixed by switching Equinox → Felix (2026-01-12)
-  - ✅ camel-cxf feature installs successfully (208 bundles)
-  - ✅ security-core-impl feature installs successfully (305 bundles)
-  - ⏳ Next: Test full ddf-boot-features and SolrCloud connectivity
+  - ✅ JAXB version conflict resolved - uses Camel's JAXB 4.x exclusively (2026-01-18)
+  - ✅ camel-cxf 4.10.7 feature installs successfully
+  - ✅ security-core-impl feature installs successfully (307 bundles total)
+  - ✅ All security features started: cxf-secure, cxf-ws-security, cxf-rs-security-oauth2
+  - ⏳ Next: Test SolrCloud connectivity and catalog operations
+
+  **Java 21 Required:** Java 22 causes "Invalid Java version 66" error in Aries Blueprint proxy generation
 
 **OSGi Dependency Resolution (2026-01-01 - 2026-01-04):**
 Fixed multiple OSGi package resolution issues during integration testing:
