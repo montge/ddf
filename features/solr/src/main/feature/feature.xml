@@ -20,18 +20,18 @@
     <!-- Spring feature is provided via Karaf's spring repository in ddf.features/kernel -->
     <repository>mvn:ddf.features/kernel/${project.version}/xml/features</repository>
 
+    <!--
+        Solr 9.x client dependencies.
+
+        NOTE: Jetty 10.x bundles for HTTP/2 support have been removed to avoid conflicts
+        with Pax Web's Jetty 9.x bundles. Solr will use Apache HttpClient (HTTP/1.1) instead.
+        The Jetty packages are imported as optional in solr-dependencies bundle.
+
+        If HTTP/2 client support is needed in the future, options include:
+        - Upgrade to Pax Web 10.x (requires Jetty 12 / Jakarta EE 10)
+        - Use embedded Jetty within solr-dependencies bundle (classloader isolation)
+    -->
     <feature name="solr-dependencies" version="${project.version}" >
-        <feature>pax-web-jetty-extras</feature>
-        <bundle>mvn:org.eclipse.jetty/jetty-client/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty/jetty-alpn-client/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty/jetty-alpn-java-client/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty/jetty-http/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty/jetty-io/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty/jetty-util/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty.http2/http2-hpack/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty.http2/http2-common/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty.http2/http2-client/${solr.jetty.version}</bundle>
-        <bundle>mvn:org.eclipse.jetty.http2/http2-http-client-transport/${solr.jetty.version}</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpcore-osgi/${solr.httpcore.version}</bundle>
         <bundle>mvn:org.apache.httpcomponents/httpclient-osgi/${solr.httpclient.version}</bundle>
         <bundle>mvn:org.eclipse.angus/angus-mail/${angus-mail.version}</bundle>

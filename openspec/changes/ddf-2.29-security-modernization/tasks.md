@@ -217,9 +217,27 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - ✅ camel-cxf 4.10.7 feature installs successfully
   - ✅ security-core-impl feature installs successfully (307 bundles total)
   - ✅ All security features started: cxf-secure, cxf-ws-security, cxf-rs-security-oauth2
-  - ⏳ Next: Test SolrCloud connectivity and catalog operations
+  - ✅ **Jetty 10.x/9.x conflict FIXED** (2026-01-18)
+    - Removed Jetty 10.x bundles from `solr-dependencies` feature
+    - Solr client uses Apache HttpClient (HTTP/1.1) instead of Jetty HTTP/2
+    - Pax Web 8.x continues to use Jetty 9.x without conflicts
+  - ✅ solr-dependencies feature installs successfully (310 bundles)
+  - ✅ solr-core feature installs successfully (366 bundles)
+  - ⏳ Next: Fix catalog-core-impl dependency (xerces/xml-resolver), then test catalog operations
 
   **Java 21 Required:** Java 22 causes "Invalid Java version 66" error in Aries Blueprint proxy generation
+
+  **Jetty 10.x vs 9.x Resolution (2026-01-18):**
+  - **Problem:** Solr 9.x required Jetty 10.x HTTP/2 client, but Pax Web 8.x uses Jetty 9.x
+  - Both Jetty versions export same packages at different versions, causing OSGi conflicts
+  - Error: `Unable to resolve jetty.http [80]: missing org.eclipse.jetty.util.annotation [9.4.58,10.0.0)`
+  - **Solution:** Removed Jetty 10.x bundles from `features/solr/src/main/feature/feature.xml`
+  - Solr now uses Apache HttpClient (already included) for HTTP/1.1 connections
+  - Jetty packages imported as `optional` in solr-dependencies bundle, so Solr works without them
+
+  **Remaining Issue:** catalog-core-impl fails with missing xml-resolver for xerces bundle
+  - Error: `Unable to resolve servicemix.xerces: missing org.apache.xml.resolver [1.2,3.0)`
+  - This is unrelated to the Solr/Jetty fix - separate dependency issue to resolve
 
 **OSGi Dependency Resolution (2026-01-01 - 2026-01-04):**
 Fixed multiple OSGi package resolution issues during integration testing:
