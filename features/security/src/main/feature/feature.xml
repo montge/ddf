@@ -147,6 +147,9 @@
         <feature>javax-validation</feature>
         <feature>parser-xml</feature>
         <feature>platform-util</feature>
+        <!-- CXF SOAP bindings - provides org.apache.cxf.binding.soap package
+             required by security-core-impl bundle -->
+        <feature version="3.6.9">cxf-bindings-soap</feature>
     </feature>
 
     <feature name="security-core-impl" version="${project.version}"

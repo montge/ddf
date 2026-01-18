@@ -17,8 +17,10 @@
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0"
           name="ddf-cxf-${project.version}">
 
-    <!-- Repository reference to kernel features for guava -->
+    <!-- Repository references for dependencies -->
     <repository>mvn:ddf.features/kernel/${project.version}/xml/features</repository>
+    <!-- Camel features for camel-cxf dependency -->
+    <repository>mvn:ddf.features/camel-karaf/${project.version}/xml/features</repository>
 
     <!--
         DDF CXF 4.x Features
@@ -31,6 +33,9 @@
     -->
 
     <!-- Jakarta EE API features (prerequisites) -->
+    <!-- Using jakarta.annotation-api 2.1.1 for Camel 4.x compatibility
+         Camel's camel-cxf-all imports jakarta.annotation;version="[2.0.0,3.0.0)"
+         DDF bundles updated to accept [2.0,4) import range -->
     <feature name="jakarta-annotation" version="${project.version}" description="Jakarta Annotation API">
         <bundle>mvn:jakarta.annotation/jakarta.annotation-api/2.1.1</bundle>
     </feature>
@@ -40,10 +45,10 @@
         <bundle>mvn:org.eclipse.angus/angus-activation/2.0.2</bundle>
     </feature>
 
-    <!-- JAXB 3.0.x for Jakarta EE 9 compatibility with CXF 4.1.1
+    <!-- JAXB 3.0.x for CXF 4.1.1 compatibility
          CXF 4.1.1 OSGi bundles import jakarta.xml.bind;version="[3,4)"
-         meaning they require JAXB 3.x, not 4.x (Jakarta EE 10) -->
-    <feature name="jakarta-xml-bind" version="${project.version}" description="Jakarta XML Binding API">
+         Named jaxb-3 to avoid conflict with Camel's jakarta-xml-bind feature (JAXB 4.x) -->
+    <feature name="jaxb-3" version="${project.version}" description="JAXB 3.x API for CXF">
         <feature>jakarta-activation</feature>
         <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/3.0.1</bundle>
         <bundle>mvn:org.glassfish.jaxb/jaxb-runtime/3.0.2</bundle>
@@ -51,12 +56,15 @@
         <bundle>mvn:com.sun.istack/istack-commons-runtime/4.1.2</bundle>
     </feature>
 
+    <!-- Jakarta XML-WS feature with version 2.x APIs for CXF 4.1.1 compatibility
+         CXF 4.1.1 bundles import jakarta.xml.soap;version="[2.0.0,3.0.0)"
+         NOTE: JAXB comes from Camel (via camel-cxf) - DO NOT add jaxb-3 -->
     <feature name="jakarta-xml-ws" version="${project.version}" description="Jakarta XML Web Services API">
-        <feature>jakarta-xml-bind</feature>
+        <!-- JAXB provided by Camel's jakarta-xml-bind feature (4.x) -->
         <feature>jakarta-annotation</feature>
-        <bundle>mvn:jakarta.xml.ws/jakarta.xml.ws-api/4.0.2</bundle>
+        <bundle>mvn:jakarta.xml.ws/jakarta.xml.ws-api/3.0.1</bundle>
         <bundle>mvn:jakarta.jws/jakarta.jws-api/3.0.0</bundle>
-        <bundle>mvn:jakarta.xml.soap/jakarta.xml.soap-api/3.0.2</bundle>
+        <bundle>mvn:jakarta.xml.soap/jakarta.xml.soap-api/2.0.1</bundle>
     </feature>
 
     <feature name="jakarta-ws-rs" version="${project.version}" description="Jakarta RESTful Web Services API">
@@ -68,11 +76,16 @@
     <!-- CXF 4.x Core Feature
          Note: Version 3.6.9 is used to satisfy Camel's cxf-core version range requirement [3.6,3.7)
          The actual CXF implementation comes from Camel's camel-cxf-all bundle (CXF 4.1.1).
-         DDF no longer installs its own cxf-core-all to avoid split-package conflicts. -->
+         DDF no longer installs its own cxf-core-all to avoid split-package conflicts.
+         REQUIRES camel-cxf feature to provide org.apache.cxf package.
+         NOTE: Uses JAXB 4.x from Camel (via camel-cxf) - DO NOT add jaxb-3 here as it causes
+         uses constraint violations with Camel bundles. -->
     <feature name="cxf-core" version="3.6.9" description="Apache CXF 4.x Core">
+        <!-- camel-cxf provides camel-cxf-all bundle which exports org.apache.cxf package
+             AND provides JAXB 4.x dependency -->
+        <feature>camel-cxf</feature>
         <feature>jakarta-annotation</feature>
         <feature>jakarta-activation</feature>
-        <feature>jakarta-xml-bind</feature>
 
         <!-- Woodstox XML processor -->
         <bundle>mvn:org.codehaus.woodstox/stax2-api/4.2.2</bundle>
@@ -113,16 +126,21 @@
         <feature version="3.6.9">cxf-jaxws</feature>
     </feature>
 
-    <!-- CXF SOAP Bindings Feature -->
+    <!-- CXF SOAP Bindings Feature
+         NOTE: org.apache.cxf.binding.soap package is provided by camel-cxf-all bundle.
+         DO NOT install cxf-rt-bindings-soap bundle as it requires JAXB 3.x which conflicts
+         with Camel's JAXB 4.x (causes uses constraint violations). -->
     <feature name="cxf-bindings-soap" version="3.6.9" description="Apache CXF 4.x SOAP Bindings">
         <feature version="3.6.9">cxf-core</feature>
         <feature>jakarta-xml-ws</feature>
+        <!-- SOAP binding packages come from camel-cxf-all (via cxf-core -> camel-cxf) -->
     </feature>
 
-    <!-- CXF JAXB Databinding Feature (Camel compatibility) -->
+    <!-- CXF JAXB Databinding Feature (Camel compatibility)
+         NOTE: Uses JAXB 4.x from Camel (via cxf-core -> camel-cxf) -->
     <feature name="cxf-databinding-jaxb" version="3.6.9" description="Apache CXF 4.x JAXB Databinding">
         <feature version="3.6.9">cxf-core</feature>
-        <feature>jakarta-xml-bind</feature>
+        <!-- JAXB comes from Camel's jakarta-xml-bind feature (4.x) -->
     </feature>
 
     <!-- CXF HTTP Transport Feature -->
@@ -144,8 +162,11 @@
          - OpenSAML 4.x: Required for org.opensaml.core.config package
          - joda-time: Required for date/time handling
          - java-support: Required by OpenSAML 4.x (Shibboleth library) -->
+    <!-- NOTE: WSS4J bundles import jakarta.xml.bind with version [3.0,4.0) but can wire
+         to JAXB 4.x from Camel since the APIs are compatible. DO NOT add jaxb-3 here
+         as it causes uses constraint violations with Camel bundles. -->
     <feature name="wss4j" version="${project.version}" description="Apache WSS4J 2.4.x">
-        <feature>jakarta-xml-bind</feature>
+        <!-- JAXB comes from Camel (via camel-cxf) - DO NOT add jaxb-3 -->
         <!-- Guava required by OpenSAML 4.x (com.google.common.base package) -->
         <feature>guava</feature>
 
@@ -194,7 +215,10 @@
         <bundle>mvn:javax.xml.soap/javax.xml.soap-api/1.4.0</bundle>
         <!-- stax-ex required by saaj-impl (provides org.jvnet.staxex package) -->
         <bundle>mvn:org.jvnet.staxex/stax-ex/1.8.3</bundle>
-        <bundle>mvn:com.sun.xml.messaging.saaj/saaj-impl/1.5.3</bundle>
+        <!-- FastInfoset required by saaj-impl (provides com.sun.xml.fastinfoset.* packages) -->
+        <bundle>mvn:com.sun.xml.fastinfoset/FastInfoset/2.1.1</bundle>
+        <!-- SAAJ impl wrapped to fix self-import issue (imports its own package without version range) -->
+        <bundle>wrap:mvn:com.sun.xml.messaging.saaj/saaj-impl/1.5.3$overwrite=merge&amp;Import-Package=com.sun.xml.messaging.saaj.util.stax;resolution:=optional,*</bundle>
         <bundle>mvn:javax.jws/javax.jws-api/1.1</bundle>
         <bundle>mvn:javax.xml.ws/jaxws-api/2.3.1</bundle>
         <!-- CXF 4.1.1 cxf-rt-security bundle (base security, no OpenSAML dependency)
@@ -218,10 +242,7 @@
     <!-- CXF RS Security OAuth2 Feature -->
     <feature name="cxf-rs-security-oauth2" version="3.6.9" description="Apache CXF 4.x RS Security OAuth2">
         <feature version="3.6.9">cxf-jaxrs</feature>
-        <!-- JAXB 3.0.1 required by CXF 4.1.1 security bundles which import
-             jakarta.xml.bind.annotation;version="[3.0,4.0)" - must be installed
-             before the 4.0.x version from jakarta-xml-bind feature -->
-        <bundle>mvn:jakarta.xml.bind/jakarta.xml.bind-api/3.0.1</bundle>
+        <!-- JAXB is provided by Camel's jakarta-xml-bind feature (JAXB 4.x via camel-cxf) -->
         <!-- CXF JOSE bundles for JWT/JWS/JWE support (required by OAuth2) -->
         <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-jose/${cxf.version}</bundle>
         <bundle>mvn:org.apache.cxf/cxf-rt-rs-security-jose-jaxrs/${cxf.version}</bundle>

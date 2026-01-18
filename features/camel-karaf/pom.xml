@@ -90,20 +90,15 @@
                                     match="(&lt;features[^&gt;]*&gt;)"
                                     replace="\1&#10;    &lt;repository&gt;mvn:org.apache.karaf.features/standard/${karaf.version}/xml/features&lt;/repository&gt;&#10;    &lt;repository&gt;mvn:org.apache.karaf.features/specs/${karaf.version}/xml/features&lt;/repository&gt;"
                                     flags="s" />
-                                <!-- Remove jakarta-xml-bind 3.0.1 feature definition to avoid conflicts.
-                                     All JAXB consumers should use 4.0.2 (jakarta namespace, backwards compatible). -->
-                                <replaceregexp file="${setup.folder}/apache-camel-${camel.version}-features.xml"
-                                    match="&lt;feature name=&quot;jakarta-xml-bind&quot; version=&quot;3\.0\.1&quot;&gt;[^&lt;]*&lt;feature[^&lt;]*&lt;/feature&gt;[^&lt;]*&lt;bundle[^&lt;]*&lt;/bundle&gt;[^&lt;]*&lt;/feature&gt;"
-                                    replace=""
-                                    flags="gs" />
-                                <!-- Change jaxb-runtime 3.0.2 to use jakarta-xml-bind [4,5) instead of [3,4) -->
-                                <replaceregexp file="${setup.folder}/apache-camel-${camel.version}-features.xml"
-                                    match="(&lt;feature name=&quot;jaxb-runtime&quot; version=&quot;3\.0\.2&quot;&gt;[^&lt;]*&lt;feature version=&quot;)\[3,4\)(&quot;&gt;jakarta-xml-bind&lt;/feature&gt;)"
-                                    replace="\1[4,5)\2"
-                                    flags="gs" />
+                                <!-- NOTE: Camel 4.x requires JAXB 4.x (jakarta.xml.bind.annotation;version="[4.0,5.0)")
+                                     CXF 4.1.1 requires JAXB 3.x (jakarta.xml.bind.annotation;version="[3.0,4.0)")
+                                     Both JAXB versions can coexist in OSGi - each bundle wires to compatible version.
+                                     Keep Camel's jakarta.xml.bind-api 4.0.x; DDF's ddf-cxf-karaf provides JAXB 3.0.x for CXF -->
                                 <!-- CXF packages are provided by camel-cxf-all (from Camel's camel-cxf feature).
                                      DDF's cxf-core feature no longer installs cxf-core-all to avoid
                                      split-package conflicts that cause LinkageErrors at runtime. -->
+                                <!-- Note: Keep jakarta.annotation-api at 2.1.1 as provided by Camel
+                                     to satisfy camel-cxf-all's import requirement of [2.0,3.0) -->
                             </target>
                         </configuration>
                     </execution>
