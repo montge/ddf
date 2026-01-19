@@ -743,6 +743,12 @@
             <artifactId>org.apache.servicemix.bundles.bcel</artifactId>
             <version>5.2_4</version>
         </dependency>
+        <!-- java10-shim provides org.owasp.shim for owasp-java-html-sanitizer on Java 10+ -->
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>java10-shim</artifactId>
+            <version>${owasp-html-sanitizer.version}</version>
+        </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>serializer</artifactId>

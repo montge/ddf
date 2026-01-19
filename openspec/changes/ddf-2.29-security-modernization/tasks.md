@@ -226,6 +226,10 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - ✅ xml-resolver dependency for xerces fixed (2026-01-18)
   - ✅ BCEL dependency for xalan fixed (2026-01-18)
   - ✅ **catalog-core-impl feature installs successfully** (292 bundles, 2026-01-18)
+  - ✅ Removed cxf-rt-rs-security-sso-saml from catalog-opensearch-source (JAXB 3.x conflict)
+  - ✅ Added http-client feature dependency for catalog-plugin-oauth
+  - ✅ Added wrapped java10-shim bundle for OWASP HTML Sanitizer (org.owasp.shim)
+  - ✅ **catalog-core feature installs successfully** (340 bundles, 2026-01-18)
   - ⏳ Next: Test catalog operations (create/query/delete)
 
   **Java 21 Required:** Java 22 causes "Invalid Java version 66" error in Aries Blueprint proxy generation
@@ -260,6 +264,9 @@ Fixed multiple OSGi package resolution issues during integration testing:
 1. ✅ cxf-core-all Export-Package: Explicit 238-package list (wildcard didn't resolve)
 12. ✅ xml-resolver: Added wrapped xml-resolver 1.2 bundle for servicemix.xerces (2026-01-18)
 13. ✅ bcel: Added ServiceMix BCEL 5.2_4 bundle for servicemix.xalan (2026-01-18)
+14. ✅ cxf-rt-rs-security-sso-saml: Removed from catalog-opensearch-source (JAXB 3.x conflict, unused) (2026-01-18)
+15. ✅ http-client: Added to catalog-plugin-oauth for org.apache.http.client.utils (2026-01-18)
+16. ✅ java10-shim: Added wrapped OWASP java10-shim for org.owasp.shim (2026-01-18)
 2. ✅ jakarta.servlet-api: Downgraded 6.1.0 → 5.0.0 (CXF 4.1.1 requires [5.0,6.0)) (2026-01-04)
 3. ✅ jakarta.mail-api: Added for platform-email-api [2.1,3) requirement
 4. ✅ slf4j-api: Added 2.0.17 (Pax Logging only exports 2.0.6)
