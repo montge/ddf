@@ -30,8 +30,7 @@
  specific language governing permissions and limitations
  under the License.
 -->
-<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//
-DTD Configure//EN" "http://jetty.mortbay.org/configure_9_0.dtd">
+<!-- DOCTYPE declaration removed to avoid external DTD fetch that causes network timeouts -->
 
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
 
