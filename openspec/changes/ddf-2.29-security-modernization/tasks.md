@@ -232,7 +232,10 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - ✅ **catalog-core feature installs successfully** (340 bundles, 2026-01-18)
   - ✅ **catalog-solr-provider feature installs successfully** (344 bundles, 2026-01-18)
   - All core catalog features Started: catalog-rest-endpoint, catalog-opensearch, catalog-transformers
-  - ⏳ Next: Test catalog operations against SolrCloud
+  - ✅ **Fixed Solr 9.x Jetty HTTP/2 dependency** (2026-01-19)
+    - Changed CloudSolrClient → CloudLegacySolrClient to use Apache HttpClient instead of Jetty HTTP/2
+    - SolrCatalogProvider successfully registered as CatalogProvider service
+  - ⏳ Next: Test catalog create/query/delete operations
 
   **Java 21 Required:** Java 22 causes "Invalid Java version 66" error in Aries Blueprint proxy generation
 

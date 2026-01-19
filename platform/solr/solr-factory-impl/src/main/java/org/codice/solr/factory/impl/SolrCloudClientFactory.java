@@ -35,6 +35,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.CloudLegacySolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.request.CollectionAdminRequest;
 import org.apache.solr.client.solrj.request.ConfigSetAdminRequest;
@@ -133,7 +134,9 @@ public class SolrCloudClientFactory implements SolrClientFactory {
 
   @VisibleForTesting
   CloudSolrClient newCloudSolrClient(String zookeeperHosts) {
-    return new CloudSolrClient.Builder(
+    // Use CloudLegacySolrClient which uses Apache HttpClient (HTTP/1.1) instead of
+    // CloudHttp2SolrClient which requires Jetty 10.x (conflicts with Pax Web's Jetty 9.x)
+    return new CloudLegacySolrClient.Builder(
             Arrays.asList(zookeeperHosts.split(",")),
             Optional.ofNullable(System.getProperty("solr.cloud.zookeeper.chroot")))
         .build();
