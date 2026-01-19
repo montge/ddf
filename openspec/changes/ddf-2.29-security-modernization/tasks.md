@@ -230,7 +230,9 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - ✅ Added http-client feature dependency for catalog-plugin-oauth
   - ✅ Added wrapped java10-shim bundle for OWASP HTML Sanitizer (org.owasp.shim)
   - ✅ **catalog-core feature installs successfully** (340 bundles, 2026-01-18)
-  - ⏳ Next: Test catalog operations (create/query/delete)
+  - ✅ **catalog-solr-provider feature installs successfully** (344 bundles, 2026-01-18)
+  - All core catalog features Started: catalog-rest-endpoint, catalog-opensearch, catalog-transformers
+  - ⏳ Next: Test catalog operations against SolrCloud
 
   **Java 21 Required:** Java 22 causes "Invalid Java version 66" error in Aries Blueprint proxy generation
 
