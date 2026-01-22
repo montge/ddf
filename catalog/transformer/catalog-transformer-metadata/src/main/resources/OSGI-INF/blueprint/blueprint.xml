@@ -14,7 +14,7 @@
  -->
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-	<bean id="xmlMimeType" class="javax.activation.MimeType">
+	<bean id="xmlMimeType" class="jakarta.activation.MimeType">
 		<argument value="text/xml"/>
 	</bean>
 

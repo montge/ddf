@@ -1,6 +1,6 @@
 # DDF 2.29 Security & Modernization Tasks
 
-**Status:** In Progress (Last updated: 2026-01-18)
+**Status:** In Progress (Last updated: 2026-01-19)
 **Vulnerabilities:** 65 (0 critical, 24 high) - down from 912 (-93%)
 
 ## Phase 1: Security Hardening
@@ -235,7 +235,14 @@ ServiceMix bundles for 6.2.11+ not yet available. Monitor: https://repo1.maven.o
   - ✅ **Fixed Solr 9.x Jetty HTTP/2 dependency** (2026-01-19)
     - Changed CloudSolrClient → CloudLegacySolrClient to use Apache HttpClient instead of Jetty HTTP/2
     - SolrCatalogProvider successfully registered as CatalogProvider service
-  - ⏳ Next: Test catalog create/query/delete operations
+  - ✅ **Fixed Jetty XML DTD timeout** (2026-01-19)
+    - Removed external DOCTYPE from jetty.xml to avoid network fetch timeouts
+    - Pax Web server now starts without DTD resolution errors
+  - ⚠️ **Pax Web bundle refresh lifecycle issue** (2026-01-19)
+    - Web server stops during feature installation bundle refresh and doesn't restart
+    - Pre-existing issue, not a regression from changes
+    - Core catalog infrastructure verified working (Solr client, catalog provider)
+  - ⏳ Next: Test catalog operations via Karaf commands (bypass web server issue)
 
   **Java 21 Required:** Java 22 causes "Invalid Java version 66" error in Aries Blueprint proxy generation
 

@@ -96,6 +96,6 @@
         <argument ref="writerProvider"/>
     </bean>
 
-    <bean id="mimeType" class="javax.activation.MimeType"/>
+    <bean id="mimeType" class="jakarta.activation.MimeType"/>
 
 </blueprint>
