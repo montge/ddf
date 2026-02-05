@@ -134,7 +134,7 @@
         <pax.exam.version>4.14.0</pax.exam.version>
         <pax.logging.version>2.3.0</pax.logging.version>
         <pax.url.version>2.6.17</pax.url.version>
-        <pax.web.version>8.0.33</pax.web.version>
+        <pax.web.version>11.1.0</pax.web.version>
         <!-- Pax CDI version pinned to avoid Karaf 4.4.x RELEASE version resolution issues -->
         <pax.cdi.version>1.1.4</pax.cdi.version>
         <restito.version>1.1.2</restito.version>
@@ -237,9 +237,10 @@
         <javax.cache.bundle.version>1.1.1_1</javax.cache.bundle.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <!-- CXF 4.1.1 bundles require jakarta.servlet version [5.0,6.0)
-             so we must use 5.0.0, not 6.1.0 which is outside that range -->
-        <jakarta.servlet-api.version>5.0.0</jakarta.servlet-api.version>
+        <!-- Pax Web 11.1.0 (Jetty 12 EE10) requires jakarta.servlet 6.x
+             TODO: CXF 4.1.1 bundles import jakarta.servlet [5.0,6.0) - need to widen
+             range in camel-cxf-all bundle or upgrade CXF -->
+        <jakarta.servlet-api.version>6.0.0</jakarta.servlet-api.version>
         <javax.ws.rs.version>2.1.6</javax.ws.rs.version>
         <javax-el.version>3.0.0</javax-el.version>
         <soap-api.version>1.4.2</soap-api.version>
@@ -251,9 +252,9 @@
         <jcodec.version>0.2.0_1</jcodec.version>
         <jdom.bundle.version>1.1_4</jdom.bundle.version>
         <jdom2.bundle.version>2.0.6.1_1</jdom2.bundle.version>
-        <!-- Must match Pax Web 8.0.33's expected Jetty version -->
-        <jetty.version>9.4.57.v20241219</jetty.version>
-        <karaf.jetty.version>9.4.57.v20241219</karaf.jetty.version>
+        <!-- Must match Pax Web 11.1.0's expected Jetty version -->
+        <jetty.version>12.1.4</jetty.version>
+        <karaf.jetty.version>12.1.4</karaf.jetty.version>
         <jgroups.version>3.6.13.Final</jgroups.version>
         <joda-convert.version>1.7</joda-convert.version>
         <dev.failsafe.version>3.2.4</dev.failsafe.version>
