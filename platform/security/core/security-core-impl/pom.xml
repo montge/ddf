@@ -179,6 +179,10 @@
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

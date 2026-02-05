@@ -16,12 +16,12 @@ package org.codice.ddf.commands.catalog;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import ddf.security.service.SecurityServiceException;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import javax.annotation.Nullable;
 import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.console.Session;

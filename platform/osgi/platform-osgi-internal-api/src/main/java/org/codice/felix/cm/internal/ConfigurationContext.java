@@ -13,9 +13,9 @@
  */
 package org.codice.felix.cm.internal;
 
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.Dictionary;
-import javax.annotation.Nullable;
 
 /**
  * The purpose of the {@link ConfigurationContext} is to provide an abstraction for the oddities of

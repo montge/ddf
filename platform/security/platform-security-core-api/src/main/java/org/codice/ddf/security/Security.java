@@ -15,13 +15,13 @@ package org.codice.ddf.security;
 
 import ddf.security.Subject;
 import ddf.security.service.SecurityServiceException;
+import jakarta.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.security.KeyStore;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.concurrent.Callable;
-import javax.annotation.Nullable;
 
 public interface Security {
   Subject getSubject(String username, String password, String ip);

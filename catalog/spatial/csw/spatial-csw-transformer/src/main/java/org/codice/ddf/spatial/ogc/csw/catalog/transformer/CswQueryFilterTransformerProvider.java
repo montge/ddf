@@ -16,6 +16,7 @@ package org.codice.ddf.spatial.ogc.csw.catalog.transformer;
 
 import ddf.catalog.transform.QueryFilterTransformer;
 import ddf.catalog.transform.QueryFilterTransformerProvider;
+import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.BundleContext;

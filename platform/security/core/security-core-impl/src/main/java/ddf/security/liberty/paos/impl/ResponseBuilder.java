@@ -15,7 +15,7 @@ package ddf.security.liberty.paos.impl;
 
 import ddf.security.liberty.paos.Response;
 import jakarta.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import net.shibboleth.utilities.java.support.annotation.constraint.NotEmpty;
 import org.opensaml.saml.common.AbstractSAMLObjectBuilder;
 import org.opensaml.saml.common.xml.SAMLConstants;

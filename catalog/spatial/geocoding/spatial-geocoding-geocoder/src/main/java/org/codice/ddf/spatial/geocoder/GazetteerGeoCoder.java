@@ -13,10 +13,10 @@
  */
 package org.codice.ddf.spatial.geocoder;
 
+import jakarta.annotation.Nullable;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import org.codice.ddf.log.sanitizer.LogSanitizer;
 import org.codice.ddf.spatial.geocoding.GeoEntry;
 import org.codice.ddf.spatial.geocoding.GeoEntryQueryException;

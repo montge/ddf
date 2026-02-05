@@ -15,8 +15,8 @@ package ddf.security.liberty.paos.impl;
 
 import ddf.security.liberty.paos.Request;
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.util.List;
-import javax.annotation.Nullable;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.schema.XSBooleanValue;
 import org.opensaml.saml.common.AbstractSAMLObject;

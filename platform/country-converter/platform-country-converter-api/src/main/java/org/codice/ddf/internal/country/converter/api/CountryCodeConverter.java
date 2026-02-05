@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.internal.country.converter.api;
 
+import jakarta.annotation.Nullable;
 import java.util.List;
-import javax.annotation.Nullable;
 
 /**
  * Service to convert country codes into various formats.

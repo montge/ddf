@@ -14,8 +14,8 @@
 package org.codice.ddf.libs.klv;
 
 import com.google.common.base.Preconditions;
-import jakarta.xml.bind.DatatypeConverter;
 import java.util.Arrays;
+import javax.xml.bind.DatatypeConverter;
 import org.codice.ddf.libs.klv.data.Klv;
 
 /** Describes how to interpret the value of a certain data element. */

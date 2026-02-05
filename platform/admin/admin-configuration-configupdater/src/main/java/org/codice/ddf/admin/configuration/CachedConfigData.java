@@ -14,11 +14,11 @@
 package org.codice.ddf.admin.configuration;
 
 import com.google.common.annotations.VisibleForTesting;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Objects;
-import javax.annotation.Nullable;
 import org.codice.felix.cm.internal.ConfigurationContext;
 
 /** Data structure stored in the {@link ConfigurationUpdater}'s cache. */

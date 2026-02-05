@@ -13,11 +13,11 @@
  */
 package org.codice.ddf.spatial.ogc.csw.catalog.endpoint.transformer.impl;
 
+import jakarta.annotation.Nullable;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.spatial.ogc.csw.catalog.endpoint.transformer.CswActionTransformer;

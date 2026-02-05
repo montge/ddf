@@ -17,6 +17,7 @@ import static java.util.Objects.nonNull;
 
 import com.google.common.collect.Maps;
 import ddf.security.samlp.impl.SamlProtocol.Binding;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

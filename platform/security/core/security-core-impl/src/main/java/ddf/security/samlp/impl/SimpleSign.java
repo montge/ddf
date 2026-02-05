@@ -17,6 +17,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.opensaml.xmlsec.signature.support.SignatureConstants.ALGO_ID_SIGNATURE_DSA_SHA256;
 
 import ddf.security.samlp.SignatureException;
+import jakarta.annotation.Nullable;
 import jakarta.ws.rs.core.UriBuilder;
 import java.io.ByteArrayInputStream;
 import java.net.URLEncoder;
@@ -31,7 +32,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
-import javax.annotation.Nullable;
 import javax.xml.stream.XMLStreamException;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.wss4j.common.WSS4JConstants;

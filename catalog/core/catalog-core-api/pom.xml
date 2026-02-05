@@ -38,6 +38,10 @@
             <artifactId>jsr305</artifactId>
         </dependency>
         <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ddf.action.core</groupId>
             <artifactId>action-core-api</artifactId>
             <version>${project.version}</version>

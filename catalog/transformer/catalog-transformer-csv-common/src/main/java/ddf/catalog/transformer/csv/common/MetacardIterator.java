@@ -21,7 +21,6 @@ import ddf.catalog.data.AttributeType.AttributeFormat;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.data.MetacardType;
 import ddf.catalog.data.types.Core;
-import jakarta.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -34,6 +33,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.xml.bind.DatatypeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

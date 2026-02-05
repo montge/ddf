@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.spatial.ogc.csw.catalog.endpoint.transformer;
 
+import jakarta.annotation.Nullable;
 import java.util.Optional;
-import javax.annotation.Nullable;
 
 /**
  * <b> This code is experimental. While this interface is functional and tested, it may change or be

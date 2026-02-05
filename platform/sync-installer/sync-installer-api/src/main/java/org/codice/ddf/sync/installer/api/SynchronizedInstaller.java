@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.sync.installer.api;
 
+import jakarta.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.Map;
-import javax.annotation.Nullable;
 import org.apache.karaf.features.FeaturesService;
 import org.osgi.service.cm.Configuration;
 

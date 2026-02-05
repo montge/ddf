@@ -13,10 +13,10 @@
  */
 package ddf.security.samlp;
 
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import javax.annotation.Nullable;
 import javax.servlet.http.Cookie;
 import javax.xml.stream.XMLStreamException;
 import org.w3c.dom.Element;

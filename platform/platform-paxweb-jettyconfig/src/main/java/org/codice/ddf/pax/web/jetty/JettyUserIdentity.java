@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import jakarta.annotation.Nullable;
 import java.security.Principal;
-import javax.annotation.Nullable;
 import javax.security.auth.Subject;
 import org.eclipse.jetty.server.UserIdentity;
 

@@ -15,6 +15,7 @@ package org.codice.ddf.security.idp.client;
 
 import com.google.common.annotations.VisibleForTesting;
 import ddf.security.samlp.impl.MetadataConfigurationParser;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -26,7 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.opensaml.saml.saml2.metadata.Endpoint;

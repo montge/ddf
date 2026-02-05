@@ -18,9 +18,9 @@ import ddf.catalog.content.operation.ReadStorageRequest;
 import ddf.catalog.content.operation.ReadStorageResponse;
 import ddf.catalog.content.operation.StorageRequest;
 import ddf.catalog.operation.impl.ResponseImpl;
+import jakarta.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 public class ReadStorageResponseImpl extends ResponseImpl<ReadStorageRequest>
     implements ReadStorageResponse {

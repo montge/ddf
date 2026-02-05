@@ -76,7 +76,12 @@
 - [x] 2.2.7 Migrate javax.validation → jakarta.validation ✅ (2025-12-31)
   - 8 pom.xml files updated to jakarta.validation-api 3.0.2
   - 5 Java files migrated to jakarta.validation.constraints
-- [ ] 2.2.8 Migrate remaining modules ⏳ Blocked on Pax Web upgrade for servlet-based modules
+- [~] 2.2.8 Migrate remaining modules ⏳ Partially complete (2026-02-05)
+  - ✅ javax.annotation → jakarta.annotation: 75 source files migrated, 43 module POMs updated
+  - ✅ javax.xml.bind → jakarta.xml.bind: 51 source files migrated, 3 module POMs updated
+  - ✅ javax.annotation.concurrent kept as javax (JSR 305, 2 files)
+  - ⏳ javax.inject: 1 file remaining (integration test infrastructure)
+  - ⛔ javax.servlet: ~55 files BLOCKED on Pax Web 9.x upgrade
 - [x] 2.2.9 Fix pac4j servlet API compatibility ✅ (2025-12-31)
   - Changed pac4j-jakartaee → pac4j-javaee in 3 modules (OIDC, OAuth, OIDC-bundle)
   - pac4j-javaee uses javax.servlet, compatible with Pax Web 8.x constraint
@@ -85,10 +90,12 @@
 - [x] 2.2.11 Fix LocalLogoutServlet ServletException handling ✅ (2025-12-31)
   - Added try-catch for request.logout() + session.invalidate() call
 
-**Additional Analysis (2025-12-12):**
-- javax.annotation: 82 occurrences in 77 files
-- javax.inject: 11 occurrences in 11 files
-- **Total: ~1,043 javax imports requiring migration**
+**Additional Analysis (2025-12-12, updated 2026-02-05):**
+- javax.annotation: ✅ 75 source files migrated to jakarta.annotation (2026-02-05)
+- javax.xml.bind: ✅ 51 source files migrated to jakarta.xml.bind (2026-02-05)
+- javax.inject: 1 file remaining (integration test infrastructure)
+- javax.servlet: ~55 files BLOCKED on Pax Web 9.x
+- **Migration progress: ~80% of migratable javax imports completed**
 
 **Critical Finding (2025-12-12):**
 - OpenRewrite successfully transforms source code (tested on catalog-rest-api)

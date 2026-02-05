@@ -19,11 +19,11 @@ import ddf.catalog.data.MetacardCreationException;
 import ddf.catalog.operation.QueryRequest;
 import ddf.catalog.operation.SourceResponse;
 import ddf.catalog.source.UnsupportedQueryException;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
 

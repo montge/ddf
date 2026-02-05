@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.attachment;
 
+import jakarta.annotation.Nullable;
 import java.io.InputStream;
-import javax.annotation.Nullable;
 
 /**
  * <b> This code is experimental. While this interface is functional and tested, it may change or be

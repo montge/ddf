@@ -41,6 +41,10 @@
             <artifactId>jsr305</artifactId>
         </dependency>
         <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ddf.platform.security</groupId>
             <artifactId>log-sanitizer</artifactId>
             <version>${project.version}</version>

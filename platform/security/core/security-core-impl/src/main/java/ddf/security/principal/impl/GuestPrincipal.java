@@ -13,9 +13,9 @@
  */
 package ddf.security.principal.impl;
 
+import jakarta.annotation.Nullable;
 import java.io.Serializable;
 import java.security.Principal;
-import javax.annotation.Nullable;
 
 /** Principal that designates a {@link ddf.security.Subject} as guest */
 public class GuestPrincipal implements Principal, Serializable {

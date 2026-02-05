@@ -15,12 +15,12 @@ package org.codice.ddf.pax.web.jetty;
 
 import ddf.security.SecurityConstants;
 import ddf.security.Subject;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.servlet.Filter;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

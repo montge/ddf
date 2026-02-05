@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import jakarta.annotation.Nullable;
 import java.security.Principal;
-import javax.annotation.Nullable;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.security.IdentityService;

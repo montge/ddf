@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import org.eclipse.jetty.security.Authenticator;
 import org.ops4j.pax.web.service.AuthenticatorService;
 

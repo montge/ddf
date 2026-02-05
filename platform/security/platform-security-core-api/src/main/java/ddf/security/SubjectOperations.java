@@ -14,12 +14,12 @@
 package ddf.security;
 
 import ddf.security.assertion.SecurityAssertion;
+import jakarta.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import javax.security.auth.x500.X500Principal;
 import org.apache.shiro.subject.Subject;
 import org.bouncycastle.asn1.x500.RDN;

@@ -14,7 +14,7 @@
 package ddf.catalog.content.operation;
 
 import ddf.catalog.content.data.ContentItem;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * Response that contains the {@link ContentItem} that was specified in the request {@link

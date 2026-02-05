@@ -19,6 +19,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.security.audit.SecurityLogger;
 import ddf.security.encryption.EncryptionService;
+import jakarta.annotation.Nullable;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
@@ -31,7 +32,6 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.platform.email.SmtpClient;
 import org.codice.ddf.platform.util.StandardThreadFactoryBuilder;

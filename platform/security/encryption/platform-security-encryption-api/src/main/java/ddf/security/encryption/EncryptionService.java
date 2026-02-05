@@ -13,7 +13,7 @@
  */
 package ddf.security.encryption;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import org.apache.wss4j.common.crypto.PasswordEncryptor;
 
 public interface EncryptionService extends PasswordEncryptor {

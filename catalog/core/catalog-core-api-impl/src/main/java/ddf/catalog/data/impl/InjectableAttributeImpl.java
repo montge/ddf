@@ -16,12 +16,12 @@ package ddf.catalog.data.impl;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import ddf.catalog.data.InjectableAttribute;
+import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 public class InjectableAttributeImpl implements InjectableAttribute {
   private final String attribute;

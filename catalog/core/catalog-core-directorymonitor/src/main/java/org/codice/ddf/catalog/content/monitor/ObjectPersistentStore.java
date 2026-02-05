@@ -13,7 +13,7 @@
  */
 package org.codice.ddf.catalog.content.monitor;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 /**
  * Persistent store used to serialize and load objects from a key.

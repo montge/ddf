@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.content.monitor;
 import static ddf.catalog.Constants.CDM_LOGGER_NAME;
 
 import com.google.common.annotations.VisibleForTesting;
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,7 +28,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import org.apache.commons.io.FileUtils;
 import org.codice.ddf.catalog.content.monitor.synchronizations.CompletionSynchronization;
 import org.slf4j.Logger;

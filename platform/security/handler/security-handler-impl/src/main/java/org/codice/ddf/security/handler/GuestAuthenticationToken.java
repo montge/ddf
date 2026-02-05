@@ -15,10 +15,10 @@ package org.codice.ddf.security.handler;
 
 import ddf.security.audit.SecurityLogger;
 import ddf.security.principal.impl.GuestPrincipal;
+import jakarta.annotation.Nullable;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

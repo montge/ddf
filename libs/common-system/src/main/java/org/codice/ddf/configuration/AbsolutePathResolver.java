@@ -13,10 +13,10 @@
  */
 package org.codice.ddf.configuration;
 
+import jakarta.annotation.Nullable;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.log.sanitizer.LogSanitizer;
 import org.slf4j.Logger;
