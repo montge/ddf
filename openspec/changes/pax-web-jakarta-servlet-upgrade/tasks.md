@@ -1,9 +1,9 @@
 ## 1. Pax Web 11 Integration
 
-- [ ] 1.1 Update `pax.web.version` from `8.0.33` to `11.1.0` in root pom.xml
-- [ ] 1.2 Update `jetty.version` from `9.4.57.v20241219` to Jetty 12 version used by Pax Web 11.1.0
-- [ ] 1.3 Update kernel feature.xml: replace Pax Web 8 feature repository with Pax Web 11 repository URL
-- [ ] 1.4 Update kernel feature.xml: remove `javax.servlet-api` bundle, keep `jakarta-servlet-api` feature
+- [x] 1.1 Update `pax.web.version` from `8.0.33` to `11.1.0` in root pom.xml
+- [x] 1.2 Update `jetty.version` from `9.4.57.v20241219` to `12.1.4` (Jetty 12 used by Pax Web 11.1.0)
+- [x] 1.3 Update kernel feature.xml: Pax Web 11 repository URL (auto via pax.web.version property)
+- [x] 1.4 Update kernel feature.xml: remove `javax.servlet-api` bundle, keep `jakarta-servlet-api` feature
 - [ ] 1.5 Update security feature.xml: verify pax-web-http-whiteboard, pax-web-jetty, pax-web-http-jetty references resolve with Pax Web 11
 - [ ] 1.6 Update pax-web-jsp bundle version in security feature.xml to match Pax Web 11.1.0
 - [ ] 1.7 Verify `org.ops4j.pax.web.cfg` compatibility with Pax Web 11 configuration schema
@@ -12,35 +12,35 @@
 ## 2. Jetty 12 Custom Code Adaptation
 
 ### 2.1 Session Management (package relocation)
-- [ ] 2.1.1 Update `AttributeSharingSessionDataStore.java`: `o.e.j.server.session` → `o.e.j.session`
-- [ ] 2.1.2 Update `AttributeSharingHashSessionIdManager.java`: same package relocation
-- [ ] 2.1.3 Update `AttributeSharingSessionDataStoreFactory.java`: same package relocation
+- [x] 2.1.1 Update `AttributeSharingSessionDataStore.java`: `o.e.j.server.session` → `o.e.j.session`
+- [x] 2.1.2 Update `AttributeSharingHashSessionIdManager.java`: same package relocation
+- [x] 2.1.3 Update `AttributeSharingSessionDataStoreFactory.java`: same package relocation
 
 ### 2.2 Security Integration (package moves + interface changes)
-- [ ] 2.2.1 Update `JettyAuthenticator.java`: adapt to Jetty 12 LoginAuthenticator API, update security package imports
-- [ ] 2.2.2 Update `JettyAuthenticatedUser.java`: adapt Authentication → AuthenticationState, update packages
-- [ ] 2.2.3 Update `JettyUserIdentity.java`: move from `o.e.j.server.UserIdentity` to `o.e.j.security.UserIdentity`
-- [ ] 2.2.4 Update `JettyIdentityService.java`: verify/update IdentityService interface for Jetty 12
-- [ ] 2.2.5 Update `SecurityAuthService.java`: verify Authenticator interface package for Jetty 12
+- [x] 2.2.1 Update `JettyAuthenticator.java`: adapt to Jetty 12 LoginAuthenticator API — validateRequest(Request,Response,Callback), AuthenticationState, SecurityHandler, bridge to servlet via ServletContextRequest
+- [x] 2.2.2 Update `JettyAuthenticatedUser.java`: Authentication.User → AuthenticationState.Succeeded, getAuthMethod→getAuthenticationType, isUserInRole simplified
+- [x] 2.2.3 Update `JettyUserIdentity.java`: `o.e.j.server.UserIdentity` → `o.e.j.security.UserIdentity`, remove Scope parameter
+- [x] 2.2.4 Update `JettyIdentityService.java`: associate/disassociate → Association pattern, add onLogout(Request), remove setRunAs/unsetRunAs
+- [x] 2.2.5 Update `SecurityAuthService.java`: verified — Authenticator stays in same package, no changes needed
 
 ### 2.3 Handler Chain (significant rewrite)
-- [ ] 2.3.1 Rewrite `DelegatingHttpFilterHandler.java`: HandlerWrapper → Handler.Wrapper, adapt to async handle(Request, Response, Callback) signature
-- [ ] 2.3.2 Rewrite `ProxyHttpFilterChain.java`: adapt handler invocation to Jetty 12 model
-- [ ] 2.3.3 Update `SecurityFilterChain.java`: adapt to new handler/filter model if needed
+- [x] 2.3.1 Rewrite `DelegatingHttpFilterHandler.java`: HandlerWrapper → Handler.Wrapper, boolean handle(Request, Response, Callback), bridge via ServletContextRequest
+- [x] 2.3.2 Rewrite `ProxyHttpFilterChain.java`: Handler.Wrapper + Request/Response/Callback model, delegate to wrapped handler when filters exhausted
+- [x] 2.3.3 `SecurityFilterChain.java`: no Jetty API changes needed — only uses javax.servlet (will migrate in task 3)
 
 ### 2.4 Filters and Logging
-- [ ] 2.4.1 Update `ClientInfoFilter.java`, `DoPrivilegedFilter.java`, `TraceContextFilter.java`, `ResponseFilter.java`: verify compatibility with Jetty 12 + jakarta.servlet
-- [ ] 2.4.2 Update `AccessRequestLog.java`: switch to logback-access-jetty12 artifact
-- [ ] 2.4.3 Update `jetty.xml`: remove RequestLogHandler (use Server.setRequestLog()), update session package references, verify GzipHandler/ErrorHandler compatibility
+- [x] 2.4.1 `ClientInfoFilter`, `DoPrivilegedFilter`, `TraceContextFilter`, `ResponseFilter`: verified — no Jetty API usage, only javax.servlet (task 3)
+- [x] 2.4.2 Update logback-access: `ch.qos.logback:logback-access:1.2.13` → `ch.qos.logback.access:jetty12:2.0.3` + `logback-access-common:2.0.3`
+- [x] 2.4.3 Update `jetty.xml`: removed RequestLogHandler, use Server.setRequestLog() directly
 
 ### 2.5 Fragment-Host and POM
-- [ ] 2.5.1 Update `platform-paxweb-jettyconfig/pom.xml`: change Fragment-Host from `[8,9)` to `[11,12)`, update Jetty dependency versions
-- [ ] 2.5.2 Add `logback-access-jetty12` dependency, remove old logback-access dependency
-- [ ] 2.5.3 Update Pax Web API dependency version to 11.1.0
+- [x] 2.5.1 Update `platform-paxweb-jettyconfig/pom.xml`: Fragment-Host `[8,9)` → `[11,12)`, add `jetty-ee10-servlet` dependency
+- [x] 2.5.2 Replace `logback-access` with `logback-access-common` + `jetty12`, update Embed-Dependency
+- [ ] 2.5.3 Update Pax Web API dependency version to 11.1.0 (managed by parent — verify resolves)
 
 ## 3. javax.servlet → jakarta.servlet Migration
 
-- [ ] 3.1 Run OpenRewrite `javax.servlet.toJakartaServlet` recipe on all 55 source files (main + test)
+- [ ] 3.1 Bulk replace `javax.servlet` → `jakarta.servlet` in all source files (main + test)
 - [ ] 3.2 Update security filter modules: security-filter-authorization, security-filter-csrf, security-filter-login, security-filter-web-sso
 - [ ] 3.3 Update security handler modules: security-handler-api, security-handler-basic, security-handler-oauth, security-handler-oidc, security-handler-pki, security-handler-saml
 - [ ] 3.4 Update security servlet modules: security-servlet-logout, security-servlet-session-expiry, security-servlet-whoami, security-servlet-web-socket-api

@@ -17,16 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.eclipse.jetty.server.session.AbstractSessionDataStore;
-import org.eclipse.jetty.server.session.SessionContext;
-import org.eclipse.jetty.server.session.SessionData;
+import org.eclipse.jetty.session.AbstractSessionDataStore;
+import org.eclipse.jetty.session.SessionContext;
+import org.eclipse.jetty.session.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This implementation of {@link org.eclipse.jetty.server.session.SessionDataStore} communicates
- * with the {@link AttributeSharingHashSessionIdManager} to retrieve the most up-to-date session
- * attributes.
+ * This implementation of {@link org.eclipse.jetty.session.SessionDataStore} communicates with the
+ * {@link AttributeSharingHashSessionIdManager} to retrieve the most up-to-date session attributes.
  *
  * <p>There is one <code>SessionDataStore</code> instance for each HTTP context on the Jetty server.
  * In the current way we use pax-web with our jax-rs servers, session attributes are not shared

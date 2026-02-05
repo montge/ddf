@@ -16,7 +16,7 @@ package org.codice.ddf.pax.web.jetty;
 import java.security.Principal;
 import javax.annotation.Nullable;
 import javax.security.auth.Subject;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.security.UserIdentity;
 
 public class JettyUserIdentity implements UserIdentity {
 
@@ -41,7 +41,7 @@ public class JettyUserIdentity implements UserIdentity {
   }
 
   @Override
-  public boolean isUserInRole(String role, Scope scope) {
+  public boolean isUserInRole(String role) {
     return false;
   }
 }

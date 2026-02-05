@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.security.session;
 
-import org.eclipse.jetty.server.session.SessionDataStore;
-import org.eclipse.jetty.server.session.SessionDataStoreFactory;
-import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.session.SessionDataStore;
+import org.eclipse.jetty.session.SessionDataStoreFactory;
+import org.eclipse.jetty.session.SessionHandler;
 
 public class AttributeSharingSessionDataStoreFactory implements SessionDataStoreFactory {
   @Override

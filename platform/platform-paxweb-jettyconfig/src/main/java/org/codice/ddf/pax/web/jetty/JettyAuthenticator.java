@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.Filter;
@@ -29,12 +30,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.platform.filter.AuthenticationChallengeException;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilter;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.ee10.servlet.ServletContextRequest;
+import org.eclipse.jetty.security.AuthenticationState;
 import org.eclipse.jetty.security.IdentityService;
-import org.eclipse.jetty.security.ServerAuthException;
+import org.eclipse.jetty.security.SecurityHandler;
+import org.eclipse.jetty.security.UserIdentity;
 import org.eclipse.jetty.security.authentication.LoginAuthenticator;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.server.Session;
+import org.eclipse.jetty.util.Callback;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -56,23 +61,31 @@ public class JettyAuthenticator extends LoginAuthenticator {
   }
 
   @Override
-  public void setConfiguration(AuthConfiguration configuration) {
+  public void setConfiguration(Configuration configuration) {
     keysOfInitializedSecurityFilters.clear();
-    if (configuration instanceof ConstraintSecurityHandler) {
-      ((ConstraintSecurityHandler) configuration).setLoginService(_loginService);
-      ((ConstraintSecurityHandler) configuration).setIdentityService(_identityService);
+    if (configuration instanceof SecurityHandler) {
+      ((SecurityHandler) configuration).setLoginService(_loginService);
+      ((SecurityHandler) configuration).setIdentityService(_identityService);
     }
   }
 
   @Override
-  public String getAuthMethod() {
+  public String getAuthenticationType() {
     return DDF_AUTH_METHOD;
   }
 
   @Override
-  public Authentication validateRequest(
-      ServletRequest servletRequest, ServletResponse servletResponse, boolean mandatory)
+  public AuthenticationState validateRequest(Request request, Response response, Callback callback)
       throws ServerAuthException {
+
+    ServletContextRequest servletContextRequest = Request.as(request, ServletContextRequest.class);
+    if (servletContextRequest == null) {
+      throw new ServerAuthException(
+          "Request is not a ServletContextRequest. Cannot apply servlet SecurityFilters.");
+    }
+
+    ServletRequest servletRequest = servletContextRequest.getServletApiRequest();
+    ServletResponse servletResponse = servletContextRequest.getHttpServletResponse();
 
     TreeSet<ServiceReference<SecurityFilter>> sortedSecurityFilterServiceReferences = null;
     final BundleContext bundleContext = getContext();
@@ -94,10 +107,6 @@ public class JettyAuthenticator extends LoginAuthenticator {
           "Found {} filter(s), now filtering...", sortedSecurityFilterServiceReferences.size());
       final SecurityFilterChain chain = new SecurityFilterChain();
 
-      // Insert the SecurityFilters into the chain one at a time (from lowest service ranking
-      // to highest service ranking). The SecurityFilter with the highest service-ranking will
-      // end up at index 0 in the FilterChain, which means that the SecurityFilters will be
-      // run in order of highest to lowest service ranking.
       for (ServiceReference<SecurityFilter> securityFilterServiceReference :
           sortedSecurityFilterServiceReferences) {
         final SecurityFilter securityFilter =
@@ -115,13 +124,13 @@ public class JettyAuthenticator extends LoginAuthenticator {
         throw new ServerAuthException(
             "Unable to process security filter. Blocking the request processing.");
       } catch (AuthenticationChallengeException e) {
-        return new Authentication.Challenge() {};
+        return AuthenticationState.CHALLENGE;
       } catch (AuthenticationException e) {
-        return new Authentication.Failure() {};
+        return AuthenticationState.SEND_FAILURE;
       }
     } else {
       LOGGER.debug("Did not find any SecurityFilters. Send auth failure...");
-      return new Authentication.Failure() {};
+      return AuthenticationState.SEND_FAILURE;
     }
 
     Subject subject = (Subject) servletRequest.getAttribute(SecurityConstants.SECURITY_SUBJECT);
@@ -173,8 +182,6 @@ public class JettyAuthenticator extends LoginAuthenticator {
     if (securityFilterServiceReference != null) {
       final BundleContext bundleContext = getContext();
       if (bundleContext != null) {
-        // unmark the SecurityFilter as initialized so that it can be re-initialized if the
-        // SecurityFilter is registered again
         keysOfInitializedSecurityFilters.remove(
             getFilterKey(securityFilterServiceReference, bundleContext));
         bundleContext.getService(securityFilterServiceReference).destroy();
@@ -183,15 +190,6 @@ public class JettyAuthenticator extends LoginAuthenticator {
             "Unable to remove SecurityFilter. Try restarting the system or turning up logging to monitor current SecurityFilters.");
       }
     }
-  }
-
-  @Override
-  public boolean secureResponse(
-      ServletRequest req,
-      ServletResponse res,
-      boolean mandatory,
-      Authentication.User validatedUser) {
-    return true;
   }
 
   @Nonnull
@@ -203,8 +201,8 @@ public class JettyAuthenticator extends LoginAuthenticator {
 
   /**
    * This logic to get the filter name from a {@link ServiceReference<Filter>} is copied from {@link
-   * org.ops4j.pax.web.extender.whiteboard.internal.tracker.ServletTracker#createWebElement(ServiceReference,
-   * javax.servlet.Servlet)}. See the pax-web Whiteboard documentation and {@link
+   * org.ops4j.pax.web.extender.whiteboard.internal.tracker.ServletTracker}. See the pax-web
+   * Whiteboard documentation and {@link
    * org.osgi.service.http.whiteboard.HttpWhiteboardConstants#HTTP_WHITEBOARD_FILTER_NAME} for how
    * to configure {@link Filter} services with a filter name.
    */
@@ -215,8 +213,6 @@ public class JettyAuthenticator extends LoginAuthenticator {
     final String HTTP_WHITEBOARD_FILTER_NAME = "osgi.http.whiteboard.filter.name";
     final String filterNameFromTheServiceProperty =
         getStringProperty(securityFilterServiceReference, HTTP_WHITEBOARD_FILTER_NAME);
-    // If this service property is not specified, the fully qualified name of the service object's
-    // class is used as the servlet filter name.
     if (StringUtils.isBlank(filterNameFromTheServiceProperty)) {
       return bundleContext.getService(securityFilterServiceReference).getClass().getCanonicalName();
     } else {
@@ -244,7 +240,11 @@ public class JettyAuthenticator extends LoginAuthenticator {
     }
 
     @Override
-    public UserIdentity login(String username, Object credentials, ServletRequest request) {
+    public UserIdentity login(
+        String username,
+        Object credentials,
+        Request request,
+        Function<Boolean, Session> getOrCreateSession) {
       return null;
     }
 
