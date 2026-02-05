@@ -21,9 +21,9 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.error.handler.ErrorHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -357,12 +357,12 @@ public class ErrorServletTest {
 
   @Test
   public void testErrorServletConstants() {
-    assertThat(ErrorServlet.ERROR_EXCEPTION, is("javax.servlet.error.exception"));
-    assertThat(ErrorServlet.ERROR_EXCEPTION_TYPE, is("javax.servlet.error.exception_type"));
-    assertThat(ErrorServlet.ERROR_MESSAGE, is("javax.servlet.error.message"));
-    assertThat(ErrorServlet.ERROR_REQUEST_URI, is("javax.servlet.error.request_uri"));
-    assertThat(ErrorServlet.ERROR_SERVLET_NAME, is("javax.servlet.error.servlet_name"));
-    assertThat(ErrorServlet.ERROR_STATUS_CODE, is("javax.servlet.error.status_code"));
+    assertThat(ErrorServlet.ERROR_EXCEPTION, is("jakarta.servlet.error.exception"));
+    assertThat(ErrorServlet.ERROR_EXCEPTION_TYPE, is("jakarta.servlet.error.exception_type"));
+    assertThat(ErrorServlet.ERROR_MESSAGE, is("jakarta.servlet.error.message"));
+    assertThat(ErrorServlet.ERROR_REQUEST_URI, is("jakarta.servlet.error.request_uri"));
+    assertThat(ErrorServlet.ERROR_SERVLET_NAME, is("jakarta.servlet.error.servlet_name"));
+    assertThat(ErrorServlet.ERROR_STATUS_CODE, is("jakarta.servlet.error.status_code"));
   }
 
   @Test

@@ -47,7 +47,7 @@
         </argument>
     </bean>
 
-    <service ref="localLogout" interface="javax.servlet.Servlet">
+    <service ref="localLogout" interface="jakarta.servlet.Servlet">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.pattern" value="/logout/local/*"/>
             <entry key="osgi.http.whiteboard.servlet.name" value="localLogout"/>

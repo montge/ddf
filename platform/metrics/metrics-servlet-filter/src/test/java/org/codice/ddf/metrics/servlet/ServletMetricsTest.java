@@ -28,11 +28,11 @@ import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import javax.servlet.AsyncContext;
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.http.HttpFilterChain;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -172,14 +172,14 @@ public class ServletMetricsTest {
 
   @Test
   public void syncException() throws Exception {
-    doThrow(new javax.servlet.ServletException("Test exception"))
+    doThrow(new jakarta.servlet.ServletException("Test exception"))
         .when(mockFilterChain)
         .doFilter(mockRequest, mockResponse);
     when(mockRequest.getMethod()).thenReturn("POST");
     when(mockResponse.getStatus()).thenReturn(500);
 
     assertThrows(
-        javax.servlet.ServletException.class,
+        jakarta.servlet.ServletException.class,
         () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
 
     tags = getTags("POST", 500);
@@ -188,14 +188,14 @@ public class ServletMetricsTest {
 
   @Test
   public void syncExceptionWithConflictingStatusCode() throws Exception {
-    doThrow(new javax.servlet.ServletException("Test exception"))
+    doThrow(new jakarta.servlet.ServletException("Test exception"))
         .when(mockFilterChain)
         .doFilter(mockRequest, mockResponse);
     when(mockRequest.getMethod()).thenReturn("POST");
     when(mockResponse.getStatus()).thenReturn(200);
 
     assertThrows(
-        javax.servlet.ServletException.class,
+        jakarta.servlet.ServletException.class,
         () -> underTest.doFilter(mockRequest, mockResponse, mockFilterChain));
 
     tags = getTags("POST", 500);

@@ -14,13 +14,13 @@
 package org.codice.ddf.security.util;
 
 import com.google.common.net.HttpHeaders;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.server.Request;
 

@@ -13,11 +13,11 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.slf4j.Logger;

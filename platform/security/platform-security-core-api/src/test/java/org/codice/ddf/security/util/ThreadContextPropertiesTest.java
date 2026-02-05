@@ -26,10 +26,10 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 
 import com.google.common.net.HttpHeaders;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Map;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.server.Request;
 import org.hamcrest.CoreMatchers;

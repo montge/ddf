@@ -14,7 +14,7 @@
 
     <bean id="jolokia" class="org.jolokia.osgi.servlet.JolokiaServlet"/>
 
-    <service interface="javax.servlet.Servlet" ref="jolokia">
+    <service interface="jakarta.servlet.Servlet" ref="jolokia">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.pattern" value="/admin/jolokia/*"/>
             <entry key="osgi.http.whiteboard.servlet.name" value="jolokia"/>

@@ -23,7 +23,7 @@
         <argument ref="logoutService"/>
     </bean>
 
-    <service ref="logoutServiceEndpoint" interface="javax.servlet.Servlet">
+    <service ref="logoutServiceEndpoint" interface="jakarta.servlet.Servlet">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.pattern" value="/services/logout/actions/*"/>
             <entry key="osgi.http.whiteboard.servlet.name" value="logoutServiceServlet"/>

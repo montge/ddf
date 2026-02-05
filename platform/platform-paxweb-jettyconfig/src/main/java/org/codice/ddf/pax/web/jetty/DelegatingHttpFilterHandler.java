@@ -13,12 +13,12 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.http.HttpFilter;
 import org.codice.ddf.platform.util.SortedServiceList;
 import org.eclipse.jetty.ee10.servlet.ServletContextRequest;

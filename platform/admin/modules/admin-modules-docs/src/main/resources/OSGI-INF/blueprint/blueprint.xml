@@ -28,7 +28,7 @@
         <property name="filterMappingPattern" value="/admin/documentation/*"/>
     </bean>
 
-    <service ref="documentation" interface="javax.servlet.Servlet">
+    <service ref="documentation" interface="jakarta.servlet.Servlet">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.pattern" value="/admin/documentation/*"/>
             <entry key="osgi.http.whiteboard.servlet.name" value="adminDocumentation"/>
