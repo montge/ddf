@@ -29,10 +29,9 @@
             <version>${jetty.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
+            <groupId>org.eclipse.jetty.ee10</groupId>
+            <artifactId>jetty-ee10-servlet</artifactId>
             <version>${jetty.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -60,8 +59,13 @@
             <version>${logback.version}</version>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
+            <groupId>ch.qos.logback.access</groupId>
+            <artifactId>logback-access-common</artifactId>
+            <version>${logback-access.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback.access</groupId>
+            <artifactId>jetty12</artifactId>
             <version>${logback-access.version}</version>
         </dependency>
         <dependency>
@@ -127,11 +131,12 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Fragment-Host>org.ops4j.pax.web.pax-web-jetty;bundle-version="[8,9)"</Fragment-Host>
+                        <Fragment-Host>org.ops4j.pax.web.pax-web-jetty;bundle-version="[11,12)"</Fragment-Host>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Embed-Dependency>
                             logback-core,
-                            logback-access
+                            logback-access-common,
+                            jetty12
                         </Embed-Dependency>
                         <Import-Package>
                             !org.apache.catalina,
