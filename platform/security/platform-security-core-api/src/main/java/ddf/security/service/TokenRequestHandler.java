@@ -13,7 +13,7 @@
  */
 package ddf.security.service;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Interface used to decouple the implementations of various SSOs from the endpoints which need to

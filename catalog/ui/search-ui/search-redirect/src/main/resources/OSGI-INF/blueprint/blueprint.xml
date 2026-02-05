@@ -19,7 +19,7 @@
 
     <ext:property-placeholder/>
 
-    <service ref="redirectServlet" interface="javax.servlet.Servlet">
+    <service ref="redirectServlet" interface="jakarta.servlet.Servlet">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.pattern" value="/search"/>
             <entry key="osgi.http.whiteboard.servlet.name" value="search-redirect"/>

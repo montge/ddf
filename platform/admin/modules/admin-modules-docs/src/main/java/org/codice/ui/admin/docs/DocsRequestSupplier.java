@@ -13,9 +13,9 @@
  */
 package org.codice.ui.admin.docs;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.util.function.BiFunction;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 
 public class DocsRequestSupplier
     implements BiFunction<HttpServletRequest, String, HttpServletRequestWrapper> {

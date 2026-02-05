@@ -24,6 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.security.SecurityConstants;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -31,8 +33,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
 import org.codice.ddf.security.handler.AuthenticationTokenFactory;
@@ -53,7 +53,7 @@ public class PKIHandlerTest {
     HttpServletResponse response = mock(HttpServletResponse.class);
     SecurityFilterChain chain = mock(SecurityFilterChain.class);
 
-    when(request.getAttribute(("javax.servlet.request.X509Certificate")))
+    when(request.getAttribute(("jakarta.servlet.request.X509Certificate")))
         .thenReturn(getTestCerts());
 
     // Note that the getNormalizedToken() method for PKI handlers do not use the resolve tag.
@@ -76,7 +76,7 @@ public class PKIHandlerTest {
 
     HttpServletRequest request = mock(HttpServletRequest.class);
 
-    when(request.getAttribute(("javax.servlet.request.X509Certificate")))
+    when(request.getAttribute(("jakarta.servlet.request.X509Certificate")))
         .thenReturn(getTestCerts());
 
     // Note that the getNormalizedToken() method for PKI handlers do not use the resolve tag.
@@ -101,7 +101,7 @@ public class PKIHandlerTest {
     HttpServletResponse response = mock(HttpServletResponse.class);
     SecurityFilterChain chain = mock(SecurityFilterChain.class);
 
-    when(request.getAttribute(("javax.servlet.request.X509Certificate"))).thenReturn(null);
+    when(request.getAttribute(("jakarta.servlet.request.X509Certificate"))).thenReturn(null);
 
     // Note that the getNormalizedToken() method for PKI handlers do not use the resolve tag.
     HandlerResult result = null;
@@ -122,7 +122,7 @@ public class PKIHandlerTest {
     HttpServletResponse response = mock(HttpServletResponse.class);
     SecurityFilterChain chain = mock(SecurityFilterChain.class);
 
-    when(request.getAttribute(("javax.servlet.request.X509Certificate")))
+    when(request.getAttribute(("jakarta.servlet.request.X509Certificate")))
         .thenReturn(getTestCerts());
 
     // should return REDIRECTED
@@ -142,7 +142,7 @@ public class PKIHandlerTest {
     HttpServletRequest httpRequest = mock(HttpServletRequest.class);
     SecurityFilterChain chain = mock(SecurityFilterChain.class);
 
-    when(httpRequest.getAttribute(("javax.servlet.request.X509Certificate")))
+    when(httpRequest.getAttribute(("jakarta.servlet.request.X509Certificate")))
         .thenReturn(getTestCerts());
 
     HandlerResult result = handler.getNormalizedToken(httpRequest, null, chain, true);

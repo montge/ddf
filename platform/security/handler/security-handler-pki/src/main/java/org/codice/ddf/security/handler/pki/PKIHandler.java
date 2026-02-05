@@ -14,11 +14,11 @@
 package org.codice.ddf.security.handler.pki;
 
 import ddf.security.audit.SecurityLogger;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.cert.X509Certificate;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
@@ -82,7 +82,7 @@ public class PKIHandler implements AuthenticationHandler {
 
     // doesn't matter what the resolve flag is set to, we do the same action
     X509Certificate[] certs =
-        (X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
+        (X509Certificate[]) request.getAttribute("jakarta.servlet.request.X509Certificate");
     AuthenticationToken token = tokenFactory.fromCertificates(certs, request.getRemoteAddr());
 
     HttpServletResponse httpResponse =

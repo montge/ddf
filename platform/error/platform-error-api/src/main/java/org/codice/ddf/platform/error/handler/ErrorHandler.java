@@ -13,8 +13,8 @@
  */
 package org.codice.ddf.platform.error.handler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface ErrorHandler {
   public void handleError(

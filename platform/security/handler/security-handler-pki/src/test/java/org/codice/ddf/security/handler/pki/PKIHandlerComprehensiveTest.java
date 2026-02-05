@@ -27,12 +27,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.security.audit.SecurityLogger;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
 import org.codice.ddf.security.handler.AuthenticationTokenFactory;
@@ -50,7 +50,7 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class PKIHandlerComprehensiveTest {
 
-  private static final String CERT_ATTRIBUTE = "javax.servlet.request.X509Certificate";
+  private static final String CERT_ATTRIBUTE = "jakarta.servlet.request.X509Certificate";
   private static final String TEST_PATH = "/services/catalog";
   private static final String TEST_IP = "192.168.1.100";
 

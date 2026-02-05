@@ -17,7 +17,7 @@
 
     <bean id="prometheusmetrics" class="org.codice.ddf.metrics.endpoint.PrometheusMetricsEndpoint" />
 
-    <service interface="javax.servlet.Servlet" ref="prometheusmetrics">
+    <service interface="jakarta.servlet.Servlet" ref="prometheusmetrics">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.pattern" value="/metrics/*"/>
             <entry key="osgi.http.whiteboard.servlet.name" value="prometheusmetrics"/>

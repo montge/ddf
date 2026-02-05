@@ -13,9 +13,9 @@
  */
 package org.codice.ddf.platform.filter;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.io.IOException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 
 /**
  * {@link SecurityFilter} is a marker interface that indicates that the {@link Filter}s will be
