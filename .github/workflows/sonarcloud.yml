@@ -3,11 +3,11 @@ name: SonarCloud Analysis
 on:
   push:
     branches:
-      - master
+      - main
       - '*.x'
   pull_request:
     branches:
-      - master
+      - main
       - '*.x'
   schedule:
     # Run nightly for full analysis with coverage
@@ -21,16 +21,17 @@ env:
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
 
 jobs:
-  sonarcloud:
-    name: SonarCloud Analysis
+  # Compile-only analysis for push/PR events (fast feedback, no coverage)
+  analysis:
+    name: SonarCloud Analysis (Compile Only)
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 60
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Shallow clones should be disabled for a better relevancy of analysis
           fetch-depth: 0
 
       - name: Set up JDK 17
@@ -47,9 +48,7 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # Build and install all modules first (required for multi-module SNAPSHOT deps)
-      # Then run sonar analysis
-      - name: Build project
+      - name: Build project (compile only)
         run: |
           mvn $MAVEN_CLI_OPTS install -DskipTests \
             -pl '!distribution/docs' \
@@ -62,7 +61,46 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn $MAVEN_CLI_OPTS sonar:sonar \
+            -pl '!distribution/docs'
+
+  # Full analysis with tests + JaCoCo coverage for nightly/manual runs
+  analysis-with-coverage:
+    name: SonarCloud Analysis (With Coverage)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build and test with JaCoCo coverage
+        run: |
+          mvn $MAVEN_CLI_OPTS install \
             -pl '!distribution/docs' \
-            -Dsonar.projectKey=montge_ddf \
-            -Dsonar.organization=montge \
-            -Dsonar.host.url=https://sonarcloud.io
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true
+
+      - name: Run SonarCloud analysis with coverage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn $MAVEN_CLI_OPTS sonar:sonar \
+            -pl '!distribution/docs'

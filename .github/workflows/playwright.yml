@@ -1,16 +1,16 @@
 name: Playwright E2E Tests
 
 on:
-  # Run on push to master (but only if UI files changed)
+  # Run on push to main (but only if UI files changed)
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - 'catalog/ui/**'
       - '.github/workflows/playwright.yml'
 
-  # Run on PRs targeting master (but only if UI files changed)
+  # Run on PRs targeting main (but only if UI files changed)
   pull_request:
-    branches: [master]
+    branches: [main]
     paths:
       - 'catalog/ui/**'
       - '.github/workflows/playwright.yml'

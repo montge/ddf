@@ -249,7 +249,7 @@ if not Path(coverage_dir).exists():
 ```yaml
 push:
   branches:
-    - master
+    - main
     - '*.x'  # Version branches
 ```
 ✅ Full workflow runs on commits to production branches
@@ -258,7 +258,7 @@ push:
 ```yaml
 pull_request:
   branches:
-    - master
+    - main
     - '*.x'
 ```
 ✅ Full workflow runs on PRs (no validation-only shortcut, since this is the parallel strategy)
@@ -430,7 +430,7 @@ Total: 80 + 240 + 20 = 340 runner-minutes per workflow run
 5. Verify Job 7 reports failure correctly
 
 **Phase 3: Production Deployment (1 week monitoring)**
-1. Merge to master
+1. Merge to main
 2. Monitor first nightly build
 3. Track job execution times
 4. Verify artifacts within storage limits
@@ -446,7 +446,7 @@ Total: 80 + 240 + 20 = 340 runner-minutes per workflow run
 
 # Option 2: Quick fix
 git revert <commit-hash>
-git push origin master
+git push origin main
 
 # Option 3: Disable workflow temporarily
 # In GitHub UI: Actions → Workflows → build-parallel.yml → Disable
@@ -502,7 +502,7 @@ git push origin master
 **Recommended Next Steps:**
 1. Test on feature branch
 2. Create PR and verify all features
-3. Merge to master
+3. Merge to main
 4. Monitor first week of production runs
 5. Optimize Job 6 if bottleneck persists
 

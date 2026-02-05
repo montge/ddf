@@ -398,6 +398,7 @@
         <solr.download.url>https://archive.apache.org/dist</solr.download.url>
 
         <!-- SonarCloud Properties -->
+        <sonar.projectKey>montge_ddf</sonar.projectKey>
         <sonar.organization>montge</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/${project.report.output.directory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>

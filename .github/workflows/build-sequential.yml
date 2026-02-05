@@ -3,11 +3,11 @@ name: Build and Test
 on:
   push:
     branches:
-      - master
+      - main
       - '*.x'  # Version branches like 2.29.x
   pull_request:
     branches:
-      - master
+      - main
       - '*.x'
   workflow_dispatch:  # Manual trigger
   schedule:

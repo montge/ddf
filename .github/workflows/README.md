@@ -10,7 +10,7 @@ This directory contains comprehensive GitHub Actions workflows for DDF continuou
 
 **Triggers:**
 - Pull requests (incremental build)
-- Push to master and version branches (full build)
+- Push to main and version branches (full build)
 - Manual trigger (workflow_dispatch)
 - Nightly at 2 AM UTC (scheduled)
 
@@ -18,7 +18,7 @@ This directory contains comprehensive GitHub Actions workflows for DDF continuou
 - `validate` - POM validation and code formatting check (PRs only)
 - `incremental-build` - Build only changed modules for fast feedback (PRs only)
 - `full-build` - Complete build with all tests on Java 17 & 21 matrix
-- `deploy` - Deploy artifacts to Maven Central (master/version branches)
+- `deploy` - Deploy artifacts to Maven Central (main/version branches)
 - `nightly-failure-notification` - Create issue on nightly build failure
 
 **Key Features:**
@@ -34,12 +34,12 @@ This directory contains comprehensive GitHub Actions workflows for DDF continuou
 
 **Triggers:**
 - Pull requests
-- Push to master and version branches
+- Push to main and version branches
 - Manual trigger
 
 **Jobs:**
 - `coverage-analysis` - Run JaCoCo, extract metrics, enforce thresholds
-- `coverage-trend` - Track coverage over time with Codecov (master only)
+- `coverage-trend` - Track coverage over time with Codecov (main only)
 
 **Coverage Targets:**
 - **Baseline:** 65% (minimum to pass CI)
@@ -60,7 +60,7 @@ This directory contains comprehensive GitHub Actions workflows for DDF continuou
 
 **Triggers:**
 - Pull requests
-- Push to master and version branches
+- Push to main and version branches
 - Manual trigger
 - Weekly on Sundays at 3 AM UTC (scheduled)
 
@@ -167,12 +167,12 @@ CODECOV_TOKEN        - Codecov.io token for coverage tracking
 
 #### Branch Protection Rules
 
-Configure for `master` and `*.x` branches:
+Configure for `main` and `*.x` branches:
 
 **Settings > Branches > Add rule**
 
 ```yaml
-Branch name pattern: master
+Branch name pattern: main
 ```
 
 **Protection rules:**
@@ -232,7 +232,7 @@ Workflow permissions:
    ```
 
 3. **Create a Pull Request:**
-   - Open PR against `master`
+   - Open PR against `main`
    - Verify `validate` job runs and passes
    - Verify `incremental-build` runs on Java 17 and 21
    - Check coverage report in PR comments
@@ -252,7 +252,7 @@ Workflow permissions:
 ### After Merging to Master
 
 1. **Monitor First Full Build:**
-   - Watch the full build on master
+   - Watch the full build on main
    - Verify all 455 modules compile
    - Check that artifacts are deployed (if configured)
 

@@ -809,7 +809,7 @@ env:
 **Symptoms:** Job 7 succeeds but no PR comment appears
 
 **Diagnosis:**
-- Check if workflow ran on PR (not push to master)
+- Check if workflow ran on PR (not push to main)
 - Check GitHub Actions permissions
 - Look for "Comment on PR" step errors
 
