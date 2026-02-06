@@ -60,7 +60,10 @@ public class OAuthHandler implements AuthenticationHandler {
       return processHeadRequest(httpResponse);
     }
 
-    JEEContext jeeContext = new JEEContext(httpRequest, httpResponse);
+    JEEContext jeeContext =
+        new JEEContext(
+            Pac4jServletAdapter.adaptRequest(httpRequest),
+            Pac4jServletAdapter.adaptResponse(httpResponse));
 
     // time to try and pull credentials off of the request
     LOGGER.debug(
