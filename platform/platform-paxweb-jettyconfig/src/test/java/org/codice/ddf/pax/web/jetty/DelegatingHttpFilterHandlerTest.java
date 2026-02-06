@@ -26,8 +26,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import org.codice.ddf.platform.filter.http.HttpFilter;
 import org.codice.ddf.platform.filter.http.HttpFilterChain;
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.ee10.servlet.ServletApiRequest;
+import org.eclipse.jetty.ee10.servlet.ServletContextRequest;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -51,12 +53,13 @@ public class DelegatingHttpFilterHandlerTest {
     return mockFilter;
   }
 
-  /**
-   * Rank services in the order they are passed in: First reference = highest rank Last reference =
-   * lowest rank
-   *
-   * @param references
-   */
+  private ServletContextRequest createMockRequest() {
+    ServletContextRequest mockRequest = mock(ServletContextRequest.class);
+    when(mockRequest.getServletApiRequest()).thenReturn(mock(ServletApiRequest.class));
+    when(mockRequest.getHttpServletResponse()).thenReturn(mock(HttpServletResponse.class));
+    return mockRequest;
+  }
+
   private void rankServiceReferences(ServiceReference<?>... references) {
     for (int i = 0; i < references.length; i++) {
       for (int j = i + 1; j < references.length; j++) {
@@ -68,9 +71,9 @@ public class DelegatingHttpFilterHandlerTest {
 
   @Test
   public void testDelegatingHttpFilterHandler() throws Exception {
-    Request mockBaseRequest = mock(Request.class);
-    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+    ServletContextRequest mockRequest = createMockRequest();
+    Response mockResponse = mock(Response.class);
+    Callback mockCallback = mock(Callback.class);
 
     HttpFilter mockFilter = mockHttpFilter();
     ServiceReference<HttpFilter> mockServiceReference = mock(ServiceReference.class);
@@ -80,22 +83,18 @@ public class DelegatingHttpFilterHandlerTest {
         .thenReturn(Collections.singletonList(mockServiceReference));
     when(mockBundleContext.getService(mockServiceReference)).thenReturn(mockFilter);
 
-    Handler handler = mock(Handler.class);
-
     DelegatingHttpFilterHandler underTest = new DelegatingHttpFilterHandler(mockBundleContext);
-    underTest.setHandler(handler);
 
-    underTest.handle("/", mockBaseRequest, mockRequest, mockResponse);
+    underTest.handle(mockRequest, mockResponse, mockCallback);
 
     verify(mockFilter).doFilter(any(), any(), any());
-    verify(handler).handle("/", mockBaseRequest, mockRequest, mockResponse);
   }
 
   @Test
   public void testDelegatingHttpFilterHandlerWithServiceRanking() throws Exception {
-    Request mockBaseRequest = mock(Request.class);
-    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+    ServletContextRequest mockRequest = createMockRequest();
+    Response mockResponse = mock(Response.class);
+    Callback mockCallback = mock(Callback.class);
 
     HttpFilter filter1 = mockHttpFilter();
     HttpFilter filter2 = mockHttpFilter();
@@ -113,12 +112,9 @@ public class DelegatingHttpFilterHandlerTest {
     when(mockBundleContext.getServiceReferences(any(Class.class), anyString()))
         .thenReturn(Arrays.asList(reference2, reference3, reference1));
 
-    Handler handler = mock(Handler.class);
-
     DelegatingHttpFilterHandler underTest = new DelegatingHttpFilterHandler(mockBundleContext);
-    underTest.setHandler(handler);
 
-    underTest.handle("/", mockBaseRequest, mockRequest, mockResponse);
+    underTest.handle(mockRequest, mockResponse, mockCallback);
 
     InOrder inOrder = Mockito.inOrder(filter1, filter2, filter3);
     inOrder.verify(filter1).doFilter(any(), any(), any());

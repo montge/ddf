@@ -30,7 +30,7 @@
 
 ### 2.4 Filters and Logging
 - [x] 2.4.1 `ClientInfoFilter`, `DoPrivilegedFilter`, `TraceContextFilter`, `ResponseFilter`: verified — no Jetty API usage, only javax.servlet (migrated in task 3)
-- [x] 2.4.2 Update logback-access: `ch.qos.logback:logback-access:1.2.13` → `ch.qos.logback.access:jetty12:2.0.3` + `logback-access-common:2.0.3`
+- [x] 2.4.2 Update logback-access: `ch.qos.logback:logback-access:1.2.13` → `ch.qos.logback.access:logback-access-jetty12:2.0.9` + `logback-access-common:2.0.9`
 - [x] 2.4.3 Update `jetty.xml`: removed RequestLogHandler, use Server.setRequestLog() directly
 
 ### 2.5 Fragment-Host and POM
@@ -64,8 +64,8 @@ This should be a separate change/feature branch.
 
 ## 5. Build and Integration Validation
 
-- [ ] 5.1 Compile: `mvn compile -Dquick` passes with all changes (expect pac4j module failures)
-- [ ] 5.2 Unit tests: `mvn test` passes for platform-paxweb-jettyconfig
+- [x] 5.1 Compile: `mvn compile -Dquick` passes with all changes (pac4j modules not affected; only packaging-phase errors remain for solr-factory-impl and kernel which need `install` not `compile`)
+- [x] 5.2 Unit tests: `mvn test` passes for platform-paxweb-jettyconfig (85 tests, 0 failures)
 - [ ] 5.3 Unit tests: `mvn test` passes for all security filter/handler/servlet modules
 - [ ] 5.4 Distribution build: `mvn install -Dfast` produces distribution artifact
 - [ ] 5.5 Boot test: kernel starts with Pax Web 11 features, Jetty 12 active

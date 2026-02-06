@@ -17,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +33,8 @@ import org.codice.ddf.platform.filter.http.HttpFilter;
 import org.codice.ddf.platform.filter.http.HttpFilterChain;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,13 +45,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class ProxyHttpFilterChainTest {
 
-  @Mock private HttpServletRequest mockRequest;
+  @Mock private HttpServletRequest mockServletRequest;
 
-  @Mock private HttpServletResponse mockResponse;
+  @Mock private HttpServletResponse mockServletResponse;
+
+  @Mock private Handler.Wrapper mockWrapper;
 
   @Mock private Handler mockHandler;
 
-  @Mock private Request mockBaseRequest;
+  @Mock private Request mockRequest;
+
+  @Mock private Response mockResponse;
+
+  @Mock private Callback mockCallback;
 
   @Mock private HttpFilter mockFilter1;
 
@@ -57,24 +65,22 @@ public class ProxyHttpFilterChainTest {
 
   @Mock private HttpFilter mockFilter3;
 
-  private static final String TARGET = "/test/target";
-
   @BeforeEach
   public void setup() {
     // Setup default behavior if needed
   }
 
   @Test
-  public void testDoFilterWithNoFilters() throws IOException, ServletException {
+  public void testDoFilterWithNoFilters() throws Exception {
+    when(mockWrapper.getHandler()).thenReturn(mockHandler);
     List<HttpFilter> filters = Collections.emptyList();
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    // With no filters, should call handler directly
-    verify(mockHandler).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
+    verify(mockHandler).handle(mockRequest, mockResponse, mockCallback);
   }
 
   @Test
@@ -82,14 +88,12 @@ public class ProxyHttpFilterChainTest {
     List<HttpFilter> filters = Collections.singletonList(mockFilter1);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    // Should call the filter
-    verify(mockFilter1).doFilter(eq(mockRequest), eq(mockResponse), any(HttpFilterChain.class));
-    // Handler should not be called yet (filter hasn't called chain.doFilter)
-    verify(mockHandler, never()).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
+    verify(mockFilter1)
+        .doFilter(eq(mockServletRequest), eq(mockServletResponse), any(HttpFilterChain.class));
   }
 
   @Test
@@ -97,54 +101,53 @@ public class ProxyHttpFilterChainTest {
     List<HttpFilter> filters = Arrays.asList(mockFilter1, mockFilter2, mockFilter3);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    // Should call first filter
-    verify(mockFilter1).doFilter(eq(mockRequest), eq(mockResponse), any(HttpFilterChain.class));
-    // Other filters not called yet
+    verify(mockFilter1)
+        .doFilter(eq(mockServletRequest), eq(mockServletResponse), any(HttpFilterChain.class));
     verify(mockFilter2, never()).doFilter(any(), any(), any());
     verify(mockFilter3, never()).doFilter(any(), any(), any());
   }
 
   @Test
   public void testFilterChainExecutesInOrder() throws Exception {
+    when(mockWrapper.getHandler()).thenReturn(mockHandler);
     List<HttpFilter> filters = Arrays.asList(mockFilter1, mockFilter2, mockFilter3);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    // Mock filters to call chain.doFilter
     mockFilterBehavior(mockFilter1);
     mockFilterBehavior(mockFilter2);
     mockFilterBehavior(mockFilter3);
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
     InOrder inOrder = inOrder(mockFilter1, mockFilter2, mockFilter3, mockHandler);
-    inOrder.verify(mockFilter1).doFilter(eq(mockRequest), eq(mockResponse), any());
-    inOrder.verify(mockFilter2).doFilter(eq(mockRequest), eq(mockResponse), any());
-    inOrder.verify(mockFilter3).doFilter(eq(mockRequest), eq(mockResponse), any());
-    inOrder.verify(mockHandler).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
+    inOrder.verify(mockFilter1).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    inOrder.verify(mockFilter2).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    inOrder.verify(mockFilter3).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    inOrder.verify(mockHandler).handle(mockRequest, mockResponse, mockCallback);
   }
 
   @Test
   public void testHandlerCalledAfterAllFilters() throws Exception {
+    when(mockWrapper.getHandler()).thenReturn(mockHandler);
     List<HttpFilter> filters = Arrays.asList(mockFilter1, mockFilter2);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    // Mock filters to call chain.doFilter
     mockFilterBehavior(mockFilter1);
     mockFilterBehavior(mockFilter2);
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    verify(mockFilter1).doFilter(eq(mockRequest), eq(mockResponse), any());
-    verify(mockFilter2).doFilter(eq(mockRequest), eq(mockResponse), any());
-    verify(mockHandler).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
+    verify(mockFilter1).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    verify(mockFilter2).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    verify(mockHandler).handle(mockRequest, mockResponse, mockCallback);
   }
 
   @Test
@@ -152,50 +155,28 @@ public class ProxyHttpFilterChainTest {
     List<HttpFilter> filters = Arrays.asList(mockFilter1, mockFilter2, mockFilter3);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    // First filter calls chain.doFilter
     mockFilterBehavior(mockFilter1);
-    // Second filter does NOT call chain.doFilter (stops the chain)
-    // mockFilter2 default behavior is to do nothing
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    verify(mockFilter1).doFilter(eq(mockRequest), eq(mockResponse), any());
-    verify(mockFilter2).doFilter(eq(mockRequest), eq(mockResponse), any());
-    // Third filter should not be called
+    verify(mockFilter1).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    verify(mockFilter2).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
     verify(mockFilter3, never()).doFilter(any(), any(), any());
-    // Handler should not be called
-    verify(mockHandler, never()).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
   }
 
   @Test
-  public void testEmptyListGoesDirectlyToHandler() throws IOException, ServletException {
+  public void testEmptyListGoesDirectlyToHandler() throws Exception {
+    when(mockWrapper.getHandler()).thenReturn(mockHandler);
     List<HttpFilter> filters = Collections.emptyList();
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    verify(mockHandler, times(1)).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
-  }
-
-  @Test
-  public void testChainPassesCorrectParameters() throws Exception {
-    List<HttpFilter> filters = Collections.singletonList(mockFilter1);
-
-    String customTarget = "/custom/target";
-    Request customBaseRequest = mock(Request.class);
-
-    ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, customTarget, customBaseRequest);
-
-    mockFilterBehavior(mockFilter1);
-
-    chain.doFilter(mockRequest, mockResponse);
-
-    verify(mockHandler).handle(customTarget, customBaseRequest, mockRequest, mockResponse);
+    verify(mockHandler, times(1)).handle(mockRequest, mockResponse, mockCallback);
   }
 
   @Test
@@ -203,14 +184,13 @@ public class ProxyHttpFilterChainTest {
     List<HttpFilter> filters = Collections.singletonList(mockFilter1);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    // Mock filter to throw IOException
     org.mockito.Mockito.doThrow(new IOException("Test exception"))
         .when(mockFilter1)
         .doFilter(any(), any(), any());
 
-    assertThrows(IOException.class, () -> chain.doFilter(mockRequest, mockResponse));
+    assertThrows(IOException.class, () -> chain.doFilter(mockServletRequest, mockServletResponse));
   }
 
   @Test
@@ -218,14 +198,14 @@ public class ProxyHttpFilterChainTest {
     List<HttpFilter> filters = Collections.singletonList(mockFilter1);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
-    // Mock filter to throw ServletException
     org.mockito.Mockito.doThrow(new ServletException("Test exception"))
         .when(mockFilter1)
         .doFilter(any(), any(), any());
 
-    assertThrows(ServletException.class, () -> chain.doFilter(mockRequest, mockResponse));
+    assertThrows(
+        ServletException.class, () -> chain.doFilter(mockServletRequest, mockServletResponse));
   }
 
   @Test
@@ -233,88 +213,68 @@ public class ProxyHttpFilterChainTest {
     List<HttpFilter> filters = Arrays.asList(mockFilter1, mockFilter2, mockFilter3);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
     mockFilterBehavior(mockFilter1);
-    // Second filter throws exception
     org.mockito.Mockito.doThrow(new ServletException("Test exception"))
         .when(mockFilter2)
         .doFilter(any(), any(), any());
 
     try {
-      chain.doFilter(mockRequest, mockResponse);
+      chain.doFilter(mockServletRequest, mockServletResponse);
     } catch (ServletException e) {
       // Expected
     }
 
-    verify(mockFilter1).doFilter(eq(mockRequest), eq(mockResponse), any());
-    verify(mockFilter2).doFilter(eq(mockRequest), eq(mockResponse), any());
+    verify(mockFilter1).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    verify(mockFilter2).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
     verify(mockFilter3, never()).doFilter(any(), any(), any());
-    verify(mockHandler, never()).handle(any(), any(), any(), any());
   }
 
   @Test
-  public void testChainWithNullTarget() throws Exception {
+  public void testCallbackSucceedsWhenNoWrappedHandler() throws Exception {
+    when(mockWrapper.getHandler()).thenReturn(null);
     List<HttpFilter> filters = Collections.singletonList(mockFilter1);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, null, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
     mockFilterBehavior(mockFilter1);
 
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    verify(mockHandler).handle(null, mockBaseRequest, mockRequest, mockResponse);
-  }
-
-  @Test
-  public void testChainWithNullHandler() throws IOException, ServletException {
-    List<HttpFilter> filters = Collections.singletonList(mockFilter1);
-
-    ProxyHttpFilterChain chain = new ProxyHttpFilterChain(filters, null, TARGET, mockBaseRequest);
-
-    mockFilterBehavior(mockFilter1);
-
-    try {
-      chain.doFilter(mockRequest, mockResponse);
-    } catch (NullPointerException e) {
-      // Expected when handler is null
-    }
+    verify(mockCallback).succeeded();
   }
 
   @Test
   public void testChainIsNotReusable() throws Exception {
+    when(mockWrapper.getHandler()).thenReturn(mockHandler);
     List<HttpFilter> filters = Arrays.asList(mockFilter1, mockFilter2);
 
     ProxyHttpFilterChain chain =
-        new ProxyHttpFilterChain(filters, mockHandler, TARGET, mockBaseRequest);
+        new ProxyHttpFilterChain(filters, mockWrapper, mockRequest, mockResponse, mockCallback);
 
     mockFilterBehavior(mockFilter1);
     mockFilterBehavior(mockFilter2);
 
-    // First call should work normally
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    verify(mockFilter1, times(1)).doFilter(eq(mockRequest), eq(mockResponse), any());
-    verify(mockFilter2, times(1)).doFilter(eq(mockRequest), eq(mockResponse), any());
-    verify(mockHandler, times(1)).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
+    verify(mockFilter1, times(1)).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    verify(mockFilter2, times(1)).doFilter(eq(mockServletRequest), eq(mockServletResponse), any());
+    verify(mockHandler, times(1)).handle(mockRequest, mockResponse, mockCallback);
 
-    // Second call should go directly to handler (iterator exhausted)
-    chain.doFilter(mockRequest, mockResponse);
+    chain.doFilter(mockServletRequest, mockServletResponse);
 
-    // Filters should not be called again
     verify(mockFilter1, times(1)).doFilter(any(), any(), any());
     verify(mockFilter2, times(1)).doFilter(any(), any(), any());
-    // Handler should be called again
-    verify(mockHandler, times(2)).handle(TARGET, mockBaseRequest, mockRequest, mockResponse);
+    verify(mockHandler, times(2)).handle(mockRequest, mockResponse, mockCallback);
   }
 
-  /** Helper method to mock filter behavior so it calls chain.doFilter */
   private void mockFilterBehavior(HttpFilter filter) throws IOException, ServletException {
     org.mockito.Mockito.doAnswer(
             invocation -> {
               HttpFilterChain chain = invocation.getArgument(2);
-              chain.doFilter(mockRequest, mockResponse);
+              chain.doFilter(mockServletRequest, mockServletResponse);
               return null;
             })
         .when(filter)
