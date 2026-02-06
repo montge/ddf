@@ -5,8 +5,8 @@
 - [x] 1.3 Update kernel feature.xml: Pax Web 11 repository URL (auto via pax.web.version property)
 - [x] 1.4 Update kernel feature.xml: remove `javax.servlet-api` bundle, keep `jakarta-servlet-api` feature
 - [x] 1.5 Update feature.xml files: pax-web-http-war→pax-web-war, pax-web-http-whiteboard→pax-web-whiteboard (kernel, security, admin)
-- [ ] 1.6 Update pax-web-jsp bundle version in security feature.xml to match Pax Web 11.1.0
-- [ ] 1.7 Verify `org.ops4j.pax.web.cfg` compatibility with Pax Web 11 configuration schema
+- [x] 1.6 pax-web-jsp already uses `${pax.web.version}` (11.1.0) — no change needed
+- [x] 1.7 `org.ops4j.pax.web.cfg` property names unchanged between Pax Web 8→11 — verified compatible
 - [ ] 1.8 Boot test: start Karaf kernel with Pax Web 11 features and verify web container starts
 
 ## 2. Jetty 12 Custom Code Adaptation
@@ -36,7 +36,7 @@
 ### 2.5 Fragment-Host and POM
 - [x] 2.5.1 Update `platform-paxweb-jettyconfig/pom.xml`: Fragment-Host `[8,9)` → `[11,12)`, add `jetty-ee10-servlet` dependency
 - [x] 2.5.2 Replace `logback-access` with `logback-access-common` + `jetty12`, update Embed-Dependency
-- [ ] 2.5.3 Update Pax Web API dependency version to 11.1.0 (managed by parent — verify resolves)
+- [x] 2.5.3 Pax Web API dependency resolves to 11.1.0 via `${pax.web.version}` property — verified
 
 ## 3. javax.servlet → jakarta.servlet Migration
 
@@ -68,6 +68,7 @@ This should be a separate change/feature branch.
 - [x] 5.2 Unit tests: `mvn test` passes for platform-paxweb-jettyconfig (85 tests, 0 failures)
 - [x] 5.3 Unit tests: `mvn test` passes for all security filter/handler/servlet modules (SAML handler has pre-existing failures on master too — not caused by migration)
 - [x] 5.4 Distribution build: `mvn install -Dfast` produces distribution artifact (all modules pass except unrelated docs empty-archive issue)
+- [x] 5.4a Assembly cleanup: removed redundant Jetty dependencySets from common-bin.xml, component.xml; removed unused Jetty deps from kernel/pom.xml; updated error-page-injector to jetty-ee10-servlet
 - [ ] 5.5 Boot test: kernel starts with Pax Web 11 features, Jetty 12 active
 - [ ] 5.6 Boot test: security features install, custom Jetty authentication working
 - [ ] 5.7 Boot test: web applications accessible via HTTPS
