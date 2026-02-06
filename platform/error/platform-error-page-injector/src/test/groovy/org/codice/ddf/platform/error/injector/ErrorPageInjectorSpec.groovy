@@ -14,7 +14,6 @@
 
 package org.codice.ddf.platform.error.injector
 
-import org.eclipse.jetty.servlet.ErrorPageErrorHandler
 import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 import org.osgi.framework.Bundle
@@ -24,8 +23,6 @@ import org.osgi.framework.ServiceEvent
 import org.osgi.framework.ServiceReference
 import spock.lang.Shared
 import spock.lang.Specification
-
-import org.eclipse.jetty.servlet.ErrorPageErrorHandler
 
 import jakarta.servlet.ServletContext
 import jakarta.servlet.Servlet
