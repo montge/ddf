@@ -93,7 +93,7 @@
         <feature version="${karaf.version}">standard</feature>
         <feature version="${karaf.version}">eventadmin</feature>
         <feature version="${karaf.version}">jasypt-encryption</feature>
-        <feature version="${pax.web.version}">pax-web-http-war</feature>
+        <feature version="${pax.web.version}">pax-web-war</feature>
         <feature version="${pax.web.version}">pax-web-karaf</feature>
         <!-- Pax Web 11 provides jakarta.servlet 6.x via its own feature dependencies -->
         <feature>jakarta-servlet-api</feature>
