@@ -96,7 +96,10 @@ public class OidcHandler implements AuthenticationHandler {
     LOGGER.debug(
         "Doing Oidc authentication and authorization for path {}.", httpRequest.getContextPath());
 
-    JEEContext jeeContext = new JEEContext(httpRequest, httpResponse);
+    JEEContext jeeContext =
+        new JEEContext(
+            Pac4jServletAdapter.adaptRequest(httpRequest),
+            Pac4jServletAdapter.adaptResponse(httpResponse));
 
     StringBuffer requestUrlBuffer = httpRequest.getRequestURL();
     requestUrlBuffer.append(

@@ -61,7 +61,9 @@ public class OidcCallbackEndpoint {
           "Passed in request must have a corresponding session to logout.");
     }
 
-    JEEContext jeeContext = new JEEContext(request, response);
+    JEEContext jeeContext =
+        new JEEContext(
+            Pac4jServletAdapter.adaptRequest(request), Pac4jServletAdapter.adaptResponse(response));
 
     this.securityLogger.audit("Logging out");
     new JEESessionStore().destroySession(jeeContext);

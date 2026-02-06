@@ -91,7 +91,10 @@ public class OidcLogoutActionProvider implements ActionProvider {
       HttpServletRequest request = (HttpServletRequest) ((Map) subjectMap).get("http_request");
       HttpServletResponse response = (HttpServletResponse) ((Map) subjectMap).get("http_response");
 
-      JEEContext jeeContext = new JEEContext(request, response);
+      JEEContext jeeContext =
+          new JEEContext(
+              Pac4jServletAdapter.adaptRequest(request),
+              Pac4jServletAdapter.adaptResponse(response));
 
       HttpSession session = request.getSession(false);
       PrincipalHolder principalHolder = null;
