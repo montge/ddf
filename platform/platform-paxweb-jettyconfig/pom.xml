@@ -65,7 +65,7 @@
         </dependency>
         <dependency>
             <groupId>ch.qos.logback.access</groupId>
-            <artifactId>jetty12</artifactId>
+            <artifactId>logback-access-jetty12</artifactId>
             <version>${logback-access.version}</version>
         </dependency>
         <dependency>
@@ -136,7 +136,7 @@
                         <Embed-Dependency>
                             logback-core,
                             logback-access-common,
-                            jetty12
+                            logback-access-jetty12
                         </Embed-Dependency>
                         <Import-Package>
                             !org.apache.catalina,

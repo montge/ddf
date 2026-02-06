@@ -279,8 +279,8 @@
         <logback.classic.version>1.5.21</logback.classic.version>
         <logback.version>1.5.21</logback.version>
         <!-- logback-access 2.0.x supports Jetty 12 with new Maven coordinates:
-             ch.qos.logback.access:logback-access-common and ch.qos.logback.access:jetty12 -->
-        <logback-access.version>2.0.3</logback-access.version>
+             ch.qos.logback.access:logback-access-common and ch.qos.logback.access:logback-access-jetty12 -->
+        <logback-access.version>2.0.9</logback-access.version>
         <mariadb.version>2.4.1</mariadb.version>
         <maven.failsafe.version>3.5.3</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>

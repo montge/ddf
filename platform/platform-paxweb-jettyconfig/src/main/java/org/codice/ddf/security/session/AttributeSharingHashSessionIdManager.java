@@ -48,9 +48,9 @@ import org.codice.ddf.configuration.DictionaryMap;
 import org.codice.ddf.platform.session.api.HttpSessionInvalidator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.session.DefaultSessionIdManager;
-import org.eclipse.jetty.session.Session;
+import org.eclipse.jetty.session.ManagedSession;
 import org.eclipse.jetty.session.SessionData;
-import org.eclipse.jetty.session.SessionHandler;
+import org.eclipse.jetty.session.SessionManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -151,14 +151,18 @@ public class AttributeSharingHashSessionIdManager extends DefaultSessionIdManage
    * @param id the session id
    */
   private void invalidateSession(String id) {
-    Iterator handlerIterator = this.getSessionHandlers().iterator();
+    Iterator handlerIterator = this.getSessionManagers().iterator();
 
     while (handlerIterator.hasNext()) {
-      SessionHandler currSessionHandler = (SessionHandler) handlerIterator.next();
-      Session session = currSessionHandler.getSession(id);
-      if (session != null && session.isValid()) {
-        session.invalidate();
-        break;
+      SessionManager currSessionManager = (SessionManager) handlerIterator.next();
+      try {
+        ManagedSession session = currSessionManager.getManagedSession(id);
+        if (session != null && session.isValid()) {
+          session.invalidate();
+          break;
+        }
+      } catch (Exception e) {
+        LOGGER.trace("Unable to get managed session for id {}", id, e);
       }
     }
   }

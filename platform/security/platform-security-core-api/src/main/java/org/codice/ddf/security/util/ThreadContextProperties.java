@@ -16,13 +16,13 @@ package org.codice.ddf.security.util;
 import com.google.common.net.HttpHeaders;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import org.apache.shiro.util.ThreadContext;
-import org.eclipse.jetty.server.Request;
 
 public final class ThreadContextProperties {
 
@@ -90,9 +90,9 @@ public final class ThreadContextProperties {
     String clientHost = request.getRemoteHost();
     String clientPort = Integer.toString(request.getRemotePort());
 
-    if (request instanceof Request) {
-      Request jettyRequest = (Request) request;
-      String xForwardedFor = jettyRequest.getHeader(HttpHeaders.X_FORWARDED_FOR.toString());
+    if (request instanceof HttpServletRequest) {
+      HttpServletRequest httpRequest = (HttpServletRequest) request;
+      String xForwardedFor = httpRequest.getHeader(HttpHeaders.X_FORWARDED_FOR.toString());
       /**
        * if the "X-FORWARDED-FOR" header is set, this is a proxied request and the X-FORWARDED-*
        * headers should contain the actual client information. Typically in this scenario, the
@@ -102,8 +102,8 @@ public final class ThreadContextProperties {
        */
       if (xForwardedFor != null && xForwardedFor.length() > 0) {
         clientIP = xForwardedFor;
-        clientHost = jettyRequest.getHeader(HttpHeaders.X_FORWARDED_HOST.toString());
-        clientPort = jettyRequest.getHeader(HttpHeaders.X_FORWARDED_PORT.toString());
+        clientHost = httpRequest.getHeader(HttpHeaders.X_FORWARDED_HOST.toString());
+        clientPort = httpRequest.getHeader(HttpHeaders.X_FORWARDED_PORT.toString());
       }
     }
     ThreadContext.put(

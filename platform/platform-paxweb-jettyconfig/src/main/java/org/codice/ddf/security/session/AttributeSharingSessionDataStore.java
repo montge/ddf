@@ -81,7 +81,7 @@ public class AttributeSharingSessionDataStore extends AbstractSessionDataStore {
   public void initialize(SessionContext context) throws Exception {
     super.initialize(context);
     this.attributeSharingHashSessionIdManager =
-        (AttributeSharingHashSessionIdManager) context.getSessionHandler().getSessionIdManager();
+        (AttributeSharingHashSessionIdManager) context.getSessionManager().getSessionIdManager();
     attributeSharingHashSessionIdManager.addSessionDataStore(this);
   }
 
@@ -115,15 +115,35 @@ public class AttributeSharingSessionDataStore extends AbstractSessionDataStore {
   }
 
   @Override
-  public Set<String> doGetExpired(Set<String> candidates) {
-    final long now = System.currentTimeMillis();
+  public Set<String> doGetExpired(long before) {
+    synchronized (sessionDataMap) {
+      return sessionDataMap.entrySet().stream()
+          .filter(e -> e.getValue().getExpiry() > 0 && e.getValue().getExpiry() < before)
+          .map(Map.Entry::getKey)
+          .collect(Collectors.toSet());
+    }
+  }
 
-    return candidates.stream().filter(c -> isExpired(c, now)).collect(Collectors.toSet());
+  @Override
+  public Set<String> doCheckExpired(Set<String> candidates, long time) {
+    return candidates.stream().filter(c -> isExpired(c, time)).collect(Collectors.toSet());
+  }
+
+  @Override
+  public void doCleanOrphans(long time) {
+    // No-op: in-memory store has no orphans to clean
   }
 
   @Override
   public boolean isPassivating() {
     return true;
+  }
+
+  @Override
+  public boolean doExists(String id) {
+    synchronized (sessionDataMap) {
+      return sessionDataMap.containsKey(id);
+    }
   }
 
   @Override

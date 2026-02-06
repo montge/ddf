@@ -17,7 +17,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Objects;
 import org.codice.ddf.platform.filter.http.HttpFilter;
 import org.codice.ddf.platform.util.SortedServiceList;
@@ -86,7 +85,7 @@ public class DelegatingHttpFilterHandler extends Handler.Wrapper {
      * The service listener won't pick up services that are already registered. Must manually
      * add them to the service list.
      */
-    Collection<ServiceReference<HttpFilter>> serviceReferences =
+    java.util.Collection<ServiceReference<HttpFilter>> serviceReferences =
         this.context.getServiceReferences(HttpFilter.class, FILTER);
     for (ServiceReference<HttpFilter> reference : serviceReferences) {
       this.listener.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, reference));

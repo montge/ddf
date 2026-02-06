@@ -15,11 +15,11 @@ package org.codice.ddf.security.session;
 
 import org.eclipse.jetty.session.SessionDataStore;
 import org.eclipse.jetty.session.SessionDataStoreFactory;
-import org.eclipse.jetty.session.SessionHandler;
+import org.eclipse.jetty.session.SessionManager;
 
 public class AttributeSharingSessionDataStoreFactory implements SessionDataStoreFactory {
   @Override
-  public SessionDataStore getSessionDataStore(SessionHandler handler) {
+  public SessionDataStore getSessionDataStore(SessionManager manager) {
     return new AttributeSharingSessionDataStore();
   }
 }

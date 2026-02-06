@@ -19,7 +19,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.UserIdentity;
-import org.eclipse.jetty.server.Request;
 
 public class JettyIdentityService implements IdentityService {
 
@@ -34,7 +33,7 @@ public class JettyIdentityService implements IdentityService {
   }
 
   @Override
-  public void onLogout(Request request) {
+  public void onLogout(UserIdentity user) {
     ThreadContext.unbindSubject();
   }
 
