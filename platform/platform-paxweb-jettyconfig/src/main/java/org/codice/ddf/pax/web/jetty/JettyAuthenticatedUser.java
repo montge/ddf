@@ -42,7 +42,7 @@ public class JettyAuthenticatedUser implements AuthenticationState.Succeeded {
   }
 
   @Override
-  public AuthenticationState logout(Request request, Response response) {
-    return null;
+  public void logout(Request request, Response response) {
+    // no-op
   }
 }
