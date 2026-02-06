@@ -17,8 +17,8 @@ import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 import spock.lang.Specification
 
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 @RunWith(JUnitPlatform.class)
 class RedirectServletSpec extends Specification {

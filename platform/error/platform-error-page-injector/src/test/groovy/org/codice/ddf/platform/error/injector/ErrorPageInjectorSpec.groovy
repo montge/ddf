@@ -27,9 +27,9 @@ import spock.lang.Specification
 
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler
 
-import javax.servlet.ServletContext
-import javax.servlet.Servlet
-import javax.servlet.SessionCookieConfig
+import jakarta.servlet.ServletContext
+import jakarta.servlet.Servlet
+import jakarta.servlet.SessionCookieConfig
 import java.lang.reflect.Field
 import java.util.concurrent.ScheduledExecutorService
 

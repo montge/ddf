@@ -66,7 +66,7 @@ This should be a separate change/feature branch.
 
 - [x] 5.1 Compile: `mvn compile -Dquick` passes with all changes (pac4j modules not affected; only packaging-phase errors remain for solr-factory-impl and kernel which need `install` not `compile`)
 - [x] 5.2 Unit tests: `mvn test` passes for platform-paxweb-jettyconfig (85 tests, 0 failures)
-- [ ] 5.3 Unit tests: `mvn test` passes for all security filter/handler/servlet modules
+- [x] 5.3 Unit tests: `mvn test` passes for all security filter/handler/servlet modules (SAML handler has pre-existing failures on master too — not caused by migration)
 - [ ] 5.4 Distribution build: `mvn install -Dfast` produces distribution artifact
 - [ ] 5.5 Boot test: kernel starts with Pax Web 11 features, Jetty 12 active
 - [ ] 5.6 Boot test: security features install, custom Jetty authentication working
