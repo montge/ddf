@@ -34,7 +34,7 @@
              description="Dependencies for the core security APIs.">
         <!-- Third Party Features -->
         <feature prerequisite="true">wrap</feature>
-        <feature>pax-web-http-whiteboard</feature>
+        <feature>pax-web-whiteboard</feature>
         <feature>pax-web-jetty-websockets</feature>
         <feature>scr</feature>
         <feature>spring</feature>
