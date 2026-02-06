@@ -4,7 +4,7 @@
 - [x] 1.2 Update `jetty.version` from `9.4.57.v20241219` to `12.1.4` (Jetty 12 used by Pax Web 11.1.0)
 - [x] 1.3 Update kernel feature.xml: Pax Web 11 repository URL (auto via pax.web.version property)
 - [x] 1.4 Update kernel feature.xml: remove `javax.servlet-api` bundle, keep `jakarta-servlet-api` feature
-- [ ] 1.5 Update security feature.xml: verify pax-web-http-whiteboard, pax-web-jetty, pax-web-http-jetty references resolve with Pax Web 11
+- [x] 1.5 Update feature.xml files: pax-web-http-war→pax-web-war, pax-web-http-whiteboard→pax-web-whiteboard (kernel, security, admin)
 - [ ] 1.6 Update pax-web-jsp bundle version in security feature.xml to match Pax Web 11.1.0
 - [ ] 1.7 Verify `org.ops4j.pax.web.cfg` compatibility with Pax Web 11 configuration schema
 - [ ] 1.8 Boot test: start Karaf kernel with Pax Web 11 features and verify web container starts
@@ -67,7 +67,7 @@ This should be a separate change/feature branch.
 - [x] 5.1 Compile: `mvn compile -Dquick` passes with all changes (pac4j modules not affected; only packaging-phase errors remain for solr-factory-impl and kernel which need `install` not `compile`)
 - [x] 5.2 Unit tests: `mvn test` passes for platform-paxweb-jettyconfig (85 tests, 0 failures)
 - [x] 5.3 Unit tests: `mvn test` passes for all security filter/handler/servlet modules (SAML handler has pre-existing failures on master too — not caused by migration)
-- [ ] 5.4 Distribution build: `mvn install -Dfast` produces distribution artifact
+- [x] 5.4 Distribution build: `mvn install -Dfast` produces distribution artifact (all modules pass except unrelated docs empty-archive issue)
 - [ ] 5.5 Boot test: kernel starts with Pax Web 11 features, Jetty 12 active
 - [ ] 5.6 Boot test: security features install, custom Jetty authentication working
 - [ ] 5.7 Boot test: web applications accessible via HTTPS
