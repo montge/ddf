@@ -24,10 +24,10 @@ import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilter;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
@@ -107,7 +107,7 @@ public class JettyAuthenticatorTest {
   }
 
   /**
-   * The {@link javax.servlet.Filter#init(FilterConfig)} javadoc does not specify that the {@link
+   * The {@link jakarta.servlet.Filter#init(FilterConfig)} javadoc does not specify that the {@link
    * FilterConfig} argument may not be null. This test confirms that there are no errors when
    * initializing the {@link SecurityFilter}s and filtering if this situation occurs.
    */
@@ -191,7 +191,7 @@ public class JettyAuthenticatorTest {
    * ServiceReference}s. Filter names must have service-property key="{@link
    * org.osgi.service.http.whiteboard.HttpWhiteboardConstants#HTTP_WHITEBOARD_FILTER_NAME}", so the
    * service-property with key="filter-name" will not be used to init the {@link
-   * javax.servlet.Filter}. The init param service-property prefix may be defined using the {@link
+   * jakarta.servlet.Filter}. The init param service-property prefix may be defined using the {@link
    * org.ops4j.pax.web.extender.whiteboard.ExtenderConstants#PROPERTY_INIT_PREFIX} service-property
    * key.
    */

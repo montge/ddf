@@ -47,10 +47,10 @@ import java.util.function.Function;
 import org.codice.ddf.configuration.DictionaryMap;
 import org.codice.ddf.platform.session.api.HttpSessionInvalidator;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.session.DefaultSessionIdManager;
-import org.eclipse.jetty.server.session.Session;
-import org.eclipse.jetty.server.session.SessionData;
-import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.session.DefaultSessionIdManager;
+import org.eclipse.jetty.session.ManagedSession;
+import org.eclipse.jetty.session.SessionData;
+import org.eclipse.jetty.session.SessionManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -60,7 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Custom implementation of the {@link org.eclipse.jetty.server.SessionIdManager} that holds the
+ * Custom implementation of the {@link org.eclipse.jetty.session.SessionIdManager} that holds the
  * latest session attributes for all sessions in the Jetty server. This allows {@link
  * AttributeSharingSessionDataStore} instances to retrieve these session attributes when a new
  * session is being created in their context for a session that exists in another context.
@@ -115,7 +115,7 @@ public class AttributeSharingHashSessionIdManager extends DefaultSessionIdManage
     super.doStop();
   }
 
-  /** @see org.eclipse.jetty.server.SessionIdManager#invalidateAll(String) */
+  /** @see org.eclipse.jetty.session.SessionIdManager#invalidateAll(String) */
   @Override
   public void invalidateAll(String id) {
     deleteId(id);
@@ -133,7 +133,7 @@ public class AttributeSharingHashSessionIdManager extends DefaultSessionIdManage
     }
   }
 
-  /** @see org.eclipse.jetty.server.SessionIdManager#expireAll(String) */
+  /** @see org.eclipse.jetty.session.SessionIdManager#expireAll(String) */
   @Override
   public void expireAll(String id) {
     deleteId(id);
@@ -151,11 +151,11 @@ public class AttributeSharingHashSessionIdManager extends DefaultSessionIdManage
    * @param id the session id
    */
   private void invalidateSession(String id) {
-    Iterator handlerIterator = this.getSessionHandlers().iterator();
+    Iterator handlerIterator = this.getSessionManagers().iterator();
 
     while (handlerIterator.hasNext()) {
-      SessionHandler currSessionHandler = (SessionHandler) handlerIterator.next();
-      Session session = currSessionHandler.getSession(id);
+      SessionManager currSessionManager = (SessionManager) handlerIterator.next();
+      ManagedSession session = currSessionManager.getManagedSession(id);
       if (session != null && session.isValid()) {
         session.invalidate();
         break;

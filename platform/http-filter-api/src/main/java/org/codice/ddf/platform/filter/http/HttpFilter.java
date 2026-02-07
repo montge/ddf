@@ -14,15 +14,15 @@
 package org.codice.ddf.platform.filter.http;
 
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * An HttpFilter is an object that performs filtering tasks on either the request to a resource (a
  * servlet or static content), or on the response from a resource, or both.
  *
- * <p>It is modelled after {@link javax.servlet.Filter} but its {@code doFilter} method accepts
+ * <p>It is modelled after {@link jakarta.servlet.Filter} but its {@code doFilter} method accepts
  * {@link HttpServletRequest} and {@link HttpServletResponse} arguments instead.
  */
 public interface HttpFilter {

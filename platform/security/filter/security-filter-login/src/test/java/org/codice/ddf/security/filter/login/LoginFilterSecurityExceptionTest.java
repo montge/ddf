@@ -37,9 +37,9 @@ import ddf.security.service.SecurityServiceException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.codice.ddf.platform.filter.AuthenticationException;
@@ -178,7 +178,7 @@ public class LoginFilterSecurityExceptionTest {
     HandlerResult result =
         new HandlerResultImpl(HandlerResult.Status.COMPLETED, authenticationTokenMock);
     when(requestMock.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
-    when(requestMock.getAttribute("javax.servlet.request.X509Certificate"))
+    when(requestMock.getAttribute("jakarta.servlet.request.X509Certificate"))
         .thenReturn(x509Certificates);
 
     PrincipalCollection principalCollectionMock = mock(PrincipalCollection.class);

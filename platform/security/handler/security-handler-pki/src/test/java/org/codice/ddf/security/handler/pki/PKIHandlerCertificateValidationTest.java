@@ -29,8 +29,8 @@ import static org.mockito.Mockito.when;
 import ddf.security.audit.SecurityLogger;
 import java.io.IOException;
 import java.security.cert.X509Certificate;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.OcspService;
@@ -82,7 +82,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testNoCertificates() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(null);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(null);
     when(tokenFactory.fromCertificates(null, "127.0.0.1")).thenReturn(null);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -94,7 +94,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testValidCertificates() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(true);
     when(ocspService.passesOcspCheck(certificates)).thenReturn(true);
@@ -108,7 +108,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testCertificateFailsCrlCheck() throws Exception {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(false);
 
@@ -122,7 +122,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testCertificateFailsOcspCheck() throws Exception {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(true);
     when(ocspService.passesOcspCheck(certificates)).thenReturn(false);
@@ -143,7 +143,7 @@ public class PKIHandlerCertificateValidationTest {
     // field.
     handler.crlChecker = null;
 
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(null);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(null);
     when(tokenFactory.fromCertificates(null, "127.0.0.1")).thenReturn(null);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -154,7 +154,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testNullHttpResponse() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(true);
     when(ocspService.passesOcspCheck(certificates)).thenReturn(true);
@@ -167,7 +167,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testNullHttpResponseWithResolveFlag() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(null);
 
     HandlerResult result = handler.getNormalizedToken(request, null, filterChain, true);
@@ -178,7 +178,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testRevokedCertificateWithNullResponse() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(false);
 
@@ -191,7 +191,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testIOExceptionDuringSendError() throws IOException {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(false);
     doThrow(new IOException("Test exception"))
@@ -216,7 +216,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testResolveFlagTrue() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(true);
     when(ocspService.passesOcspCheck(certificates)).thenReturn(true);
@@ -229,7 +229,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testResolveFlagFalse() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(true);
     when(ocspService.passesOcspCheck(certificates)).thenReturn(true);
@@ -247,7 +247,7 @@ public class PKIHandlerCertificateValidationTest {
     multipleCerts[1] = mock(X509Certificate.class);
     multipleCerts[2] = mock(X509Certificate.class);
 
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(multipleCerts);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(multipleCerts);
     when(tokenFactory.fromCertificates(multipleCerts, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(multipleCerts)).thenReturn(true);
     when(ocspService.passesOcspCheck(multipleCerts)).thenReturn(true);
@@ -260,7 +260,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testSourceIsSetCorrectly() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(null);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(null);
     when(tokenFactory.fromCertificates(null, "127.0.0.1")).thenReturn(null);
 
     HandlerResult result = handler.getNormalizedToken(request, response, filterChain, false);
@@ -271,7 +271,7 @@ public class PKIHandlerCertificateValidationTest {
   @Test
   public void testDifferentRemoteAddress() {
     when(request.getRemoteAddr()).thenReturn("192.168.1.100");
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "192.168.1.100")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(true);
     when(ocspService.passesOcspCheck(certificates)).thenReturn(true);
@@ -284,7 +284,7 @@ public class PKIHandlerCertificateValidationTest {
 
   @Test
   public void testBothCrlAndOcspFail() {
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certificates);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certificates);
     when(tokenFactory.fromCertificates(certificates, "127.0.0.1")).thenReturn(authToken);
     when(crlChecker.passesCrlCheck(certificates)).thenReturn(false);
     // CRL fails first so OCSP won't be called (short-circuit evaluation)

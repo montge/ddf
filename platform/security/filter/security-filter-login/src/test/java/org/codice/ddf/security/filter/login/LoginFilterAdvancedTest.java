@@ -36,9 +36,9 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.codice.ddf.platform.filter.AuthenticationException;
@@ -174,7 +174,7 @@ public class LoginFilterAdvancedTest {
     X509Certificate[] certs = new X509Certificate[1];
     certs[0] = mock(X509Certificate.class);
 
-    when(request.getAttribute("javax.servlet.request.X509Certificate")).thenReturn(certs);
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate")).thenReturn(certs);
     HandlerResult result = new HandlerResultImpl(HandlerResult.Status.COMPLETED, authToken);
     when(request.getAttribute(AUTHENTICATION_TOKEN_KEY)).thenReturn(result);
     when(securityManager.getSubject(authToken)).thenReturn(subject);

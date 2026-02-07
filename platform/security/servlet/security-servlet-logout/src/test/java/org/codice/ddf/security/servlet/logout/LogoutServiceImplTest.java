@@ -29,7 +29,7 @@ import ddf.security.service.SecurityServiceException;
 import ddf.security.service.impl.SubjectUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;

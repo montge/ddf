@@ -13,11 +13,10 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
-import javax.servlet.ServletRequest;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.security.AuthenticationState;
+import org.eclipse.jetty.security.UserIdentity;
 
-public class JettyAuthenticatedUser implements Authentication.User {
+public class JettyAuthenticatedUser implements AuthenticationState.Succeeded {
 
   private final UserIdentity userIdentity;
 
@@ -36,17 +35,7 @@ public class JettyAuthenticatedUser implements Authentication.User {
   }
 
   @Override
-  public boolean isUserInRole(UserIdentity.Scope scope, String role) {
+  public boolean isUserInRole(String role) {
     return false;
-  }
-
-  @Override
-  public void logout() {
-    // not used
-  }
-
-  @Override
-  public Authentication logout(ServletRequest servletRequest) {
-    return Authentication.UNAUTHENTICATED;
   }
 }

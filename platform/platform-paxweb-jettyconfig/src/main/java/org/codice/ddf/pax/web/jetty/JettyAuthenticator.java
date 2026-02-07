@@ -15,26 +15,31 @@ package org.codice.ddf.pax.web.jetty;
 
 import ddf.security.SecurityConstants;
 import ddf.security.Subject;
+import jakarta.servlet.Filter;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.servlet.Filter;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.platform.filter.AuthenticationChallengeException;
 import org.codice.ddf.platform.filter.AuthenticationException;
 import org.codice.ddf.platform.filter.SecurityFilter;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.AuthenticationState;
+import org.eclipse.jetty.security.Authenticator;
 import org.eclipse.jetty.security.IdentityService;
+import org.eclipse.jetty.security.LoginService;
 import org.eclipse.jetty.security.ServerAuthException;
+import org.eclipse.jetty.security.UserIdentity;
 import org.eclipse.jetty.security.authentication.LoginAuthenticator;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.server.Session;
+import org.eclipse.jetty.util.Callback;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -51,28 +56,35 @@ public class JettyAuthenticator extends LoginAuthenticator {
   public JettyAuthenticator() {
     super();
     keysOfInitializedSecurityFilters = new CopyOnWriteArraySet<>();
-    _loginService = new DummyLoginService();
-    _identityService = _loginService.getIdentityService();
   }
 
   @Override
-  public void setConfiguration(AuthConfiguration configuration) {
+  public void setConfiguration(Authenticator.Configuration configuration) {
+    super.setConfiguration(configuration);
     keysOfInitializedSecurityFilters.clear();
-    if (configuration instanceof ConstraintSecurityHandler) {
-      ((ConstraintSecurityHandler) configuration).setLoginService(_loginService);
-      ((ConstraintSecurityHandler) configuration).setIdentityService(_identityService);
-    }
   }
 
   @Override
-  public String getAuthMethod() {
+  public String getAuthenticationType() {
     return DDF_AUTH_METHOD;
   }
 
   @Override
-  public Authentication validateRequest(
-      ServletRequest servletRequest, ServletResponse servletResponse, boolean mandatory)
+  public AuthenticationState validateRequest(Request request, Response response, Callback callback)
       throws ServerAuthException {
+
+    // In Jetty 12 EE10, get the servlet request/response from the core request attributes
+    ServletRequest servletRequest =
+        (ServletRequest) request.getAttribute(ServletRequest.class.getName());
+    ServletResponse servletResponse =
+        (ServletResponse) response.getRequest().getAttribute(ServletResponse.class.getName());
+
+    if (servletRequest == null || servletResponse == null) {
+      LOGGER.warn(
+          "Unable to get servlet request/response from Jetty core request. "
+              + "Ensure the EE10 servlet layer is active.");
+      return AuthenticationState.SEND_FAILURE;
+    }
 
     TreeSet<ServiceReference<SecurityFilter>> sortedSecurityFilterServiceReferences = null;
     final BundleContext bundleContext = getContext();
@@ -115,13 +127,13 @@ public class JettyAuthenticator extends LoginAuthenticator {
         throw new ServerAuthException(
             "Unable to process security filter. Blocking the request processing.");
       } catch (AuthenticationChallengeException e) {
-        return new Authentication.Challenge() {};
+        return AuthenticationState.CHALLENGE;
       } catch (AuthenticationException e) {
-        return new Authentication.Failure() {};
+        return AuthenticationState.SEND_FAILURE;
       }
     } else {
       LOGGER.debug("Did not find any SecurityFilters. Send auth failure...");
-      return new Authentication.Failure() {};
+      return AuthenticationState.SEND_FAILURE;
     }
 
     Subject subject = (Subject) servletRequest.getAttribute(SecurityConstants.SECURITY_SUBJECT);
@@ -185,15 +197,6 @@ public class JettyAuthenticator extends LoginAuthenticator {
     }
   }
 
-  @Override
-  public boolean secureResponse(
-      ServletRequest req,
-      ServletResponse res,
-      boolean mandatory,
-      Authentication.User validatedUser) {
-    return true;
-  }
-
   @Nonnull
   private static String getFilterKey(
       final ServiceReference<SecurityFilter> securityFilterServiceReference,
@@ -202,9 +205,8 @@ public class JettyAuthenticator extends LoginAuthenticator {
   }
 
   /**
-   * This logic to get the filter name from a {@link ServiceReference<Filter>} is copied from {@link
-   * org.ops4j.pax.web.extender.whiteboard.internal.tracker.ServletTracker#createWebElement(ServiceReference,
-   * javax.servlet.Servlet)}. See the pax-web Whiteboard documentation and {@link
+   * This logic to get the filter name from a {@link ServiceReference} is copied from pax-web
+   * Whiteboard internals. See the pax-web Whiteboard documentation and {@link
    * org.osgi.service.http.whiteboard.HttpWhiteboardConstants#HTTP_WHITEBOARD_FILTER_NAME} for how
    * to configure {@link Filter} services with a filter name.
    */
@@ -234,7 +236,7 @@ public class JettyAuthenticator extends LoginAuthenticator {
     }
   }
 
-  private class DummyLoginService implements org.eclipse.jetty.security.LoginService {
+  private class DummyLoginService implements LoginService {
 
     private final JettyIdentityService jettyIdentityService = new JettyIdentityService();
 
@@ -244,7 +246,8 @@ public class JettyAuthenticator extends LoginAuthenticator {
     }
 
     @Override
-    public UserIdentity login(String username, Object credentials, ServletRequest request) {
+    public UserIdentity login(
+        String username, Object credentials, Request request, java.util.function.Function func) {
       return null;
     }
 

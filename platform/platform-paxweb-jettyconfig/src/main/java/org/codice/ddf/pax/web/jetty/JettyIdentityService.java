@@ -18,8 +18,7 @@ import javax.annotation.Nullable;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.security.IdentityService;
-import org.eclipse.jetty.security.RunAsToken;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.security.UserIdentity;
 
 public class JettyIdentityService implements IdentityService {
 
@@ -39,26 +38,9 @@ public class JettyIdentityService implements IdentityService {
   }
 
   @Override
-  @Nullable
-  public Object setRunAs(UserIdentity user, RunAsToken token) {
-    return null;
-  }
-
-  @Override
-  public void unsetRunAs(Object token) {
-    // not needed
-  }
-
-  @Override
   public UserIdentity newUserIdentity(
       javax.security.auth.Subject subject, Principal userPrincipal, String[] roles) {
     return new JettyUserIdentity(subject);
-  }
-
-  @Override
-  @Nullable
-  public RunAsToken newRunAsToken(String runAsName) {
-    return null;
   }
 
   @Override

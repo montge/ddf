@@ -25,7 +25,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.annotation.Nullable;
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.lang3.Validate;
 import org.apache.cxf.staxutils.StaxUtils;

@@ -50,7 +50,7 @@
         <property name="sourceAvailabilityHeader" ref="resourceBundleLocator"/>
     </bean>
 
-    <service ref="landingPage" interface="javax.servlet.http.HttpServlet">
+    <service ref="landingPage" interface="jakarta.servlet.http.HttpServlet">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.pattern" value="/"/>
             <entry key="osgi.http.whiteboard.servlet.name" value="LandingPage"/>

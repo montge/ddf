@@ -134,7 +134,7 @@
         <pax.exam.version>4.14.0</pax.exam.version>
         <pax.logging.version>2.3.0</pax.logging.version>
         <pax.url.version>2.6.17</pax.url.version>
-        <pax.web.version>8.0.33</pax.web.version>
+        <pax.web.version>11.1.0</pax.web.version>
         <!-- Pax CDI version pinned to avoid Karaf 4.4.x RELEASE version resolution issues -->
         <pax.cdi.version>1.1.4</pax.cdi.version>
         <restito.version>1.1.2</restito.version>
@@ -236,10 +236,9 @@
         <javax.cache.version>1.1.1</javax.cache.version>
         <javax.cache.bundle.version>1.1.1_1</javax.cache.bundle.version>
         <javax.inject.version>1</javax.inject.version>
-        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <!-- CXF 4.1.1 bundles require jakarta.servlet version [5.0,6.0)
-             so we must use 5.0.0, not 6.1.0 which is outside that range -->
-        <jakarta.servlet-api.version>5.0.0</jakarta.servlet-api.version>
+        <!-- Pax Web 11.1.0 provides jakarta.servlet-api 6.1.0.
+             CXF 4.1.1 cxf-core-all imports jakarta.servlet;version="[5.0,7)" so 6.1.0 is compatible. -->
+        <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
         <javax.ws.rs.version>2.1.6</javax.ws.rs.version>
         <javax-el.version>3.0.0</javax-el.version>
         <soap-api.version>1.4.2</soap-api.version>
@@ -251,9 +250,9 @@
         <jcodec.version>0.2.0_1</jcodec.version>
         <jdom.bundle.version>1.1_4</jdom.bundle.version>
         <jdom2.bundle.version>2.0.6.1_1</jdom2.bundle.version>
-        <!-- Must match Pax Web 8.0.33's expected Jetty version -->
-        <jetty.version>9.4.57.v20241219</jetty.version>
-        <karaf.jetty.version>9.4.57.v20241219</karaf.jetty.version>
+        <!-- Must match Pax Web 11.1.0's expected Jetty version -->
+        <jetty.version>12.1.4</jetty.version>
+        <karaf.jetty.version>12.1.4</karaf.jetty.version>
         <jgroups.version>3.6.13.Final</jgroups.version>
         <joda-convert.version>1.7</joda-convert.version>
         <dev.failsafe.version>3.2.4</dev.failsafe.version>
@@ -277,9 +276,8 @@
         <apache-log4j.version>2.25.3</apache-log4j.version>
         <logback.classic.version>1.5.21</logback.classic.version>
         <logback.version>1.5.21</logback.version>
-        <!-- logback-access 1.2.x is required for Jetty 9.x compatibility. -->
-        <!-- logback-access 2.0.x only supports Jetty 11+ and uses new Maven coordinates. -->
-        <logback-access.version>1.2.13</logback-access.version>
+        <!-- logback-access 2.0.x for Jetty 12 / Pax Web 11 compatibility. -->
+        <logback-access.version>2.0.6</logback-access.version>
         <mariadb.version>2.4.1</mariadb.version>
         <maven.failsafe.version>3.5.3</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
@@ -645,9 +643,9 @@
                 <version>${protobuf.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax.servlet-api.version}</version>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>${jakarta.servlet-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.rrd4j</groupId>

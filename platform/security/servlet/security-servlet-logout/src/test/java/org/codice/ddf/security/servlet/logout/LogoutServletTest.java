@@ -25,11 +25,11 @@ import ddf.security.common.PrincipalHolder;
 import java.io.PrintWriter;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
@@ -89,7 +89,7 @@ public class LogoutServletTest {
     when(request.getHeaders(anyString())).thenReturn(new LogoutServletEnumeration());
 
     // used for detecting pki
-    when(request.getAttribute("javax.servlet.request.X509Certificate"))
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate"))
         .thenReturn(new X509Certificate[] {mock(X509Certificate.class)});
 
     PrincipalHolder principalHolderMock = mock(PrincipalHolder.class);
@@ -107,7 +107,7 @@ public class LogoutServletTest {
     when(request.getHeaders(anyString())).thenReturn(new LogoutServletEnumeration());
 
     // used for detecting pki
-    when(request.getAttribute("javax.servlet.request.X509Certificate"))
+    when(request.getAttribute("jakarta.servlet.request.X509Certificate"))
         .thenReturn(new X509Certificate[] {mock(X509Certificate.class)});
 
     PrincipalHolder principalHolderMock = mock(PrincipalHolder.class);

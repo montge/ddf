@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.security.util.ThreadContextProperties;
 import org.eclipse.jetty.http.HttpHeader;

@@ -146,7 +146,8 @@
     <!-- CXF HTTP Transport Feature -->
     <feature name="cxf-http" version="3.6.9" description="Apache CXF 4.x HTTP Transport">
         <feature version="3.6.9">cxf-core</feature>
-        <feature>pax-web-http</feature>
+        <!-- pax-web-http renamed to pax-web-http-jetty in Pax Web 11 -->
+        <feature>pax-web-http-jetty</feature>
     </feature>
 
     <!-- CXF HTTP Provider Feature (Camel compatibility alias) -->

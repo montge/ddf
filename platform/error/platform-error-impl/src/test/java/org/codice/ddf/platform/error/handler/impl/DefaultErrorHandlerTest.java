@@ -21,10 +21,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -379,7 +379,7 @@ public class DefaultErrorHandlerTest {
     errorHandler.handleError(
         500,
         "Internal Server Error",
-        "javax.servlet.ServletException",
+        "jakarta.servlet.ServletException",
         servletException,
         "/test",
         mockRequest,

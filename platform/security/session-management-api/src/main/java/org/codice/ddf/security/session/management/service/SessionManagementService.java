@@ -14,7 +14,7 @@
 package org.codice.ddf.security.session.management.service;
 
 import java.net.URI;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface SessionManagementService {
 

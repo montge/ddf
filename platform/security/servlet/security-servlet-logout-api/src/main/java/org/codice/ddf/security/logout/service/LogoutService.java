@@ -14,8 +14,8 @@
 package org.codice.ddf.security.logout.service;
 
 import ddf.security.service.SecurityServiceException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface LogoutService {
 

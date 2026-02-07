@@ -62,36 +62,26 @@
         </Arg>
     </Call>
 
-    <Get name="handler">
-        <Call name="addHandler">
-            <Arg>
-                <New id="RequestLog"
-                  class="org.eclipse.jetty.server.handler.RequestLogHandler"/>
-            </Arg>
-        </Call>
-    </Get>
-    <Ref refid="RequestLog">
-        <Set name="requestLog">
+    <!-- Jetty 12: RequestLogHandler was removed. Set request log directly on the server. -->
+    <Call name="setRequestLog">
+        <Arg>
             <New id="RequestLogImpl" class="org.codice.ddf.pax.web.jetty.AccessRequestLog">
                 <Set name="resource">/access.xml</Set>
                 <Set name="quiet">true</Set>
                 <Call name="start"/>
             </New>
-        </Set>
-    </Ref>
+        </Arg>
+    </Call>
 
     <!--
-        Need to wrap pax-web's JettyServerHandlerCollection, which is the default configured
-        handler. This changes the handler hierarchy to look like the following:
+        Need to wrap pax-web's handler hierarchy with the DelegatingHttpFilterHandler.
+        In Jetty 12, Handler.Wrapper replaces HandlerWrapper. GzipHandler is still available
+        in the same package.
 
         Server
-        `—— GzipHandler
-            `—— DelegatingHttpFilterHandler
-                `—— JettyServerHandlerCollection
-                    |—— handler 1
-                    |—— handler 2
-                    |—— ...
-                    `—— handler n
+        `-- GzipHandler
+            `-- DelegatingHttpFilterHandler
+                `-- (Pax Web's handler hierarchy)
       -->
     <Get id="oldHandler" name="handler"/>
     <Set name="handler">

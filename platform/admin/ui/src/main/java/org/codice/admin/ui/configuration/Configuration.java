@@ -23,7 +23,7 @@ import jakarta.ws.rs.core.UriInfo;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.codice.ddf.branding.BrandingRegistry;

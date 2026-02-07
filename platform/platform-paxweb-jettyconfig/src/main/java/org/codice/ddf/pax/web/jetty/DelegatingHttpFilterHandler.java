@@ -13,16 +13,16 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
-import java.io.IOException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.Objects;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.http.HttpFilter;
 import org.codice.ddf.platform.util.SortedServiceList;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.HandlerWrapper;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -38,14 +38,12 @@ import org.slf4j.LoggerFactory;
  * to all requests. It finds any registered {@link HttpFilter} services and passes incoming requests
  * to them in order of service ranking.
  *
- * <p>As of OSGi R6, there is a proper way to define global servlets/filters/listeners/etc., defined
- * by the HTTP Whiteboard spec. However, pax-web does not yet implement that feature, so we're left
- * using this workaround.
- *
- * <p>When https://ops4j1.jira.com/browse/PAXWEB-1123 is resolved, this workaround should be
- * revisited.
+ * <p>In Jetty 12, this extends {@link Handler.Wrapper} and works with the core
+ * Request/Response/Callback API. It attempts to extract servlet request/response from the EE10
+ * layer for passing to HttpFilter instances. If no servlet wrapping is available, the request is
+ * passed through to the next handler without filtering.
  */
-public class DelegatingHttpFilterHandler extends HandlerWrapper {
+public class DelegatingHttpFilterHandler extends Handler.Wrapper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingHttpFilterHandler.class);
 
@@ -91,26 +89,24 @@ public class DelegatingHttpFilterHandler extends HandlerWrapper {
   }
 
   @Override
-  public void handle(
-      String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+  public boolean handle(Request request, Response response, Callback callback) throws Exception {
     LOGGER.trace("Delegating to {} HttpFilters.", httpFilters.size());
 
-    ProxyHttpFilterChain filterChain =
-        new ProxyHttpFilterChain(httpFilters, getHandler(), target, baseRequest);
-    filterChain.doFilter(request, response);
-  }
+    // In Jetty 12 EE10, get the servlet request/response from core request attributes
+    HttpServletRequest servletRequest =
+        (HttpServletRequest) request.getAttribute(HttpServletRequest.class.getName());
+    HttpServletResponse servletResponse =
+        (HttpServletResponse) request.getAttribute(HttpServletResponse.class.getName());
 
-  @Override
-  protected void doStart() throws Exception {
-    super.doStart();
-    LOGGER.debug("Started {}", DelegatingHttpFilterHandler.class.getSimpleName());
-  }
-
-  @Override
-  protected void doStop() throws Exception {
-    super.doStop();
-    LOGGER.debug("Stopped {}", DelegatingHttpFilterHandler.class.getSimpleName());
+    if (servletRequest != null && servletResponse != null) {
+      ProxyHttpFilterChain filterChain =
+          new ProxyHttpFilterChain(httpFilters, getHandler(), request, response, callback);
+      filterChain.doFilter(servletRequest, servletResponse);
+      return true;
+    } else {
+      // No servlet layer available yet, delegate directly to next handler
+      return super.handle(request, response, callback);
+    }
   }
 
   private class HttpFilterServiceListener implements ServiceListener {

@@ -25,8 +25,8 @@ import static org.mockito.Mockito.when;
 
 import ddf.security.audit.SecurityLogger;
 import ddf.security.permission.CollectionPermission;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
