@@ -227,6 +227,27 @@
 
     <build>
         <plugins>
+            <!-- Override artifact size enforcer for shaded uber-jar (5.6MB) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-artifact-size</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <ArtifactSizeEnforcerRule implementation="org.codice.maven.artifactsize.ArtifactSizeEnforcerRule">
+                                    <maxArtifactSize>10.0_MB</maxArtifactSize>
+                                </ArtifactSizeEnforcerRule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Shade all CXF modules into one JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
