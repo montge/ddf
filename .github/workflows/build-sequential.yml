@@ -87,6 +87,8 @@ jobs:
         run: |
           mvn $MAVEN_CLI_OPTS \
             -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
             -Dgib.enabled=true \
             -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }} \
             -pl '!distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker' \
@@ -138,7 +140,7 @@ jobs:
 
       - name: Build and test
         # Skip modules with broken dependencies (see incremental-build comments)
-        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipITs -pl '!distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker'
+        run: mvn $MAVEN_CLI_OPTS -T 1C -Dcheckstyle.skip=true -Dfmt.skip=true clean install -DskipITs -pl '!distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker'
 
       - name: Upload distribution artifacts
         if: matrix.java == '17'

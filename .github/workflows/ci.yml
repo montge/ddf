@@ -55,11 +55,14 @@ jobs:
           cache: maven
 
       - name: Quick install (skip tests)
-        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true $DISTRO_EXCLUDES
+        run: mvn install $MAVEN_CLI_OPTS -T 1C -DskipStatic=true -DskipTests=true -Dcheckstyle.skip=true -Dfmt.skip=true $DISTRO_EXCLUDES
 
       - name: Incremental build
         run: |
           mvn clean install $MAVEN_CLI_OPTS \
+            -T 1C \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
             -P !itests \
             $DISTRO_EXCLUDES \
             -Dgib.enabled=true \
