@@ -49,12 +49,15 @@ jobs:
           cache: maven
 
       - name: Quick install (skip tests)
-        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true
+        run: |
+          mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true \
+            -pl '!distribution/docs,!distribution/ddf'
 
       - name: Incremental build
         run: |
           mvn clean install $MAVEN_CLI_OPTS \
             -P !itests \
+            -pl '!distribution/docs,!distribution/ddf' \
             -Dgib.enabled=true \
             -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }}
 
@@ -82,7 +85,9 @@ jobs:
           cache: maven
 
       - name: Full build (excluding itests)
-        run: mvn clean install $MAVEN_CLI_OPTS -P !itests
+        run: |
+          mvn clean install $MAVEN_CLI_OPTS -P !itests \
+            -pl '!distribution/docs,!distribution/ddf'
 
       - name: Run DDF Core integration tests
         run: |
@@ -116,7 +121,9 @@ jobs:
           cache: maven
 
       - name: Quick install (skip tests)
-        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true
+        run: |
+          mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true \
+            -pl '!distribution/docs,!distribution/ddf'
 
       - name: Run DDF Core integration tests
         run: |

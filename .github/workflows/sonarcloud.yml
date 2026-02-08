@@ -51,7 +51,7 @@ jobs:
       - name: Build project (compile only)
         run: |
           mvn $MAVEN_CLI_OPTS install -DskipTests \
-            -pl '!distribution/docs' \
+            -pl '!distribution/docs,!distribution/ddf' \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -61,7 +61,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn $MAVEN_CLI_OPTS sonar:sonar \
-            -pl '!distribution/docs'
+            -pl '!distribution/docs,!distribution/ddf'
 
   # Full analysis with tests + JaCoCo coverage for nightly/manual runs
   analysis-with-coverage:
@@ -93,7 +93,7 @@ jobs:
       - name: Build and test with JaCoCo coverage
         run: |
           mvn $MAVEN_CLI_OPTS install \
-            -pl '!distribution/docs' \
+            -pl '!distribution/docs,!distribution/ddf' \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -103,4 +103,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn $MAVEN_CLI_OPTS sonar:sonar \
-            -pl '!distribution/docs'
+            -pl '!distribution/docs,!distribution/ddf'

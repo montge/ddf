@@ -45,10 +45,14 @@ jobs:
           cache: 'maven'
 
       - name: Run tests with JaCoCo coverage
-        run: mvn $MAVEN_CLI_OPTS clean test jacoco:report
+        run: |
+          mvn $MAVEN_CLI_OPTS clean test jacoco:report \
+            -pl '!distribution/docs,!distribution/ddf'
 
       - name: Generate aggregate coverage report
-        run: mvn $MAVEN_CLI_OPTS jacoco:report-aggregate
+        run: |
+          mvn $MAVEN_CLI_OPTS jacoco:report-aggregate \
+            -pl '!distribution/docs,!distribution/ddf'
         continue-on-error: true
 
       - name: Extract coverage metrics
