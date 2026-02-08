@@ -75,7 +75,7 @@ jobs:
 
     strategy:
       matrix:
-        java: ['17', '21']
+        java: ['22']
       fail-fast: false
 
     steps:
@@ -186,7 +186,7 @@ jobs:
 
       # Upload distribution ZIP (Java 17 only) for release/deployment
       - name: Upload distribution artifacts
-        if: matrix.java == '17'
+        if: matrix.java == '22'
         uses: actions/upload-artifact@v5
         with:
           name: ddf-distribution
@@ -220,7 +220,7 @@ jobs:
 
     strategy:
       matrix:
-        java: ['17', '21']
+        java: ['22']
       fail-fast: false
 
     steps:
@@ -297,7 +297,7 @@ jobs:
 
     strategy:
       matrix:
-        java: ['17', '21']
+        java: ['22']
       fail-fast: false
 
     steps:
@@ -363,7 +363,7 @@ jobs:
 
     strategy:
       matrix:
-        java: ['17', '21']
+        java: ['22']
       fail-fast: false
 
     steps:
@@ -434,7 +434,7 @@ jobs:
 
     strategy:
       matrix:
-        java: ['17', '21']
+        java: ['22']
       fail-fast: false
 
     steps:
@@ -505,7 +505,7 @@ jobs:
 
     strategy:
       matrix:
-        java: ['17', '21']
+        java: ['22']
       fail-fast: false
 
     steps:
