@@ -19,9 +19,10 @@ env:
   MAVEN_OPTS: >-
     -Xmx4G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
-  # Exclude distribution and test modules that require Karaf assembly or distribution artifacts
+  # Exclude distribution modules that require Karaf assembly or have build issues.
+  # Maven auto-excludes descendants, so only top-level parents needed.
   DISTRO_EXCLUDES: >-
-    -pl !distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list,!distribution/solr-distro,!distribution/test,!distribution/test/features-xml,!distribution/test/example-bundle,!distribution/test/test-input-transformer-stubs,!distribution/test/test-rest-endpoint,!distribution/test/test-storageplugins,!distribution/test/test-metacard-validator,!distribution/test/itests,!distribution/test/itests/test-itests-common,!distribution/test/itests/test-itests-dependencies-app,!distribution/test/itests/test-itests-ddf-core,!distribution/test/itests/test-itests-ddf,!distribution/test/itests/test-itests-kernel,!distribution/test/performance,!distribution/test/performance/jmeter,!distribution/test/performance/jmeter/catalog-transformer-xml,!distribution/test/performance/jmeter/csw
+    -pl !distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/docker,!distribution/software-list,!distribution/solr-distro,!distribution/test
 
 jobs:
   # Compile-only analysis for push/PR events (fast feedback, no coverage)
