@@ -171,8 +171,9 @@ jobs:
 
       - name: Test libs modules
         run: |
-          mvn $MAVEN_CLI_OPTS -f libs/pom.xml test \
-            -T 1C \
+          mvn $MAVEN_CLI_OPTS test \
+            -pl libs/ \
+            -am \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -209,8 +210,9 @@ jobs:
 
       - name: Test platform modules
         run: |
-          mvn $MAVEN_CLI_OPTS -f platform/pom.xml test \
-            -T 1C \
+          mvn $MAVEN_CLI_OPTS test \
+            -pl platform/ \
+            -am \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -247,8 +249,9 @@ jobs:
 
       - name: Test catalog core modules
         run: |
-          mvn $MAVEN_CLI_OPTS -f catalog/core/pom.xml test \
-            -T 1C \
+          mvn $MAVEN_CLI_OPTS test \
+            -pl catalog/core/ \
+            -am \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -285,8 +288,9 @@ jobs:
 
       - name: Test catalog spatial modules
         run: |
-          mvn $MAVEN_CLI_OPTS -f catalog/spatial/pom.xml test \
-            -T 1C \
+          mvn $MAVEN_CLI_OPTS test \
+            -pl catalog/spatial/ \
+            -am \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -323,13 +327,9 @@ jobs:
 
       - name: Test catalog REST and transformer modules
         run: |
-          # Run REST and transformer tests separately since they're in different reactors
-          mvn $MAVEN_CLI_OPTS -f catalog/rest/pom.xml test \
-            -T 1C \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true
-          mvn $MAVEN_CLI_OPTS -f catalog/transformer/pom.xml test \
-            -T 1C \
+          mvn $MAVEN_CLI_OPTS test \
+            -pl catalog/rest/,catalog/transformer/ \
+            -am \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -345,7 +345,7 @@ jobs:
     name: Test Catalog Other Modules
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout code
@@ -366,20 +366,9 @@ jobs:
 
       - name: Test catalog plugin, solr, security, opensearch modules
         run: |
-          mvn $MAVEN_CLI_OPTS -f catalog/plugin/pom.xml test \
-            -T 1C \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true
-          mvn $MAVEN_CLI_OPTS -f catalog/solr/pom.xml test \
-            -T 1C \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true
-          mvn $MAVEN_CLI_OPTS -f catalog/security/pom.xml test \
-            -T 1C \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true
-          mvn $MAVEN_CLI_OPTS -f catalog/opensearch/pom.xml test \
-            -T 1C \
+          mvn $MAVEN_CLI_OPTS test \
+            -pl catalog/plugin/,catalog/solr/,catalog/security/,catalog/opensearch/ \
+            -am \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
