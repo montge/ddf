@@ -19,6 +19,9 @@ env:
   MAVEN_OPTS: >-
     -Xmx4G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+  # Exclude distribution modules that require Karaf assembly
+  DISTRO_EXCLUDES: >-
+    -pl !distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list,!distribution/solr-distro
 
 jobs:
   # Compile-only analysis for push/PR events (fast feedback, no coverage)
@@ -51,7 +54,7 @@ jobs:
       - name: Build project (compile only)
         run: |
           mvn $MAVEN_CLI_OPTS install -DskipTests \
-            -pl '!distribution/docs,!distribution/ddf' \
+            $DISTRO_EXCLUDES \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -61,7 +64,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn $MAVEN_CLI_OPTS sonar:sonar \
-            -pl '!distribution/docs,!distribution/ddf'
+            $DISTRO_EXCLUDES
 
   # Full analysis with tests + JaCoCo coverage for nightly/manual runs
   analysis-with-coverage:
@@ -93,7 +96,7 @@ jobs:
       - name: Build and test with JaCoCo coverage
         run: |
           mvn $MAVEN_CLI_OPTS install \
-            -pl '!distribution/docs,!distribution/ddf' \
+            $DISTRO_EXCLUDES \
             -Dcheckstyle.skip=true \
             -Dfmt.skip=true
 
@@ -103,4 +106,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           mvn $MAVEN_CLI_OPTS sonar:sonar \
-            -pl '!distribution/docs,!distribution/ddf'
+            $DISTRO_EXCLUDES

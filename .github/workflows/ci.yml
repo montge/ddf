@@ -21,6 +21,9 @@ env:
   # -Xss32M: Increase thread stack size to prevent StackOverflowError during Karaf feature resolution
   MAVEN_OPTS: '-Xmx4G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
   MAVEN_CLI_OPTS: '-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
+  # Exclude distribution modules that require Karaf assembly (docs, ddf, docker, etc.)
+  DISTRO_EXCLUDES: >-
+    -pl !distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list,!distribution/solr-distro
 
 jobs:
   # Incremental build for PRs
@@ -49,15 +52,13 @@ jobs:
           cache: maven
 
       - name: Quick install (skip tests)
-        run: |
-          mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true \
-            -pl '!distribution/docs,!distribution/ddf'
+        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true $DISTRO_EXCLUDES
 
       - name: Incremental build
         run: |
           mvn clean install $MAVEN_CLI_OPTS \
             -P !itests \
-            -pl '!distribution/docs,!distribution/ddf' \
+            $DISTRO_EXCLUDES \
             -Dgib.enabled=true \
             -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }}
 
@@ -85,9 +86,7 @@ jobs:
           cache: maven
 
       - name: Full build (excluding itests)
-        run: |
-          mvn clean install $MAVEN_CLI_OPTS -P !itests \
-            -pl '!distribution/docs,!distribution/ddf'
+        run: mvn clean install $MAVEN_CLI_OPTS -P !itests $DISTRO_EXCLUDES
 
       - name: Run DDF Core integration tests
         run: |
@@ -121,9 +120,7 @@ jobs:
           cache: maven
 
       - name: Quick install (skip tests)
-        run: |
-          mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true \
-            -pl '!distribution/docs,!distribution/ddf'
+        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true $DISTRO_EXCLUDES
 
       - name: Run DDF Core integration tests
         run: |

@@ -17,6 +17,9 @@ env:
   MAVEN_OPTS: >-
     -Xmx8G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+  # Exclude distribution modules that require Karaf assembly
+  DISTRO_EXCLUDES: >-
+    -pl !distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/docker,!distribution/docker/ddf-docker,!distribution/docker/solr-docker,!distribution/docker/solrcloud,!distribution/software-list,!distribution/solr-distro
 
 jobs:
   #
@@ -45,14 +48,10 @@ jobs:
           cache: 'maven'
 
       - name: Run tests with JaCoCo coverage
-        run: |
-          mvn $MAVEN_CLI_OPTS clean test jacoco:report \
-            -pl '!distribution/docs,!distribution/ddf'
+        run: mvn $MAVEN_CLI_OPTS clean test jacoco:report $DISTRO_EXCLUDES
 
       - name: Generate aggregate coverage report
-        run: |
-          mvn $MAVEN_CLI_OPTS jacoco:report-aggregate \
-            -pl '!distribution/docs,!distribution/ddf'
+        run: mvn $MAVEN_CLI_OPTS jacoco:report-aggregate $DISTRO_EXCLUDES
         continue-on-error: true
 
       - name: Extract coverage metrics
