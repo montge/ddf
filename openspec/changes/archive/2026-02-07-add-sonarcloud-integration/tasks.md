@@ -28,7 +28,7 @@
 
 ## 5. Validation
 
-- [ ] 5.1 Push changes and verify `sonarcloud.yml` triggers on push to `main` (post-merge)
-- [ ] 5.2 Verify compile-only analysis completes successfully on a PR (post-merge)
+- [x] 5.1 Push changes and verify `sonarcloud.yml` triggers on push to `main` (post-merge) — verified: workflow triggers on push events
+- [x] 5.2 Verify compile-only analysis completes successfully on a PR (post-merge) — fixed: Java 17→21 for Karaf 4.4.9 plugin, added cxf-core-all artifact size override
 - [ ] 5.3 Trigger a manual workflow run with full analysis + coverage and confirm SonarCloud receives coverage data (post-merge)
 - [ ] 5.4 Confirm quality gate status appears on a test PR (post-merge)

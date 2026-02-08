@@ -108,8 +108,8 @@
 
 - [x] 7.1 All specs have design notes with cross-references
 - [x] 7.2 Run `openspec validate --strict` on all new specs
-- [ ] 7.3 Update project.md with new capabilities list (optional)
-- [ ] 7.4 Create architecture diagram showing spec relationships (optional)
+- [x] 7.3 Update project.md with new capabilities list
+- [x] 7.4 Create architecture diagram showing spec relationships
 
 ---
 
