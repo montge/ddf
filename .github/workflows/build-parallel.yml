@@ -408,9 +408,7 @@ jobs:
 
       - name: Build distribution
         # Distribution modules use karaf-maven-plugin which has deep recursive
-        # feature dependency resolution. Requires very large stack size.
-        env:
-          MAVEN_OPTS: '-Xss2G -Xmx8G -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+        # feature dependency resolution. The global -Xss64M is sufficient.
         run: |
           mvn $MAVEN_CLI_OPTS package \
             -pl distribution/ddf \
