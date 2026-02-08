@@ -381,62 +381,30 @@ jobs:
           retention-days: 7
 
   #
-  # STAGE 3: Build final distribution
-  #
-  distribution:
-    name: Build Distribution
-    needs: [test-libs, test-platform, test-catalog-core, test-catalog-spatial, test-catalog-rest, test-catalog-other]
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up JDK 22
-        uses: actions/setup-java@v5
-        with:
-          java-version: '22'
-          distribution: 'temurin'
-          cache: 'maven'
-
-      - name: Download Maven repository
-        uses: actions/download-artifact@v6
-        with:
-          name: maven-repo
-          path: ~/.m2/repository
-
-      - name: Build distribution
-        # Distribution modules use karaf-maven-plugin which has deep recursive
-        # feature dependency resolution. The global -Xss64M is sufficient.
-        run: |
-          mvn $MAVEN_CLI_OPTS package \
-            -pl distribution/ddf \
-            -am \
-            -DskipTests \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true
-
-      - name: Upload distribution
-        uses: actions/upload-artifact@v5
-        with:
-          name: ddf-distribution
-          path: distribution/ddf/target/ddf-*.zip
-          retention-days: 14
-
-  #
-  # Final status check
+  # Final status check (distribution build is handled by build-sequential.yml)
   #
   ci-status:
     name: CI Status
-    needs: [distribution]
+    needs: [test-libs, test-platform, test-catalog-core, test-catalog-spatial, test-catalog-rest, test-catalog-other]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check all jobs passed
         run: |
-          if [[ "${{ needs.distribution.result }}" != "success" ]]; then
-            echo "Distribution build failed"
+          FAILED=false
+          for result in \
+            "${{ needs.test-libs.result }}" \
+            "${{ needs.test-platform.result }}" \
+            "${{ needs.test-catalog-core.result }}" \
+            "${{ needs.test-catalog-spatial.result }}" \
+            "${{ needs.test-catalog-rest.result }}" \
+            "${{ needs.test-catalog-other.result }}"; do
+            if [[ "$result" != "success" ]]; then
+              FAILED=true
+            fi
+          done
+          if [[ "$FAILED" == "true" ]]; then
+            echo "One or more test jobs failed"
             exit 1
           fi
           echo "All CI checks passed!"
