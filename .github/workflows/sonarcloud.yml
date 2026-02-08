@@ -19,10 +19,12 @@ env:
   MAVEN_OPTS: >-
     -Xmx4G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
-  # Exclude distribution modules that require Karaf assembly or have build issues.
-  # Maven auto-excludes descendants, so only top-level parents needed.
+  # Exclude distribution modules with missing dependencies:
+  # - docs: empty archive issue (JRuby/asciidoctor)
+  # - ddf: depends on docs:jar:docs-export
+  # - ddf-docker: depends on ddf:zip
   DISTRO_EXCLUDES: >-
-    -pl !distribution/docs,!distribution/ddf,!distribution/ddf-catalog,!distribution/docker,!distribution/software-list,!distribution/solr-distro,!distribution/test
+    -pl !distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker
 
 jobs:
   # Compile-only analysis for push/PR events (fast feedback, no coverage)
