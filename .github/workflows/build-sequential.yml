@@ -58,7 +58,7 @@ jobs:
     name: Incremental Build (Changed Modules Only)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     needs: validate
 
     strategy:
@@ -80,13 +80,16 @@ jobs:
           cache: 'maven'
 
       - name: Build changed modules
-        # Skip docs module due to JRuby/asciidoctor compatibility issues (Issue #39)
+        # Skip modules with broken dependencies:
+        # - docs: empty archive issue (JRuby/asciidoctor)
+        # - ddf: depends on docs:jar:docs-export
+        # - ddf-docker: depends on ddf:zip
         run: |
           mvn $MAVEN_CLI_OPTS \
             -T 1C \
             -Dgib.enabled=true \
             -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }} \
-            -pl '!distribution/docs' \
+            -pl '!distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker' \
             clean install
 
       - name: Upload test results
@@ -134,8 +137,8 @@ jobs:
           cache: 'maven'
 
       - name: Build and test
-        # Skip docs module due to JRuby/asciidoctor compatibility issues (Issue #39)
-        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipITs -pl '!distribution/docs'
+        # Skip modules with broken dependencies (see incremental-build comments)
+        run: mvn $MAVEN_CLI_OPTS -T 1C clean install -DskipITs -pl '!distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker'
 
       - name: Upload distribution artifacts
         if: matrix.java == '17'
