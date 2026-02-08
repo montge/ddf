@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: javax.servlet namespace migration
-All DDF source files using javax.servlet imports must be migrated to jakarta.servlet.
+All DDF source files using javax.servlet imports MUST be migrated to jakarta.servlet.
 
 #### Scenario: Source files use jakarta.servlet
 - **WHEN** any DDF source file imports servlet APIs
@@ -21,7 +21,7 @@ All DDF source files using javax.servlet imports must be migrated to jakarta.ser
 - **THEN** they compile successfully using jakarta.servlet.http.HttpServlet, etc.
 
 ### Requirement: OSGi Import-Package consistency
-OSGi bundles must import `jakarta.servlet` packages instead of `javax.servlet`.
+OSGi bundles MUST import `jakarta.servlet` packages instead of `javax.servlet`.
 
 #### Scenario: Bundle manifests reference jakarta.servlet
 - **WHEN** an OSGi bundle is built that uses servlet APIs
@@ -29,7 +29,7 @@ OSGi bundles must import `jakarta.servlet` packages instead of `javax.servlet`.
 - **AND** the bundle resolves at runtime against the jakarta.servlet-api bundle
 
 ### Requirement: pac4j servlet adapter compatibility
-The pac4j security integration must work with jakarta.servlet.
+The pac4j security integration MUST work with jakarta.servlet.
 
 #### Scenario: pac4j uses jakarta.servlet adapter
 - **WHEN** security-handler-oidc or security-handler-oauth modules use pac4j
@@ -37,7 +37,7 @@ The pac4j security integration must work with jakarta.servlet.
 - **AND** pac4j filter/callback operations work with jakarta.servlet.http.HttpServletRequest
 
 ### Requirement: Test files updated
-Test files using javax.servlet must also be migrated to jakarta.servlet.
+Test files using javax.servlet MUST also be migrated to jakarta.servlet.
 
 #### Scenario: Test compilation with jakarta.servlet
 - **WHEN** test files that mock or use servlet APIs are compiled

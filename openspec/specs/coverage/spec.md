@@ -32,6 +32,11 @@ The system MUST maintain minimum test coverage levels for all modules with produ
 - WHEN coverage is measured
 - THEN line coverage MUST be at least 90%
 
+#### Scenario: Sprint 2 Module Coverage
+- GIVEN the four priority modules identified in Sprint 2 (security-rest-cxfwrapper, platform-security-core-api, catalog-core-commons, spatial-csw-common)
+- WHEN coverage expansion is complete
+- THEN all modules MUST reach 80%+ line coverage
+
 ---
 
 ### Requirement: Test Quality Standards

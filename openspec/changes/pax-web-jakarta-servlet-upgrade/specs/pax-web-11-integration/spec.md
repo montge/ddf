@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Pax Web 11 feature repository integration
-DDF must load Pax Web 11.1.0 feature repository and install Pax Web 11 features instead of Pax Web 8 features on Karaf 4.4.9.
+DDF MUST load Pax Web 11.1.0 feature repository and install Pax Web 11 features instead of Pax Web 8 features on Karaf 4.4.9.
 
 #### Scenario: Kernel boot with Pax Web 11 features
 - **WHEN** DDF kernel starts on Karaf 4.4.9
@@ -15,7 +15,7 @@ DDF must load Pax Web 11.1.0 feature repository and install Pax Web 11 features 
 - **AND** HTTPS connector starts with configured keystore/truststore
 
 ### Requirement: Version property updates
-Root POM version properties must be updated to reflect Pax Web 11 and Jetty 12 versions.
+Root POM version properties MUST be updated to reflect Pax Web 11 and Jetty 12 versions.
 
 #### Scenario: Consistent version management
 - **WHEN** `pax.web.version` property is referenced in feature.xml or POM files
@@ -23,7 +23,7 @@ Root POM version properties must be updated to reflect Pax Web 11 and Jetty 12 v
 - **AND** `jetty.version` resolves to the Jetty 12 version used by Pax Web 11.1.0
 
 ### Requirement: Feature.xml updates
-All Karaf feature.xml files referencing Pax Web features must be updated to use Pax Web 11 feature repository.
+All Karaf feature.xml files referencing Pax Web features MUST be updated to use Pax Web 11 feature repository.
 
 #### Scenario: Kernel feature installs Pax Web 11
 - **WHEN** kernel feature.xml is processed
@@ -37,7 +37,7 @@ All Karaf feature.xml files referencing Pax Web features must be updated to use 
 - **AND** pax-web-jsp bundle version matches Pax Web 11.1.0
 
 ### Requirement: Pax Web 8 feature override
-Since Karaf 4.4.9 ships Pax Web 8 by default, the DDF distribution must override Karaf's default Pax Web features.
+Since Karaf 4.4.9 ships Pax Web 8 by default, the DDF distribution MUST override Karaf's default Pax Web features.
 
 #### Scenario: No Pax Web 8 bundles active
 - **WHEN** DDF is fully started

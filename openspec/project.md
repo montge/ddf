@@ -7,16 +7,16 @@ Distributed Data Framework (DDF) is an open source, modular integration framewor
 
 ### Runtime
 - **Java:** OpenJDK 17 ✅ LTS (targeting 21 LTS when Karaf 4.5.x released)
-- **OSGi:** Apache Karaf 4.4.8
-- **Web:** Pax Web 8.0.33 (Jetty 9.4.58)
+- **OSGi:** Apache Karaf 4.4.9
+- **Web:** Pax Web 8.0.33 (Jetty 9.4.58) - upgrading to Pax Web 11 + Jetty 12
 - **Security:** OpenSAML 4.x, pac4j 5.x
 
 ### Core Libraries
 - **Apache Solr:** 9.0.0 (metadata storage/search)
-- **Apache CXF:** 3.6.8 (REST/SOAP services)
-- **Apache Camel:** 3.22.4 (integration routes)
+- **Apache CXF:** 4.1.1 (REST/SOAP services) via ddf-cxf-karaf shaded bundle
+- **Apache Camel:** 4.10.7 (integration routes) via camel-karaf
 - **GeoTools:** 34.1 (geospatial processing) - Java 17+ version, includes all CVE fixes
-- **Spring Framework:** 6.2.14 ✅ (upgraded from 5.3.x)
+- **Spring Framework:** 6.2.8 via ServiceMix OSGi bundles
 
 ### Build
 - **Maven:** 3.6.3+
@@ -66,22 +66,72 @@ REST/UI -> CatalogFramework (orchestrator)
 
 ### Completed Migrations
 - OpenSAML 3.x -> 4.x
-- Karaf 4.3.7 -> 4.4.8
+- Karaf 4.3.7 -> 4.4.9
 - Pax Web 7.x -> 8.0.33
-- GeoTools 24.6 -> 34.1 ✅ (Java 17+)
-- Spring 5.3.x -> 6.2.14 ✅
-- Jackson 2.18 -> 2.19.4 ✅
-- Commons Validator 1.6 -> 1.10.0 ✅
+- GeoTools 24.6 -> 34.1 (Java 17+)
+- Spring 5.3.x -> 6.2.8
+- Jackson 2.18 -> 2.19.4
+- Commons Validator 1.6 -> 1.10.0
+- CXF 3.5.x -> 4.1.1 (via ddf-cxf-karaf shaded bundle)
+- Camel 3.22.4 -> 4.10.7 (via camel-karaf)
+- SLF4J 1.7.36 -> 2.0.17, Logback 1.2.13 -> 1.5.21
+- javax.ws.rs -> jakarta.ws.rs
+- javax.xml.bind -> jakarta.xml.bind
+- javax.annotation -> jakarta.annotation
+- javax.validation -> jakarta.validation
+- javax.servlet -> jakarta.servlet (113 Java + 4 Groovy + 45 POMs)
 
 ### In Progress
-- CXF 3.6.x -> 4.x (requires jakarta.* migration)
-- javax.* -> jakarta.* namespace
-- GeoTools 34.1 -> 34.x maintenance (as needed)
+- Pax Web 8.x -> 11.x (Jetty 9 -> 12, jakarta.servlet runtime)
+- Boot testing with full feature stack
+- pac4j 5.x -> 6.x (for jakartaee adapter)
 
 ### Security Status
-- ~1177 active vulnerabilities (4 critical, 107 high) - down from 1798
-- Major CVE reductions: Hazelcast removal (-621), Jackson/Commons upgrades
-- Blocked upgrades: Camel 4.x (requires full Jakarta EE migration)
+- 65 active vulnerabilities (0 critical, 24 high) - down from 912 (-93%)
+- Major reductions: Hazelcast removal, Jackson/Commons/GeoTools/Logback upgrades
+
+## Capability Spec Relationships
+
+```
+                    ┌─────────────┐
+                    │   admin     │
+                    │  (console)  │
+                    └──────┬──────┘
+                           │ manages
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+       ┌────────────┐ ┌────────┐ ┌──────────┐
+       │    osgi    │ │catalog │ │ content  │
+       │(blueprint, │ │(CRUD,  │ │(storage, │
+       │ features)  │ │plugins,│ │ resource │
+       └──────┬─────┘ │federate│ │retrieval)│
+              │       └───┬────┘ └────┬─────┘
+              │ registers │ queries    │ stores
+              ▼           ▼           ▼
+       ┌──────────────────────────────────┐
+       │          transformers            │
+       │  (GeoJSON, XML, CSV, Atom, PDF)  │
+       └───────────────┬──────────────────┘
+                       │ converts
+                       ▼
+              ┌──────────────┐
+              │   spatial    │
+              │ (WFS, CSW,   │
+              │  OGC filters)│
+              └──────────────┘
+```
+
+## Documented Capabilities
+
+| Capability | Spec | Requirements | Scenarios |
+|------------|------|-------------|-----------|
+| Catalog Framework | catalog | 10 | 36 |
+| OSGi/Blueprint | osgi | 11 | 40 |
+| Transformers | transformers | 11 | 27 |
+| Spatial/Geospatial | spatial | 8 | 30 |
+| Content/Storage | content | 8 | 25 |
+| Admin Console | admin | 10 | 37 |
+| **Total** | | **58** | **195** |
 
 ## Testing Standards
 - **Target:** 90%+ line coverage for core modules
