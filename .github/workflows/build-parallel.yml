@@ -131,11 +131,15 @@ jobs:
             -Djacoco.skip=true \
             -pl "$EXCLUDE_PL"
 
-      - name: Cache Maven local repository
-        uses: actions/cache/save@v5
+      - name: Upload Maven repository (ddf artifacts only)
+        uses: actions/upload-artifact@v5
         with:
-          path: ~/.m2/repository
-          key: maven-${{ github.sha }}
+          name: maven-repo
+          path: |
+            ~/.m2/repository/org/codice/ddf/
+            ~/.m2/repository/ddf/
+          retention-days: 1
+          compression-level: 6
 
   #
   # STAGE 2: Run tests in parallel job groups
@@ -157,12 +161,13 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Restore Maven cache
-        uses: actions/cache/restore@v5
+      - name: Download Maven repository
+        uses: actions/download-artifact@v6
         with:
+          name: maven-repo
           path: ~/.m2/repository
-          key: maven-${{ github.sha }}
 
       - name: Test libs modules
         run: |
@@ -194,12 +199,13 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Restore Maven cache
-        uses: actions/cache/restore@v5
+      - name: Download Maven repository
+        uses: actions/download-artifact@v6
         with:
+          name: maven-repo
           path: ~/.m2/repository
-          key: maven-${{ github.sha }}
 
       - name: Test platform modules
         run: |
@@ -231,12 +237,13 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Restore Maven cache
-        uses: actions/cache/restore@v5
+      - name: Download Maven repository
+        uses: actions/download-artifact@v6
         with:
+          name: maven-repo
           path: ~/.m2/repository
-          key: maven-${{ github.sha }}
 
       - name: Test catalog core modules
         run: |
@@ -268,12 +275,13 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Restore Maven cache
-        uses: actions/cache/restore@v5
+      - name: Download Maven repository
+        uses: actions/download-artifact@v6
         with:
+          name: maven-repo
           path: ~/.m2/repository
-          key: maven-${{ github.sha }}
 
       - name: Test catalog spatial modules
         run: |
@@ -305,12 +313,13 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Restore Maven cache
-        uses: actions/cache/restore@v5
+      - name: Download Maven repository
+        uses: actions/download-artifact@v6
         with:
+          name: maven-repo
           path: ~/.m2/repository
-          key: maven-${{ github.sha }}
 
       - name: Test catalog REST and transformer modules
         run: |
@@ -347,12 +356,13 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Restore Maven cache
-        uses: actions/cache/restore@v5
+      - name: Download Maven repository
+        uses: actions/download-artifact@v6
         with:
+          name: maven-repo
           path: ~/.m2/repository
-          key: maven-${{ github.sha }}
 
       - name: Test catalog plugin, solr, security, opensearch modules
         run: |
@@ -399,12 +409,13 @@ jobs:
         with:
           java-version: '22'
           distribution: 'temurin'
+          cache: 'maven'
 
-      - name: Restore Maven cache
-        uses: actions/cache/restore@v5
+      - name: Download Maven repository
+        uses: actions/download-artifact@v6
         with:
+          name: maven-repo
           path: ~/.m2/repository
-          key: maven-${{ github.sha }}
 
       - name: Build distribution
         # Distribution modules use karaf-maven-plugin which has deep recursive
