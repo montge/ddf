@@ -268,13 +268,21 @@ jobs:
           languages: ${{ matrix.language }}
           queries: security-extended,security-and-quality
 
+      - name: Build test-jar modules first
+        run: |
+          # These modules export test-jars that other modules depend on at compile scope.
+          # Build them first so they're available in the local Maven repository.
+          mvn $MAVEN_CLI_OPTS install -DskipTests -Denforcer.skip=true \
+              -pl catalog/core/catalog-core-api,catalog/core/catalog-core-commons,catalog/core/catalog-core-impl/pubsub,catalog/core/catalog-core-api-impl,catalog/spatial/geocoding/spatial-geocoding-api \
+              -am
+
       - name: Build for CodeQL analysis
         run: |
-          # Skip docs module (JRuby/asciidoctor issues) and distribution modules
-          # CodeQL only needs compiled source code, not full distribution builds
+          # Skip docs module (JRuby/asciidoctor issues) and broken distribution modules.
+          # CodeQL only needs compiled source code, not full distribution builds.
           mvn $MAVEN_CLI_OPTS -Dmaven.test.skip=true -Denforcer.skip=true \
-              -pl '!distribution/docs,!distribution/ddf,!distribution/ddf-catalog' \
-              clean install
+              -pl '!distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker' \
+              install
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
