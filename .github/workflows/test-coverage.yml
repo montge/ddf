@@ -51,7 +51,7 @@ jobs:
           cache: 'maven'
 
       - name: Run tests with JaCoCo coverage
-        run: mvn $MAVEN_CLI_OPTS clean test jacoco:report $DISTRO_EXCLUDES
+        run: mvn $MAVEN_CLI_OPTS -T 1C -Dcheckstyle.skip=true -Dfmt.skip=true clean test jacoco:report $DISTRO_EXCLUDES
 
       - name: Generate aggregate coverage report
         run: mvn $MAVEN_CLI_OPTS jacoco:report-aggregate $DISTRO_EXCLUDES

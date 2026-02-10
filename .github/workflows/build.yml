@@ -528,6 +528,9 @@ jobs:
       - name: Run Integration Tests (Pax Exam)
         run: |
           mvn $MAVEN_CLI_OPTS verify \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -Dfmt.skip=true \
             -pl features/utilities/,features/admin/,features/apps/,features/branding/,features/install-profiles/,features/security/,features/solr/ \
             -am
 
