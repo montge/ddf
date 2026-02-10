@@ -17,16 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.eclipse.jetty.server.session.AbstractSessionDataStore;
-import org.eclipse.jetty.server.session.SessionContext;
-import org.eclipse.jetty.server.session.SessionData;
+import org.eclipse.jetty.session.AbstractSessionDataStore;
+import org.eclipse.jetty.session.SessionContext;
+import org.eclipse.jetty.session.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This implementation of {@link org.eclipse.jetty.server.session.SessionDataStore} communicates
- * with the {@link AttributeSharingHashSessionIdManager} to retrieve the most up-to-date session
- * attributes.
+ * This implementation of {@link org.eclipse.jetty.session.SessionDataStore} communicates with the
+ * {@link AttributeSharingHashSessionIdManager} to retrieve the most up-to-date session attributes.
  *
  * <p>There is one <code>SessionDataStore</code> instance for each HTTP context on the Jetty server.
  * In the current way we use pax-web with our jax-rs servers, session attributes are not shared
@@ -82,7 +81,7 @@ public class AttributeSharingSessionDataStore extends AbstractSessionDataStore {
   public void initialize(SessionContext context) throws Exception {
     super.initialize(context);
     this.attributeSharingHashSessionIdManager =
-        (AttributeSharingHashSessionIdManager) context.getSessionHandler().getSessionIdManager();
+        (AttributeSharingHashSessionIdManager) context.getSessionManager().getSessionIdManager();
     attributeSharingHashSessionIdManager.addSessionDataStore(this);
   }
 
@@ -116,15 +115,35 @@ public class AttributeSharingSessionDataStore extends AbstractSessionDataStore {
   }
 
   @Override
-  public Set<String> doGetExpired(Set<String> candidates) {
-    final long now = System.currentTimeMillis();
+  public Set<String> doGetExpired(long before) {
+    synchronized (sessionDataMap) {
+      return sessionDataMap.entrySet().stream()
+          .filter(e -> e.getValue().getExpiry() > 0 && e.getValue().getExpiry() < before)
+          .map(Map.Entry::getKey)
+          .collect(Collectors.toSet());
+    }
+  }
 
-    return candidates.stream().filter(c -> isExpired(c, now)).collect(Collectors.toSet());
+  @Override
+  public Set<String> doCheckExpired(Set<String> candidates, long time) {
+    return candidates.stream().filter(c -> isExpired(c, time)).collect(Collectors.toSet());
+  }
+
+  @Override
+  public void doCleanOrphans(long time) {
+    // No-op: in-memory store has no orphans to clean
   }
 
   @Override
   public boolean isPassivating() {
     return true;
+  }
+
+  @Override
+  public boolean doExists(String id) {
+    synchronized (sessionDataMap) {
+      return sessionDataMap.containsKey(id);
+    }
   }
 
   @Override

@@ -21,7 +21,7 @@
 
     <bean id="errorPage" class="org.codice.ddf.platform.error.servlet.ErrorServlet" init-method="init" />
 
-    <service interface="javax.servlet.Servlet" ref="errorPage">
+    <service interface="jakarta.servlet.Servlet" ref="errorPage">
         <service-properties>
             <entry key="osgi.http.whiteboard.servlet.errorPage">
                 <list>

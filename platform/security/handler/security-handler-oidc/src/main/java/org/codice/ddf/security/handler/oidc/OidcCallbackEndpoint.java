@@ -15,14 +15,14 @@ package org.codice.ddf.security.handler.oidc;
 
 import com.google.common.annotations.VisibleForTesting;
 import ddf.security.audit.SecurityLogger;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import java.net.URISyntaxException;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.utils.URIBuilder;
@@ -61,7 +61,9 @@ public class OidcCallbackEndpoint {
           "Passed in request must have a corresponding session to logout.");
     }
 
-    JEEContext jeeContext = new JEEContext(request, response);
+    JEEContext jeeContext =
+        new JEEContext(
+            Pac4jServletAdapter.adaptRequest(request), Pac4jServletAdapter.adaptResponse(response));
 
     this.securityLogger.audit("Logging out");
     new JEESessionStore().destroySession(jeeContext);

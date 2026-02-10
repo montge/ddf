@@ -93,10 +93,9 @@
         <feature version="${karaf.version}">standard</feature>
         <feature version="${karaf.version}">eventadmin</feature>
         <feature version="${karaf.version}">jasypt-encryption</feature>
-        <feature version="${karaf.version}">pax-web-http-war</feature>
+        <feature version="${pax.web.version}">pax-web-war</feature>
         <feature version="${pax.web.version}">pax-web-karaf</feature>
-        <bundle>mvn:javax.servlet/javax.servlet-api/${javax.servlet-api.version}</bundle>
-        <!-- Jakarta Servlet 6.x API for CXF 4.x and other Jakarta EE 10+ libraries -->
+        <!-- Pax Web 11 provides jakarta.servlet 6.x via its own feature dependencies -->
         <feature>jakarta-servlet-api</feature>
         <!--Added wrap at the end so features before this can startup up while we block on the wrap feature-->
         <feature prerequisite="true">wrap</feature>

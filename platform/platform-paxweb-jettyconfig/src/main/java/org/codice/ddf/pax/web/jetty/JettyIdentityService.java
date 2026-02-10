@@ -18,35 +18,23 @@ import javax.annotation.Nullable;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.eclipse.jetty.security.IdentityService;
-import org.eclipse.jetty.security.RunAsToken;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.security.UserIdentity;
 
 public class JettyIdentityService implements IdentityService {
 
   @Override
   @Nullable
-  public Object associate(@Nullable UserIdentity user) {
+  public Association associate(@Nullable UserIdentity user, @Nullable RunAsToken token) {
     if (user != null && user.getUserPrincipal() != null) {
       Subject subject = (Subject) user.getUserPrincipal();
       ThreadContext.bind(subject);
     }
-    return null;
+    return () -> ThreadContext.unbindSubject();
   }
 
   @Override
-  public void disassociate(Object previous) {
+  public void onLogout(UserIdentity user) {
     ThreadContext.unbindSubject();
-  }
-
-  @Override
-  @Nullable
-  public Object setRunAs(UserIdentity user, RunAsToken token) {
-    return null;
-  }
-
-  @Override
-  public void unsetRunAs(Object token) {
-    // not needed
   }
 
   @Override

@@ -23,17 +23,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.session.HouseKeeper;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.session.HouseKeeper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -51,38 +51,38 @@ public class JettySessionManagementTest {
     System.setProperty("ddf.data", "target");
 
     server = new Server();
-    HandlerList handlers = new HandlerList();
-    server.setHandler(handlers);
 
-    // Configure server directly in Java instead of using XML to avoid DTD validation issues
+    // Configure session ID manager
     MockBundleContext bundleContext = new MockBundleContext();
     AttributeSharingHashSessionIdManager sessionIdManager =
         new AttributeSharingHashSessionIdManager(server, bundleContext);
-    server.setSessionIdManager(sessionIdManager);
+    server.addBean(sessionIdManager, true);
 
     AttributeSharingSessionDataStoreFactory sessionDataStoreFactory =
         new AttributeSharingSessionDataStoreFactory();
     server.addBean(sessionDataStoreFactory);
+
     // Have server bind to first available port
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(0);
     server.addConnector(connector);
 
     ServletContextHandler context =
-        new ServletContextHandler(null, "/context1", ServletContextHandler.SESSIONS);
+        new ServletContextHandler("/context1", ServletContextHandler.SESSIONS);
     context.addServlet(new ServletHolder(new TestServlet()), "/");
     context.getSessionHandler().setMaxInactiveInterval(MAX_INACTIVE_INTERVAL_SECONDS);
-    handlers.addHandler(context);
 
     ServletContextHandler context2 =
-        new ServletContextHandler(null, "/context2", ServletContextHandler.SESSIONS);
+        new ServletContextHandler("/context2", ServletContextHandler.SESSIONS);
     context2.addServlet(new ServletHolder(new TestServlet()), "/");
     context2.getSessionHandler().setMaxInactiveInterval(MAX_INACTIVE_INTERVAL_SECONDS);
-    handlers.addHandler(context2);
+
+    Handler.Sequence handlers = new Handler.Sequence(context, context2);
+    server.setHandler(handlers);
 
     HouseKeeper houseKeeper = new HouseKeeper();
     houseKeeper.setIntervalSec(SCAVENGE_INTERVAL_SECONDS);
-    server.getSessionIdManager().setSessionHouseKeeper(houseKeeper);
+    sessionIdManager.setSessionHouseKeeper(houseKeeper);
 
     server.start();
 

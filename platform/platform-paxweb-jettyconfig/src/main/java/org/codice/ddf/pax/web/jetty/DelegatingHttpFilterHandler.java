@@ -13,16 +13,18 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Objects;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.http.HttpFilter;
 import org.codice.ddf.platform.util.SortedServiceList;
+import org.eclipse.jetty.ee10.servlet.ServletContextRequest;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.HandlerWrapper;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Callback;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -45,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * <p>When https://ops4j1.jira.com/browse/PAXWEB-1123 is resolved, this workaround should be
  * revisited.
  */
-public class DelegatingHttpFilterHandler extends HandlerWrapper {
+public class DelegatingHttpFilterHandler extends Handler.Wrapper {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DelegatingHttpFilterHandler.class);
 
@@ -83,7 +85,7 @@ public class DelegatingHttpFilterHandler extends HandlerWrapper {
      * The service listener won't pick up services that are already registered. Must manually
      * add them to the service list.
      */
-    Collection<ServiceReference<HttpFilter>> serviceReferences =
+    java.util.Collection<ServiceReference<HttpFilter>> serviceReferences =
         this.context.getServiceReferences(HttpFilter.class, FILTER);
     for (ServiceReference<HttpFilter> reference : serviceReferences) {
       this.listener.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, reference));
@@ -91,14 +93,28 @@ public class DelegatingHttpFilterHandler extends HandlerWrapper {
   }
 
   @Override
-  public void handle(
-      String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+  public boolean handle(Request request, Response response, Callback callback) throws Exception {
     LOGGER.trace("Delegating to {} HttpFilters.", httpFilters.size());
 
+    ServletContextRequest servletContextRequest = Request.as(request, ServletContextRequest.class);
+    if (servletContextRequest == null) {
+      return super.handle(request, response, callback);
+    }
+
+    HttpServletRequest httpServletRequest = servletContextRequest.getServletApiRequest();
+    HttpServletResponse httpServletResponse = servletContextRequest.getHttpServletResponse();
+
     ProxyHttpFilterChain filterChain =
-        new ProxyHttpFilterChain(httpFilters, getHandler(), target, baseRequest);
-    filterChain.doFilter(request, response);
+        new ProxyHttpFilterChain(httpFilters, this, request, response, callback);
+
+    try {
+      filterChain.doFilter(httpServletRequest, httpServletResponse);
+    } catch (IOException | ServletException e) {
+      callback.failed(e);
+      return true;
+    }
+
+    return true;
   }
 
   @Override

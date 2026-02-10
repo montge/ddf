@@ -16,21 +16,22 @@ package org.codice.ddf.security.servlet.web.socket;
 import ddf.security.SecurityConstants;
 import ddf.security.Subject;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.codice.ddf.security.util.ThreadContextProperties;
 import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.util.Callback;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
-import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
-import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
+import org.eclipse.jetty.websocket.server.ServerUpgradeRequest;
+import org.eclipse.jetty.websocket.server.ServerUpgradeResponse;
+import org.eclipse.jetty.websocket.server.WebSocketCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +58,11 @@ public class SecureWebSocketServlet implements WebSocketCreator {
 
   @Override
   public Object createWebSocket(
-      ServletUpgradeRequest servletUpgradeRequest, ServletUpgradeResponse servletUpgradeResponse) {
-    return new SocketWrapper(executor, ws, sessionPlugins, servletUpgradeRequest.getSession());
+      ServerUpgradeRequest upgradeRequest, ServerUpgradeResponse upgradeResponse, Callback callback)
+      throws Exception {
+    Subject subject = (Subject) upgradeRequest.getAttribute(SecurityConstants.SECURITY_SUBJECT);
+    org.eclipse.jetty.server.Session jettySession = upgradeRequest.getSession(false);
+    return new SocketWrapper(executor, ws, sessionPlugins, subject, jettySession);
   }
 
   @org.eclipse.jetty.websocket.api.annotations.WebSocket
@@ -68,7 +72,9 @@ public class SecureWebSocketServlet implements WebSocketCreator {
 
     private final ExecutorService executor;
 
-    private final HttpSession httpSession;
+    private final Subject subject;
+
+    private final org.eclipse.jetty.server.Session jettySession;
 
     private final List<SessionPlugin> sessionPlugins;
 
@@ -76,27 +82,25 @@ public class SecureWebSocketServlet implements WebSocketCreator {
         ExecutorService executor,
         WebSocket ws,
         List<SessionPlugin> sessionPlugins,
-        HttpSession httpSession) {
+        Subject subject,
+        org.eclipse.jetty.server.Session jettySession) {
       this.ws = ws;
       this.executor = executor;
       this.sessionPlugins = sessionPlugins;
-      this.httpSession = httpSession;
+      this.subject = subject;
+      this.jettySession = jettySession;
     }
 
     private void runWithUser(Session session, Runnable runnable) {
-      Subject subject =
-          (Subject)
-              ((ServletUpgradeRequest) session.getUpgradeRequest())
-                  .getHttpServletRequest()
-                  .getAttribute(SecurityConstants.SECURITY_SUBJECT);
-
       executor.submit(
           () -> {
-            subject.execute(runnable);
+            if (subject != null) {
+              subject.execute(runnable);
+            }
           });
     }
 
-    @OnWebSocketConnect
+    @OnWebSocketOpen
     public void onOpen(Session session) {
       if (isUserLoggedIn()) {
         runWithUser(session, () -> ws.onOpen(session));
@@ -142,11 +146,7 @@ public class SecureWebSocketServlet implements WebSocketCreator {
       String clientIP;
       String clientPort;
       String clientHost;
-      URI requestUri = null;
-      if (session instanceof org.eclipse.jetty.websocket.common.WebSocketSession) {
-        requestUri =
-            ((org.eclipse.jetty.websocket.common.WebSocketSession) session).getRequestURI();
-      }
+      URI requestUri = session.getUpgradeRequest().getRequestURI();
       String xForwardedFor =
           session.getUpgradeRequest().getHeader(HttpHeader.X_FORWARDED_FOR.toString());
       if (StringUtils.isNotEmpty(xForwardedFor)) {
@@ -156,9 +156,10 @@ public class SecureWebSocketServlet implements WebSocketCreator {
         clientHost = session.getUpgradeRequest().getHeader(HttpHeader.X_FORWARDED_HOST.toString());
       } else {
         // otherwise use the remote address/port info
-        clientIP = session.getRemoteAddress().getAddress().toString();
-        clientPort = Integer.toString(session.getRemoteAddress().getPort());
-        clientHost = session.getRemoteAddress().getHostName();
+        InetSocketAddress remoteAddr = (InetSocketAddress) session.getRemoteSocketAddress();
+        clientIP = remoteAddr.getAddress().toString();
+        clientPort = Integer.toString(remoteAddr.getPort());
+        clientHost = remoteAddr.getHostName();
       }
       ThreadContextProperties.addClientInfo(clientIP, clientHost, clientPort, requestUri);
       callSessionPlugins(session);
@@ -176,17 +177,10 @@ public class SecureWebSocketServlet implements WebSocketCreator {
     }
 
     private boolean isUserLoggedIn() {
-      if (httpSession == null) {
+      if (jettySession == null) {
         return false;
       }
-
-      try {
-        httpSession.getCreationTime();
-        return true;
-      } catch (IllegalStateException ise) {
-        // the session is invalid
-        return false;
-      }
+      return jettySession.isValid();
     }
   }
 }

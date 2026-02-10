@@ -13,11 +13,12 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
-import javax.servlet.ServletRequest;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.server.UserIdentity;
+import org.eclipse.jetty.security.AuthenticationState;
+import org.eclipse.jetty.security.UserIdentity;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 
-public class JettyAuthenticatedUser implements Authentication.User {
+public class JettyAuthenticatedUser implements AuthenticationState.Succeeded {
 
   private final UserIdentity userIdentity;
 
@@ -26,7 +27,7 @@ public class JettyAuthenticatedUser implements Authentication.User {
   }
 
   @Override
-  public String getAuthMethod() {
+  public String getAuthenticationType() {
     return "DDF";
   }
 
@@ -36,17 +37,12 @@ public class JettyAuthenticatedUser implements Authentication.User {
   }
 
   @Override
-  public boolean isUserInRole(UserIdentity.Scope scope, String role) {
+  public boolean isUserInRole(String role) {
     return false;
   }
 
   @Override
-  public void logout() {
-    // not used
-  }
-
-  @Override
-  public Authentication logout(ServletRequest servletRequest) {
-    return Authentication.UNAUTHENTICATED;
+  public void logout(Request request, Response response) {
+    // no-op
   }
 }

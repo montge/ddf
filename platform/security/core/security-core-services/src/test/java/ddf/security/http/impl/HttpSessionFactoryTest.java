@@ -27,8 +27,8 @@ import ddf.security.SecurityConstants;
 import ddf.security.audit.SecurityLogger;
 import ddf.security.common.PrincipalHolder;
 import ddf.security.http.SessionFactory;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -13,11 +13,11 @@
  */
 package org.codice.ddf.security.handler.oauth;
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.platform.filter.AuthenticationFailureException;
 import org.codice.ddf.platform.filter.SecurityFilterChain;
 import org.codice.ddf.security.handler.HandlerResultImpl;
@@ -60,7 +60,10 @@ public class OAuthHandler implements AuthenticationHandler {
       return processHeadRequest(httpResponse);
     }
 
-    JEEContext jeeContext = new JEEContext(httpRequest, httpResponse);
+    JEEContext jeeContext =
+        new JEEContext(
+            Pac4jServletAdapter.adaptRequest(httpRequest),
+            Pac4jServletAdapter.adaptResponse(httpResponse));
 
     // time to try and pull credentials off of the request
     LOGGER.debug(

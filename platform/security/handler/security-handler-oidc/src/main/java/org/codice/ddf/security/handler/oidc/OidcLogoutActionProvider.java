@@ -22,6 +22,9 @@ import ddf.security.SubjectOperations;
 import ddf.security.assertion.SecurityAssertion;
 import ddf.security.assertion.jwt.impl.SecurityAssertionJwt;
 import ddf.security.common.PrincipalHolder;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,9 +33,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -91,7 +91,10 @@ public class OidcLogoutActionProvider implements ActionProvider {
       HttpServletRequest request = (HttpServletRequest) ((Map) subjectMap).get("http_request");
       HttpServletResponse response = (HttpServletResponse) ((Map) subjectMap).get("http_response");
 
-      JEEContext jeeContext = new JEEContext(request, response);
+      JEEContext jeeContext =
+          new JEEContext(
+              Pac4jServletAdapter.adaptRequest(request),
+              Pac4jServletAdapter.adaptResponse(response));
 
       HttpSession session = request.getSession(false);
       PrincipalHolder principalHolder = null;

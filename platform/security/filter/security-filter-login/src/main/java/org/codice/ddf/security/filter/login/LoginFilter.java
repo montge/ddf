@@ -22,17 +22,17 @@ import ddf.security.common.PrincipalHolder;
 import ddf.security.http.SessionFactory;
 import ddf.security.service.SecurityManager;
 import ddf.security.service.SecurityServiceException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.stream.Collectors;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
@@ -122,7 +122,7 @@ public class LoginFilter implements SecurityFilter {
     }
 
     token.setX509Certs(
-        (X509Certificate[]) httpRequest.getAttribute("javax.servlet.request.X509Certificate"));
+        (X509Certificate[]) httpRequest.getAttribute("jakarta.servlet.request.X509Certificate"));
     token.setRequestURI(httpRequest.getRequestURI());
 
     if (securityManager == null) {

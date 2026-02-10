@@ -16,9 +16,9 @@ package org.codice.ddf.security.session.management.service.impl;
 import ddf.security.SecurityConstants;
 import ddf.security.common.PrincipalHolder;
 import ddf.security.http.SessionFactory;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.net.URI;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.security.session.management.service.SessionManagementService;
 

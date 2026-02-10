@@ -34,7 +34,7 @@
              description="Dependencies for the core security APIs.">
         <!-- Third Party Features -->
         <feature prerequisite="true">wrap</feature>
-        <feature>pax-web-http-whiteboard</feature>
+        <feature>pax-web-whiteboard</feature>
         <feature>pax-web-jetty-websockets</feature>
         <feature>scr</feature>
         <feature>spring</feature>
@@ -192,9 +192,9 @@
         <feature>error-api</feature>
         <feature>util-uuidgenerator</feature>
 
-        <!-- JavaX -->
+        <!-- Jakarta EE -->
         <bundle>mvn:javax.el/javax.el-api/3.0.0</bundle>
-        <bundle>mvn:javax.servlet/javax.servlet-api/${javax.servlet-api.version}</bundle>
+        <!-- javax.servlet-api removed: jakarta.servlet-api provided by kernel's jakarta-servlet-api feature -->
 
         <!-- Apache -->
         <bundle>mvn:org.apache.commons/commons-lang3/${commons-lang3.version}</bundle>
