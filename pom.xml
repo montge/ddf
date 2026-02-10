@@ -164,7 +164,7 @@
         <activemq.version>5.18.7</activemq.version>
         <antlr.version>4.3</antlr.version>
         <apache.calcite.version>1.38.0</apache.calcite.version>
-        <apache.shiro.version>1.13.0</apache.shiro.version>
+        <apache.shiro.version>2.1.0</apache.shiro.version>
         <asm.version>9.8</asm.version>
         <awaitility.version>3.1.6</awaitility.version>
         <bouncy.version>1.83</bouncy.version>
