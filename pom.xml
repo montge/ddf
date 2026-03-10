@@ -379,7 +379,7 @@
         <micrometer.prometheus-client.version>0.12.0</micrometer.prometheus-client.version>
         <micrometer.opentelemetry.version>1.9.1</micrometer.opentelemetry.version>
         <zstd-jni.version>1.5.5-2</zstd-jni.version>
-        <tomcat-embed.version>9.0.110</tomcat-embed.version>
+        <tomcat-embed.version>9.0.113</tomcat-embed.version>
         <mina.version>2.1.10</mina.version>
 
         <!-- Command line argument properties for the maven-surefire-plugin -->
