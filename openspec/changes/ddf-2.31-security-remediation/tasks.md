@@ -1,25 +1,25 @@
 # DDF 2.31 Security Remediation Tasks
 
-**Status:** Not started (created 2026-05-29)
+**Status:** Phase 0+1 complete & build-verified (2026-05-29); Phases 2-4 pending
 **Baseline:** 90 unique advisories / 41 packages (4,730 raw Dependabot alerts); CodeQL 3 critical + 24 high.
 **Approach:** Apply version fixes as direct root-`pom.xml` property bumps, then close the redundant Dependabot PRs. All values are current→target.
 
 ## Phase 0: Critical & high one-line property bumps (root pom.xml)
-- [ ] 0.1 `mina.version` 2.1.10 → **2.2.7** (CRITICAL RCE chain) + restito hardpin in `thirdparty/restito/pom.xml` 2.2.4 → 2.2.7 (supersedes PR #209)
-- [ ] 0.2 `tomcat-embed.version` 9.0.110 → **9.0.118** (3 CRITICAL + highs; PR #200 only goes to 9.0.117 which leaves criticals — do NOT merge #200 as-is)
-- [ ] 0.3 `bouncy.version` 1.83 → **1.84** (whole BC family in lockstep: bcprov/bcpkix/bcpg/bcmail/bcutil-jdk18on; supersedes PRs #205/#204/#202)
-- [ ] 0.4 `solr.zookeeper.version` 3.9.4 → **3.9.5** (2× HIGH; supersedes PR #190)
-- [ ] 0.5 `netty.version` 4.1.130.Final → **4.1.133.Final** (covers netty-codec + netty-codec-http2 family; supersedes PRs #194/#207)
-- [ ] 0.6 `solr.version` 9.10.0 → **9.10.1** (2× HIGH; moves solrj/solr-api/solr-test-framework)
-- [ ] 0.7 Build-verify Phase 0: `mvn install -Dfast` green; spot-check `mvn dependency:tree` shows no split BC/netty/solr versions
+- [x] 0.1 `mina.version` 2.1.10 → **2.2.7** (CRITICAL RCE chain) + restito hardpin in `thirdparty/restito/pom.xml` 2.2.4 → 2.2.7 (supersedes PR #209)
+- [x] 0.2 `tomcat-embed.version` 9.0.110 → **9.0.118** (3 CRITICAL + highs; PR #200 only goes to 9.0.117 which leaves criticals — do NOT merge #200 as-is)
+- [x] 0.3 `bouncy.version` 1.83 → **1.84** (whole BC family in lockstep: bcprov/bcpkix/bcpg/bcmail/bcutil-jdk18on; supersedes PRs #205/#204/#202)
+- [x] 0.4 `solr.zookeeper.version` 3.9.4 → **3.9.5** (2× HIGH; supersedes PR #190)
+- [x] 0.5 `netty.version` 4.1.130.Final → **4.1.133.Final** (covers netty-codec + netty-codec-http2 family; supersedes PRs #194/#207)
+- [x] 0.6 `solr.version` 9.10.0 → **9.10.1** (2× HIGH; moves solrj/solr-api/solr-test-framework)
+- [x] 0.7 Build-verify Phase 0: `mvn install -Dfast` green; spot-check `mvn dependency:tree` shows no split BC/netty/solr versions
 
 ## Phase 1: High/medium low-risk bumps
-- [ ] 1.1 `logback.version` + `logback.classic.version` 1.5.21 → **1.5.25** (keep `logback-access` 1.2.13 — Jetty 9 pin)
-- [ ] 1.2 `apache-log4j.version` 2.25.3 → **2.25.4**
-- [ ] 1.3 `commons-configuration2.version` 2.10.1 → **2.15.0**
-- [ ] 1.4 `angus-mail.version` 2.0.3 → **2.0.4**
-- [ ] 1.5 Fix stale neethi literal: `libs/ddf-cxf-karaf/features/src/main/feature/feature.xml` `3.2.0` → `${wss4j.neethi.version}` (currently 3.2.2) — feature can otherwise resolve vulnerable 3.2.0
-- [ ] 1.6 Build-verify Phase 1
+- [x] 1.1 `logback.version` + `logback.classic.version` 1.5.21 → **1.5.25** (keep `logback-access` 1.2.13 — Jetty 9 pin)
+- [x] 1.2 `apache-log4j.version` 2.25.3 → **2.25.4**
+- [x] 1.3 `commons-configuration2.version` 2.10.1 → **2.15.0**
+- [x] 1.4 `angus-mail.version` 2.0.3 → **2.0.4**
+- [x] 1.5 Fix stale neethi literal: `libs/ddf-cxf-karaf/features/src/main/feature/feature.xml` `3.2.0` → `${wss4j.neethi.version}` (currently 3.2.2) — feature can otherwise resolve vulnerable 3.2.0
+- [x] 1.6 Build-verify Phase 1
 
 ## Phase 2: Transitive pins, low-severity & test-scope
 - [ ] 2.1 `dependencyManagement` pin `com.github.junrar:junrar` **7.5.10** (override Tika's transitive 7.5.5)
