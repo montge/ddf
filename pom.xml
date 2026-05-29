@@ -141,7 +141,7 @@
         <restassured.version>5.5.0</restassured.version>
         <groovy.version>4.0.23</groovy.version>
         <xmlunit.version>1.6</xmlunit.version>
-        <xmlunit-matchers.version>2.8.2</xmlunit-matchers.version>
+        <xmlunit-matchers.version>2.10.0</xmlunit-matchers.version>
         <auth0.jwt.version>4.5.1</auth0.jwt.version>
         <tinybundles.version>4.0.1</tinybundles.version>
         <tinybundles.bnd.version>6.4.1</tinybundles.bnd.version>
@@ -156,7 +156,7 @@
         <asciidoctorj.diagram.version>2.3.2</asciidoctorj.diagram.version>
         <asciidoctorj.pdf.version>2.3.19</asciidoctorj.pdf.version>
         <asciidoctorj.version>2.5.8</asciidoctorj.version>
-        <jruby.version>9.4.12.0</jruby.version>
+        <jruby.version>9.4.12.1</jruby.version>
         <openlayers.version>4.6.5</openlayers.version>
 
         <abdera.osgi.version>1.1.3_2</abdera.osgi.version>
@@ -379,7 +379,7 @@
         <micrometer.hdrhistogram.version>2.1.12</micrometer.hdrhistogram.version>
         <micrometer.latencyutils.version>2.0.3</micrometer.latencyutils.version>
         <micrometer.prometheus-client.version>0.12.0</micrometer.prometheus-client.version>
-        <micrometer.opentelemetry.version>1.9.1</micrometer.opentelemetry.version>
+        <micrometer.opentelemetry.version>1.62.0</micrometer.opentelemetry.version>
         <zstd-jni.version>1.5.5-2</zstd-jni.version>
         <tomcat-embed.version>9.0.118</tomcat-embed.version>
         <mina.version>2.2.7</mina.version>
@@ -422,6 +422,12 @@
     </scm>
     <dependencyManagement>
         <dependencies>
+            <!-- Security: pin junrar above Tika's transitive 7.5.5 (CVE fix) -->
+            <dependency>
+                <groupId>com.github.junrar</groupId>
+                <artifactId>junrar</artifactId>
+                <version>7.5.10</version>
+            </dependency>
             <!-- Override Karaf BOM's jaxb-runtime version before BOM import -->
             <!-- Karaf 4.4.8 references servicemix bundle 2.3.9 which doesn't exist -->
             <dependency>

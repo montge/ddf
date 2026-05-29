@@ -22,13 +22,14 @@
 - [x] 1.6 Build-verify Phase 1
 
 ## Phase 2: Transitive pins, low-severity & test-scope
-- [ ] 2.1 `dependencyManagement` pin `com.github.junrar:junrar` **7.5.10** (override Tika's transitive 7.5.5)
-- [ ] 2.2 `not-yet-commons-ssl` literal 0.3.11 → **0.3.15** in `platform/security/certificate/security-certificate-keystoreeditor/pom.xml`
-- [ ] 2.3 `micrometer.opentelemetry.version` 1.9.1 → **1.62.0** (also moves opentelemetry-context; API-stable 1.x)
-- [ ] 2.4 assertj-core → **3.27.7** across the 4 modules (catalog-solr-cache, catalog-core-standardframework, platform-util, libs/test-common); add `assertj.version` property + dependencyManagement (supersedes PRs #166/#167) — test scope
-- [ ] 2.5 `xmlunit-matchers.version` 2.8.2 → **2.10.0** (test scope)
-- [ ] 2.6 `jruby.version` 9.4.12.0 → **9.4.12.1** (docs/provided scope; do NOT jump to 10.x)
-- [ ] 2.7 Build-verify Phase 2
+- [x] 2.1 `dependencyManagement` pin `com.github.junrar:junrar` **7.5.10** (override Tika's transitive 7.5.5)
+- [~] 2.2 `not-yet-commons-ssl` — **NO FIX AVAILABLE** (0.3.15 fabricated by analyzer; latest release is 0.3.11, lib abandoned). Reclassified to suppress/accept (medium); shaded/embedded in keystoreeditor. Revisit: replace lib or suppress in dependency-check config.
+- [x] 2.4b assertj kept as per-module versions (3.27.7) rather than a shared property — minimal change, all 4 modules build-verified
+- [x] 2.3 `micrometer.opentelemetry.version` 1.9.1 → **1.62.0** (also moves opentelemetry-context; API-stable 1.x)
+- [x] 2.4 assertj-core → **3.27.7** across the 4 modules (catalog-solr-cache, catalog-core-standardframework, platform-util, libs/test-common); add `assertj.version` property + dependencyManagement (supersedes PRs #166/#167) — test scope
+- [x] 2.5 `xmlunit-matchers.version` 2.8.2 → **2.10.0** (test scope)
+- [x] 2.6 `jruby.version` 9.4.12.0 → **9.4.12.1** (docs/provided scope; do NOT jump to 10.x)
+- [x] 2.7 Build-verify Phase 2
 
 ## Phase 3: Drop-unused / suppress (verify zero consumers first)
 - [ ] 3.1 Remove `hibernate-core` from `features/solr/pom.xml` (zero `org.hibernate`/`javax.persistence` imports; all optional)
