@@ -349,13 +349,15 @@
         <solr.javax.annotation-api.version>2.1.1</solr.javax.annotation-api.version>
         <spark.version>2.9.4</spark.version>
         <spatial4j.version>0.8</spatial4j.version>
-        <spring.version>6.2.8</spring.version>
-        <!-- ServiceMix OSGi bundle version for Spring 6.2.x (used in DDF's spring feature)
-             Note: 6.2.8_1 is the newest ServiceMix bundle available as of 2025-07.
-             Spring 6.2.11+ would fix CVE-2025-41249, 6.2.12+ would fix CVE-2025-41254,
-             but ServiceMix bundles for those versions are not yet released. -->
-        <spring.osgi.bundle.version>6.2.8_1</spring.osgi.bundle.version>
-        <spring.feature.version>6.2.8_1</spring.feature.version>
+        <spring.version>6.2.11</spring.version>
+        <!-- Spring runtime OSGi bundles: ServiceMix only published up to 6.2.8_1, which is
+             still exposed to CVE-2025-41249. Since no ServiceMix 6.2.11 bundle exists, DDF's
+             kernel feature wraps the official org.springframework:*:${spring.version} jars via
+             Karaf's wrap: protocol instead (see features/kernel feature.xml). These properties
+             now carry the wrapped Spring version so feature/Camel references stay consistent.
+             NOTE: CVE-2025-41254 (STOMP CSRF) needs 6.2.12; revisit when wrapping that. -->
+        <spring.osgi.bundle.version>6.2.11</spring.osgi.bundle.version>
+        <spring.feature.version>6.2.11</spring.feature.version>
         <spring-osgi-mock.version>1.2.1</spring-osgi-mock.version>
         <tika.version>3.2.3</tika.version>
         <usng4j.version>0.5</usng4j.version>

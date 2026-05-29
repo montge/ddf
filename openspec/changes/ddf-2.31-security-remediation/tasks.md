@@ -39,8 +39,8 @@
 - [x] 3.5 Build-verify Phase 3
 
 ## Phase 4: Major / blocked items (full scope per decision)
-- [ ] 4.1 **Shiro 1.13.0 → 2.1.0** (`apache.shiro.version`): map module split (shiro-core/-crypto-*/-lang), re-wire OSGi feature + bundles, full security regression. Supersedes PR #184. See design.md §Shiro.
-- [ ] 4.2 **Spring 6.2.11**: bump `spring.version` 6.2.8 → 6.2.11 (fixes scan/Maven layer). Investigate building a local ServiceMix `org.apache.servicemix.bundles.spring-core 6.2.11_1` OSGi wrapper (none published) to close runtime CVE-2025-41249/41254. If infeasible, document residual runtime exposure. Do NOT point `spring.osgi.bundle.version`/`spring.feature.version` at a nonexistent `6.2.11_x`.
+- [>] 4.1 **Shiro 1.13.0 → 2.1.0** — **DEFERRED to a dedicated change** (per decision 2026-05-29). LOW CVE severity vs high blast radius: 176 source files import `org.apache.shiro`; 2.x splits into shiro-core/lang/crypto-*/config-* requiring multi-bundle feature rewiring + moved-import fixes + full security regression. Assessment: shiro-core 2.1.0 IS an OSGi bundle and `org.apache.shiro.util` is largely retained, so it's tractable — but warrants focused work with runtime/security testing. Tracked; PR #184 left open.
+- [x] 4.2 **Spring 6.2.11** — bumped `spring.version`/`spring.osgi.bundle.version`/`spring.feature.version` to 6.2.11 (fixes CVE-2025-41249). Since ServiceMix never published a 6.2.11 OSGi bundle, rewrote the kernel spring feature to wrap the OFFICIAL `org.springframework:*:6.2.11` jars via Karaf's `wrap:` protocol (Export-Package=org.springframework.*, Import-Package optional). Compile + feature-XML structure build-verified. **⚠ RUNTIME OSGi resolution NOT yet validated** (needs a running Karaf; blocked locally by the docs distribution issue). CVE-2025-41254 (STOMP CSRF) needs 6.2.12 — future. PR #184 N/A (that's shiro).
 - [ ] 4.3 Legacy `com.sun.mail:javax.mail/1.6.2` in ddf-cxf-karaf feature (<1.6.8 SMTP-injection): bump to 1.6.8 or migrate WSS4J off javax.mail
 - [ ] 4.4 jdom 1.x (`jdom.bundle.version=1.1_4`) XXE in abdera feature: decide suppress vs remove abdera (opensearch source/endpoint dependency)
 

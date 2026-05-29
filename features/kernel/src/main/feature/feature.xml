@@ -23,18 +23,23 @@
          Our spring features below provide Spring 6.2.8 via ServiceMix OSGi bundles. -->
 
     <!--
-        Spring 6.2.x features for DDF
-        These features override Karaf's default spring 6.1.x features to provide Spring 6.2.8.
+        Spring 6.2.x features for DDF (overrides Karaf's default Spring 6.1.x features).
 
-        SECURITY NOTE: Spring 6.2.8 does NOT include fixes for:
-        - CVE-2025-41249 (fixed in 6.2.11) - Annotation detection vulnerability
-        - CVE-2025-41254 (fixed in 6.2.12) - STOMP CSRF vulnerability
-        ServiceMix OSGi bundles for 6.2.11+ are not yet available (as of 2025-07).
-        Monitor: https://repo1.maven.org/maven2/org/apache/servicemix/bundles/org.apache.servicemix.bundles.spring-core/
+        SECURITY: Spring 6.2.11 fixes CVE-2025-41249 (annotation-detection). Apache ServiceMix
+        never published an OSGi bundle past 6.2.8_1 (still vulnerable), so instead of the
+        ServiceMix bundles DDF wraps the OFFICIAL org.springframework:*:${spring.version} jars
+        via Karaf's wrap: protocol (Spring 6.x ships no OSGi manifest of its own). Imports are
+        declared optional so Spring resolves against whatever the DDF runtime already provides —
+        the same dependency set the prior 6.2.8 bundles used (a patch-level bump adds no new
+        required packages). CVE-2025-41254 (STOMP CSRF) needs 6.2.12 — revisit then.
 
-        Note: We provide two versions of spring:
-        - Version 0.0.0 (default) for unversioned feature references like <feature>spring</feature>
-        - Version ${spring.osgi.bundle.version} for explicit version references from Camel
+        RUNTIME VALIDATION REQUIRED: the wrap metadata below is validated for STRUCTURE at build
+        time only. OSGi resolution/binding must be confirmed on a running Karaf instance before
+        this is trusted in production (blocked locally by the distribution/docs build issue).
+
+        Two versions are provided:
+        - 0.0.0 (default) for unversioned <feature>spring</feature> references
+        - ${spring.osgi.bundle.version} for explicit version references (e.g. from Camel)
     -->
     <!-- Default spring feature (version 0.0.0) that delegates to the versioned one -->
     <feature name="spring" description="Spring 6.2.x support (default)" version="0.0.0">
@@ -44,48 +49,48 @@
     <!-- Versioned spring feature for explicit version references -->
     <feature name="spring" description="Spring 6.2.x support" version="${spring.osgi.bundle.version}">
         <bundle dependency="true" start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/1.0_6</bundle>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-core/${spring.osgi.bundle.version}</bundle>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-expression/${spring.osgi.bundle.version}</bundle>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-beans/${spring.osgi.bundle.version}</bundle>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-aop/${spring.osgi.bundle.version}</bundle>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-context/${spring.osgi.bundle.version}</bundle>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-context-support/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-core/${spring.version}$Bundle-SymbolicName=org.springframework.spring-core&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-expression/${spring.version}$Bundle-SymbolicName=org.springframework.spring-expression&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-beans/${spring.version}$Bundle-SymbolicName=org.springframework.spring-beans&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-aop/${spring.version}$Bundle-SymbolicName=org.springframework.spring-aop&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-context/${spring.version}$Bundle-SymbolicName=org.springframework.spring-context&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-context-support/${spring.version}$Bundle-SymbolicName=org.springframework.spring-context-support&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="spring-tx" description="Spring 6.2.x Transaction (TX) support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring</feature>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-tx/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-tx/${spring.version}$Bundle-SymbolicName=org.springframework.spring-tx&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="spring-jdbc" description="Spring 6.2.x JDBC support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring-tx</feature>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-jdbc/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-jdbc/${spring.version}$Bundle-SymbolicName=org.springframework.spring-jdbc&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="spring-orm" description="Spring 6.2.x ORM support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring-jdbc</feature>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-orm/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-orm/${spring.version}$Bundle-SymbolicName=org.springframework.spring-orm&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="spring-jms" description="Spring 6.2.x JMS support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring-tx</feature>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-jms/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-jms/${spring.version}$Bundle-SymbolicName=org.springframework.spring-jms&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="spring-oxm" description="Spring 6.2.x OXM support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring</feature>
-        <bundle start-level="30">wrap:mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-oxm/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-oxm/${spring.version}$Bundle-SymbolicName=org.springframework.spring-oxm&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="spring-test" description="Spring 6.2.x Test support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring</feature>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-test/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-test/${spring.version}$Bundle-SymbolicName=org.springframework.spring-test&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="spring-web" description="Spring 6.2.x Web support" version="${spring.osgi.bundle.version}">
         <feature version="${spring.osgi.bundle.version}">spring</feature>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-web/${spring.osgi.bundle.version}</bundle>
-        <bundle start-level="30">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.spring-webmvc/${spring.osgi.bundle.version}</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-web/${spring.version}$Bundle-SymbolicName=org.springframework.spring-web&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
+        <bundle start-level="30">wrap:mvn:org.springframework/spring-webmvc/${spring.version}$Bundle-SymbolicName=org.springframework.spring-webmvc&amp;Bundle-Version=${spring.version}&amp;Export-Package=org.springframework.*;version=${spring.version}&amp;Import-Package=*;resolution:=optional</bundle>
     </feature>
 
     <feature name="kernel" version="${project.version}"
