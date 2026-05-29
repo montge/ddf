@@ -111,7 +111,24 @@ Distributed Data Framework (DDF) is an open source, modular integration framewor
     * IntelliJ: https://plugins.jetbrains.com/plugin/8527
     * Eclipse: https://github.com/google/google-java-format/releases/download/google-java-format-1.3/google-java-format-eclipse-plugin-1.3.0.jar
 
-
+### Configure Maven ###
+This repository depends on Codice and Connexta artifacts available in their GitHub repository packages.
+To pull these artifacts, you will need create a [Personal Access Token (PAT) in GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic)
+with `packages:read` permissions, and configure maven's ~/.m2/settings.xml:
+```
+<servers>
+   <server>
+       <id>codice</id>
+       <username>$USERNAME</username>
+       <password>$TOKEN</password>
+   </server>
+   <server>
+       <id>connexta</id>
+       <username>$USERNAME</username>
+       <password>$TOKEN</password>
+   </server>
+</servers>
+```
 
 ### How to build ###
 In order to run through a full build, be sure to have a clone for the ddf repository and optionally the ddf-support repository (NOTE: daily snapshots are deployed so downloading and building each repo may not be necessary since those artifacts will be retrieved.):

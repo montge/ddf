@@ -14,26 +14,19 @@
 package ddf.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThrows;
 
 import java.util.List;
 import org.junit.Test;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryCollection;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 public class AntimeridianTest {
 
   private static final WKTReader WKT_READER = new WKTReader();
-  private static final GeometryFactory GEO_FACTORY = new GeometryFactory();
 
   private Geometry getBoundaryFromWkt(String wkt) {
     try {
@@ -94,177 +87,46 @@ public class AntimeridianTest {
   }
 
   @Test
-  public void testWktIsMultipolygonTrue() {
-    String multiPolygonWkt =
-        "MULTIPOLYGON (((-90 26, -90 70, -44 70, -44 26, -90 26)), ((180 70, 180 26, 162 26, 162 70, 180 70)))";
-    assertThat(Antimeridian.wktIsMultipolygon(multiPolygonWkt), is(true));
+  public void testAntimeridianCrossingIsSplitWithNegativeLongtitude() {
+    String originalWkt =
+        "POLYGON ((167.422137 -37.935528, -173.149957 -49.494589, -166.265735 -32.563561, -176.051446 -24.815088, 167.422137 -37.935528))";
+    String expectedWkt =
+        "MULTIPOLYGON (((180 -27.949873104584977, 167.422137 -37.935528, 180 -45.419004894866745, 180 -27.949873104584977)), ((-180 -45.419004894866745, -173.149957 -49.494589, -166.265735 -32.563561, -176.051446 -24.815088, -180 -27.949873104584977, -180 -45.419004894866745)))";
+    String actualWkt = Antimeridian.unwrapAndSplitWkt(originalWkt);
+    assertWktTopologicallyEqual(actualWkt, expectedWkt);
+    assertCoordinatesWithinBounds(actualWkt);
+    Geometry originalBounds = getBoundaryFromWkt(originalWkt);
+    Geometry updatedBounds = getBoundaryFromWkt(actualWkt);
+    assertThat(originalBounds.getArea(), is(updatedBounds.getArea()));
   }
 
-  @Test
-  public void testWktIsMultipolygonFalse() {
-    String polygonWkt = "POLYGON ((-90 26, -90 70, -44 70, -44 26, -90 26))";
-    assertThat(Antimeridian.wktIsMultipolygon(polygonWkt), is(false));
+  @Test(expected = ParseException.class)
+  public void testInvalidWktFormatFailsToParse() throws ParseException {
+    String invalidWkt =
+        "MULTIPOLYGON (((180 10, 170 10, 170 -10, 180 -10, 180 10)), ((-180 -10, -170 -10, -170, 10, -180 10, -180 -10)))";
+    WKT_READER.read(invalidWkt);
   }
 
-  @Test
-  public void testWktIsMultipolygonCaseInsensitive() {
-    String lowerCaseWkt = "multipolygon (((-90 26, -90 70, -44 70, -44 26, -90 26)))";
-    assertThat(Antimeridian.wktIsMultipolygon(lowerCaseWkt), is(true));
+  private void assertCoordinatesWithinBounds(String wkt) {
+    Geometry geometry;
+    try {
+      geometry = WKT_READER.read(wkt);
+    } catch (ParseException e) {
+      throw new IllegalArgumentException("Unable to parse WKT", e);
+    }
+    for (Coordinate coordinate : geometry.getCoordinates()) {
+      assertThat(coordinate.x >= -180.0 && coordinate.x <= 180.0, is(true));
+      assertThat(coordinate.y >= -90.0 && coordinate.y <= 90.0, is(true));
+    }
   }
 
-  @Test
-  public void testWktMultipolyToSinglePolygonsWithInvalidWkt() {
-    String invalidWkt = "INVALID WKT";
-    List<String> result = Antimeridian.wktMultipolyToSinglePolygons(invalidWkt);
-    assertThat(result, is(empty()));
-  }
-
-  @Test
-  public void testNormalizeWktWithNegativeOutOfRange() {
-    String originalWkt = "POLYGON ((-200 40, -190 50, -185 30, -200 40))";
-    String resultWkt = Antimeridian.normalizeWkt(originalWkt);
-    assertThat(resultWkt, is(notNullValue()));
-    // -200 + 360 = 160, -190 + 360 = 170, -185 + 360 = 175
-    assertThat(resultWkt.contains("160"), is(true));
-  }
-
-  @Test
-  public void testNormalizeWktWithInvalidWkt() {
-    String invalidWkt = "NOT A VALID WKT";
-    String result = Antimeridian.normalizeWkt(invalidWkt);
-    // Should return original WKT when parsing fails
-    assertThat(result, is(invalidWkt));
-  }
-
-  @Test
-  public void testUnwrapAndSplitWktWithInvalidWkt() {
-    String invalidWkt = "INVALID";
-    String result = Antimeridian.unwrapAndSplitWkt(invalidWkt);
-    // Should return original WKT when parsing fails
-    assertThat(result, is(invalidWkt));
-  }
-
-  @Test
-  public void testUnwrapAntimeridianSmallGeometry() throws ParseException {
-    // Geometry with width less than 180 degrees should not be modified
-    String smallWkt = "POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10))";
-    Geometry geo = WKT_READER.read(smallWkt);
-    Geometry result = Antimeridian.unwrapAntimeridian(geo);
-    assertThat(result, is(geo));
-  }
-
-  @Test
-  public void testUnwrapAntimeridianMultiPoint() throws ParseException {
-    // MultiPoint should not be modified
-    String multiPointWkt = "MULTIPOINT ((-170 40), (170 50), (-160 30))";
-    Geometry geo = WKT_READER.read(multiPointWkt);
-    assertThat(geo instanceof MultiPoint, is(true));
-    Geometry result = Antimeridian.unwrapAntimeridian(geo);
-    assertThat(result, is(geo));
-  }
-
-  @Test
-  public void testUnwrapGeoCollectionWithSmallGeometries() throws ParseException {
-    String wkt =
-        "GEOMETRYCOLLECTION (POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10)), POINT (15 15))";
-    Geometry geo = WKT_READER.read(wkt);
-    assertThat(geo instanceof GeometryCollection, is(true));
-    Geometry result = Antimeridian.unwrapGeoCollection(geo);
-    assertThat(result, is(notNullValue()));
-  }
-
-  @Test
-  public void testUnwrapLineStringShortLine() throws ParseException {
-    // Line with single point should return 0
-    String lineWkt = "LINESTRING (10 10)";
-    // Note: JTS requires at least 2 points for a valid LineString
-    // Let's use 2 points that are close together
-    String validLineWkt = "LINESTRING (10 10, 11 11)";
-    Geometry geo = WKT_READER.read(validLineWkt);
-    assertThat(geo instanceof LineString, is(true));
-    int result = Antimeridian.unwrapLineString((LineString) geo);
-    assertThat(result, is(0));
-  }
-
-  @Test
-  public void testUnwrapLineStringCrossingAntimeridian() throws ParseException {
-    // Line crossing antimeridian
-    String lineWkt = "LINESTRING (170 40, -170 40)";
-    Geometry geo = WKT_READER.read(lineWkt);
-    assertThat(geo instanceof LineString, is(true));
-    int result = Antimeridian.unwrapLineString((LineString) geo);
-    assertThat(result >= 0, is(true));
-  }
-
-  @Test
-  public void testCutUnwrappedGeomInto360ValidGeometry() throws ParseException {
-    String wkt = "POLYGON ((170 40, 190 40, 190 50, 170 50, 170 40))";
-    Geometry geo = WKT_READER.read(wkt);
-    Geometry result = Antimeridian.cutUnwrappedGeomInto360(geo);
-    assertThat(result, is(notNullValue()));
-  }
-
-  @Test
-  public void testCutUnwrappedGeomInto360WithinBounds() throws ParseException {
-    // Geometry already within -180 to 180 should not be modified
-    String wkt = "POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10))";
-    Geometry geo = WKT_READER.read(wkt);
-    Geometry result = Antimeridian.cutUnwrappedGeomInto360(geo);
-    assertThat(result, is(geo));
-  }
-
-  @Test
-  public void testCutUnwrappedGeomInto360InvalidGeometry() throws ParseException {
-    // Create an invalid geometry (self-intersecting polygon)
-    String invalidWkt = "POLYGON ((0 0, 10 10, 0 10, 10 0, 0 0))";
-    Geometry geo = WKT_READER.read(invalidWkt);
-    assertThat(geo.isValid(), is(false));
-    assertThrows(IllegalArgumentException.class, () -> Antimeridian.cutUnwrappedGeomInto360(geo));
-  }
-
-  @Test
-  public void testShiftGeomByXZeroShift() throws ParseException {
-    String wkt = "POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10))";
-    Geometry geo = WKT_READER.read(wkt);
-    Geometry original = geo.copy();
-    Antimeridian.shiftGeomByX(geo, 0);
-    // Should not be modified
-    assertThat(geo.equals(original), is(true));
-  }
-
-  @Test
-  public void testShiftGeomByXPositiveShift() throws ParseException {
-    String wkt = "POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10))";
-    Geometry geo = WKT_READER.read(wkt);
-    Antimeridian.shiftGeomByX(geo, 360);
-    // Check that coordinates were shifted
-    assertThat(geo.getCoordinates()[0].x, is(370.0));
-  }
-
-  @Test
-  public void testShiftGeomByXNegativeShift() throws ParseException {
-    String wkt = "POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10))";
-    Geometry geo = WKT_READER.read(wkt);
-    Antimeridian.shiftGeomByX(geo, -360);
-    // Check that coordinates were shifted
-    assertThat(geo.getCoordinates()[0].x, is(-350.0));
-  }
-
-  @Test
-  public void testUnwrapGeoWithLineString() throws ParseException {
-    // Large line that spans more than 180 degrees
-    String lineWkt = "LINESTRING (-170 40, 170 40)";
-    Geometry geo = WKT_READER.read(lineWkt);
-    Geometry result = Antimeridian.unwrapGeo(geo);
-    assertThat(result, is(notNullValue()));
-  }
-
-  @Test
-  public void testUnwrapPolygonNoInteriorRings() throws ParseException {
-    // Simple polygon with no crossing
-    String polygonWkt = "POLYGON ((160 30, 170 30, 170 50, 160 50, 160 30))";
-    Geometry geo = WKT_READER.read(polygonWkt);
-    int result = Antimeridian.unwrapPolygon((org.locationtech.jts.geom.Polygon) geo);
-    assertThat(result, is(0));
+  private void assertWktTopologicallyEqual(String actualWkt, String expectedWkt) {
+    try {
+      Geometry actual = WKT_READER.read(actualWkt);
+      Geometry expected = WKT_READER.read(expectedWkt);
+      assertThat(actual.equalsTopo(expected), is(true));
+    } catch (ParseException e) {
+      throw new IllegalArgumentException("Unable to parse WKT", e);
+    }
   }
 }

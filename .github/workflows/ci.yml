@@ -3,14 +3,14 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - master
       - '[0-9]+.[0-9]+.x'  # Patch branches like 2.10.x, 2.9.x
   pull_request:
     branches:
-      - main
+      - master
       - '[0-9]+.[0-9]+.x'
   schedule:
-    # Nightly build on main (same as Jenkins: H H(17-19) * * *)
+    # Nightly build on master (same as Jenkins: H H(17-19) * * *)
     - cron: '0 18 * * *'
 
 concurrency:
@@ -18,15 +18,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # -Xss32M: Increase thread stack size to prevent StackOverflowError during Karaf feature resolution
-  MAVEN_OPTS: '-Xmx4G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom'
+  MAVEN_OPTS: '-Xmx4G -Xms1G -XX:+ClassUnloadingWithConcurrentMark -Djava.security.egd=file:/dev/./urandom'
   MAVEN_CLI_OPTS: '-B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
-  # Exclude distribution modules with missing dependencies:
-  # - docs: empty archive issue (JRuby/asciidoctor)
-  # - ddf: depends on docs:jar:docs-export
-  # - ddf-docker: depends on ddf:zip
-  DISTRO_EXCLUDES: >-
-    -pl !distribution/docs,!distribution/ddf,!distribution/docker/ddf-docker
 
 jobs:
   # Incremental build for PRs
@@ -47,28 +40,27 @@ jobs:
         with:
           fetch-depth: 0  # Full history needed for incremental build
 
-      - name: Set up JDK 22
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
 
+      - name: Configure Maven settings
+        run: mkdir -p ~/.m2 && cp .github/maven-settings.xml ~/.m2/settings.xml
+
       - name: Quick install (skip tests)
-        run: mvn install $MAVEN_CLI_OPTS -T 1C -DskipStatic=true -DskipTests=true -Dcheckstyle.skip=true -Dfmt.skip=true $DISTRO_EXCLUDES
+        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true
 
       - name: Incremental build
         run: |
           mvn clean install $MAVEN_CLI_OPTS \
-            -T 1C \
-            -Dcheckstyle.skip=true \
-            -Dfmt.skip=true \
             -P !itests \
-            $DISTRO_EXCLUDES \
             -Dgib.enabled=true \
             -Dgib.referenceBranch=refs/remotes/origin/${{ github.base_ref }}
 
-  # Full build for main/patch branches
+  # Full build for master/patch branches
   full-build:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -84,15 +76,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 22
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
 
+      - name: Configure Maven settings
+        run: mkdir -p ~/.m2 && cp .github/maven-settings.xml ~/.m2/settings.xml
+
       - name: Full build (excluding itests)
-        run: mvn clean install $MAVEN_CLI_OPTS -P !itests $DISTRO_EXCLUDES
+        run: mvn clean install $MAVEN_CLI_OPTS -P !itests
+
+      - name: Build itest dependencies
+        run: |
+          mvn install $MAVEN_CLI_OPTS \
+            -pl distribution/test/itests/test-itests-common,distribution/test/itests/test-itests-dependencies-app \
+            -am \
+            -DskipTests=true
 
       - name: Run DDF Core integration tests
         run: |
@@ -118,20 +120,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 22
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
 
+      - name: Configure Maven settings
+        run: mkdir -p ~/.m2 && cp .github/maven-settings.xml ~/.m2/settings.xml
+
       - name: Quick install (skip tests)
-        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true $DISTRO_EXCLUDES
+        run: mvn install $MAVEN_CLI_OPTS -DskipStatic=true -DskipTests=true
 
       - name: Run DDF Core integration tests
         run: |
           unset JAVA_TOOL_OPTIONS
-          mvn verify $MAVEN_CLI_OPTS \
+          mvn install $MAVEN_CLI_OPTS \
             -pl distribution/test/itests/test-itests-ddf-core \
             -nsu
 
@@ -145,12 +150,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 22
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
+
+      - name: Configure Maven settings
+        run: mkdir -p ~/.m2 && cp .github/maven-settings.xml ~/.m2/settings.xml
 
       - name: OWASP Dependency Check
         run: |
@@ -176,10 +184,10 @@ jobs:
           path: target/dependency-check-report.html
           retention-days: 30
 
-  # SonarCloud analysis (main only)
+  # SonarCloud analysis (master only)
   sonarcloud:
     needs: full-build
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -188,12 +196,15 @@ jobs:
         with:
           fetch-depth: 0  # Full history for SonarCloud
 
-      - name: Set up JDK 22
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
+
+      - name: Configure Maven settings
+        run: mkdir -p ~/.m2 && cp .github/maven-settings.xml ~/.m2/settings.xml
 
       - name: SonarCloud Scan
         env:
@@ -213,13 +224,13 @@ jobs:
             -P '!itests'
         continue-on-error: true  # Don't fail build if SonarCloud upload fails
 
-  # Deploy artifacts (main and patch branches only, in production)
+  # Deploy artifacts (master and patch branches only, in production)
   deploy:
     needs: [full-build, dependency-check]
     if: |
       always() &&
       github.event_name != 'pull_request' &&
-      (github.ref == 'refs/heads/main' || contains(github.ref, '.x')) &&
+      (github.ref == 'refs/heads/master' || contains(github.ref, '.x')) &&
       needs.full-build.result == 'success' &&
       needs.dependency-check.result == 'success'
     runs-on: ubuntu-latest
@@ -228,27 +239,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up JDK 22
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '22'
+          java-version: '21'
           distribution: 'temurin'
           cache: maven
 
       - name: Configure Maven settings
-        uses: s4u/maven-settings-action@v3.0.0
-        with:
-          servers: |
-            [{
-              "id": "releases",
-              "username": "${{ secrets.MAVEN_USERNAME }}",
-              "password": "${{ secrets.MAVEN_PASSWORD }}"
-            },
-            {
-              "id": "snapshots",
-              "username": "${{ secrets.MAVEN_USERNAME }}",
-              "password": "${{ secrets.MAVEN_PASSWORD }}"
-            }]
+        run: mkdir -p ~/.m2 && cp .github/maven-settings.xml ~/.m2/settings.xml
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -257,48 +256,13 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Deploy
+        env:
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         run: |
           mvn deploy $MAVEN_CLI_OPTS \
             -DskipStatic=true \
             -DskipTests=true \
-            -DretryFailedDeploymentCount=10
-
-  # Slack notification (non-PR builds only)
-  notify-slack:
-    needs: [full-build, dependency-check]
-    if: always() && github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Determine build result
-        id: result
-        run: |
-          if [[ "${{ needs.full-build.result }}" == "failure" ]] || \
-             [[ "${{ needs.dependency-check.result }}" == "failure" ]]; then
-            echo "status=failure" >> $GITHUB_OUTPUT
-          else
-            echo "status=success" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Slack notification
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "${{ steps.result.outputs.status == 'success' && 'SUCCESS' || 'FAILURE' }}: ${{ github.repository }} - ${{ github.ref_name }} #${{ github.run_number }}",
-              "attachments": [
-                {
-                  "color": "${{ steps.result.outputs.status == 'success' && 'good' || 'danger' }}",
-                  "fields": [
-                    {
-                      "title": "Workflow",
-                      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>",
-                      "short": true
-                    }
-                  ]
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-        continue-on-error: true  # Don't fail if Slack is not configured
+            -DretryFailedDeploymentCount=10 \
+            -Dreleases.repository.url=https://repo.codice.org/repository/maven-releases/ \
+            -Dsnapshots.repository.url=https://repo.codice.org/repository/maven-snapshots/

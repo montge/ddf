@@ -17,7 +17,7 @@
     <parent>
         <groupId>ddf</groupId>
         <artifactId>distribution</artifactId>
-        <version>2.30.0-SNAPSHOT</version>
+        <version>2.31.0-SNAPSHOT</version>
     </parent>
     <artifactId>ddf-catalog</artifactId>
     <groupId>org.codice.ddf</groupId>
@@ -189,9 +189,10 @@
                         <configuration>
                             <rules>
                                 <requireFilesSize>
-                                    <!-- Size increased from ~260MB to ~360MB due to Spring 6.2.x features
-                                         for security fixes (CVE-2025-41249, CVE-2025-41254) -->
-                                    <maxsize>400000000</maxsize>
+                                    <!-- Size raised for Spring 6.2.x / CXF 4.1.x security fixes
+                                         (CVE-2025-41249, CVE-2025-41254). Distro is ~360MB;
+                                         512MB max leaves headroom, 320MB min guards regressions. -->
+                                    <maxsize>512000000</maxsize>
                                     <minsize>320000000</minsize>
                                     <files>
                                         <file>${project.build.directory}/${distribution.file.name}.zip</file>

@@ -16,7 +16,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ddf</groupId>
     <artifactId>ddf</artifactId>
-    <version>2.30.0-SNAPSHOT</version>
+    <version>2.31.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>DDF Reactor</name>
     <description>Distributed Data Framework (DDF) Parent</description>
@@ -46,13 +46,13 @@
     <parent>
         <groupId>ddf</groupId>
         <artifactId>ddf-parent</artifactId>
-        <version>1.0.12</version>
+        <version>1.0.13</version>
     </parent>
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <!-- Commented out to allow module exports for Groovy/Spock compilation -->
-        <!-- <maven.compiler.release>17</maven.compiler.release> -->
+        <!-- <maven.compiler.release>21</maven.compiler.release> -->
 
         <!-- Override dependency-check version from parent (6.1.1 -> 12.1.8) -->
         <dependency-check-maven.version>12.1.8</dependency-check-maven.version>
@@ -62,13 +62,13 @@
         <snapshots.repository.url />
         <reports.repository.url />
         <!-- Must MANUALLY update this if the ddf/support project's version changes -->
-        <ddf.support.version>2.3.17</ddf.support.version>
+        <ddf.support.version>2.3.18</ddf.support.version>
         <!-- Must MANUALLY update this if the codice-maven project's version changes -->
         <codice-maven.version>0.3</codice-maven.version>
         <!-- Must MANUALLY update this if the codice-test project's version changes -->
-        <codice-test.version>0.3</codice-test.version>
+        <codice-test.version>0.10</codice-test.version>
         <!-- Must MANUALLY update this if the DDF Jaxb project's version changes -->
-        <ddf.jaxb.version>1.0.1</ddf.jaxb.version>
+        <ddf.jaxb.version>1.0.2</ddf.jaxb.version>
 
         <!--Documentation Replacements-->
         <branding>DDF</branding>
@@ -132,9 +132,9 @@
         <spock.version>2.3-groovy-4.0</spock.version>
         <mockito.version>5.17.0</mockito.version>
         <pax.exam.version>4.14.0</pax.exam.version>
-        <pax.logging.version>2.3.0</pax.logging.version>
-        <pax.url.version>2.6.17</pax.url.version>
-        <pax.web.version>8.0.33</pax.web.version>
+        <pax.logging.version>2.3.2</pax.logging.version>
+        <pax.url.version>2.7.0</pax.url.version>
+        <pax.web.version>8.0.34</pax.web.version>
         <!-- Pax CDI version pinned to avoid Karaf 4.4.x RELEASE version resolution issues -->
         <pax.cdi.version>1.1.4</pax.cdi.version>
         <restito.version>1.1.2</restito.version>
@@ -142,7 +142,7 @@
         <groovy.version>4.0.23</groovy.version>
         <xmlunit.version>1.6</xmlunit.version>
         <xmlunit-matchers.version>2.8.2</xmlunit-matchers.version>
-        <auth0.jwt.version>3.8.1</auth0.jwt.version>
+        <auth0.jwt.version>4.5.1</auth0.jwt.version>
         <tinybundles.version>4.0.1</tinybundles.version>
         <tinybundles.bnd.version>6.4.1</tinybundles.bnd.version>
 
@@ -165,10 +165,10 @@
         <antlr.version>4.3</antlr.version>
         <apache.calcite.version>1.38.0</apache.calcite.version>
         <apache.shiro.version>1.13.0</apache.shiro.version>
-        <asm.version>9.8</asm.version>
+        <asm.version>9.9</asm.version>
         <awaitility.version>3.1.6</awaitility.version>
         <bouncy.version>1.83</bouncy.version>
-        <c3p0.version>0.9.5.5</c3p0.version>
+        <c3p0.version>0.12.0</c3p0.version>
         <cal10n.version>0.8.1</cal10n.version>
         <cal10n.thirdparty.bundle.version>${cal10n.version}_1</cal10n.thirdparty.bundle.version>
         <camel.version>4.10.7</camel.version>
@@ -184,18 +184,18 @@
         <commons-csv.version>1.14.1</commons-csv.version>
         <commons-digester.version>1.8.1</commons-digester.version>
         <commons-exec.version>1.5.0</commons-exec.version>
-        <commons-io.version>2.20.0</commons-io.version>
+        <commons-io.version>2.21.0</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-logging.version>1.3.5</commons-logging.version>
         <commons-math3.version>3.6.1</commons-math3.version>
         <commons-net.version>3.11.1</commons-net.version>
         <commons-pool.version>1.6</commons-pool.version>
-        <commons-text.version>1.14.0</commons-text.version>
+        <commons-text.version>1.15.0</commons-text.version>
         <commons-validator.version>1.10.0</commons-validator.version>
         <components-font-awesome.version>4.7.0</components-font-awesome.version>
-        <countryconverter.version>0.2.3</countryconverter.version>
-        <cryptomator.version>1.5.2</cryptomator.version>
+        <countryconverter.version>0.2.4</countryconverter.version>
+        <cryptomator.version>1.6.1</cryptomator.version>
         <cxf.version>4.1.1</cxf.version>
         <ddf-admin-ui.version>2.25.0</ddf-admin-ui.version>
         <decanter.version>2.9.0</decanter.version>
@@ -210,7 +210,7 @@
         <geronimo-servlet-api.group>org.apache.geronimo.specs</geronimo-servlet-api.group>
         <google-http-client.version>1.22.0</google-http-client.version>
         <gml-v_3_1_1-schema.version>1.1.0</gml-v_3_1_1-schema.version>
-        <gson.version>2.11.0</gson.version>
+        <gson.version>2.13.2</gson.version>
         <guava.version>33.5.0-jre</guava.version>
         <hawtbuff.version>1.11</hawtbuff.version>
         <httpclient.version>4.5.13</httpclient.version>
@@ -218,7 +218,8 @@
         <httpmime.version>${httpclient.version}</httpmime.version>
         <jai-imageio-core.version>1.4.0</jai-imageio-core.version>
         <JavaAPIforKml.version>2.2.1_CODICE_1</JavaAPIforKml.version>
-        <jackson.version>2.19.4</jackson.version>
+        <jackson.annotations.version>2.21</jackson.annotations.version>
+        <jackson.version>2.21.1</jackson.version>
         <jakarta.xml.bind.version>4.0.2</jakarta.xml.bind.version>
         <jakarta.activation-api.version>2.1.3</jakarta.activation-api.version>
         <jakarta.activation.version>2.1.3</jakarta.activation.version>
@@ -231,7 +232,7 @@
         <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
         <jakarta.xml.soap-api.version>3.0.2</jakarta.xml.soap-api.version>
         <jasypt.version>1.9.3</jasypt.version>
-	<javax.activation.version>1.2.0</javax.activation.version>
+	    <javax.activation.version>1.2.0</javax.activation.version>
         <javax.annotation-api.version>1.3.5</javax.annotation-api.version>
         <javax.cache.version>1.1.1</javax.cache.version>
         <javax.cache.bundle.version>1.1.1_1</javax.cache.bundle.version>
@@ -251,9 +252,9 @@
         <jcodec.version>0.2.0_1</jcodec.version>
         <jdom.bundle.version>1.1_4</jdom.bundle.version>
         <jdom2.bundle.version>2.0.6.1_1</jdom2.bundle.version>
-        <!-- Must match Pax Web 8.0.33's expected Jetty version -->
-        <jetty.version>9.4.57.v20241219</jetty.version>
-        <karaf.jetty.version>9.4.57.v20241219</karaf.jetty.version>
+        <!-- Must match Pax Web 8.0.34's expected Jetty version -->
+        <jetty.version>9.4.58.v20250814</jetty.version>
+        <karaf.jetty.version>9.4.58.v20250814</karaf.jetty.version>
         <jgroups.version>3.6.13.Final</jgroups.version>
         <joda-convert.version>1.7</joda-convert.version>
         <dev.failsafe.version>3.2.4</dev.failsafe.version>
@@ -269,7 +270,7 @@
         <jts.spatial4j.version>1.17.1</jts.spatial4j.version>
         <jvnet-ogc.version>2.6.1</jvnet-ogc.version>
         <jwnl.version>1.3.3</jwnl.version>
-        <karaf.version>4.4.9</karaf.version>
+        <karaf.version>4.4.10</karaf.version>
         <jansi.version>2.4.2</jansi.version>
         <org.osgi.util.promise.version>1.2.0</org.osgi.util.promise.version>
         <org.osgi.util.function.version>1.2.0</org.osgi.util.function.version>
@@ -300,9 +301,9 @@
         <!-- Shibboleth java-support version required by OpenSAML 4.x -->
         <java-support.version>8.0.0</java-support.version>
         <nimbus.version>8.14.1</nimbus.version>
-        <nimbus.oidc.version>11.30</nimbus.oidc.version>
+        <nimbus.oidc.version>11.33</nimbus.oidc.version>
         <nimbus.content-type.version>2.3</nimbus.content-type.version>
-        <nimbus.jose.jwt.version>10.5</nimbus.jose.jwt.version>
+        <nimbus.jose.jwt.version>10.8</nimbus.jose.jwt.version>
         <nimbus.langtag.version>1.7</nimbus.langtag.version>
         <org.geotools.version>34.1</org.geotools.version>
         <geotools-hsql.version>2.7.2</geotools-hsql.version>
@@ -317,17 +318,19 @@
         <ows-v_1_0_0-schema.version>1.1.0</ows-v_1_0_0-schema.version>
         <ogc-filter-v_1_1_0-schema.thirdparty.version>1.1.0_5</ogc-filter-v_1_1_0-schema.thirdparty.version>
         <openjson.version>1.0.13</openjson.version>
+        <!-- pac4j held at 5.7.7: upstream 6.4.2 (CVE-2026-40458 fix) requires the
+             pac4j javaee->jakartaee major upgrade, tracked as a separate change. -->
         <pac4j.version>5.7.7</pac4j.version>
         <pdfbox.version>3.0.6</pdfbox.version>
         <poi.version>5.5.1</poi.version>
         <xlsx.transformer.poi.version>5.2.2</xlsx.transformer.poi.version>
+        <xmlbeans.version>5.3.0</xmlbeans.version>
         <protobuf.version>4.33.2</protobuf.version>
-        <quartz.version>2.3.2</quartz.version>
+        <quartz.version>2.5.2</quartz.version>
         <require-css.version>0.1.10</require-css.version>
         <sardine.version>5.7</sardine.version>
         <hazelcast.version>5.3.5</hazelcast.version>
         <saxon.version>9.6.0-4</saxon.version>
-        <servicemix.bundles.poi.version>${poi.version}_1</servicemix.bundles.poi.version>
         <servicemix.bundles.jaxb.version>${jaxb.version}_3</servicemix.bundles.jaxb.version>
         <servicemix-depends.version>1.4.0</servicemix-depends.version>
         <servicemix.specs.jaxb.version>2.9.0</servicemix.specs.jaxb.version>
@@ -355,11 +358,11 @@
         <spring.feature.version>6.2.8_1</spring.feature.version>
         <spring-osgi-mock.version>1.2.1</spring-osgi-mock.version>
         <tika.version>3.2.3</tika.version>
-        <usng4j.version>0.4</usng4j.version>
+        <usng4j.version>0.5</usng4j.version>
         <validation.version>3.0.2</validation.version>
         <woodstox.core.version>6.6.2</woodstox.core.version>
         <woodstox.stax2-api.version>4.2.1</woodstox.stax2-api.version>
-        <wss4j.neethi.version>3.2.1</wss4j.neethi.version>
+        <wss4j.neethi.version>3.2.2</wss4j.neethi.version>
         <!-- WSS4J 2.4.x for javax namespace (DDF security code uses javax APIs) -->
         <wss4j.version>2.4.3</wss4j.version>
         <xalan.bundle.version>2.7.3_1</xalan.bundle.version>
@@ -367,7 +370,6 @@
         <xerces.version>2.12.2</xerces.version>
         <xerces.bundle.version>2.12.2_1</xerces.bundle.version>
         <xml-apis.version>1.4.01</xml-apis.version>
-        <xmlbeans.version>5.0.3</xmlbeans.version>
         <!-- Apache Santuario 2.3.x for WSS4J 2.4.x compatibility -->
         <xmlsec.version>2.3.4</xmlsec.version>
         <xpp3.bundle.version>1.1.4c_6</xpp3.bundle.version>
@@ -388,7 +390,7 @@
         <failsafe.argline>${jacoco.argline}</failsafe.argline>
 
         <fabric8.docker.plugin.version>0.45.1</fabric8.docker.plugin.version>
-        <tink.version>1.16.0</tink.version>
+        <tink.version>1.20.0</tink.version>
         <org.json.version>20240303</org.json.version>
 
         <!-- Eclipse Transformer for Jakarta EE migration -->
@@ -1188,14 +1190,16 @@
         </dependencies>
     </dependencyManagement>
     <distributionManagement>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <url>${snapshots.repository.url}</url>
-        </snapshotRepository>
         <repository>
             <id>releases</id>
+            <name>Nexus Releases</name>
             <url>${releases.repository.url}</url>
         </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Nexus Snapshots</name>
+            <url>${snapshots.repository.url}</url>
+        </snapshotRepository>
         <site>
             <id>reports</id>
             <url>${reports.repository.url}</url>
@@ -1471,7 +1475,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.6.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -2247,7 +2251,7 @@
         <repository>
             <id>codice</id>
             <name>Codice Repository</name>
-            <url>https://artifacts.codice.org/content/groups/public/</url>
+            <url>https://repo.codice.org/repository/maven-public/</url>
         </repository>
         <repository>
             <id>osgeo</id>
@@ -2277,7 +2281,7 @@
         <pluginRepository>
             <id>codice</id>
             <name>Codice Repository</name>
-            <url>https://artifacts.codice.org/content/groups/public/</url>
+            <url>https://repo.codice.org/repository/maven-public/</url>
         </pluginRepository>
     </pluginRepositories>
     <modules>

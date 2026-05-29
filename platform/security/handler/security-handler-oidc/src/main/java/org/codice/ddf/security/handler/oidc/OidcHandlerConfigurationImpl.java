@@ -121,6 +121,7 @@ public class OidcHandlerConfigurationImpl implements OidcHandlerConfiguration {
     oidcConfiguration.setConnectTimeout(connectTimeout);
     oidcConfiguration.setReadTimeout(readTimeout);
     oidcConfiguration.setClientAuthenticationMethodAsString(clientAuthMethod);
+    oidcConfiguration.setCallUserInfoEndpoint(true);
 
     try {
       testConnection();
@@ -133,14 +134,6 @@ public class OidcHandlerConfigurationImpl implements OidcHandlerConfiguration {
 
   @Override
   public OidcConfiguration getOidcConfiguration() {
-    try {
-      oidcConfiguration.init();
-    } catch (TechnicalException e) {
-      LOGGER.debug(
-          "OIDC Configuration could not initialize; this may be due to a configuration issue. See the configuration under \"OIDC Handler Configuration\" in the Admin Console",
-          e);
-    }
-
     return oidcConfiguration;
   }
 
@@ -161,7 +154,6 @@ public class OidcHandlerConfigurationImpl implements OidcHandlerConfiguration {
 
   @Override
   public OidcLogoutActionBuilder getOidcLogoutActionBuilder() {
-    oidcConfiguration.init();
     return new OidcLogoutActionBuilder(oidcConfiguration);
   }
 

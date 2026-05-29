@@ -1,343 +1,54 @@
-name: Release
-
+name: DDF Release
 on:
   workflow_dispatch:
     inputs:
-      release_type:
-        description: 'Release Type'
+      branch:
+        description: 'Branch to release'
         required: true
+        default: 'master'
+      releaseType:
+        description: 'Release type'
+        required: true
+        default: 'Build'
         type: choice
-        options:
-          - versioned
-          - nightly
-        default: nightly
-      version:
-        description: 'Version number (for versioned releases, e.g., 2.29.0)'
+        options: [Build, Release, RC1, RC2, RC3]
+      nextDevVersion:
+        description: 'Next dev version (blank = auto)'
         required: false
-        type: string
-  # Uncomment for automated nightly releases
-  # schedule:
-  #   - cron: '0 4 * * *'  # 4 AM UTC daily
-
-env:
-  # Java module exports moved to maven-compiler-plugin in pom.xml
-  # -Xss32M: Increase thread stack size for Karaf feature dependency resolution
-  MAVEN_OPTS: >-
-    -Xmx8G -Xms1G -Xss32M -XX:+UseG1GC -Djava.security.egd=file:/dev/./urandom
-  MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end --show-version'
+      notesUrl:
+        description: 'Release notes URL'
+        required: false
+      skipTests:
+        description: 'Skip tests'
+        default: true
+        type: boolean
+      testRun:
+        description: 'Test run only'
+        default: false
+        type: boolean
+      resumeFrom:
+        description: 'Resume failed deploy from module (e.g. solr). Leave blank for normal release.'
+        required: false
 
 jobs:
-  #
-  # VERSIONED RELEASE: Official numbered release with Maven release plugin
-  # DISABLED FOR FORK: This fork does not publish releases
-  #
-  versioned-release:
-    name: Versioned Release
-    if: false  # Disabled for fork - not publishing releases
-    runs-on: ubuntu-latest
-    timeout-minutes: 150  # Increased for 647+ new tests (was 120)
-
-    permissions:
-      contents: write
-      packages: write
-
-    steps:
-      - name: Validate version input
-        run: |
-          if [ -z "${{ github.event.inputs.version }}" ]; then
-            echo "❌ Version number is required for versioned releases"
-            exit 1
-          fi
-
-          # Validate version format (e.g., 2.29.0)
-          if ! [[ "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "❌ Invalid version format. Expected: X.Y.Z (e.g., 2.29.0)"
-            exit 1
-          fi
-
-          echo "✅ Version: ${{ github.event.inputs.version }}"
-
-      - name: Checkout code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
-        with:
-          java-version: '22'
-          distribution: 'temurin'
-          cache: 'maven'
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE
-
-      - name: Configure Git
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-
-      - name: Prepare release
-        run: |
-          mvn $MAVEN_CLI_OPTS \
-            release:prepare \
-            -DreleaseVersion=${{ github.event.inputs.version }} \
-            -Dtag=ddf-${{ github.event.inputs.version }} \
-            -DautoVersionSubmodules=true
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Perform release
-        run: |
-          mvn $MAVEN_CLI_OPTS \
-            release:perform \
-            -Dgoals=deploy
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Find distribution artifact
-        id: find_dist
-        run: |
-          DIST_FILE=$(find target/checkout/distribution/ddf/target -name "ddf-*.zip" | head -n 1)
-          echo "DIST_FILE=$DIST_FILE" >> $GITHUB_OUTPUT
-          echo "Distribution: $DIST_FILE"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ddf-${{ github.event.inputs.version }}
-          name: DDF ${{ github.event.inputs.version }}
-          body: |
-            # DDF ${{ github.event.inputs.version }}
-
-            ## What's New
-            <!-- Add release highlights here -->
-
-            ## Requirements
-            - **Java:** 17 or later (Java 21 recommended)
-            - **Maven:** 3.9.5+ (for building from source)
-
-            ## Installation
-            1. Download `ddf-${{ github.event.inputs.version }}.zip`
-            2. Extract: `unzip ddf-${{ github.event.inputs.version }}.zip`
-            3. Start DDF: `cd ddf-${{ github.event.inputs.version }} && bin/ddf`
-            4. Access Admin Console: `https://localhost:8993/admin`
-
-            ## Test Coverage
-            See workflow artifacts for detailed coverage reports.
-
-            ## Security Status
-            This release has passed all security scans (OWASP, CodeQL, secret detection).
-
-            ## Documentation
-            - User Guide: http://codice.org/ddf/Documentation-versions.html
-            - Release Notes: https://codice.atlassian.net/wiki/spaces/DDF/pages/71275152/Release+Notes
-
-            ---
-            **Generated with GitHub Actions**
-          files: ${{ steps.find_dist.outputs.DIST_FILE }}
-          draft: false
-          prerelease: false
-
-  #
-  # NIGHTLY RELEASE: Automated snapshot builds with timestamp
-  # DISABLED FOR FORK: This fork does not publish releases
-  #
-  nightly-release:
-    name: Nightly Release
-    if: false  # Disabled for fork - not publishing releases
-    runs-on: ubuntu-latest
-    timeout-minutes: 150  # Increased for 647+ new tests (was 120)
-
-    permissions:
-      contents: write
-      packages: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
-        with:
-          java-version: '22'
-          distribution: 'temurin'
-          cache: 'maven'
-
-      - name: Generate nightly version
-        id: version
-        run: |
-          # Get base version from pom.xml
-          BASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
-          TIMESTAMP=$(date -u +%Y%m%d-%H%M%S)
-          NIGHTLY_VERSION="${BASE_VERSION}-nightly-${TIMESTAMP}"
-
-          echo "NIGHTLY_VERSION=$NIGHTLY_VERSION" >> $GITHUB_OUTPUT
-          echo "NIGHTLY_TAG=nightly-${TIMESTAMP}" >> $GITHUB_OUTPUT
-          echo "Building nightly: $NIGHTLY_VERSION"
-
-      - name: Set version
-        run: |
-          mvn $MAVEN_CLI_OPTS \
-            versions:set \
-            -DnewVersion=${{ steps.version.outputs.NIGHTLY_VERSION }} \
-            -DgenerateBackupPoms=false
-
-      - name: Build and package
-        run: mvn $MAVEN_CLI_OPTS clean install
-
-      - name: Find distribution artifact
-        id: find_dist
-        run: |
-          DIST_FILE=$(find distribution/ddf/target -name "ddf-*.zip" | head -n 1)
-          echo "DIST_FILE=$DIST_FILE" >> $GITHUB_OUTPUT
-          echo "Distribution: $DIST_FILE"
-
-          if [ ! -f "$DIST_FILE" ]; then
-            echo "❌ Distribution file not found"
-            exit 1
-          fi
-
-      - name: Create nightly release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.version.outputs.NIGHTLY_TAG }}
-          name: DDF Nightly ${{ steps.version.outputs.NIGHTLY_VERSION }}
-          body: |
-            # DDF Nightly Build
-
-            **Version:** ${{ steps.version.outputs.NIGHTLY_VERSION }}
-            **Built:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-            **Commit:** ${{ github.sha }}
-
-            ## ⚠️ Warning
-            This is an **unstable nightly build** for testing purposes only.
-            Do NOT use in production environments.
-
-            ## Requirements
-            - **Java:** 17 or later (Java 21 recommended)
-            - **Maven:** 3.9.5+ (for building from source)
-
-            ## Installation
-            1. Download the distribution ZIP
-            2. Extract and run: `bin/ddf`
-            3. Access Admin Console: `https://localhost:8993/admin`
-
-            ## Changes
-            See commit history: ${{ github.server_url }}/${{ github.repository }}/commits/${{ github.sha }}
-
-            ---
-            **Automated nightly build - expires after 7 days**
-          files: ${{ steps.find_dist.outputs.DIST_FILE }}
-          draft: false
-          prerelease: true
-
-  #
-  # CLEANUP: Remove old nightly releases (keep last 7)
-  #
-  cleanup-nightly:
-    name: Cleanup Old Nightly Releases
-    if: github.event.inputs.release_type == 'nightly' || github.event_name == 'schedule'
-    needs: nightly-release
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
-    steps:
-      - name: Delete old nightly releases
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-
-            // Get all releases
-            const { data: releases } = await github.rest.repos.listReleases({
-              owner,
-              repo,
-              per_page: 100
-            });
-
-            // Filter nightly releases
-            const nightlyReleases = releases
-              .filter(r => r.tag_name.startsWith('nightly-'))
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-            console.log(`Found ${nightlyReleases.length} nightly releases`);
-
-            // Keep last 7, delete the rest
-            const toDelete = nightlyReleases.slice(7);
-            console.log(`Keeping 7 most recent, deleting ${toDelete.length} old releases`);
-
-            for (const release of toDelete) {
-              console.log(`Deleting: ${release.tag_name} (${release.created_at})`);
-
-              try {
-                // Delete the release
-                await github.rest.repos.deleteRelease({
-                  owner,
-                  repo,
-                  release_id: release.id
-                });
-
-                // Delete the tag
-                await github.rest.git.deleteRef({
-                  owner,
-                  repo,
-                  ref: `tags/${release.tag_name}`
-                });
-
-                console.log(`✅ Deleted ${release.tag_name}`);
-              } catch (error) {
-                console.log(`❌ Failed to delete ${release.tag_name}: ${error.message}`);
-              }
-            }
-
-  #
-  # POST-RELEASE: Verify release and run smoke tests
-  #
-  post-release-verification:
-    name: Post-Release Verification
-    needs: [versioned-release, nightly-release]
-    if: |
-      always() &&
-      (needs.versioned-release.result == 'success' || needs.nightly-release.result == 'success')
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
-        with:
-          java-version: '22'
-          distribution: 'temurin'
-
-      - name: Verify artifacts published
-        run: |
-          echo "✅ Release created successfully"
-          echo "Next steps:"
-          echo "1. Verify distribution ZIP is downloadable"
-          echo "2. Run smoke tests on deployed artifacts"
-          echo "3. Update documentation if needed"
-          echo "4. Announce release to users"
-
-      - name: Create verification report
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const releaseType = '${{ github.event.inputs.release_type }}' || 'nightly';
-            const version = '${{ github.event.inputs.version }}' || 'nightly';
-
-            console.log(`Release Type: ${releaseType}`);
-            console.log(`Version: ${version}`);
-            console.log(`Workflow Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`);
+  release:
+    uses: codice/release-pipelines/.github/workflows/maven-release.yml@main
+    with:
+      app_name: 'ddf'
+      branch: ${{ inputs.branch }}
+      release_type: ${{ inputs.releaseType }}
+      next_dev_version: ${{ inputs.nextDevVersion }}
+      skip_tests: ${{ inputs.skipTests }}
+      test_run: ${{ inputs.testRun }}
+      jdk_version_map: '{"master":"21","2.30.x":"17","2.29.x":"17","2.28.x":"11","2.27.x":"11","default":"11"}'
+      artifact_path: 'distribution/ddf/target'
+      resume_from: ${{ inputs.resumeFrom }}
+      author_name: 'Codice Release Manager'
+      author_email: 'info@codicefoundation.org'
+    secrets:
+      app_id: ${{ secrets.RELEASE_APP_ID }}
+      app_private_key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+      nexus_username: ${{ secrets.NEXUS_USERNAME }}
+      nexus_password: ${{ secrets.NEXUS_PASSWORD }}
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}

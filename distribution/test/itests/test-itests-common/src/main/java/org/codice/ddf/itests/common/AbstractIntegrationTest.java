@@ -570,16 +570,8 @@ public abstract class AbstractIntegrationTest {
             "etc/org.ops4j.pax.url.mvn.cfg",
             "org.ops4j.pax.url.mvn.repositories",
             "https://repo1.maven.org/maven2@id=central,"
-                + "https://oss.sonatype.org/content/repositories/snapshots@snapshots@noreleases@id=sonatype-snapshot,"
-                + "https://oss.sonatype.org/content/repositories/ops4j-snapshots@snapshots@noreleases@id=ops4j-snapshot,"
-                + "https://repository.apache.org/content/groups/snapshots-group@snapshots@noreleases@id=apache,"
-                + "https://svn.apache.org/repos/asf/servicemix/m2-repo@id=servicemix,"
-                + "https://repository.springsource.com/maven/bundles/release@id=springsource,"
-                + "https://repository.springsource.com/maven/bundles/external@id=springsourceext,"
-                + "https://oss.sonatype.org/content/repositories/releases/@id=sonatype,"
-                + "https://repo.osgeo.org/repository/release/@id=osgeo,"
-                + "https://artifacts.codice.org/content/repositories/releases@id=codice-releases,"
-                + "https://artifacts.codice.org/content/repositories/thirdparty@id=codice-thirdparty"),
+                + "https://repo.codice.org/repository/maven-public/@id=codice-nexus@snapshots,"
+                + "https://repo.osgeo.org/repository/release/@id=osgeo"),
         when(System.getProperty(MVN_LOCAL_REPO) != null)
             .useOptions(
                 editConfigurationFilePut(
@@ -794,7 +786,7 @@ public abstract class AbstractIntegrationTest {
         editConfigurationFilePut(SYSTEM_PROPERTIES_REL_PATH, "solr.username", "admin"),
         editConfigurationFilePut(SYSTEM_PROPERTIES_REL_PATH, "solr.password", "admin"),
         editConfigurationFilePut(
-            SYSTEM_PROPERTIES_REL_PATH, "solr.cloud.zookeeper", "localhost:10784"));
+            SYSTEM_PROPERTIES_REL_PATH, "solr.cloud.zookeeper", "127.0.0.1:10784"));
   }
 
   /**

@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import ddf.security.encryption.EncryptionService;
+import jakarta.ws.rs.NotFoundException;
 import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -204,6 +205,7 @@ public class SolrRest {
   }
 
   private void setSimilarities() {
+    boolean updateMetacardCache = true;
     if (CollectionUtils.isNotEmpty(fieldTypes)) {
       LinkedTreeMap<String, Object> replaceField = new LinkedTreeMap<>();
       for (Object fieldType : fieldTypes) {
@@ -229,11 +231,21 @@ public class SolrRest {
             solrCatalogSchemaClientFactory.getClient().replaceField(gson.toJson(replaceField));
         LOGGER.trace("Catalog Configuration update response: {}", response);
 
-        response =
-            solrMetacardCacheSchemaClientFactory
-                .getClient()
-                .replaceField(gson.toJson(replaceField));
-        LOGGER.trace("Metacard Cache Configuration update response: {}", response);
+        if (updateMetacardCache) {
+          try {
+            response =
+                solrMetacardCacheSchemaClientFactory
+                    .getClient()
+                    .replaceField(gson.toJson(replaceField));
+            LOGGER.trace("Metacard Cache Configuration update response: {}", response);
+          } catch (NotFoundException e) {
+            updateMetacardCache = false;
+            LOGGER.debug(
+                "Skipping metacard cache schema updates because {} failed.",
+                getSolrMetacardCacheSchemaUrl(),
+                e);
+          }
+        }
       }
     }
   }
