@@ -1,6 +1,6 @@
 # DDF 2.31 Security Remediation Tasks
 
-**Status:** Phase 0+1 complete & build-verified (2026-05-29); Phases 2-4 pending
+**Status:** Phases 0-3 complete & build-verified (2026-05-29, 459/459 modules); Phase 4 (majors) pending
 **Baseline:** 90 unique advisories / 41 packages (4,730 raw Dependabot alerts); CodeQL 3 critical + 24 high.
 **Approach:** Apply version fixes as direct root-`pom.xml` property bumps, then close the redundant Dependabot PRs. All values are current→target.
 
@@ -32,11 +32,11 @@
 - [x] 2.7 Build-verify Phase 2
 
 ## Phase 3: Drop-unused / suppress (verify zero consumers first)
-- [ ] 3.1 Remove `hibernate-core` from `features/solr/pom.xml` (zero `org.hibernate`/`javax.persistence` imports; all optional)
-- [ ] 3.2 Remove `org.codice.thirdparty:commons-httpclient` from `catalog/catalog-app/pom.xml` + feature bundle (zero `org.apache.commons.httpclient` usage)
-- [ ] 3.3 `commons-lang` 2.6: confirm no third-party bundle `Import-Package org.apache.commons.lang`, then drop bundle from branding/kernel/utilities feature.xml (else accept LOW DoS CVE)
-- [ ] 3.4 jgit (CRITICAL): reclassify to suppress/false-positive in dependency-check config (build-time `support-githooks` only; force-upgrade breaks it — real fix belongs upstream in `codice/ddf-support`)
-- [ ] 3.5 Build-verify Phase 3
+- [x] 3.1 Remove `hibernate-core` from `features/solr/pom.xml` (zero `org.hibernate`/`javax.persistence` imports; all optional)
+- [x] 3.2 Remove `org.codice.thirdparty:commons-httpclient` from `catalog/catalog-app/pom.xml` + feature bundle (zero `org.apache.commons.httpclient` usage)
+- [~] 3.3 `commons-lang` 2.6 — **ACCEPT (do not drop)**: verified active OSGi `Import-Package: org.apache.commons.lang` (v1) consumers exist, so removing the bundle from branding/kernel/utilities would break resolution. LOW DoS-only CVE → accept/suppress rather than risk the runtime.
+- [x] 3.4 jgit (CRITICAL): reclassify to suppress/false-positive in dependency-check config (build-time `support-githooks` only; force-upgrade breaks it — real fix belongs upstream in `codice/ddf-support`)
+- [x] 3.5 Build-verify Phase 3
 
 ## Phase 4: Major / blocked items (full scope per decision)
 - [ ] 4.1 **Shiro 1.13.0 → 2.1.0** (`apache.shiro.version`): map module split (shiro-core/-crypto-*/-lang), re-wire OSGi feature + bundles, full security regression. Supersedes PR #184. See design.md §Shiro.

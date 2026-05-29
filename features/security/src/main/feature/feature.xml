@@ -213,7 +213,6 @@
         <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
         <bundle>mvn:dev.failsafe/failsafe/${dev.failsafe.version}</bundle>
         <bundle>mvn:joda-time/joda-time/${joda-time.version}</bundle>
-        <bundle>mvn:org.codice.thirdparty/commons-httpclient/3.1.0_1</bundle>
     </feature>
 
     <feature name="security-core-services" version="${project.version}"

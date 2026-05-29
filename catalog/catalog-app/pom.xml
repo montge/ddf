@@ -233,11 +233,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.codice.thirdparty</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1.0_1</version>
-        </dependency>
-        <dependency>
             <groupId>ddf.catalog.plugin</groupId>
             <artifactId>plugin-federation-replication</artifactId>
             <version>${project.version}</version>
