@@ -1,20 +1,58 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+# Project context (shown to AI when creating artifacts).
+context: |
+  # Distributed Data Framework (DDF)
+
+  Open source, modular integration framework on Apache Karaf (OSGi). Federated
+  metadata catalog with geospatial search, extensive security (SAML, OAuth,
+  X.509), pluggable architecture.
+
+  ## Tech Stack
+  Runtime: OpenJDK 17 LTS (targeting 21 when Karaf 4.5.x ships); Apache Karaf 4.4.9;
+  Pax Web 8.0.33 / Jetty 9.4.58 (upgrading to Pax Web 11 + Jetty 12);
+  OpenSAML 4.x, pac4j 5.x.
+  Core libs: Solr 9.0.0, CXF 4.1.1 (ddf-cxf-karaf shaded bundle), Camel 4.10.7
+  (camel-karaf), GeoTools 34.1 (Java 17+, CVE-clean), Spring 6.2.8 (ServiceMix OSGi).
+  Build: Maven 3.6.3+, google-java-format, GitHub Actions CI, SonarCloud (montge_ddf).
+
+  ## Architecture
+  OSGi services registered via Blueprint XML (OSGI-INF/blueprint/blueprint.xml);
+  service ranking controls plugin order; features group bundles.
+  Catalog: REST/UI -> CatalogFramework -> Pre* plugins -> core op -> Post* plugins
+  -> FederationStrategy -> sources.
+  Plugin chain: Pre/PostIngestPlugin (CRUD), Pre/PostQueryPlugin (query),
+  Policy/AccessPlugin (authz).
+
+  ## Conventions
+  Java: Hamcrest matchers (assertThat(result, is(expected))); JUnit 4 with
+  @RunWith(MockitoJUnitRunner.class); validate inputs at boundaries; assume
+  concurrent access (immutables); StopProcessingException halts plugin chains.
+  Maven: fast build `mvn install -Dfast`; format `mvn fmt:format`;
+  single module `./build-scripts/build-module.sh <module>`.
+  OSGi: never skip service registration; close InputStream/BinaryContent in
+  finally; use WKT for geometry.
+
+  ## Current State
+  Completed migrations: OpenSAML 3->4, Karaf 4.3.7->4.4.9, Pax Web 7->8.0.33,
+  GeoTools 24.6->34.1, Spring 5.3->6.2.8, Jackson 2.18->2.19.4, CXF 3.5->4.1.1,
+  Camel 3.22->4.10.7, SLF4J 1.7->2.0.17, Logback 1.2->1.5.21,
+  javax.{ws.rs,xml.bind,annotation,validation,servlet} -> jakarta.* .
+  In progress: Pax Web 8->11 (Jetty 9->12, jakarta.servlet runtime); full-stack
+  boot testing; pac4j 5->6 (jakartaee adapter).
+  Security: 65 active vulns (0 critical, 24 high), down from 912 (-93%).
+
+  ## Documented Capabilities (specs)
+  catalog (10 reqs/36 scenarios), osgi (11/40), transformers (11/27),
+  spatial (8/30), content (8/25), admin (10/37). Total: 58 reqs / 195 scenarios.
+
+  ## Testing
+  Target 90%+ line coverage for core modules; Mockito unit isolation;
+  Pax Exam OSGi integration tests; AAA (Arrange-Act-Assert) pattern.
 
 # Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+# rules:
+#   proposal:
+#     - Keep proposals focused; include a "Non-goals" section
+#   tasks:
+#     - Break tasks into chunks of max 2 hours
