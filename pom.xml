@@ -1597,6 +1597,16 @@
                         </configuration>
                     </execution>
                 </executions>
+                <!-- Provides the enforceBytecodeVersion rule class for the re-added execution
+                     above (the root pom's plugin declaration doesn't inherit the parent's
+                     plugin-level dependency). -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>extra-enforcer-rules</artifactId>
+                        <version>1.9.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!--Set the root POM directory-->
