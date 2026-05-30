@@ -25,6 +25,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -33,12 +36,13 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.XmlSchemaException;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.codice.ddf.spatial.ogc.wfs.catalog.source.WfsUriResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 @Provider
 public class XmlSchemaMessageBodyReader implements MessageBodyReader<XmlSchema> {
@@ -83,9 +87,8 @@ public class XmlSchemaMessageBodyReader implements MessageBodyReader<XmlSchema> 
       throws IOException, WebApplicationException {
 
     String input = IOUtils.toString(inStream, StandardCharsets.UTF_8);
-    inStream.reset();
 
-    if (isValid(new InputSource(inStream))) {
+    if (isValid(input)) {
       XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
       schemaCollection.init();
       schemaCollection.setSchemaResolver(wfsUriResolver);
@@ -97,17 +100,40 @@ public class XmlSchemaMessageBodyReader implements MessageBodyReader<XmlSchema> 
   }
 
   /**
-   * Checks that the given InputSource represents a valid schema. Schemas may contain external links
-   * and resolving them is slow, so instead of doing full validation against the XML schema schema,
-   * we just check for the "xsd:schema" element at the root.
+   * Checks that the given document represents a valid schema. The XML is parsed with a hardened,
+   * XXE-safe parser (doctype declarations disallowed, external entities disabled) before the
+   * "xsd:schema" root element is checked, so a hostile WFS response cannot disclose local files or
+   * trigger entity-expansion DoS. Schemas may contain external links and resolving them is slow, so
+   * instead of full schema-schema validation we just check for the root element.
    *
-   * @param inputSource the schema to validate
+   * @param input the schema XML to validate
    */
-  private boolean isValid(InputSource inputSource) {
+  private boolean isValid(String input) {
     try {
-      return (boolean) IS_SCHEMA_XPATH.evaluate(inputSource, XPathConstants.BOOLEAN);
-    } catch (XPathExpressionException e) {
-      throw new XmlSchemaException("Unable to validate schema", e);
+      DocumentBuilder builder = createHardenedDocumentBuilderFactory().newDocumentBuilder();
+      Document document = builder.parse(new InputSource(new StringReader(input)));
+      return (boolean) IS_SCHEMA_XPATH.evaluate(document, XPathConstants.BOOLEAN);
+    } catch (ParserConfigurationException
+        | SAXException
+        | IOException
+        | XPathExpressionException e) {
+      // A doctype/XXE payload trips disallow-doctype-decl and lands here -> not a valid schema.
+      LOGGER.debug("Unable to validate schema", e);
+      return false;
     }
+  }
+
+  private static DocumentBuilderFactory createHardenedDocumentBuilderFactory()
+      throws ParserConfigurationException {
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    dbf.setNamespaceAware(true);
+    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    dbf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+    dbf.setXIncludeAware(false);
+    dbf.setExpandEntityReferences(false);
+    return dbf;
   }
 }

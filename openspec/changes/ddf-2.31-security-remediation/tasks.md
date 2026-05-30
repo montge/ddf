@@ -50,7 +50,12 @@
 ## Phase 5: Verification, re-scan & PR cleanup
 - [ ] 5.1 Re-trigger Dependabot/security scan; confirm P4 "already-fixed" alerts cleared (xmlsec, jetty-server, spring-context, groovy, ant, jdom2, logback-classic, commons-net, commons-beanutils, jsch)
 - [ ] 5.2 Close redundant Dependabot PRs superseded by direct bumps: #209, #205, #204, #202, #200, #190, #194, #207, #166, #167 (and stale #125 karaf, #130 usng4j — already in via merge)
-- [ ] 5.3 Triage CodeQL 3 critical + 24 high SAST findings (separate sub-effort)
+- [~] 5.3 CodeQL 3 critical + 24 high SAST — **triaged** via a 46-agent workflow (full report in `codeql-triage.md`): 4 exploitable, 13 needs-fix, 9 false-positive. Both criticals #19 (XXE) and #50 (XSLT-injection) are FALSE-POSITIVES (already-hardened helpers). **Fixes applied + build-verified (4 exploitable):**
+  - [x] #18 XXE (critical) — `XmlSchemaMessageBodyReader` now parses with a hardened XXE-safe DocumentBuilderFactory before XPath
+  - [x] #16/#17 ReDoS — `JsonpValidator` linear regex + 128-char cap (30/30 tests pass)
+  - [x] #21/#20 path-injection — `KmlEndpoint` icon id charset restriction + path containment
+  - [x] #670–674 path-injection — `FileSystemStorageProvider` read-path containment guard (closes the verifier-upgraded #673 authenticated file-read)
+  - [ ] remaining needs-fix: #22/#23 zipslip, #12/#13 XSS, #135 sensitive-log, #41 trustmanager (suppress), #14 WKT ReDoS (JTS rewrite) — next batch
 - [ ] 5.4 Fix SonarCloud analysis not populating measures (project `montge_ddf` shows empty) — needs working analysis run + coverage
 - [ ] 5.5 Final `mvn install -Dfast` + push branch; confirm CI green
 

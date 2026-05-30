@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -423,7 +424,9 @@ public class KmlEndpoint {
    * @return iconBytes - the icon as a byte[]
    */
   @GET
-  @Path("/icons/{id:.+}")
+  // Restrict the icon id to a safe filename charset (no path separators or "..") to prevent
+  // path traversal into the configured icon directory.
+  @Path("/icons/{id:[A-Za-z0-9._-]+}")
   @Produces({"image/png", "image/jpeg", "image/tiff", "image/gif"})
   public byte[] getIcon(@Context UriInfo uriInfo, @PathParam("id") String id) {
 
@@ -445,7 +448,15 @@ public class KmlEndpoint {
         throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
       }
     } else {
-      String icon = iconLoc + FORWARD_SLASH + id;
+      // Defense-in-depth containment check in addition to the @Path charset restriction: ensure
+      // the resolved icon path stays within the configured icon directory.
+      java.nio.file.Path iconBase = Paths.get(iconLoc).toAbsolutePath().normalize();
+      java.nio.file.Path iconPath = iconBase.resolve(id).normalize();
+      if (!iconPath.startsWith(iconBase)) {
+        LOGGER.debug("Rejected icon path outside base directory: {}", LogSanitizer.sanitize(id));
+        throw new WebApplicationException(Status.NOT_FOUND);
+      }
+      String icon = iconPath.toString();
 
       try (InputStream message = new FileInputStream(icon)) {
         iconBytes = IOUtils.toByteArray(message);
