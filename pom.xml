@@ -1572,6 +1572,30 @@
                             </rules>
                         </configuration>
                     </execution>
+                    <!-- ddf-parent hardcodes enforce-bytecode-version maxJdkVersion=17, which is
+                         incompatible with the JDK 21 target adopted from upstream: every DDF
+                         2.31.0-SNAPSHOT jar (bytecode 65) is otherwise flagged as a banned
+                         dependency in non-fast builds (CI). Config-merge overrides of the
+                         inherited execution don't take (the parent's single-element rule wins),
+                         so disable the inherited execution and re-add it at maxJdkVersion=21. -->
+                    <execution>
+                        <id>enforce-bytecode-version</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>enforce-bytecode-version-jdk21</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <enforceBytecodeVersion>
+                                    <maxJdkVersion>21</maxJdkVersion>
+                                </enforceBytecodeVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
