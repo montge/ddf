@@ -98,6 +98,13 @@
             <version>${mime4j.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- mime4j-dom provides DefaultBodyDescriptorBuilder used by Tika's RFC822 parser -->
+        <dependency>
+            <groupId>org.apache.james</groupId>
+            <artifactId>apache-mime4j-dom</artifactId>
+            <version>${mime4j.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

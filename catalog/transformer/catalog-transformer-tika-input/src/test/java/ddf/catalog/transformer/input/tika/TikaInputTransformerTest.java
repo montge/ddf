@@ -234,17 +234,20 @@ public class TikaInputTransformerTest {
 
   @Test
   public void testJavaClass() throws Exception {
+    // Load a compiled .class file that is guaranteed to be on the test runtime classpath.
+    // The class under test serves as a stable fixture so the test does not depend on a
+    // checked-in *.class binary (which is excluded by the repository .gitignore policy).
     InputStream stream =
         TikaInputTransformerTest.class
             .getClassLoader()
-            .getResourceAsStream("CatalogFrameworkImpl.class");
+            .getResourceAsStream("ddf/catalog/transformer/input/tika/TikaInputTransformer.class");
     Metacard metacard = transform(stream);
     assertNotNull(metacard);
-    assertThat(metacard.getTitle(), is("CatalogFrameworkImpl"));
+    assertThat(metacard.getTitle(), is("TikaInputTransformer"));
     assertNotNull(metacard.getMetadata());
     assertThat(
         metacard.getAttribute(Extracted.EXTRACTED_TEXT).getValue().toString(),
-        containsString("DEFAULT_RESOURCE_NOT_FOUND_MESSAGE"));
+        containsString("fallbackExcelMetacardType"));
     assertThat(metacard.getContentTypeName(), is("application/java-vm"));
     assertThat(metacard.getAttribute(Core.DATATYPE).getValue(), is(TEXT));
   }
@@ -436,7 +439,8 @@ public class TikaInputTransformerTest {
     assertNotNull(metacard.getMetadata());
     assertThat(
         metacard.getMetadata(),
-        containsString("<meta name=\"Keywords\" content=\"grazelands\" />"));
+        containsString(
+            "<meta name=\"Keywords\" content=\"grazelands;nature reserve;bird watching;coast\" />"));
     assertThat(metacard.getContentTypeName(), is("image/jpeg"));
     assertThat(convertDate(metacard.getCreatedDate()), is("2010-07-28 11:02:00 UTC"));
 
