@@ -42,7 +42,8 @@ public class WfsExceptionsTest {
   public void testWfsParseException() {
     WfsParseException exception = new WfsParseException("Parse error");
     assertThat(exception, is(notNullValue()));
-    assertThat(exception.getMessage(), is("Parse error"));
+    // WfsParseException prepends the "Error reading Response: " base message.
+    assertThat(exception.getMessage(), is("Error reading Response: Parse error"));
   }
 
   @Test
@@ -50,7 +51,8 @@ public class WfsExceptionsTest {
     Throwable cause = new IllegalArgumentException("Invalid XML");
     WfsParseException exception = new WfsParseException("Parse error", cause);
     assertThat(exception, is(notNullValue()));
-    assertThat(exception.getMessage(), is("Parse error"));
+    // WfsParseException prepends the "Error reading Response: " base message.
+    assertThat(exception.getMessage(), is("Error reading Response: Parse error"));
     assertThat(exception.getCause(), is(cause));
   }
 

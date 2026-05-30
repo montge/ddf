@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.MessageBodyReader;
@@ -25,7 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.ws.commons.schema.XmlSchema;
-import org.apache.ws.commons.schema.XmlSchemaException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -92,11 +90,15 @@ public class XmlSchemaMessageBodyReaderTest {
   }
 
   @Test
-  public void testReadFromWithEmptyContentThrowsException() {
+  public void testReadFromWithEmptyContentReturnsNull() throws Exception {
+    // The hardened (XXE-safe) isValid() parses the input with a DocumentBuilder and treats any
+    // SAX/parse failure -- including empty, unparseable content -- as "not a valid schema",
+    // returning null rather than throwing. (Pre-remediation the raw XPath evaluation threw an
+    // XmlSchemaException for empty content.)
     InputStream inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
 
-    assertThrows(
-        XmlSchemaException.class,
-        () -> reader.readFrom(XmlSchema.class, null, null, null, null, inputStream));
+    XmlSchema result = reader.readFrom(XmlSchema.class, null, null, null, null, inputStream);
+
+    assertThat(result, is(nullValue()));
   }
 }

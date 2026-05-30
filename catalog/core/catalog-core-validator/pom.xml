@@ -50,10 +50,24 @@
             <artifactId>converter</artifactId>
             <version>${countryconverter.version}</version>
         </dependency>
+        <!--
+          The org.codice.countrycode:converter (genc) library's GencXmlStandardProvider is
+          compiled against the legacy javax.xml.bind namespace (JAXBContext/JAXBException). On
+          JDK 21 JAXB is no longer bundled with the JDK, so the test classpath must provide the
+          javax-namespace API plus a matching JAXB runtime. (At runtime in the OSGi distribution
+          these are supplied by the container.) NOTE: jakarta.xml.bind-api is the wrong namespace
+          here and does not satisfy javax.xml.bind.* — do not substitute it.
+        -->
         <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.2</version>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.9</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

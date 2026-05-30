@@ -25,11 +25,14 @@ import static org.mockito.Mockito.when;
 import ddf.catalog.data.Metacard;
 import ddf.catalog.transform.CatalogTransformerException;
 import ddf.catalog.transform.InputTransformer;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.stream.Stream;
 import org.codice.ddf.platform.util.SortedServiceList;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -234,6 +237,20 @@ public class GeoJsonInputTransformerTest {
         + "    \"type\":\"Feature\","
         + "    \"geometry\":null"
         + "}";
+  }
+
+  /**
+   * GeoJsonInputTransformer decodes BINARY attributes (e.g. {@code thumbnail}) with {@link
+   * DatatypeConverter#parseBase64Binary}. The jakarta.xml.bind-api 4.0.2 built-in fallback
+   * converter has a bug that rejects valid base64 decoding to fewer than 3 bytes (such as {@code
+   * "CA=="} -> {@code {8}}). Install the real Jakarta XML Binding (jaxb-runtime) converter so unit
+   * tests exercise the same correct decoding available in the OSGi runtime.
+   */
+  @BeforeAll
+  public static void installJaxbDatatypeConverter() throws Exception {
+    Field field = DatatypeConverter.class.getDeclaredField("theConverter");
+    field.setAccessible(true);
+    field.set(null, org.glassfish.jaxb.runtime.DatatypeConverterImpl.theInstance);
   }
 
   @BeforeEach

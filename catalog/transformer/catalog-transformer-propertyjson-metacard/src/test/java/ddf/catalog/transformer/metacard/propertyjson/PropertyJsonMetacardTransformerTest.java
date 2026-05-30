@@ -457,7 +457,10 @@ public class PropertyJsonMetacardTransformerTest {
     BinaryContent result = transformer.transform(metacard, null);
 
     assertThat(result, notNullValue());
-    assertThat(result.getSize() > 0, is(true));
+    // NOTE: BinaryContentImpl.getSize() returns UNKNOWN_SIZE (-1) unless setSize() is called.
+    // The transformer constructs BinaryContentImpl without a size, so assert on the actual
+    // serialized byte content instead of the (intentionally unset) size metadata.
+    assertThat(result.getByteArray().length > 0, is(true));
 
     JsonObject json = parseJson(result);
     JsonObject properties = json.getAsJsonObject("properties");

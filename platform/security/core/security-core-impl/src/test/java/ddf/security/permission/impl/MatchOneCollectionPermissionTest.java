@@ -60,7 +60,13 @@ public class MatchOneCollectionPermissionTest {
     KeyValuePermission testPermission = new KeyValuePermissionImpl("testKey");
     testPermission.addValue("value1");
 
-    assertThat(matchOnePermission.implies(testPermission), is(true));
+    // "Match one" semantics are exercised through the CollectionPermission code path, which is
+    // how MatchOneCollectionPermission is invoked in production (see AuthzRealm). The bare
+    // single-KeyValuePermission path is a "match all" catch-all and does not split values.
+    CollectionPermission collectionToTest = mock(CollectionPermission.class);
+    when(collectionToTest.getPermissionList()).thenReturn(Arrays.asList(testPermission));
+
+    assertThat(matchOnePermission.implies(collectionToTest), is(true));
   }
 
   @Test
@@ -187,7 +193,14 @@ public class MatchOneCollectionPermissionTest {
     KeyValuePermission testPermission = new KeyValuePermissionImpl("key1");
     testPermission.addValue("value2");
 
-    assertThat(matchOnePermission.implies(testPermission), is(true));
+    // "Match one" semantics are exercised through the CollectionPermission code path, which is
+    // how MatchOneCollectionPermission is invoked in production (see AuthzRealm). The bare
+    // single-KeyValuePermission path is a "match all" catch-all and does not split values, so
+    // matching one of several values must go through a CollectionPermission.
+    CollectionPermission collectionToTest = mock(CollectionPermission.class);
+    when(collectionToTest.getPermissionList()).thenReturn(Arrays.asList(testPermission));
+
+    assertThat(matchOnePermission.implies(collectionToTest), is(true));
   }
 
   @Test

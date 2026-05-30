@@ -26,7 +26,9 @@ import org.junit.jupiter.api.Test;
 public class TikaMetadataExtractorTest {
   private TikaMetadataExtractor tikaMetadataExtractor;
 
-  private static final String BODY = "this is a test\n";
+  // Tika 3.x's text parser appends a trailing newline after the document body, so the parsed
+  // body text for the single-line "this is a test\n" resource is now "this is a test\n\n".
+  private static final String BODY = "this is a test\n\n";
 
   private InputStream stream = null;
 
@@ -38,8 +40,9 @@ public class TikaMetadataExtractorTest {
   @Test
   public void testNullInputStream() {
     InputStream stream = null;
-    assertThrows(
-        IllegalArgumentException.class, () -> new TikaMetadataExtractor(stream, 1000, 1000));
+    // commons-lang3 3.5+ Validate.notNull delegates to Objects.requireNonNull and throws
+    // NullPointerException (previously IllegalArgumentException).
+    assertThrows(NullPointerException.class, () -> new TikaMetadataExtractor(stream, 1000, 1000));
   }
 
   @Test

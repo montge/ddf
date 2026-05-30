@@ -28,14 +28,15 @@ import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.condpermadmin.ConditionalPermissionAdmin;
 
-/** Extended unit tests for {@EnableRuleMigrationSupport
- * @link PermissionActivator} to increase coverage */
+/** Extended unit tests for {@link PermissionActivator} to increase coverage */
+@EnableRuleMigrationSupport
 @ExtendWith(MockitoExtension.class)
 public class PermissionActivatorExtendedTest {
 

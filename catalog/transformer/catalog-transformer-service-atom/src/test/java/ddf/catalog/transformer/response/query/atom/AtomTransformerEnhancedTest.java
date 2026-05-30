@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.geotools.api.filter.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -177,7 +178,7 @@ public class AtomTransformerEnhancedTest {
   @Test
   public void testTransformIncludesOpenSearchElements()
       throws CatalogTransformerException, IOException {
-    Query query = new QueryImpl(null, 1, 10, null, false, 0);
+    Query query = new QueryImpl(Filter.INCLUDE, 1, 10, null, false, 0);
     QueryRequest queryRequest = new QueryRequestImpl(query);
 
     SourceResponse sourceResponse = mock(SourceResponse.class);
@@ -196,7 +197,7 @@ public class AtomTransformerEnhancedTest {
 
   @Test
   public void testTransformWithNegativePageSize() throws CatalogTransformerException, IOException {
-    Query query = new QueryImpl(null, 1, -1, null, false, 0);
+    Query query = new QueryImpl(Filter.INCLUDE, 1, -1, null, false, 0);
     QueryRequest queryRequest = new QueryRequestImpl(query);
 
     List<Result> results = new ArrayList<>();
@@ -505,7 +506,7 @@ public class AtomTransformerEnhancedTest {
 
   @Test
   public void testTransformWithCountProperty() throws CatalogTransformerException, IOException {
-    Query query = new QueryImpl(null, 1, 10, null, false, 0);
+    Query query = new QueryImpl(Filter.INCLUDE, 1, 10, null, false, 0);
     QueryRequest queryRequest = new QueryRequestImpl(query);
 
     Map<String, Serializable> properties = new HashMap<>();

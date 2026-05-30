@@ -14,7 +14,6 @@
 package org.codice.ddf.security.interceptor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -244,7 +243,11 @@ public class GuestInterceptorWrapperTest {
 
     assertThat(newWrapper.getBefore(), notNullValue());
     assertThat(newWrapper.getBefore().size(), is(2));
-    assertThat(newWrapper.getBefore(), contains(WSS4J_IN_INTERCEPTOR, POLICY_WSS4J_IN_INTERCEPTOR));
+    // getBefore() returns a CXF SortedArraySet, so iteration order is the natural ordering of the
+    // class names (P < W), not insertion order. Assert membership without depending on order.
+    assertThat(
+        newWrapper.getBefore(),
+        containsInAnyOrder(WSS4J_IN_INTERCEPTOR, POLICY_WSS4J_IN_INTERCEPTOR));
   }
 
   @Test

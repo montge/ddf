@@ -111,8 +111,10 @@ public class WfsQnameBuilderTest {
   public void testBuildQNameWithColonsAndSpaces() {
     QName qname = WfsQnameBuilder.buildQName("Meta:card Type", "Content :Type Name");
 
+    // Colons are replaced with underscores in both names. Spaces are removed only from the
+    // contentTypeName, so the space in the metacardTypeName is preserved.
     assertThat(qname.getLocalPart(), is("Content_TypeName"));
-    assertThat(qname.getPrefix(), is("Meta_cardType.Content_TypeName"));
+    assertThat(qname.getPrefix(), is("Meta_card Type.Content_TypeName"));
   }
 
   @Test

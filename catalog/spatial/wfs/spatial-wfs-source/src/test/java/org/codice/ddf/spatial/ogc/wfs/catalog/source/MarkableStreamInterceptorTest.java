@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -100,7 +101,12 @@ public class MarkableStreamInterceptorTest {
   public void testHandleMessageWithIOException() throws Exception {
     InputStream mockStream = org.mockito.Mockito.mock(InputStream.class);
     when(message.getContent(InputStream.class)).thenReturn(mockStream);
-    doThrow(new IOException("test error")).when(mockStream).read(any(byte[].class));
+    // IOUtils.toByteArray (commons-io 2.21.x) reads via the 3-arg read(byte[], int, int)
+    // method through BoundedInputStream/ProxyInputStream, so stub that overload to surface
+    // the IOException along the path the code under test actually exercises.
+    doThrow(new IOException("test error"))
+        .when(mockStream)
+        .read(any(byte[].class), anyInt(), anyInt());
 
     // Should not throw - handles IOException internally
     interceptor.handleMessage(message);

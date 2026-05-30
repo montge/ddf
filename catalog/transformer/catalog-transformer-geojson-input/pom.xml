@@ -61,6 +61,21 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+        <!--
+          Provides a real Jakarta XML Binding (JAXB) runtime on the test classpath.
+          GeoJsonInputTransformer.convertValue() uses jakarta.xml.bind.DatatypeConverter
+          to decode BINARY attributes. Without a JAXB runtime, the API falls back to the
+          buggy built-in DatatypeConverterImpl, which rejects valid base64 that decodes to
+          fewer than 3 bytes (e.g. "CA==" -> {8}). In the OSGi runtime the glassfish JAXB
+          runtime is present and registers a correct converter; this dependency restores
+          that behavior for unit tests.
+        -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
