@@ -55,7 +55,12 @@
   - [x] #16/#17 ReDoS — `JsonpValidator` linear regex + 128-char cap (30/30 tests pass)
   - [x] #21/#20 path-injection — `KmlEndpoint` icon id charset restriction + path containment
   - [x] #670–674 path-injection — `FileSystemStorageProvider` read-path containment guard (closes the verifier-upgraded #673 authenticated file-read)
-  - [ ] remaining needs-fix: #22/#23 zipslip, #12/#13 XSS, #135 sensitive-log, #41 trustmanager (suppress), #14 WKT ReDoS (JTS rewrite) — next batch
+  - [x] #22/#23 Zip Slip — `ZipDecompression` canonical-base containment + `FileSystemStorageProvider.generateContentFile` strips path via `FilenameUtils.getName` (robust sink-side fix)
+  - [x] #135 sensitive-log — `OAuthSecurityImpl` no longer TRACE-logs `webClient.getHeaders()` (Authorization/Basic secret)
+  - [x] #12 REST XSS — `RESTEndpoint.deleteDocument` stops echoing raw id; error responses HTML-escape the message before `<pre>`
+  - [ ] #13 SAML logout XSS — encode `relayState`/`targetUrl` in `HtmlResponseTemplate` (next)
+  - [ ] #14 WKT ReDoS (`WktStandard`) — needs JTS-delegation rewrite (no in-repo production caller; deferred)
+  - [ ] #41 insecure-trustmanager — by-design (admin cert-discovery TOFU); dismiss in CodeQL UI + add fingerprint confirmation (deferred)
 - [ ] 5.4 Fix SonarCloud analysis not populating measures (project `montge_ddf` shows empty) — needs working analysis run + coverage
 - [ ] 5.5 Final `mvn install -Dfast` + push branch; confirm CI green
 

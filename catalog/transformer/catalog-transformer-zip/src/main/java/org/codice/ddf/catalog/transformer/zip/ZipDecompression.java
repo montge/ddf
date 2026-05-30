@@ -91,6 +91,16 @@ public class ZipDecompression implements InputCollectionTransformer {
 
           File zipEntryFile = new File(zipFileName + filename);
 
+          // Zip Slip guard: the entry name is attacker-controlled, so ensure the resolved file
+          // stays within the extraction directory before creating dirs or writing.
+          File extractionBase = new File(zipFileName).getCanonicalFile();
+          if (!zipEntryFile
+              .getCanonicalPath()
+              .startsWith(extractionBase.getCanonicalPath() + File.separator)) {
+            throw new CatalogTransformerException(
+                "Zip entry resolves outside the extraction directory: " + filename);
+          }
+
           if (!new File(zipEntryFile.getParent()).mkdirs()) {
             LOGGER.debug("File directory already exists in {}", zipFileName);
           }

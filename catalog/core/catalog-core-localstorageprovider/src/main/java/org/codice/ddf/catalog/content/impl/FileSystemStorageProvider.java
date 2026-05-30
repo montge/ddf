@@ -644,8 +644,12 @@ public class FileSystemStorageProvider implements StorageProvider {
 
     long itemSize = item.getSize();
     long copySize;
+    // Strip any path components from the (attacker-influenceable, e.g. zip-import) filename so it
+    // cannot escape contentDirectory (Zip Slip / path traversal).
     Path contentItemPath =
-        Paths.get(contentDirectory.toAbsolutePath().toString(), item.getFilename());
+        Paths.get(
+            contentDirectory.toAbsolutePath().toString(),
+            FilenameUtils.getName(item.getFilename()));
     ByteSource byteSource;
 
     if (storeReference != null) {

@@ -336,8 +336,7 @@ public class OAuthSecurityImpl implements OAuthSecurity {
       if (LOGGER.isTraceEnabled()) {
         sanitizeFormParameters(formParam);
         LOGGER.trace(
-            "Unable to retrieve system access token. Headers: {}, Request: {}, Status: {}, Response: {}",
-            webClient.getHeaders(),
+            "Unable to retrieve system access token. Request: {}, Status: {}, Response: {}",
             formParam.asMap(),
             response.getStatus(),
             body);
