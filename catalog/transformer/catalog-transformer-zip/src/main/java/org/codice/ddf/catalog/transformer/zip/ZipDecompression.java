@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,17 +91,16 @@ public class ZipDecompression implements InputCollectionTransformer {
 
         if (!filename.contains("META-INF")) {
 
-          File zipEntryFile = new File(zipFileName + filename);
-
-          // Zip Slip guard: the entry name is attacker-controlled, so ensure the resolved file
-          // stays within the extraction directory before creating dirs or writing.
-          File extractionBase = new File(zipFileName).getCanonicalFile();
-          if (!zipEntryFile
-              .getCanonicalPath()
-              .startsWith(extractionBase.getCanonicalPath() + File.separator)) {
-            throw new CatalogTransformerException(
-                "Zip entry resolves outside the extraction directory: " + filename);
+          // Zip Slip guard: the entry name is attacker-controlled; reject any name that would
+          // traverse outside the extraction root (absolute path or a leading "..") before it is
+          // concatenated onto the destination prefix. Legitimate relative names (e.g.
+          // "dir/file.txt") are unaffected.
+          Path normalizedEntry = Paths.get(filename).normalize();
+          if (normalizedEntry.isAbsolute() || normalizedEntry.startsWith("..")) {
+            throw new CatalogTransformerException("Zip entry has an unsafe path: " + filename);
           }
+
+          File zipEntryFile = new File(zipFileName + filename);
 
           if (!new File(zipEntryFile.getParent()).mkdirs()) {
             LOGGER.debug("File directory already exists in {}", zipFileName);
