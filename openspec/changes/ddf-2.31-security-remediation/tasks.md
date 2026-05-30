@@ -58,9 +58,11 @@
   - [x] #22/#23 Zip Slip — `ZipDecompression` canonical-base containment + `FileSystemStorageProvider.generateContentFile` strips path via `FilenameUtils.getName` (robust sink-side fix)
   - [x] #135 sensitive-log — `OAuthSecurityImpl` no longer TRACE-logs `webClient.getHeaders()` (Authorization/Basic secret)
   - [x] #12 REST XSS — `RESTEndpoint.deleteDocument` stops echoing raw id; error responses HTML-escape the message before `<pre>`
-  - [ ] #13 SAML logout XSS — encode `relayState`/`targetUrl` in `HtmlResponseTemplate` (next)
-  - [ ] #14 WKT ReDoS (`WktStandard`) — needs JTS-delegation rewrite (no in-repo production caller; deferred)
-  - [ ] #41 insecure-trustmanager — by-design (admin cert-discovery TOFU); dismiss in CodeQL UI + add fingerprint confirmation (deferred)
+  - [x] #13 SAML logout XSS — `HtmlResponseTemplate` HTML-escapes targetUrl/samlValue/relayState (all double-quoted HTML attributes); 18/18 template tests pass
+  - [ ] #14 WKT ReDoS (`WktStandard`) — needs JTS-delegation rewrite; no in-repo production caller (exported API only). DEFERRED
+  - [ ] #41 insecure-trustmanager — by-design (admin cert-discovery TOFU); dismiss in CodeQL UI + add fingerprint confirmation. DEFERRED
+
+  **CodeQL outcome: 9 of 13 actionable findings fixed + build-verified; both criticals' real exploitable one (#18) fixed, the 2 critical FPs documented for dismissal; #14/#41 deferred with rationale.**
 - [ ] 5.4 Fix SonarCloud analysis not populating measures (project `montge_ddf` shows empty) — needs working analysis run + coverage
 - [ ] 5.5 Final `mvn install -Dfast` + push branch; confirm CI green
 
