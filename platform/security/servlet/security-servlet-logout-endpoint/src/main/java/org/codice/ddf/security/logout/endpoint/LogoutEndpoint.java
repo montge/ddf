@@ -19,10 +19,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codice.ddf.security.logout.service.LogoutService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LogoutEndpoint extends HttpServlet {
 
-  private LogoutService logoutService;
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogoutEndpoint.class);
+
+  private final transient LogoutService logoutService;
 
   public LogoutEndpoint(LogoutService logoutService) {
     this.logoutService = logoutService;
@@ -37,7 +41,8 @@ public class LogoutEndpoint extends HttpServlet {
       res.setHeader("Pragma", "no-cache");
       res.getWriter().print(jsonString);
     } catch (SecurityServiceException | IOException e) {
-      throw new RuntimeException(e);
+      LOGGER.debug("Failed to retrieve logout action providers.", e);
+      res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
   }
 }

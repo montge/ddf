@@ -16,7 +16,6 @@ package org.codice.ddf.security.logout.endpoint;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -115,19 +114,23 @@ public class LogoutEndpointTest {
   }
 
   @Test
-  public void testDoGetThrowsRuntimeExceptionOnSecurityServiceException() throws Exception {
+  public void testDoGetSetsErrorStatusOnSecurityServiceException() throws Exception {
     when(logoutService.getActionProviders(request, response))
         .thenThrow(new SecurityServiceException("Test error"));
 
-    assertThrows(RuntimeException.class, () -> endpoint.doGet(request, response));
+    endpoint.doGet(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
   }
 
   @Test
-  public void testDoGetThrowsRuntimeExceptionOnIOException() throws Exception {
+  public void testDoGetSetsErrorStatusOnIOException() throws Exception {
     String jsonResponse = "{\"actions\":[]}";
     when(logoutService.getActionProviders(request, response)).thenReturn(jsonResponse);
     when(response.getWriter()).thenThrow(new IOException("Test error"));
 
-    assertThrows(RuntimeException.class, () -> endpoint.doGet(request, response));
+    endpoint.doGet(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
   }
 }

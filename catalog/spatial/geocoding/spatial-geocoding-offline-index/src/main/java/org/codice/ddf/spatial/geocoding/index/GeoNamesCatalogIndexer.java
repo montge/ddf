@@ -160,8 +160,12 @@ public class GeoNamesCatalogIndexer implements GeoEntryIndexer {
     if (latitude != null && longitude != null) {
       Coordinate coordinate = new Coordinate(longitude, latitude);
       Geometry geometry = new GeometryFactory().createPoint(coordinate);
-      String wkt = WKT_WRITER_THREAD_LOCAL.get().write(geometry);
-      metacard.setAttribute(new AttributeImpl(Core.LOCATION, wkt));
+      try {
+        String wkt = WKT_WRITER_THREAD_LOCAL.get().write(geometry);
+        metacard.setAttribute(new AttributeImpl(Core.LOCATION, wkt));
+      } finally {
+        WKT_WRITER_THREAD_LOCAL.remove();
+      }
     }
 
     metacard.setAttribute(

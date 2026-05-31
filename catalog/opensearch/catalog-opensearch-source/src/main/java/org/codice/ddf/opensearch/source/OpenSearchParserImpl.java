@@ -149,11 +149,13 @@ public class OpenSearchParserImpl implements OpenSearchParser {
       List<String> parameters) {
 
     if (geometry != null) {
-      checkAndReplace(
-          client,
-          WKT_WRITER_THREAD_LOCAL.get().write(geometry),
-          OpenSearchConstants.GEOMETRY,
-          parameters);
+      final String wkt;
+      try {
+        wkt = WKT_WRITER_THREAD_LOCAL.get().write(geometry);
+      } finally {
+        WKT_WRITER_THREAD_LOCAL.remove();
+      }
+      checkAndReplace(client, wkt, OpenSearchConstants.GEOMETRY, parameters);
     }
 
     if (boundingBox != null) {

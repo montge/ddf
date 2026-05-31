@@ -145,7 +145,12 @@ public class CatalogFeatureIndexer implements FeatureIndexer {
       metacard.setAttribute(new AttributeImpl(Core.TITLE, (String) nameObject));
 
       metacard.setAttribute(new AttributeImpl(Location.COUNTRY_CODE, countryCode));
-      String wkt = WKT_WRITER_THREAD_LOCAL.get().write((Geometry) feature.getDefaultGeometry());
+      final String wkt;
+      try {
+        wkt = WKT_WRITER_THREAD_LOCAL.get().write((Geometry) feature.getDefaultGeometry());
+      } finally {
+        WKT_WRITER_THREAD_LOCAL.remove();
+      }
       metacard.setAttribute(new AttributeImpl(Core.LOCATION, wkt));
 
       List<Serializable> tags =

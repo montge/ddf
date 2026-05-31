@@ -28,9 +28,10 @@ public class RandomNumberGenerator {
   }
 
   public static byte[] createSeed() {
-    EntropySourceProvider esp = new BasicEntropySourceProvider(new SecureRandom(), true);
+    SecureRandom secureRandom = new SecureRandom();
+    EntropySourceProvider esp = new BasicEntropySourceProvider(secureRandom, true);
     byte[] nonce = new byte[256];
-    new SecureRandom().nextBytes(nonce);
+    secureRandom.nextBytes(nonce);
 
     DualECSP800DRBG bcRbg = new DualECSP800DRBG(new SHA256Digest(), 256, esp.get(256), null, nonce);
     byte[] seed = new byte[256];

@@ -114,8 +114,12 @@ abstract class AbstractFeatureConverterWfs11 extends AbstractFeatureConverter
         }
 
         if (geo != null) {
-          ser = WKT_WRITER_THREAD_LOCAL.get().write(geo);
-          LOGGER.debug("wkt = {}", ser);
+          try {
+            ser = WKT_WRITER_THREAD_LOCAL.get().write(geo);
+            LOGGER.debug("wkt = {}", ser);
+          } finally {
+            WKT_WRITER_THREAD_LOCAL.remove();
+          }
         }
         break;
       case BINARY:

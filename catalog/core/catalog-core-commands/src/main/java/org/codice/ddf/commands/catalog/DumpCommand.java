@@ -272,49 +272,51 @@ public class DumpCommand extends CqlCommands {
       LOGGER.debug("Hits for Search: {}", catalog.query(queryRequest).getHits());
     }
 
-    if (StringUtils.isNotBlank(zipFileName)) {
-      File outputFile = new File(dirPath + zipFileName);
-      createZip(catalog, queryRequest, outputFile, resultCount);
-
-      String alias =
-          AccessController.doPrivileged(
-              (PrivilegedAction<String>) () -> System.getProperty(SystemBaseUrl.EXTERNAL_HOST));
-      String password =
-          AccessController.doPrivileged(
-              (PrivilegedAction<String>)
-                  () -> System.getProperty("javax.net.ssl.keyStorePassword"));
-
-      try (InputStream inputStream = new FileInputStream(outputFile)) {
-        byte[] signature = signer.createDigitalSignature(inputStream, alias, password);
-
-        if (signature != null) {
-          String epoch = Long.toString(Instant.now().getEpochSecond());
-          String signatureFilepath = String.format("%sdump_%s.sig", dirPath, epoch);
-
-          FileUtils.writeByteArrayToFile(new File(signatureFilepath), signature);
-        }
-      }
-    } else {
-      ResultIterable.resultIterable(catalog::query, queryRequest).stream()
-          .map(Collections::singletonList)
-          .map(result -> new SourceResponseImpl(queryRequest, result))
-          .forEach(response -> handleResult(response, executorService, dumpDir, resultCount));
-    }
-
-    executorService.shutdown();
-
-    boolean interrupted = false;
     try {
-      while (!executorService.isTerminated()) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(100);
-        } catch (InterruptedException e) {
-          interrupted = true;
+      if (StringUtils.isNotBlank(zipFileName)) {
+        File outputFile = new File(dirPath + zipFileName);
+        createZip(catalog, queryRequest, outputFile, resultCount);
+
+        String alias =
+            AccessController.doPrivileged(
+                (PrivilegedAction<String>) () -> System.getProperty(SystemBaseUrl.EXTERNAL_HOST));
+        String password =
+            AccessController.doPrivileged(
+                (PrivilegedAction<String>)
+                    () -> System.getProperty("javax.net.ssl.keyStorePassword"));
+
+        try (InputStream inputStream = new FileInputStream(outputFile)) {
+          byte[] signature = signer.createDigitalSignature(inputStream, alias, password);
+
+          if (signature != null) {
+            String epoch = Long.toString(Instant.now().getEpochSecond());
+            String signatureFilepath = String.format("%sdump_%s.sig", dirPath, epoch);
+
+            FileUtils.writeByteArrayToFile(new File(signatureFilepath), signature);
+          }
         }
+      } else {
+        ResultIterable.resultIterable(catalog::query, queryRequest).stream()
+            .map(Collections::singletonList)
+            .map(result -> new SourceResponseImpl(queryRequest, result))
+            .forEach(response -> handleResult(response, executorService, dumpDir, resultCount));
       }
     } finally {
-      if (interrupted) {
-        Thread.currentThread().interrupt();
+      executorService.shutdown();
+
+      boolean interrupted = false;
+      try {
+        while (!executorService.isTerminated()) {
+          try {
+            TimeUnit.MILLISECONDS.sleep(100);
+          } catch (InterruptedException e) {
+            interrupted = true;
+          }
+        }
+      } finally {
+        if (interrupted) {
+          Thread.currentThread().interrupt();
+        }
       }
     }
 

@@ -201,6 +201,9 @@ public class SamlAssertionValidatorImpl implements SamlAssertionValidator {
     } catch (WSSecurityException e) {
       LOGGER.debug("Unable to read/validate security token from request.", e);
       throw new AuthenticationFailureException(e);
+    } finally {
+      // Avoid leaking the cached DocumentBuilder when running on pooled request threads.
+      BUILDER.remove();
     }
   }
 

@@ -177,7 +177,11 @@ public class KmlToMetacard {
     Geometry geometry = KmlToJtsConverter.from(kml);
     String bBox = "";
     if (geometry != null) {
-      bBox = WKT_WRITER_THREAD_LOCAL.get().write(geometry.getEnvelope());
+      try {
+        bBox = WKT_WRITER_THREAD_LOCAL.get().write(geometry.getEnvelope());
+      } finally {
+        WKT_WRITER_THREAD_LOCAL.remove();
+      }
     }
 
     return bBox;

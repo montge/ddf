@@ -1475,55 +1475,49 @@ public class CatalogFrameworkImplTest {
   }
 
   @Test
-  public void testPostQueryStopExecution() {
-    assertThrows(
-        FederationException.class,
-        () -> {
-          BundleContext context = null;
+  public void testPostQueryStopExecution() throws Exception {
+    BundleContext context = null;
 
-          FilterFactory filterFactory = new FilterFactoryImpl();
+    FilterFactory filterFactory = new FilterFactoryImpl();
 
-          Filter filter =
-              filterFactory.like(
-                  filterFactory.property(Metacard.METADATA), "goodyear", "*", "?", "/", false);
+    Filter filter =
+        filterFactory.like(
+            filterFactory.property(Metacard.METADATA), "goodyear", "*", "?", "/", false);
 
-          QueryRequest request = new QueryRequestImpl(new QueryImpl(filter));
+    QueryRequest request = new QueryRequestImpl(new QueryImpl(filter));
 
-          SourceResponseImpl sourceResponse =
-              new SourceResponseImpl(request, new ArrayList<Result>());
+    SourceResponseImpl sourceResponse = new SourceResponseImpl(request, new ArrayList<Result>());
 
-          QueryResponseImpl queryResponse = new QueryResponseImpl(sourceResponse, "anyId");
+    QueryResponseImpl queryResponse = new QueryResponseImpl(sourceResponse, "anyId");
 
-          CatalogProvider provider = mock(CatalogProvider.class);
+    CatalogProvider provider = mock(CatalogProvider.class);
 
-          when(provider.query(isA(QueryRequest.class))).thenReturn(sourceResponse);
+    when(provider.query(isA(QueryRequest.class))).thenReturn(sourceResponse);
 
-          FederationStrategy federationStrategy = mock(FederationStrategy.class);
+    FederationStrategy federationStrategy = mock(FederationStrategy.class);
 
-          when(federationStrategy.federate(isA(List.class), isA(QueryRequest.class)))
-              .thenReturn(queryResponse);
+    when(federationStrategy.federate(isA(List.class), isA(QueryRequest.class)))
+        .thenReturn(queryResponse);
 
-          PostQueryPlugin stopQueryPlugin =
-              new PostQueryPlugin() {
+    PostQueryPlugin stopQueryPlugin =
+        new PostQueryPlugin() {
 
-                @Override
-                public QueryResponse process(QueryResponse input)
-                    throws PluginExecutionException, StopProcessingException {
-                  throw new StopProcessingException(
-                      "Testing that the framework will stop the query.");
-                }
-              };
-          FrameworkProperties props = new FrameworkProperties();
-          props.setCatalogProviders(Collections.singletonList((CatalogProvider) provider));
-          props.setBundleContext(context);
-          props.setPostQuery(Arrays.asList(stopQueryPlugin));
-          props.setFederationStrategy(federationStrategy);
-          props.setQueryResponsePostProcessor(mock(QueryResponsePostProcessor.class));
-          props.setFilterBuilder(new GeotoolsFilterBuilder());
+          @Override
+          public QueryResponse process(QueryResponse input)
+              throws PluginExecutionException, StopProcessingException {
+            throw new StopProcessingException("Testing that the framework will stop the query.");
+          }
+        };
+    FrameworkProperties props = new FrameworkProperties();
+    props.setCatalogProviders(Collections.singletonList((CatalogProvider) provider));
+    props.setBundleContext(context);
+    props.setPostQuery(Arrays.asList(stopQueryPlugin));
+    props.setFederationStrategy(federationStrategy);
+    props.setQueryResponsePostProcessor(mock(QueryResponsePostProcessor.class));
+    props.setFilterBuilder(new GeotoolsFilterBuilder());
 
-          CatalogFrameworkImpl framework = createFramework(props);
-          framework.query(request);
-        });
+    CatalogFrameworkImpl framework = createFramework(props);
+    assertThrows(FederationException.class, () -> framework.query(request));
   }
 
   @Disabled
@@ -1567,27 +1561,23 @@ public class CatalogFrameworkImplTest {
   }
 
   @Test
-  public void testQueryTransformWithTransformException() {
+  public void testQueryTransformWithTransformException() throws Exception {
+    BundleContext context = mock(BundleContext.class);
+    QueryResponseTransformer transformer = mock(QueryResponseTransformer.class);
+    ServiceReference reference = mock(ServiceReference.class);
+    ServiceReference[] serviceReferences = new ServiceReference[] {reference};
+    when(context.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferences);
+    when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
+    when(transformer.transform(isA(SourceResponse.class), isA(Map.class)))
+        .thenThrow(new CatalogTransformerException("Could not transform"));
+
+    CatalogFramework framework =
+        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
+    SourceResponse response = new SourceResponseImpl(null, null);
+
     assertThrows(
         CatalogTransformerException.class,
-        () -> {
-          BundleContext context = mock(BundleContext.class);
-          QueryResponseTransformer transformer = mock(QueryResponseTransformer.class);
-          ServiceReference reference = mock(ServiceReference.class);
-          ServiceReference[] serviceReferences = new ServiceReference[] {reference};
-          when(context.getServiceReferences(anyString(), anyString()))
-              .thenReturn(serviceReferences);
-          when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
-          when(transformer.transform(isA(SourceResponse.class), isA(Map.class)))
-              .thenThrow(new CatalogTransformerException("Could not transform"));
-
-          CatalogFramework framework =
-              this.createDummyCatalogFramework(
-                  provider, storageProvider, context, eventAdmin, true);
-          SourceResponse response = new SourceResponseImpl(null, null);
-
-          framework.transform(response, "NONE", new HashMap<String, Serializable>());
-        });
+        () -> framework.transform(response, "NONE", new HashMap<String, Serializable>()));
   }
 
   @Test
@@ -1649,28 +1639,24 @@ public class CatalogFrameworkImplTest {
   }
 
   @Test
-  public void testMetacardTransformWithTransformException() {
+  public void testMetacardTransformWithTransformException() throws Exception {
+    BundleContext context = mock(BundleContext.class);
+    MetacardTransformer transformer = mock(MetacardTransformer.class);
+    ServiceReference reference = mock(ServiceReference.class);
+    ServiceReference[] serviceReferences = new ServiceReference[] {reference};
+    when(context.getServiceReferences(anyString(), anyString())).thenReturn(serviceReferences);
+    when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
+    when(transformer.transform(isA(Metacard.class), isA(Map.class)))
+        .thenThrow(new CatalogTransformerException("Could not transform"));
+
+    CatalogFramework framework =
+        this.createDummyCatalogFramework(provider, storageProvider, context, eventAdmin, true);
+    MetacardImpl newCard = new MetacardImpl();
+    newCard.setId(null);
+
     assertThrows(
         CatalogTransformerException.class,
-        () -> {
-          BundleContext context = mock(BundleContext.class);
-          MetacardTransformer transformer = mock(MetacardTransformer.class);
-          ServiceReference reference = mock(ServiceReference.class);
-          ServiceReference[] serviceReferences = new ServiceReference[] {reference};
-          when(context.getServiceReferences(anyString(), anyString()))
-              .thenReturn(serviceReferences);
-          when(context.getService(isA(ServiceReference.class))).thenReturn(transformer);
-          when(transformer.transform(isA(Metacard.class), isA(Map.class)))
-              .thenThrow(new CatalogTransformerException("Could not transform"));
-
-          CatalogFramework framework =
-              this.createDummyCatalogFramework(
-                  provider, storageProvider, context, eventAdmin, true);
-          MetacardImpl newCard = new MetacardImpl();
-          newCard.setId(null);
-
-          framework.transform(newCard, "NONE", new HashMap<String, Serializable>());
-        });
+        () -> framework.transform(newCard, "NONE", new HashMap<String, Serializable>()));
   }
 
   @Test

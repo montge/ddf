@@ -19,11 +19,11 @@ import com.xebialabs.restito.semantics.Call;
 import com.xebialabs.restito.semantics.Stub;
 import com.xebialabs.restito.server.StubServer;
 import com.xebialabs.restito.support.log.CallsHelper;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
@@ -134,13 +134,13 @@ public class SecureStubServer extends StubServer {
   @SuppressWarnings("squid:S2177")
   private String createCertificateStore(String resourceName) throws IOException {
     URL resource = StubServer.class.getResource("/" + resourceName);
-    File store = File.createTempFile(resourceName, "store");
+    Path store = Files.createTempFile(resourceName, "store");
     try (InputStream input = resource.openStream()) {
-      Files.copy(input, store.toPath(), StandardCopyOption.REPLACE_EXISTING);
+      Files.copy(input, store, StandardCopyOption.REPLACE_EXISTING);
     } finally {
-      store.deleteOnExit();
+      store.toFile().deleteOnExit();
     }
-    return store.getAbsolutePath();
+    return store.toAbsolutePath().toString();
   }
 
   /** Alias for StubServer.run() */

@@ -29,19 +29,23 @@ import com.google.crypto.tink.streamingaead.StreamingAeadFactory;
 import com.google.crypto.tink.streamingaead.StreamingAeadKeyTemplates;
 import ddf.security.SecurityConstants;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.PrivilegedAction;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Properties;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +63,7 @@ public class Crypter {
   private static final String DECRYPTION_PROBLEM_MSG = "Problem decrypting.";
   private static final int ASSOCIATED_DATA_BYTE_SIZE = 10;
   @VisibleForTesting static final int CHUNK_SIZE = 256;
+  private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
   private final String keysetDir =
       AccessController.doPrivileged(
@@ -228,14 +233,14 @@ public class Crypter {
       throw new CrypterException("Problem reading data from plain InputStream.", e);
     }
 
-    File tmpFile;
+    Path tmpFile;
     try {
-      tmpFile = File.createTempFile("encryption", ".tmp");
+      tmpFile = createSecureTempFile();
     } catch (IOException e) {
       throw new CrypterException("Unable to create temporary file for encryption.");
     }
 
-    try (FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
+    try (OutputStream fileOutputStream = Files.newOutputStream(tmpFile);
         OutputStream encryptedOutputStream =
             streamingAead.newEncryptingStream(fileOutputStream, associatedData)) {
 
@@ -252,12 +257,11 @@ public class Crypter {
         availableBytes = getAvailableBytesLessThanChunkSize(plainInputStream);
       }
       encryptedOutputStream.close(); // need to close it here in order for it to flush
-      return Files.newInputStream(
-          Paths.get(tmpFile.getAbsolutePath()), StandardOpenOption.DELETE_ON_CLOSE);
+      return Files.newInputStream(tmpFile, StandardOpenOption.DELETE_ON_CLOSE);
     } catch (GeneralSecurityException | IOException e) {
       throw new CrypterException(ENCRYPTION_PROBLEM_MSG, e);
     } finally {
-      tmpFile.deleteOnExit();
+      tmpFile.toFile().deleteOnExit();
     }
   }
 
@@ -283,6 +287,32 @@ public class Crypter {
     } catch (GeneralSecurityException | IOException e) {
       throw new CrypterException(DECRYPTION_PROBLEM_MSG, e);
     }
+  }
+
+  /**
+   * Creates a temporary file restricted to the owner. On POSIX filesystems the file is created with
+   * {@code rw-------} permissions; on other filesystems an explicit owner-only restriction is
+   * applied. This avoids leaking sensitive data through a world-readable temporary file in a shared
+   * directory.
+   */
+  private Path createSecureTempFile() throws IOException {
+    Path tmpDir = Paths.get(System.getProperty("java.io.tmpdir"));
+    if (tmpDir.getFileSystem().supportedFileAttributeViews().contains("posix")) {
+      FileAttribute<Set<PosixFilePermission>> ownerOnly =
+          PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------"));
+      return Files.createTempFile(tmpDir, "encryption", ".tmp", ownerOnly);
+    }
+
+    Path tmpFile = Files.createTempFile(tmpDir, "encryption", ".tmp");
+    File file = tmpFile.toFile();
+    if (!file.setReadable(false, false)
+        || !file.setWritable(false, false)
+        || !file.setReadable(true, true)
+        || !file.setWritable(true, true)) {
+      Files.deleteIfExists(tmpFile);
+      throw new IOException("Unable to restrict permissions on temporary file.");
+    }
+    return tmpFile;
   }
 
   private int getAvailableBytesLessThanChunkSize(InputStream inputStream) throws IOException {
@@ -386,9 +416,8 @@ public class Crypter {
   }
 
   private byte[] generateAssociatedData() {
-    SecureRandom secureRandom = new SecureRandom();
     byte[] generatedAssociatedData = new byte[ASSOCIATED_DATA_BYTE_SIZE];
-    secureRandom.nextBytes(generatedAssociatedData);
+    SECURE_RANDOM.nextBytes(generatedAssociatedData);
     return generatedAssociatedData;
   }
 

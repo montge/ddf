@@ -247,6 +247,8 @@ public class GazetteerQueryCatalog implements GeoEntryQueryable {
         geoEntryBuilder.longitude(lon);
       } catch (org.locationtech.jts.io.ParseException e) {
         LOGGER.debug("GeoEntry metacard does not contain location attribute.");
+      } finally {
+        WKT_READER_THREAD_LOCAL.remove();
       }
     }
     return geoEntryBuilder.build();
@@ -314,6 +316,8 @@ public class GazetteerQueryCatalog implements GeoEntryQueryable {
     } catch (org.locationtech.jts.io.ParseException e) {
       LOGGER.debug("GeoEntry metacard does not contain location attribute.");
       return null;
+    } finally {
+      WKT_READER_THREAD_LOCAL.remove();
     }
 
     return new NearbyLocationImpl(centerPoint, new PointImpl(lon, lat, SPATIAL_CONTEXT), name);
@@ -330,6 +334,9 @@ public class GazetteerQueryCatalog implements GeoEntryQueryable {
       wkt = WKT_WRITER_THREAD_LOCAL.get().write(geometry);
     } catch (org.locationtech.jts.io.ParseException e) {
       return Optional.empty();
+    } finally {
+      WKT_READER_THREAD_LOCAL.remove();
+      WKT_WRITER_THREAD_LOCAL.remove();
     }
 
     int radiusInMeters = KM_TO_M * radius;

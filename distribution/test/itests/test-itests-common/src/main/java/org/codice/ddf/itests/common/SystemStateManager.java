@@ -170,6 +170,9 @@ public class SystemStateManager {
       LOGGER.debug("Reset took {} sec", (System.currentTimeMillis() - start) / 1000.0);
 
     } catch (Exception e) {
+      if (e instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+      }
       LOGGER.error("Error resetting system configuration.", e);
     }
   }

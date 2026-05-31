@@ -140,6 +140,8 @@ public class MetacardToKml {
       return WKT_READER_THREAD_LOCAL.get().read(wkt);
     } catch (ParseException e) {
       throw new CatalogTransformerException("Unable to parse WKT to Geometry.", e);
+    } finally {
+      WKT_READER_THREAD_LOCAL.remove();
     }
   }
 

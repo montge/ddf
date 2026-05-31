@@ -332,11 +332,9 @@ public class CswSubscriptionEndpointTest {
   public void testCreateRecordsSubscriptionPOSTwithoutResponseHandler() throws Exception {
     GetRecordsRequest getRecordsRequest = createDefaultGetRecordsRequest();
     getRecordsRequest.setResponseHandler(null);
+    GetRecordsType recordsType = getRecordsRequest.get202RecordsType();
     assertThrows(
-        CswException.class,
-        () ->
-            cswSubscriptionEndpoint.createRecordsSubscription(
-                getRecordsRequest.get202RecordsType()));
+        CswException.class, () -> cswSubscriptionEndpoint.createRecordsSubscription(recordsType));
   }
 
   @Test
@@ -357,11 +355,9 @@ public class CswSubscriptionEndpointTest {
   public void testCreateRecordsSubscriptionPOSTBadResponseHandler() throws Exception {
     GetRecordsRequest getRecordsRequest = createDefaultGetRecordsRequest();
     getRecordsRequest.setResponseHandler("[]@!$&'()*+,;=");
+    GetRecordsType recordsType = getRecordsRequest.get202RecordsType();
     assertThrows(
-        CswException.class,
-        () ->
-            cswSubscriptionEndpoint.createRecordsSubscription(
-                getRecordsRequest.get202RecordsType()));
+        CswException.class, () -> cswSubscriptionEndpoint.createRecordsSubscription(recordsType));
   }
 
   private GetRecordsRequest createDefaultGetRecordsRequest() {

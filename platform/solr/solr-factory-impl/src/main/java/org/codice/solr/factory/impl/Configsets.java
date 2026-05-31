@@ -23,6 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -134,7 +137,7 @@ public class Configsets {
 
     Path tempConfigDir;
     try {
-      tempConfigDir = Files.createTempDirectory("solr-configsets");
+      tempConfigDir = createSecureTempDirectory("solr-configsets");
       tempConfigDir.toFile().deleteOnExit();
     } catch (IOException e) {
       LOGGER.debug(
@@ -166,5 +169,33 @@ public class Configsets {
     }
 
     return tempConfigDir;
+  }
+
+  /**
+   * Creates a temporary directory restricted to the owner. On POSIX filesystems the directory is
+   * created with {@code rwx------} permissions; on other filesystems an explicit owner-only
+   * restriction is applied. This avoids exposing the directory through a world-readable temporary
+   * directory in a shared location, which would otherwise allow a race condition on its contents.
+   */
+  private Path createSecureTempDirectory(String prefix) throws IOException {
+    Path tmpDir = Paths.get(System.getProperty("java.io.tmpdir"));
+    if (tmpDir.getFileSystem().supportedFileAttributeViews().contains("posix")) {
+      FileAttribute<Set<PosixFilePermission>> ownerOnly =
+          PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+      return Files.createTempDirectory(tmpDir, prefix, ownerOnly);
+    }
+
+    Path tempDir = Files.createTempDirectory(tmpDir, prefix);
+    File dir = tempDir.toFile();
+    if (!dir.setReadable(false, false)
+        || !dir.setWritable(false, false)
+        || !dir.setExecutable(false, false)
+        || !dir.setReadable(true, true)
+        || !dir.setWritable(true, true)
+        || !dir.setExecutable(true, true)) {
+      Files.deleteIfExists(tempDir);
+      throw new IOException("Unable to restrict permissions on temporary directory.");
+    }
+    return tempDir;
   }
 }

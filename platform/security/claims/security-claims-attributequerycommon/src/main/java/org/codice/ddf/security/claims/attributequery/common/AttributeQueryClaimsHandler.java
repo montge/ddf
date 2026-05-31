@@ -239,8 +239,7 @@ public class AttributeQueryClaimsHandler implements ClaimsHandler {
     Service service = null;
     URL wsdlURL;
     if (StringUtils.isNotBlank(wsdlLocation) && StringUtils.isNotBlank(serviceName)) {
-      try {
-        URIResolver uriResolver = new URIResolver();
+      try (URIResolver uriResolver = new URIResolver()) {
         uriResolver.resolve("", wsdlLocation, this.getClass());
         wsdlURL = uriResolver.isResolved() ? uriResolver.getURL() : new URL(wsdlLocation);
         service =

@@ -23,11 +23,12 @@ public class JsonpValidator {
   private static final Pattern JSONP_VALID_PATTERN;
 
   // Linear-time pattern (negated character classes, no nested unbounded quantifiers) to avoid
-  // catastrophic backtracking (ReDoS). See MAX_JSONP_LENGTH guard below, which is required to
-  // bound stack depth on long valid input.
+  // catastrophic backtracking (ReDoS). Possessive quantifiers (*+ / ++) disable backtracking so the
+  // regex engine does not recurse, preventing a stack overflow on large inputs (java:S5998). See
+  // MAX_JSONP_LENGTH guard below, which additionally bounds input length.
   static {
     JSONP_VALID_PATTERN =
-        Pattern.compile("^[a-zA-Z_$][0-9a-zA-Z_$]*(?:\\[(?:\"[^\"]+\"|'[^']+'|\\d+)\\])*$");
+        Pattern.compile("^[a-zA-Z_$][0-9a-zA-Z_$]*+(?:\\[(?:\"[^\"]++\"|'[^']++'|\\d++)\\])*+$");
   }
 
   // Upstream JSONP callback names are short identifiers; cap length to bound regex stack depth

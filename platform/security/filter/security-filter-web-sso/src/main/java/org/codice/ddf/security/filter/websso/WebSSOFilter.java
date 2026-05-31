@@ -215,24 +215,28 @@ public class WebSSOFilter implements SecurityFilter {
 
   private HandlerResult checkForPreviousResultOnSession(HttpServletRequest httpRequest, String ip) {
 
-    String requestedSessionId = httpRequest.getRequestedSessionId();
-    if (requestedSessionId == null) {
-      LOGGER.trace("No HTTP Session - returning with no results");
-      return null;
-    }
-
+    // Resolve the session from the server-side container rather than trusting the
+    // client-supplied requested session id (see SonarQube java:S2254 / CWE-807). The
+    // requested session id may be spoofed by a client, so it is never used to make a
+    // security decision or to build the session token below.
     HttpSession session = httpRequest.getSession(false);
     if (session == null) {
-      // No session exists but the request contains a session id. This is expected when a user logs
-      // in to one context (e.g. /app1) then browses to a new context (e.g. /app2) where a session
-      // has not yet been created for them.
+      // The container has not associated a session with this request. This happens either when the
+      // client did not present a session at all, or when a user logged in to one context (e.g.
+      // /app1) then browsed to a new context (e.g. /app2) where Jetty has not yet associated the
+      // existing session. Detect whether the client even presented a session before attempting to
+      // (re)create one so that genuinely session-less requests are not given a session.
+      if (!hasRequestedSession(httpRequest)) {
+        LOGGER.trace("No HTTP Session - returning with no results");
+        return null;
+      }
       if (sessionFactory == null) {
         throw new SessionException("Unable to verify user's session.");
       }
       session = sessionFactory.getOrCreateSession(httpRequest);
     }
 
-    // See if principals exist for the requested session id
+    // See if principals exist for the server-resolved session
     HandlerResult result = null;
     PrincipalHolder principalHolder =
         (PrincipalHolder) session.getAttribute(SecurityConstants.SECURITY_TOKEN_KEY);
@@ -252,12 +256,28 @@ public class WebSSOFilter implements SecurityFilter {
       }
     } else {
       securityLogger.audit(
-          "Request contained invalid or expired session id [{}]",
-          Hashing.sha256().hashString(requestedSessionId, StandardCharsets.UTF_8).toString());
+          "Request contained invalid or expired session id [{}]", hashSessionId(session.getId()));
       LOGGER.trace("Request contained invalid or expired session - returning with no results");
     }
 
     return result;
+  }
+
+  /**
+   * Indicates whether the incoming request presented a session identifier. The value of the
+   * client-supplied session id is intentionally not exposed or used in any security decision; only
+   * its presence is consulted so that cross-context session resolution can be attempted.
+   */
+  @SuppressWarnings("squid:S2254")
+  private static boolean hasRequestedSession(HttpServletRequest httpRequest) {
+    return httpRequest.getRequestedSessionId() != null;
+  }
+
+  private static String hashSessionId(String sessionId) {
+    if (sessionId == null) {
+      return "unknown";
+    }
+    return Hashing.sha256().hashString(sessionId, StandardCharsets.UTF_8).toString();
   }
 
   private void handleResultStatus(
