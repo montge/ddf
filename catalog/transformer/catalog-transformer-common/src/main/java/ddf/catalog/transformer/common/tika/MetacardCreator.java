@@ -66,7 +66,11 @@ public class MetacardCreator {
 
   static final Map<String, List<String>> ALTERNATE_METADATA_KEY_MAPPING;
 
-  private static final Pattern DURATION_SECONDS = Pattern.compile("([+-]?\\s*\\d*\\.?\\d+)\\s*s");
+  // Linear-time pattern: the decimal alternative (?:\d++(?:\.\d++)?|\.\d++) and possessive
+  // whitespace remove the overlapping \d*\.?\d+ quantifiers that caused quadratic backtracking
+  // (java:S5852) on attacker-controlled Tika metadata values.
+  private static final Pattern DURATION_SECONDS =
+      Pattern.compile("([+-]?\\s*+(?:\\d++(?:\\.\\d++)?|\\.\\d++))\\s*+s");
 
   private static final Pattern DURATION_HMS = Pattern.compile("(\\d+):(\\d+):(\\d*\\.?\\d+).*");
 

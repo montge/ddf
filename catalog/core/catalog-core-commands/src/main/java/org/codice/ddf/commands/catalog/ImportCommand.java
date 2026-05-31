@@ -72,6 +72,22 @@ public class ImportCommand extends CatalogCommands {
 
   private static final int DERIVED_NAME = 5;
 
+  /**
+   * Upper bound on the number of entries that will be read from an imported archive. Guards against
+   * a malicious archive (zip bomb) that declares an enormous number of entries to exhaust
+   * resources. A legitimate export contains a bounded number of metacard/content/derived entries.
+   */
+  private static final int MAX_ENTRIES = 1_000_000;
+
+  /**
+   * Upper bound (10 GB) on the total number of uncompressed bytes that will be read from an
+   * imported archive across all entries. Guards against a zip bomb that uses an extreme compression
+   * ratio to expand a tiny archive into a huge amount of data. The cap is enforced on the actual
+   * decompressed bytes (not the attacker-supplied {@link ZipEntry#getSize()} header), so it holds
+   * even when the archive lies about its declared sizes.
+   */
+  private static final long MAX_TOTAL_UNCOMPRESSED_BYTES = 10L * 1024 * 1024 * 1024;
+
   @Reference private List<AttributeInjector> attributeInjectors;
 
   @Reference private StorageProvider storageProvider;
@@ -171,9 +187,21 @@ public class ImportCommand extends CatalogCommands {
     Instant start = Instant.now();
     try (InputStream fis = new FileInputStream(file);
         ZipInputStream zipInputStream = new ZipInputStream(fis)) {
+      // Decompression bomb guard: bound the total number of uncompressed bytes read across all
+      // entries. The ZipInputStream is read through this counter by the metacard transformer, the
+      // content ByteSource, and the getNextEntry() skip-reads, so every decompressed byte is
+      // accounted for regardless of the (untrusted) per-entry declared size.
+      BoundedZipInputStream boundedZip =
+          new BoundedZipInputStream(zipInputStream, MAX_TOTAL_UNCOMPRESSED_BYTES);
       ZipEntry entry = zipInputStream.getNextEntry();
+      int entryCount = 0;
 
       while (entry != null) {
+        // Decompression bomb guard: bound the number of entries processed.
+        if (++entryCount > MAX_ENTRIES) {
+          throw new CatalogCommandRuntimeException(
+              "Import archive exceeds the maximum allowed number of entries (" + MAX_ENTRIES + ")");
+        }
         String filename = entry.getName();
 
         if (filename.startsWith("META-INF")) {
@@ -198,7 +226,7 @@ public class ImportCommand extends CatalogCommands {
               try {
                 metacard =
                     transformer.transform(
-                        new UncloseableBufferedInputStreamWrapper(zipInputStream), id);
+                        new UncloseableBufferedInputStreamWrapper(boundedZip), id);
               } catch (IOException | CatalogTransformerException e) {
                 LOGGER.debug("Could not transform metacard: {}", LogSanitizer.sanitize(id));
                 entry = zipInputStream.getNextEntry();
@@ -216,8 +244,7 @@ public class ImportCommand extends CatalogCommands {
               ContentItem contentItem =
                   new ContentItemImpl(
                       id,
-                      new ZipEntryByteSource(
-                          new UncloseableBufferedInputStreamWrapper(zipInputStream)),
+                      new ZipEntryByteSource(new UncloseableBufferedInputStreamWrapper(boundedZip)),
                       null,
                       contentFilename,
                       entry.getSize(),
@@ -238,8 +265,7 @@ public class ImportCommand extends CatalogCommands {
                   new ContentItemImpl(
                       id,
                       qualifier,
-                      new ZipEntryByteSource(
-                          new UncloseableBufferedInputStreamWrapper(zipInputStream)),
+                      new ZipEntryByteSource(new UncloseableBufferedInputStreamWrapper(boundedZip)),
                       null,
                       derivedContentName,
                       entry.getSize(),
@@ -294,6 +320,52 @@ public class ImportCommand extends CatalogCommands {
       metacard = injector.injectAttributes(metacard);
     }
     return metacard;
+  }
+
+  /**
+   * Filters a {@link ZipInputStream} so that the cumulative number of (uncompressed) bytes read
+   * across all entries cannot exceed a fixed limit. This protects against a decompression bomb
+   * where a small archive expands into an enormous amount of data. The limit is enforced on the
+   * actual bytes returned to callers, so it is independent of the attacker-controlled {@link
+   * ZipEntry#getSize()} header.
+   */
+  private static class BoundedZipInputStream extends java.io.FilterInputStream {
+    private final long maxBytes;
+
+    private long totalBytesRead;
+
+    BoundedZipInputStream(InputStream in, long maxBytes) {
+      super(in);
+      this.maxBytes = maxBytes;
+    }
+
+    @Override
+    public int read() throws IOException {
+      int b = super.read();
+      if (b != -1) {
+        count(1);
+      }
+      return b;
+    }
+
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+      int read = super.read(b, off, len);
+      if (read > 0) {
+        count(read);
+      }
+      return read;
+    }
+
+    private void count(long bytes) throws IOException {
+      totalBytesRead += bytes;
+      if (totalBytesRead > maxBytes) {
+        throw new IOException(
+            "Import archive exceeds the maximum allowed uncompressed size ("
+                + maxBytes
+                + " bytes)");
+      }
+    }
   }
 
   private static class ZipEntryByteSource extends ByteSource {

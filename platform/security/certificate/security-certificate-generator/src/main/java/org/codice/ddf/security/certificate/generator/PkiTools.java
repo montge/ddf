@@ -52,7 +52,10 @@ public abstract class PkiTools {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PkiTools.class);
 
-  private static final Pattern TUPLE_PATTERN = Pattern.compile(".*[=].*");
+  // Linear-time, no backtracking: "zero or more non-'=' chars, then a '=', then anything".
+  // Equivalent to ".*[=].*" (i.e. "contains at least one '='") but cannot backtrack since
+  // [^=]* stops at the first '='. Avoids the polynomial-backtracking concern of ".*X.*".
+  private static final Pattern TUPLE_PATTERN = Pattern.compile("[^=]*=.*");
 
   // squid:S1118 - utility classes used statically should not be instantiable
   private PkiTools() {}

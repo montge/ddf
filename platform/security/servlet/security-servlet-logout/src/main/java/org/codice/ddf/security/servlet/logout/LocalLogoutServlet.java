@@ -112,6 +112,7 @@ public class LocalLogoutServlet extends HttpServlet {
   private void deleteJSessionId(HttpServletResponse response) {
     Cookie cookie = new Cookie("JSESSIONID", "");
     cookie.setSecure(true);
+    cookie.setHttpOnly(true);
     cookie.setMaxAge(0);
     cookie.setPath("/");
     response.addCookie(cookie);

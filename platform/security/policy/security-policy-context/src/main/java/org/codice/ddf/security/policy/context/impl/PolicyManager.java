@@ -568,7 +568,9 @@ public class PolicyManager implements ContextPolicyManager {
 
     for (Map.Entry<String, String> authTypes : properties.entrySet()) {
       List<String> finalAuthTypes = new ArrayList<>();
-      String[] auths = authTypes.getValue().trim().split("\\s+then\\s+");
+      // Possessive quantifiers (\s++) prevent regex backtracking. Semantically identical here
+      // since \s never overlaps the literal "then", but guards against ReDoS (Sonar S5852).
+      String[] auths = authTypes.getValue().trim().split("\\s++then\\s++");
 
       if (auths.length == 0) {
         continue;
