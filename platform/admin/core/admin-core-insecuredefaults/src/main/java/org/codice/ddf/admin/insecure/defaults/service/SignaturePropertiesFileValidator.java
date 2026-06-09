@@ -55,8 +55,7 @@ public class SignaturePropertiesFileValidator extends CryptoPropertiesFileValida
               String.format(
                   DEFAULT_KEYSTORE_PRIVATE_PASSWORD_USED_MSG,
                   PRIVATE_KEY_PASSWORD_PROPERTY,
-                  path,
-                  defaultPrivateKeyPassword)));
+                  path)));
     }
   }
 }

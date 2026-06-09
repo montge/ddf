@@ -119,8 +119,7 @@ public class EncryptionPropertiesFileValidatorTest {
           String.format(
               EncryptionPropertiesFileValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
               EncryptionPropertiesFileValidator.KEYSTORE_PASSWORD_PROPERTY,
-              path,
-              DEFAULT_KEYSTORE_PASSWORD)
+              path)
         };
     assertThat(alerts.size(), is(2));
     assertThat(actualAlertMessages, hasItems(expectedAlertMessages));
@@ -184,8 +183,7 @@ public class EncryptionPropertiesFileValidatorTest {
             String.format(
                 EncryptionPropertiesFileValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
                 EncryptionPropertiesFileValidator.KEYSTORE_PASSWORD_PROPERTY,
-                path,
-                DEFAULT_KEYSTORE_PASSWORD)));
+                path)));
   }
 
   @Test
@@ -233,13 +231,11 @@ public class EncryptionPropertiesFileValidatorTest {
           String.format(
               EncryptionPropertiesFileValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
               EncryptionPropertiesFileValidator.KEYSTORE_PASSWORD_PROPERTY,
-              path,
-              DEFAULT_KEYSTORE_PASSWORD),
+              path),
           String.format(
               EncryptionPropertiesFileValidator.DEFAULT_KEYSTORE_PRIVATE_PASSWORD_USED_MSG,
               EncryptionPropertiesFileValidator.PRIVATE_KEY_PASSWORD_PROPERTY,
-              path,
-              DEFAULT_KEYSTORE_PRIVATE_PASSWORD)
+              path)
         };
     assertThat(alerts.size(), is(3));
     assertThat(actualAlertMessages, hasItems(expectedAlertMessages));

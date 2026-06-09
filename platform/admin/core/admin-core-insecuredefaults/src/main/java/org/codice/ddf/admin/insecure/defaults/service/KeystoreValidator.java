@@ -42,10 +42,10 @@ public class KeystoreValidator implements Validator {
       "Unable to determine if keystore [%s] is using insecure defaults. ";
 
   static final String DEFAULT_KEY_PASSWORD_USED_MSG =
-      "The key for alias [%s] in [%s] is using the default password of [%s].";
+      "The key for alias [%s] in [%s] is using the default password.";
 
   static final String DEFAULT_KEYSTORE_PASSWORD_USED_MSG =
-      "The keystore password for [%s] is the default password of [%s].";
+      "The keystore password for [%s] is the default password.";
 
   static final String INVALID_BLACKLIST_KEYSTORE_PASSWORD_MSG =
       "Unable to determine if keystore [%s] contains insecure default certificates. Error retrieving certificates from Blacklist keystore [%s]. %s.";
@@ -203,10 +203,7 @@ public class KeystoreValidator implements Validator {
           alerts.add(
               new Alert(
                   Level.WARN,
-                  String.format(
-                      DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
-                      keystorePath.toString(),
-                      defaultKeystorePassword)));
+                  String.format(DEFAULT_KEYSTORE_PASSWORD_USED_MSG, keystorePath.toString())));
         }
       }
     } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
@@ -237,8 +234,7 @@ public class KeystoreValidator implements Validator {
               alerts.add(
                   new Alert(
                       Level.WARN,
-                      String.format(
-                          DEFAULT_KEY_PASSWORD_USED_MSG, alias, keystorePath, defaultKeyPassword)));
+                      String.format(DEFAULT_KEY_PASSWORD_USED_MSG, alias, keystorePath)));
             }
           } else {
             alerts.add(

@@ -90,13 +90,11 @@ public class UsersPropertiesFileValidatorTest {
           String.format(
               UsersPropertiesFileValidator.DEFAULT_CERT_USER_IS_USING_DEFAULT_PASSWORD_MSG,
               DEFAULT_CERTIFICATE_USER,
-              path,
-              DEFAULT_CERTIFICATE_USER_PASSWORD),
+              path),
           String.format(
               UsersPropertiesFileValidator.DEFAULT_ADMIN_USER_IS_USING_DEFAULT_PASSWORD_MSG,
               DEFAULT_ADMIN_USER,
-              path,
-              DEFAULT_ADMIN_USER_PASSWORD)
+              path)
         };
     assertThat(alerts.size(), is(4));
     assertThat(actualAlertMessages, hasItems(expectedAlertMessages));

@@ -30,13 +30,13 @@ public abstract class CryptoPropertiesFileValidator extends PropertiesFileValida
       "org.apache.ws.security.crypto.merlin.keystore.private.password";
 
   static final String DEFAULT_KEYSTORE_PRIVATE_PASSWORD_USED_MSG =
-      "The property [%s] in [%s] is set to the default keystore private password of [%s].";
+      "The property [%s] in [%s] is set to the default keystore private password.";
 
   static final String DEFAULT_KEYSTORE_ALIAS_USED_MSG =
       "The property [%s] in [%s] is set to the default keystore alias of [%s].";
 
   static final String DEFAULT_KEYSTORE_PASSWORD_USED_MSG =
-      "The property [%s] in [%s] is set to the default keystore password of [%s].";
+      "The property [%s] in [%s] is set to the default keystore password.";
 
   static final String NO_DEFAULT_PASSWORD_PROVIDED_TO_VALIDATOR_MSG =
       "Unable to determine if [%s] is using a default keystore password. No default password provided to the validator.";
@@ -91,11 +91,7 @@ public abstract class CryptoPropertiesFileValidator extends PropertiesFileValida
       alerts.add(
           new Alert(
               Level.WARN,
-              String.format(
-                  DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
-                  KEYSTORE_PASSWORD_PROPERTY,
-                  path,
-                  defaultPassword)));
+              String.format(DEFAULT_KEYSTORE_PASSWORD_USED_MSG, KEYSTORE_PASSWORD_PROPERTY, path)));
     }
   }
 
