@@ -1126,7 +1126,12 @@ public class CswEndpointTest {
   @Test
   public void testGetRecordsValidInput() throws CswException {
     GetRecordsRequest grr = createDefaultGetRecordsRequest();
-    csw.getRecords(grr);
+    CswRecordCollection collection = csw.getRecords(grr);
+
+    assertThat(collection, notNullValue());
+    assertThat(collection.getOutputSchema(), is(CswConstants.CSW_OUTPUT_SCHEMA));
+    assertThat(collection.getMimeType(), is(CswConstants.OUTPUT_FORMAT_XML));
+    assertThat(collection.getResultType(), is(ResultType.HITS));
   }
 
   @Test
@@ -1140,7 +1145,11 @@ public class CswEndpointTest {
     GetRecordsRequest grr = createDefaultGetRecordsRequest();
     grr.setVersion(null);
 
-    csw.getRecords(grr);
+    CswRecordCollection collection = csw.getRecords(grr);
+
+    assertThat(collection, notNullValue());
+    assertThat(collection.getOutputSchema(), is(CswConstants.CSW_OUTPUT_SCHEMA));
+    assertThat(collection.getMimeType(), is(CswConstants.OUTPUT_FORMAT_XML));
   }
 
   @Test

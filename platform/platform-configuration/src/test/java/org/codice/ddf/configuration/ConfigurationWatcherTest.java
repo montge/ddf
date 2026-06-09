@@ -16,6 +16,8 @@ package org.codice.ddf.configuration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,9 +74,12 @@ public class ConfigurationWatcherTest {
 
   @Test
   public void testConfigurationUpdateCallbackWithNullConfiguration() {
-    watcher.configurationUpdateCallback(null);
-
     // Should handle null gracefully without throwing exception
+    assertDoesNotThrow(() -> watcher.configurationUpdateCallback(null));
+
+    // The callback is still recorded, and no configuration is retained for a null update.
+    assertThat(watcher.getCallbackCount(), is(1));
+    assertThat(watcher.getLastConfiguration(), is(nullValue()));
   }
 
   @Test

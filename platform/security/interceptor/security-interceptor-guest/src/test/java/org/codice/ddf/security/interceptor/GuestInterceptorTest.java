@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -87,9 +88,11 @@ public class GuestInterceptorTest {
   }
 
   @Test
-  public void testHandleMessageWithNullMessage() {
-    interceptor.handleMessage(null);
-    // Should complete without exception
+  public void testHandleMessageWithNullMessage() throws Exception {
+    // A null SOAP message must be tolerated: handleMessage short-circuits and returns
+    // without throwing and without ever consulting the SecurityManager.
+    assertDoesNotThrow(() -> interceptor.handleMessage(null));
+    verify(securityManager, never()).getSubject(any(GuestAuthenticationToken.class));
   }
 
   @Test
@@ -307,14 +310,14 @@ public class GuestInterceptorTest {
   }
 
   @Test
-  public void testNullHttpRequestHandled() {
+  public void testNullHttpRequestHandled() throws Exception {
     when(soapMessage.get(HTTP_REQUEST)).thenReturn(null);
 
-    try {
-      interceptor.handleMessage(soapMessage);
-    } catch (Exception e) {
-      // Should handle null request gracefully
-    }
+    // With no HTTP request on the message, the interceptor cannot resolve a remote address,
+    // so getRemoteAddr() is invoked on a null request and a NullPointerException propagates.
+    // The SecurityManager is never consulted because resolution fails before that point.
+    assertThrows(NullPointerException.class, () -> interceptor.handleMessage(soapMessage));
+    verify(securityManager, never()).getSubject(any(GuestAuthenticationToken.class));
   }
 
   @Test

@@ -83,6 +83,10 @@ public class Jpeg2000ThumbnailConverterTest {
     QueryResponseImpl queryResponse = new QueryResponseImpl(null, resultList, 1);
 
     jpeg2000ThumbnailConverter.process(queryResponse);
+
+    // An empty (zero-length) thumbnail is too short to match any JP2/codestream signature, so the
+    // converter leaves it unchanged.
+    assertTrue(Arrays.equals(new byte[0], metacard.getThumbnail()));
   }
 
   @Test

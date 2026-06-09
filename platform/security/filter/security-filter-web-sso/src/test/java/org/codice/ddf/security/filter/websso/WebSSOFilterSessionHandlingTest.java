@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.websso;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -377,7 +378,6 @@ public class WebSSOFilterSessionHandlingTest {
 
   @Test
   public void testDestroyFilter() {
-    filter.destroy();
-    // Verify destroy completes without exception
+    assertDoesNotThrow(() -> filter.destroy());
   }
 }

@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.File;
 import java.io.IOException;
@@ -129,8 +130,9 @@ public class FileSystemPersistenceProviderTest {
 
   @Test
   public void testDeleteNonExistentKey() {
-    persistenceProvider.delete("non-existent-key");
-    // Should not throw exception
+    // Deleting a key that was never stored should be a safe no-op (no exception)
+    assertDoesNotThrow(() -> persistenceProvider.delete("non-existent-key"));
+    assertThat(persistenceProvider.loadFromPersistence("non-existent-key"), is(nullValue()));
   }
 
   @Test

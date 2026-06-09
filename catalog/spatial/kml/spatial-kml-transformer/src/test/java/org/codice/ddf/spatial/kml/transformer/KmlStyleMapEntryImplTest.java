@@ -15,6 +15,7 @@ package org.codice.ddf.spatial.kml.transformer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -261,9 +262,9 @@ public class KmlStyleMapEntryImplTest {
 
   @Test
   public void testInit() {
-    // Test init method doesn't throw exception
+    // init() only logs a debug message; verify it completes without throwing.
     KmlStyleMapEntryImpl entry = new KmlStyleMapEntryImpl("attr", "value", "#style");
-    entry.init(); // Should log debug message
+    assertDoesNotThrow(entry::init);
   }
 
   private Metacard createMockMetacard(

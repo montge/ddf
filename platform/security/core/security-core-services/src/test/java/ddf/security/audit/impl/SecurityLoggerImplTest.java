@@ -16,9 +16,11 @@ package ddf.security.audit.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.security.SubjectOperations;
@@ -65,41 +67,49 @@ class SecurityLoggerImplTest {
   @Test
   void testAuditWithMessage() {
     // Basic audit should not throw
-    securityLogger.audit(TEST_MESSAGE);
+    assertDoesNotThrow(() -> securityLogger.audit(TEST_MESSAGE));
   }
 
   @Test
   void testAuditWithSubject() {
     Subject subject = mock(Subject.class);
     securityLogger.audit(TEST_MESSAGE, subject);
+
+    // The subject's name is resolved via SubjectOperations to build the audit line.
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testAuditWithMessageAndParams() {
-    securityLogger.audit("Test message with param: {}", "paramValue");
+    assertDoesNotThrow(() -> securityLogger.audit("Test message with param: {}", "paramValue"));
   }
 
   @Test
   void testAuditWithSubjectAndParams() {
     Subject subject = mock(Subject.class);
     securityLogger.audit("Test message with param: {}", subject, "paramValue");
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testAuditWithSuppliers() {
-    securityLogger.audit("Test message with supplier: {}", () -> "suppliedValue");
+    assertDoesNotThrow(
+        () -> securityLogger.audit("Test message with supplier: {}", () -> "suppliedValue"));
   }
 
   @Test
   void testAuditWithSubjectAndSuppliers() {
     Subject subject = mock(Subject.class);
     securityLogger.audit("Test message with supplier: {}", subject, () -> "suppliedValue");
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testAuditWithThrowable() {
     Exception exception = new RuntimeException("Test exception");
-    securityLogger.audit(TEST_MESSAGE, exception);
+    assertDoesNotThrow(() -> securityLogger.audit(TEST_MESSAGE, exception));
   }
 
   @Test
@@ -107,45 +117,54 @@ class SecurityLoggerImplTest {
     Subject subject = mock(Subject.class);
     Exception exception = new RuntimeException("Test exception");
     securityLogger.audit(TEST_MESSAGE, subject, exception);
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testAuditWarnWithMessage() {
-    securityLogger.auditWarn(TEST_MESSAGE);
+    assertDoesNotThrow(() -> securityLogger.auditWarn(TEST_MESSAGE));
   }
 
   @Test
   void testAuditWarnWithSubject() {
     Subject subject = mock(Subject.class);
     securityLogger.auditWarn(TEST_MESSAGE, subject);
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testAuditWarnWithMessageAndParams() {
-    securityLogger.auditWarn("Warning with param: {}", "paramValue");
+    assertDoesNotThrow(() -> securityLogger.auditWarn("Warning with param: {}", "paramValue"));
   }
 
   @Test
   void testAuditWarnWithSubjectAndParams() {
     Subject subject = mock(Subject.class);
     securityLogger.auditWarn("Warning with param: {}", subject, "paramValue");
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testAuditWarnWithSuppliers() {
-    securityLogger.auditWarn("Warning with supplier: {}", () -> "suppliedValue");
+    assertDoesNotThrow(
+        () -> securityLogger.auditWarn("Warning with supplier: {}", () -> "suppliedValue"));
   }
 
   @Test
   void testAuditWarnWithSubjectAndSuppliers() {
     Subject subject = mock(Subject.class);
     securityLogger.auditWarn("Warning with supplier: {}", subject, () -> "suppliedValue");
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testAuditWarnWithThrowable() {
     Exception exception = new RuntimeException("Test exception");
-    securityLogger.auditWarn(TEST_MESSAGE, exception);
+    assertDoesNotThrow(() -> securityLogger.auditWarn(TEST_MESSAGE, exception));
   }
 
   @Test
@@ -153,20 +172,21 @@ class SecurityLoggerImplTest {
     Subject subject = mock(Subject.class);
     Exception exception = new RuntimeException("Test exception");
     securityLogger.auditWarn(TEST_MESSAGE, subject, exception);
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testMessageCleaningRemovesNewlines() {
-    // Newlines should be replaced with underscores
+    // Newlines should be replaced with underscores; cleaning must not throw on CR/LF input.
     String messageWithNewlines = "Test\nmessage\rwith\r\nnewlines";
-    securityLogger.audit(messageWithNewlines);
-    // Test passes if no exception thrown
+    assertDoesNotThrow(() -> securityLogger.audit(messageWithNewlines));
   }
 
   @Test
   void testEmptyAuditPropertiesPlugins() {
     securityLogger.setAuditPropertiesPlugins(Collections.emptyList());
-    securityLogger.audit(TEST_MESSAGE);
+    assertDoesNotThrow(() -> securityLogger.audit(TEST_MESSAGE));
   }
 
   @Test
@@ -176,6 +196,9 @@ class SecurityLoggerImplTest {
 
     securityLogger.setAuditPropertiesPlugins(List.of(plugin));
     securityLogger.audit(TEST_MESSAGE);
+
+    // A null-returning plugin must still be consulted while building the audit line.
+    verify(plugin).generate();
   }
 
   @Test
@@ -188,6 +211,10 @@ class SecurityLoggerImplTest {
 
     securityLogger.setAuditPropertiesPlugins(List.of(plugin1, plugin2));
     securityLogger.audit(TEST_MESSAGE);
+
+    // Every configured plugin must be consulted to assemble the audit properties.
+    verify(plugin1).generate();
+    verify(plugin2).generate();
   }
 
   @Test
@@ -196,27 +223,29 @@ class SecurityLoggerImplTest {
 
     Subject subject = mock(Subject.class);
     securityLogger.audit(TEST_MESSAGE, subject);
+
+    verify(subjectOperations).getName(subject, "UNKNOWN");
   }
 
   @Test
   void testNullSubject() {
-    // Passing null subject should use ThreadContext or fall back gracefully
-    securityLogger.audit(TEST_MESSAGE, (Subject) null);
+    // Passing null subject should use ThreadContext or fall back gracefully.
+    assertDoesNotThrow(() -> securityLogger.audit(TEST_MESSAGE, (Subject) null));
   }
 
   @Test
   void testAuditWithEmptyMessage() {
-    securityLogger.audit("");
+    assertDoesNotThrow(() -> securityLogger.audit(""));
   }
 
   @Test
   void testAuditWithNullThrowable() {
-    securityLogger.audit(TEST_MESSAGE, (Throwable) null);
+    assertDoesNotThrow(() -> securityLogger.audit(TEST_MESSAGE, (Throwable) null));
   }
 
   @Test
   void testAuditWarnWithNullThrowable() {
-    securityLogger.auditWarn(TEST_MESSAGE, (Throwable) null);
+    assertDoesNotThrow(() -> securityLogger.auditWarn(TEST_MESSAGE, (Throwable) null));
   }
 
   @Test
@@ -238,6 +267,9 @@ class SecurityLoggerImplTest {
         System.clearProperty("security.logger.extra_attributes");
       }
     }
+
+    // The configured extra attribute must be looked up on the subject for the audit line.
+    verify(subjectOperations).getAttribute(subject, "testAttr");
   }
 
   @Test
@@ -258,6 +290,9 @@ class SecurityLoggerImplTest {
         System.clearProperty("security.logger.extra_attributes");
       }
     }
+
+    // The configured extra attribute must be looked up to render its multiple values.
+    verify(subjectOperations).getAttribute(subject, "testAttr");
   }
 
   @Test
@@ -278,5 +313,8 @@ class SecurityLoggerImplTest {
         System.clearProperty("security.logger.extra_attributes");
       }
     }
+
+    // The configured extra attribute must still be looked up even when it has no values.
+    verify(subjectOperations).getAttribute(subject, "testAttr");
   }
 }

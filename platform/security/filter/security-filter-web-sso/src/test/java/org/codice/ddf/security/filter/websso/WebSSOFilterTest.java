@@ -15,6 +15,8 @@ package org.codice.ddf.security.filter.websso;
 
 import static ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY;
 import static ddf.security.SecurityConstants.SECURITY_TOKEN_KEY;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -65,7 +67,10 @@ public class WebSSOFilterTest {
     WebSSOFilter webSSOFilter = new WebSSOFilter();
     webSSOFilter.setHandlerList(Collections.singletonList(handlerMock));
     webSSOFilter.setContextPolicyManager(policyManager);
-    webSSOFilter.init();
+
+    // init() must complete without throwing and must not disturb the configured handler list
+    assertDoesNotThrow(webSSOFilter::init);
+    assertEquals(Collections.singletonList(handlerMock), webSSOFilter.getHandlerList());
   }
 
   @Test

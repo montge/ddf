@@ -13,6 +13,11 @@
  */
 package ddf.security.expansion.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,8 +77,8 @@ public class RegexExpansionTest {
     testSet.add("staff");
     // no rules defined - should return the same set
     exp.expand(null, testSet);
-    assert (testSet.size() == 1);
-    assert (testSet.contains("staff"));
+    assertEquals(1, testSet.size());
+    assertTrue(testSet.contains("staff"));
 
     // add a rule for the "role" key
     String[] rule = new String[] {"staff", "staff employee"};
@@ -81,12 +86,12 @@ public class RegexExpansionTest {
 
     // calling with unknown key - should return the same set
     exp.expand("name", testSet);
-    assert (testSet.size() == 1);
-    assert (testSet.contains("staff"));
+    assertEquals(1, testSet.size());
+    assertTrue(testSet.contains("staff"));
 
     // calling with null values - returns null
     result = exp.expand("role", null);
-    assert (result == null);
+    assertNull(result);
 
     exp.removeExpansionRule("role", rule);
     testSet.clear();
@@ -96,12 +101,12 @@ public class RegexExpansionTest {
 
     testSet.add("VP-Sales");
     exp.expand("role", testSet);
-    assert (testSet.size() == 5);
-    assert (testSet.contains("VP-Sales"));
-    assert (testSet.contains("VP"));
-    assert (testSet.contains("Sales"));
-    assert (testSet.contains("Manager"));
-    assert (testSet.contains("Employee"));
+    assertEquals(5, testSet.size());
+    assertTrue(testSet.contains("VP-Sales"));
+    assertTrue(testSet.contains("VP"));
+    assertTrue(testSet.contains("Sales"));
+    assertTrue(testSet.contains("Manager"));
+    assertTrue(testSet.contains("Employee"));
 
     testSet.clear();
     exp = new RegexExpansion();
@@ -110,8 +115,8 @@ public class RegexExpansionTest {
     testSet.add("VP");
     // calling with empty replacement string - should delete matched string
     exp.expand("role", testSet);
-    assert (testSet.size() == 1);
-    assert (testSet.contains("VP-Sales"));
+    assertEquals(1, testSet.size());
+    assertTrue(testSet.contains("VP-Sales"));
   }
 
   @Test
@@ -131,12 +136,12 @@ public class RegexExpansionTest {
     // test with null rule set and valid data - should leave data untouched
     exp.expand(map);
     Set<String> result = map.get("role");
-    assert (result.size() == 1);
-    assert (result.contains("VP-Sales"));
+    assertEquals(1, result.size());
+    assertTrue(result.contains("VP-Sales"));
     result = map.get("location");
-    assert (result.size() == 2);
-    assert (result.contains("Goodyear"));
-    assert (result.contains("AZ"));
+    assertEquals(2, result.size());
+    assertTrue(result.contains("Goodyear"));
+    assertTrue(result.contains("AZ"));
 
     // build the expansion rule set
     exp.setExpansionMap(testmap);
@@ -145,31 +150,31 @@ public class RegexExpansionTest {
 
     // test with valid rules but null data - should return null
     Map<String, Set<String>> resultMap = exp.expand(null);
-    assert (resultMap == null);
+    assertNull(resultMap);
 
     // test with valid rules but empty data - should return empty data
     resultMap = exp.expand(new HashMap<String, Set<String>>());
-    assert (resultMap.size() == 0);
+    assertEquals(0, resultMap.size());
 
     // test with valid rules and valid data
     resultMap = exp.expand(map);
     // should return the exact same object (updated)
-    assert (resultMap == map);
+    assertSame(map, resultMap);
 
     result = resultMap.get("role");
-    assert (result.size() == 5);
-    assert (result.contains("VP-Sales"));
-    assert (result.contains("VP"));
-    assert (result.contains("Sales"));
-    assert (result.contains("Manager"));
-    assert (result.contains("Employee"));
+    assertEquals(5, result.size());
+    assertTrue(result.contains("VP-Sales"));
+    assertTrue(result.contains("VP"));
+    assertTrue(result.contains("Sales"));
+    assertTrue(result.contains("Manager"));
+    assertTrue(result.contains("Employee"));
 
     result = resultMap.get("location");
-    assert (result.size() == 4);
-    assert (result.contains("Goodyear"));
-    assert (result.contains("AZ"));
-    assert (result.contains("Arizona"));
-    assert (result.contains("USA"));
+    assertEquals(4, result.size());
+    assertTrue(result.contains("Goodyear"));
+    assertTrue(result.contains("AZ"));
+    assertTrue(result.contains("Arizona"));
+    assertTrue(result.contains("USA"));
 
     // verify the regex rules work - don't expand unless the entire token
     // build the data map
@@ -180,7 +185,7 @@ public class RegexExpansionTest {
 
     resultMap = exp.expand(map);
     result = resultMap.get("location");
-    assert (result.size() == 1);
-    assert (result.contains("AZTEC"));
+    assertEquals(1, result.size());
+    assertTrue(result.contains("AZTEC"));
   }
 }

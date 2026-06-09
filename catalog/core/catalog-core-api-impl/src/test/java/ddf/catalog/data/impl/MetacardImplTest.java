@@ -117,6 +117,9 @@ public class MetacardImplTest {
     String xml = "<xml/>";
     metacard.setMetadata(xml);
     metacard.setId("id1");
+
+    assertEquals(xml, metacard.getMetadata());
+    assertEquals("id1", metacard.getId());
   }
 
   /** make sure type conversion works in MetacardImpl */
@@ -264,7 +267,29 @@ public class MetacardImplTest {
   }
 
   @Test
-  public void testEmptyStringFields() {}
+  public void testEmptyStringFields() {
+    MetacardImpl metacard = new MetacardImpl();
+    metacard.setContentTypeName("");
+    metacard.setContentTypeVersion("");
+    metacard.setId("");
+    metacard.setLocation("");
+    metacard.setMetadata("");
+    metacard.setSourceId("");
+    metacard.setTitle("");
+    metacard.setDescription("");
+    metacard.setPointOfContact("");
+
+    // empty strings are non-null values, so they are stored and round-trip unchanged
+    assertEquals("", metacard.getContentTypeName());
+    assertEquals("", metacard.getContentTypeVersion());
+    assertEquals("", metacard.getId());
+    assertEquals("", metacard.getLocation());
+    assertEquals("", metacard.getMetadata());
+    assertEquals("", metacard.getSourceId());
+    assertEquals("", metacard.getTitle());
+    assertEquals("", metacard.getDescription());
+    assertEquals("", metacard.getPointOfContact());
+  }
 
   @Test
   public void testSerializationSingle()

@@ -13,6 +13,7 @@
  */
 package ddf.catalog.security.operation.plugin;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -141,7 +142,9 @@ public class OperationPluginTest {
   public void noPropertiesRequestTest() throws Exception {
     CreateRequestImpl request = new CreateRequestImpl(new ArrayList<>(), null);
 
-    plugin.processPreCreate(request);
+    // A request with no properties has no operation security to enforce, so the plugin must
+    // pass the request through unchanged rather than throwing or substituting it.
+    assertSame(request, plugin.processPreCreate(request));
   }
 
   @Test
@@ -150,7 +153,9 @@ public class OperationPluginTest {
     properties.put(SecurityConstants.SECURITY_SUBJECT, subject);
     CreateRequestImpl request = new CreateRequestImpl(new ArrayList<>(), properties);
 
-    plugin.processPreCreate(request);
+    // Properties are present but contain no OPERATION_SECURITY policy, so there is nothing to
+    // enforce; the plugin must pass the request through unchanged rather than throwing.
+    assertSame(request, plugin.processPreCreate(request));
   }
 
   private void testPluginWithRole(String role) throws Exception {

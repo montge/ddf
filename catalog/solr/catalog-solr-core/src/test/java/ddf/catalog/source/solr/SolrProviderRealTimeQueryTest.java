@@ -19,6 +19,7 @@ import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.deleteAll;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.getFilterBuilder;
 import static ddf.catalog.source.solr.provider.SolrProviderTestUtil.queryAndVerifyCount;
 import static org.awaitility.Awaitility.await;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.Lists;
@@ -269,6 +270,9 @@ public class SolrProviderRealTimeQueryTest {
             .map(m -> m.getId())
             .collect(Collectors.toList());
 
+    // Both metacards must be ingested before the real time get-by-id assertions are meaningful.
+    assertEquals(2, ids.size(), "Both metacards should have been created");
+
     // Real time queries only work when querying by ID, so a real time query by title only will
     // return
     // 0 results.
@@ -436,6 +440,9 @@ public class SolrProviderRealTimeQueryTest {
 
     CreateResponse createResponse = create(metacards, provider);
     List<Metacard> createdMetacards = createResponse.getCreatedMetacards();
+
+    // Both metacards must be ingested before the id+title get-by-id assertions are meaningful.
+    assertEquals(2, createdMetacards.size(), "Both metacards should have been created");
 
     // Real time queries only work when querying by ID, so a query by title only will
     // return 0 results.

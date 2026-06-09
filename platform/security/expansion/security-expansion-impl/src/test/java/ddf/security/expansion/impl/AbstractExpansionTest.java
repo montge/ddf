@@ -13,6 +13,8 @@
  */
 package ddf.security.expansion.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -178,43 +180,43 @@ public class AbstractExpansionTest {
     StraightExpansionImpl exp = new StraightExpansionImpl();
 
     Collection<String> result = exp.split("A B C", " ");
-    assert (result.size() == 3);
-    assert (result.contains("A"));
-    assert (result.contains("B"));
-    assert (result.contains("C"));
+    assertEquals(3, result.size());
+    assertTrue(result.contains("A"));
+    assertTrue(result.contains("B"));
+    assertTrue(result.contains("C"));
 
     String test = "A|B|C";
     result = exp.split(test, " ");
-    assert (result.size() == 1);
-    assert (result.contains(test));
+    assertEquals(1, result.size());
+    assertTrue(result.contains(test));
 
     result = exp.split(test, "\\|");
-    assert (result.size() == 3);
-    assert (result.contains("A"));
-    assert (result.contains("B"));
-    assert (result.contains("C"));
+    assertEquals(3, result.size());
+    assertTrue(result.contains("A"));
+    assertTrue(result.contains("B"));
+    assertTrue(result.contains("C"));
 
     result = exp.split("", " ");
-    assert (result.size() == 0);
+    assertEquals(0, result.size());
 
     result = exp.split(null, " ");
-    assert (result.size() == 0);
+    assertEquals(0, result.size());
 
     result = exp.split(test, null);
-    assert (result.size() == 0);
+    assertEquals(0, result.size());
 
     result = exp.split("A|B||C", "\\|");
-    assert (result.size() == 3);
-    assert (result.contains("A"));
-    assert (result.contains("B"));
-    assert (result.contains("C"));
+    assertEquals(3, result.size());
+    assertTrue(result.contains("A"));
+    assertTrue(result.contains("B"));
+    assertTrue(result.contains("C"));
 
     result = exp.split("A01B2C3D4", "[0-9]");
-    assert (result.size() == 4);
-    assert (result.contains("A"));
-    assert (result.contains("B"));
-    assert (result.contains("C"));
-    assert (result.contains("D"));
+    assertEquals(4, result.size());
+    assertTrue(result.contains("A"));
+    assertTrue(result.contains("B"));
+    assertTrue(result.contains("C"));
+    assertTrue(result.contains("D"));
   }
 
   @Test

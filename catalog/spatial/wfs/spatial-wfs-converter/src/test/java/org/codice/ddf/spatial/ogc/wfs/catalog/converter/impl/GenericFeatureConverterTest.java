@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Metacard;
@@ -80,8 +81,9 @@ public class GenericFeatureConverterTest {
 
   @Test
   public void testSetSourceId() {
-    converter.setSourceId("test-source");
-    // Verify no exception is thrown
+    // No public getter exists for sourceId; the setter only stores the value for later
+    // use during conversion, so the meaningful contract is that it completes without error.
+    assertDoesNotThrow(() -> converter.setSourceId("test-source"));
   }
 
   @Test
@@ -97,14 +99,16 @@ public class GenericFeatureConverterTest {
 
   @Test
   public void testSetWfsUrl() {
-    converter.setWfsUrl("http://example.com/wfs");
-    // Verify no exception is thrown
+    // No public getter exists for wfsUrl; the setter only stores the value, so the
+    // meaningful contract is that it completes without error.
+    assertDoesNotThrow(() -> converter.setWfsUrl("http://example.com/wfs"));
   }
 
   @Test
   public void testSetCoordinateOrder() {
-    converter.setCoordinateOrder("LAT_LON");
-    // Verify no exception is thrown
+    // No public getter exists for coordinateOrder; the setter only stores the value, so
+    // the meaningful contract is that it completes without error.
+    assertDoesNotThrow(() -> converter.setCoordinateOrder("LAT_LON"));
   }
 
   @Test

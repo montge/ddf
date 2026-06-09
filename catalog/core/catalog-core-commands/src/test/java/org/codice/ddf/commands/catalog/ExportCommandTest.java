@@ -14,6 +14,8 @@
 package org.codice.ddf.commands.catalog;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -122,7 +124,8 @@ public class ExportCommandTest {
     exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "title LIKE 'test*'";
 
-    // Not executing, just verifying configuration
+    assertThat(exportCommand.output, is(exportDirectory.getAbsolutePath()));
+    assertThat(exportCommand.cqlFilter, is("title LIKE 'test*'"));
   }
 
   @Test
@@ -134,7 +137,9 @@ public class ExportCommandTest {
     exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "*";
 
-    // Configuration test
+    assertThat(exportCommand.output, is(exportDirectory.getAbsolutePath()));
+    assertThat(exportCommand.cqlFilter, is("*"));
+    assertThat(results, hasSize(10));
   }
 
   @Test
@@ -156,7 +161,9 @@ public class ExportCommandTest {
     exportCommand.output = exportDirectory.getAbsolutePath();
     exportCommand.cqlFilter = "title LIKE 'nonexistent'";
 
-    // No files should be created for empty results
+    assertThat(exportCommand.output, is(exportDirectory.getAbsolutePath()));
+    assertThat(exportCommand.cqlFilter, is("title LIKE 'nonexistent'"));
+    assertThat(mockQueryResponse.getResults().isEmpty(), is(true));
   }
 
   private List<Result> createMockResults(int count) {

@@ -275,11 +275,9 @@ public class ProxyHttpFilterChainTest {
 
     mockFilterBehavior(mockFilter1);
 
-    try {
-      chain.doFilter(mockRequest, mockResponse);
-    } catch (NullPointerException e) {
-      // Expected when handler is null
-    }
+    // The single filter re-enters the chain, exhausting the iterator, so the chain falls
+    // through to handler.handle(...) on the null handler, which throws NPE.
+    assertThrows(NullPointerException.class, () -> chain.doFilter(mockRequest, mockResponse));
   }
 
   @Test

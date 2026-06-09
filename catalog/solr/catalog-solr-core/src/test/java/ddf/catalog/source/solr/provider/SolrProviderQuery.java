@@ -738,7 +738,10 @@ public class SolrProviderQuery {
 
     list.add(metacard1);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(
         1, getFilterBuilder().attribute(Metacard.METADATA).is().like().text(soughtWord), provider);
@@ -748,7 +751,12 @@ public class SolrProviderQuery {
   public void testContextualXmlTagsNotIndexed() throws Exception {
     deleteAll(provider);
 
-    create(Collections.singletonList(new MockMetacard(Library.getFlagstaffRecord())), provider);
+    assertEquals(
+        1,
+        create(Collections.singletonList(new MockMetacard(Library.getFlagstaffRecord())), provider)
+            .getCreatedMetacards()
+            .size(),
+        "The metacard should be ingested");
 
     String xmlTag = "lastBuildDate";
 
@@ -782,7 +790,10 @@ public class SolrProviderQuery {
 
     list.add(metacard3);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(
         1, getFilterBuilder().attribute(Metacard.ANY_TEXT).is().like().text(soughtWord), provider);
@@ -811,7 +822,10 @@ public class SolrProviderQuery {
 
     list.add(metacard1);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(
         1, getFilterBuilder().attribute(Metacard.TITLE).is().like().text(searchPhrase1), provider);
@@ -1148,7 +1162,10 @@ public class SolrProviderQuery {
 
     list.add(metacard3);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(
         2,
@@ -1220,7 +1237,10 @@ public class SolrProviderQuery {
 
     list.add(metacard3);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(
         3, getFilterBuilder().attribute(Metacard.TITLE).is().like().text("Mary"), provider);
@@ -1264,7 +1284,10 @@ public class SolrProviderQuery {
 
     list.add(metacard3);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(
         1, getFilterBuilder().attribute(Metacard.TITLE).is().equalTo().text("Mary"), provider);
@@ -1336,7 +1359,10 @@ public class SolrProviderQuery {
     list.add(metacard);
     list.add(metacard1);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(
         1, getFilterBuilder().proximity(Metacard.ANY_TEXT, 3, "Mary ham"), provider);
@@ -1364,7 +1390,10 @@ public class SolrProviderQuery {
     list.add(metacard);
     list.add(metacard1);
 
-    create(list, provider);
+    assertEquals(
+        list.size(),
+        create(list, provider).getCreatedMetacards().size(),
+        "All metacards should be ingested");
 
     queryAndVerifyCount(1, getFilterBuilder().proximity(Core.TITLE, 3, "Mary ham"), provider);
     queryAndVerifyCount(0, getFilterBuilder().proximity(Core.TITLE, 2, "Mary ham"), provider);
@@ -1395,7 +1424,12 @@ public class SolrProviderQuery {
     MetacardImpl customMetacard2 = new MetacardImpl(mType);
     customMetacard2.setAttribute(longField, 12L);
 
-    create(Arrays.asList(customMetacard1, customMetacard2), provider);
+    assertEquals(
+        2,
+        create(Arrays.asList(customMetacard1, customMetacard2), provider)
+            .getCreatedMetacards()
+            .size(),
+        "Both custom metacards should be ingested");
 
     queryAndVerifyCount(
         2,

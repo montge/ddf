@@ -16,6 +16,7 @@ package ddf.catalog.transformer.input.geojson;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -418,12 +419,13 @@ public class GeoJsonInputTransformerEnhancedTest {
             + "  }"
             + "}";
 
-    try {
-      Metacard result = transformer.transform(toInputStream(geoJson));
-      // May succeed with null geometry or fail
-    } catch (CatalogTransformerException e) {
-      // Expected for invalid geometry type
-    }
+    // An unrecognized geometry type is handled gracefully: CompositeGeometry yields no geometry,
+    // so the transform succeeds but no location is set on the metacard (rather than crashing or
+    // fabricating a bogus location).
+    Metacard result = transformer.transform(toInputStream(geoJson));
+
+    assertThat(result, notNullValue());
+    assertThat(result.getLocation(), is(nullValue()));
   }
 
   @Test
@@ -485,12 +487,10 @@ public class GeoJsonInputTransformerEnhancedTest {
             + "  ]"
             + "}";
 
-    try {
-      // FeatureCollection might be transformed to first feature or rejected
-      Metacard result = transformer.transform(toInputStream(geoJson));
-    } catch (CatalogTransformerException e) {
-      // May not support FeatureCollection directly
-    }
+    // The transformer only supports a root "type" of "Feature"; a "FeatureCollection" is rejected
+    // with a CatalogTransformerException rather than being silently transformed.
+    assertThrows(
+        CatalogTransformerException.class, () -> transformer.transform(toInputStream(geoJson)));
   }
 
   @Test

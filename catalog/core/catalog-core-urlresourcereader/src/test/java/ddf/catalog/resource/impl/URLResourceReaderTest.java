@@ -590,9 +590,9 @@ public class URLResourceReaderTest {
 
     Set<String> qualifiers = resourceReader.getSupportedSchemes();
 
-    assert (qualifiers != null);
-    assert (qualifiers.contains(HTTP_SCHEME));
-    assert (qualifiers.size() == 3);
+    assertNotNull(qualifiers);
+    assertThat(qualifiers, hasItems(HTTP_SCHEME));
+    assertThat(qualifiers.size(), is(3));
   }
 
   @Test

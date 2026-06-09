@@ -16,10 +16,12 @@ package org.codice.ddf.spatial.ogc.wfs.catalog.source;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -93,8 +95,12 @@ public class MarkableStreamInterceptorTest {
   public void testHandleMessageWithNullInputStream() {
     when(message.getContent(InputStream.class)).thenReturn(null);
 
-    // Should not throw - handles NullPointerException internally
-    interceptor.handleMessage(message);
+    // Should not throw - the NullPointerException from IOUtils.toByteArray(null) is
+    // swallowed internally.
+    assertDoesNotThrow(() -> interceptor.handleMessage(message));
+
+    // Because the NPE path is taken, the content is never replaced with a buffered stream.
+    verify(message, never()).setContent(eq(InputStream.class), any());
   }
 
   @Test
@@ -108,7 +114,10 @@ public class MarkableStreamInterceptorTest {
         .when(mockStream)
         .read(any(byte[].class), anyInt(), anyInt());
 
-    // Should not throw - handles IOException internally
-    interceptor.handleMessage(message);
+    // Should not throw - the IOException is caught and swallowed internally.
+    assertDoesNotThrow(() -> interceptor.handleMessage(message));
+
+    // Because reading the stream failed, the content is never replaced with a buffered stream.
+    verify(message, never()).setContent(eq(InputStream.class), any());
   }
 }

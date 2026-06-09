@@ -147,7 +147,7 @@ public class XMLUtilsTest {
 
   @Test
   public void testGetRootNamespace() {
-    assert "doggy-namespace".equals(XML_UTILS.getRootNamespace(XML_WITH_NAMESPACE));
+    assertThat(XML_UTILS.getRootNamespace(XML_WITH_NAMESPACE), is(equalTo("doggy-namespace")));
   }
 
   @Test

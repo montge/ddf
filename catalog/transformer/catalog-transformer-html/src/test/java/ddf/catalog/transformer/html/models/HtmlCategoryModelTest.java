@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -143,14 +144,14 @@ class HtmlCategoryModelTest {
   void testInitDoesNotThrow() {
     HtmlCategoryModel model = new HtmlCategoryModel();
 
-    model.init();
+    assertDoesNotThrow(model::init);
   }
 
   @Test
   void testDestroyDoesNotThrow() {
     HtmlCategoryModel model = new HtmlCategoryModel();
 
-    model.destroy(0);
+    assertDoesNotThrow(() -> model.destroy(0));
   }
 
   @Test

@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.features.security.test;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.codice.ddf.test.common.options.DebugOptions.defaultDebuggingOptions;
 import static org.codice.ddf.test.common.options.DistributionOptions.kernelDistributionOption;
 import static org.codice.ddf.test.common.options.FeatureOptions.addBootFeature;
@@ -74,7 +75,15 @@ public class ITSecurityFeatures {
 
   @Test
   public void installAndUninstallFeature() throws Exception {
-    syncInstaller.installFeatures(featureName);
-    syncInstaller.uninstallFeatures(featureName);
+    // The SynchronizedInstaller throws (SynchronizedInstallerException /
+    // SynchronizedInstallerTimeoutException) if the feature fails to install or uninstall, or if
+    // bundles do not reach an Active state. Asserting no exception is thrown verifies that the
+    // security feature can be cleanly installed and uninstalled in isolation.
+    assertThatCode(
+            () -> {
+              syncInstaller.installFeatures(featureName);
+              syncInstaller.uninstallFeatures(featureName);
+            })
+        .doesNotThrowAnyException();
   }
 }

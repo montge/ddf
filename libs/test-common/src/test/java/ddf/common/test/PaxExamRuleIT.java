@@ -94,16 +94,26 @@ public class PaxExamRuleIT {
     }
 
     @org.junit.Test
-    public void superTest() {}
+    public void superTest() {
+      // Fixture test run by the outer PaxExamRuleIT tests via JUnitCore; it must pass so the
+      // run/failure counts assert correctly. Verify the rule under test is wired to this instance.
+      assertThat(paxExamRule).isNotNull();
+    }
   }
 
   public static class DummyTest extends SuperDummyTest {
 
     @org.junit.Test
-    public void passingTest() {}
+    public void passingTest() {
+      // Fixture test that must pass so the outer PaxExamRuleIT run/failure counts assert correctly.
+      assertThat(paxExamRule).isNotNull();
+    }
 
     @org.junit.Test
-    public void secondPassingTest() {}
+    public void secondPassingTest() {
+      // Fixture test that must pass so the outer PaxExamRuleIT run/failure counts assert correctly.
+      assertThat(paxExamRule).isNotNull();
+    }
 
     @org.junit.Test
     public void failingTest() {
@@ -113,7 +123,10 @@ public class PaxExamRuleIT {
     @org.junit.Test
     @Ignore
     @SuppressWarnings("squid:S1607")
-    public void ignoredTest() {}
+    public void ignoredTest() {
+      // Fixture test deliberately @Ignore'd so the outer PaxExamRuleIT ignore count asserts to 1.
+      assertThat(paxExamRule).isNotNull();
+    }
   }
 
   @RunWith(PaxExam.class)

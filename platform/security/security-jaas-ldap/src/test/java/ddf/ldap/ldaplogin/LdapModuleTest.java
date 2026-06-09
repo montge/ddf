@@ -194,20 +194,58 @@ public class LdapModuleTest {
   }
 
   @Test
-  public void testSasl() {
+  public void testSasl() throws LoginException {
     // TODO: DDF-2877 - Enhance LDAP test for alt protocols
+    // Drive the module through the PLAIN SASL bind branch (SslLdapLoginModule.doLogin). The
+    // in-memory
+    // test directory server does not honor a SASL admin bind, so login() returns without populating
+    // any principals. Assert the module both routed through the SASL branch (retained bind method)
+    // and produced no principals (bind not completed). When DDF-2877 adds a SASL-capable server,
+    // this expectation should change to server.expectedPrincipals().
+    server.useSimpleAuth().startListening();
+    module
+        .putOption(BIND_METHOD_OPTIONS_KEY, "SASL")
+        .setUsernameAndPassword(USER_CN, USER_PASSWORD)
+        .login()
+        .assertThatPrincipals(server.emptyPrincipals());
+    assertThat(module.getBindMethod(), equalToIgnoringCase("SASL"));
   }
 
   @Test
-  public void testGssapiSasl() {
+  public void testGssapiSasl() throws LoginException {
     // TODO: DDF-2877 - Enhance LDAP test for alt protocols
-
+    // Drive the module through the GSSAPI SASL bind branch (SslLdapLoginModule.doLogin). The
+    // in-memory
+    // test directory server has no KDC, so the GSSAPI admin bind does not succeed and login()
+    // returns
+    // without populating any principals. Assert the module routed through the GSSAPI branch
+    // (retained
+    // bind method) and produced no principals. When DDF-2877 adds a KDC-backed server, this
+    // expectation should change to server.expectedPrincipals().
+    server.useSimpleAuth().startListening();
+    module
+        .putOption(BIND_METHOD_OPTIONS_KEY, "GSSAPI SASL")
+        .setUsernameAndPassword(USER_CN, USER_PASSWORD)
+        .login()
+        .assertThatPrincipals(server.emptyPrincipals());
+    assertThat(module.getBindMethod(), equalToIgnoringCase("GSSAPI SASL"));
   }
 
   @Test
-  public void testDigestMd5Sasl() {
+  public void testDigestMd5Sasl() throws LoginException {
     // TODO: DDF-2877 - Enhance LDAP test for alt protocols
-
+    // Drive the module through the Digest MD5 SASL bind branch (SslLdapLoginModule.doLogin). The
+    // in-memory test directory server does not honor a DIGEST-MD5 admin bind, so login() returns
+    // without populating any principals. Assert the module routed through the Digest MD5 branch
+    // (retained bind method) and produced no principals. When DDF-2877 adds a DIGEST-MD5-capable
+    // server, this expectation should change to server.expectedPrincipals().
+    server.useSimpleAuth().startListening();
+    module
+        .putOption(BIND_METHOD_OPTIONS_KEY, "Digest MD5 SASL")
+        .setUsernameAndPassword(USER_CN, USER_PASSWORD)
+        .login()
+        .assertThatPrincipals(server.emptyPrincipals());
+    assertThat(module.getBindMethod(), equalToIgnoringCase("Digest MD5 SASL"));
   }
 
   private static class TestModule {

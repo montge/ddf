@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -284,10 +285,11 @@ public class GuestInterceptorWrapperTest {
   public void testHandleMessageLogsDebugWhenContextIsNull() {
     GuestInterceptorWrapper nullContextWrapper = new TestableGuestInterceptorWrapper(null);
 
-    nullContextWrapper.handleMessage(soapMessage);
+    // The method must complete without exception (debug log not verifiable in unit test).
+    assertDoesNotThrow(() -> nullContextWrapper.handleMessage(soapMessage));
 
-    // Verify the method completes without exception (debug log not verifiable in unit test)
-    // No BundleContext interactions should occur
+    // With a null bundle context the null-context branch is taken, so no interceptor is dispatched.
+    verify(guestInterceptor, never()).handleMessage(any());
   }
 
   @Test

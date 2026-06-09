@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.features.admin.test;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.codice.ddf.test.common.options.DebugOptions.defaultDebuggingOptions;
 import static org.codice.ddf.test.common.options.DistributionOptions.kernelDistributionOption;
 import static org.codice.ddf.test.common.options.FeatureOptions.addBootFeature;
@@ -74,7 +75,14 @@ public class ITAdminFeatures {
 
   @Test
   public void installAndUninstallFeature() throws Exception {
-    syncInstaller.installFeatures(featureName);
-    syncInstaller.uninstallFeatures(featureName);
+    assertThatCode(
+            () -> {
+              syncInstaller.installFeatures(featureName);
+              syncInstaller.uninstallFeatures(featureName);
+            })
+        .as(
+            "Feature '%s' should install and uninstall without error, with all bundles reaching an Active state",
+            featureName)
+        .doesNotThrowAnyException();
   }
 }

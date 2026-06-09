@@ -18,6 +18,7 @@ import static ddf.security.SecurityConstants.SECURITY_JAVA_SUBJECT;
 import static ddf.security.SecurityConstants.SECURITY_TOKEN_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -484,16 +485,14 @@ public class LoginFilterAdvancedTest {
 
   @Test
   public void testInitMethod() {
-    // Test initialization
-    loginFilter.init();
-    // Should complete without errors
+    // init() should be safely re-invokable without throwing
+    assertDoesNotThrow(() -> loginFilter.init());
   }
 
   @Test
   public void testDestroyMethod() {
-    // Test destroy method cleans up ThreadLocal
-    loginFilter.destroy();
-    // Should complete without errors
+    // destroy() cleans up the BUILDER ThreadLocal and must not throw
+    assertDoesNotThrow(() -> loginFilter.destroy());
   }
 
   // ==================== Multiple Security Assertions Tests ====================

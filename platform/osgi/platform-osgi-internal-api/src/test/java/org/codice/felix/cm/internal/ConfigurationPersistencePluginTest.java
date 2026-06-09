@@ -15,6 +15,7 @@ package org.codice.felix.cm.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -61,9 +62,8 @@ public class ConfigurationPersistencePluginTest {
   public void testInitializeWithEmptyState() {
     Set<ConfigurationContext> emptyState = Collections.emptySet();
 
-    plugin.initialize(emptyState);
-
-    // Should not throw exception with empty state
+    // Initializing with an empty state must complete without throwing.
+    assertDoesNotThrow(() -> plugin.initialize(emptyState));
   }
 
   @Test
@@ -73,9 +73,8 @@ public class ConfigurationPersistencePluginTest {
 
     when(mockContext.getServicePid()).thenReturn("test.pid");
 
-    plugin.initialize(state);
-
-    // Should not throw exception
+    // Initializing with a single context must complete without throwing.
+    assertDoesNotThrow(() -> plugin.initialize(state));
   }
 
   @Test
@@ -102,9 +101,8 @@ public class ConfigurationPersistencePluginTest {
   public void testHandleStoreWithValidContext() throws IOException {
     when(mockContext.getServicePid()).thenReturn("test.service.pid");
 
-    plugin.handleStore(mockContext);
-
-    // Should complete successfully without exception
+    // Storing a valid context must complete without throwing.
+    assertDoesNotThrow(() -> plugin.handleStore(mockContext));
   }
 
   @Test
@@ -127,23 +125,20 @@ public class ConfigurationPersistencePluginTest {
   public void testHandleDeleteWithValidPid() throws IOException {
     String pid = "test.service.pid";
 
-    plugin.handleDelete(pid);
-
-    // Should complete successfully without exception
+    // Deleting by a valid pid must complete without throwing.
+    assertDoesNotThrow(() -> plugin.handleDelete(pid));
   }
 
   @Test
   public void testHandleDeleteWithNullPid() throws IOException {
-    plugin.handleDelete(null);
-
-    // Should complete successfully - implementation should handle null gracefully
+    // A null pid must be handled gracefully, without throwing.
+    assertDoesNotThrow(() -> plugin.handleDelete(null));
   }
 
   @Test
   public void testHandleDeleteWithEmptyPid() throws IOException {
-    plugin.handleDelete("");
-
-    // Should complete successfully - implementation should handle empty string gracefully
+    // An empty pid must be handled gracefully, without throwing.
+    assertDoesNotThrow(() -> plugin.handleDelete(""));
   }
 
   @Test
@@ -162,11 +157,13 @@ public class ConfigurationPersistencePluginTest {
 
     when(mockContext.getServicePid()).thenReturn("lifecycle.test.pid");
 
-    plugin.initialize(state);
-    plugin.handleStore(mockContext);
-    plugin.handleDelete("lifecycle.test.pid");
-
-    // Should complete full lifecycle without exception
+    // The full initialize -> store -> delete lifecycle must complete without throwing.
+    assertDoesNotThrow(
+        () -> {
+          plugin.initialize(state);
+          plugin.handleStore(mockContext);
+          plugin.handleDelete("lifecycle.test.pid");
+        });
   }
 
   @Test
@@ -177,19 +174,23 @@ public class ConfigurationPersistencePluginTest {
     when(context1.getServicePid()).thenReturn("pid.1");
     when(context2.getServicePid()).thenReturn("pid.2");
 
-    plugin.handleStore(context1);
-    plugin.handleStore(context2);
-
-    // Should handle multiple store operations
+    // Multiple consecutive store operations must complete without throwing.
+    assertDoesNotThrow(
+        () -> {
+          plugin.handleStore(context1);
+          plugin.handleStore(context2);
+        });
   }
 
   @Test
   public void testMultipleDeleteOperations() throws IOException {
-    plugin.handleDelete("pid.1");
-    plugin.handleDelete("pid.2");
-    plugin.handleDelete("pid.3");
-
-    // Should handle multiple delete operations
+    // Multiple consecutive delete operations must complete without throwing.
+    assertDoesNotThrow(
+        () -> {
+          plugin.handleDelete("pid.1");
+          plugin.handleDelete("pid.2");
+          plugin.handleDelete("pid.3");
+        });
   }
 
   @Test
@@ -203,19 +204,21 @@ public class ConfigurationPersistencePluginTest {
 
     // Store a different context after initialization
     when(mockContext.getServicePid()).thenReturn("new.pid");
-    plugin.handleStore(mockContext);
 
-    // Should allow storing new configurations after initialization
+    // Storing a new configuration after initialization must complete without throwing.
+    assertDoesNotThrow(() -> plugin.handleStore(mockContext));
   }
 
   @Test
   public void testDeleteAfterStore() throws IOException {
     when(mockContext.getServicePid()).thenReturn("store.delete.pid");
 
-    plugin.handleStore(mockContext);
-    plugin.handleDelete("store.delete.pid");
-
-    // Should allow delete after store
+    // Deleting a configuration after storing it must complete without throwing.
+    assertDoesNotThrow(
+        () -> {
+          plugin.handleStore(mockContext);
+          plugin.handleDelete("store.delete.pid");
+        });
   }
 
   /**

@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Attribute;
@@ -44,131 +45,113 @@ public class AbstractSaxEventHandlerTest {
   @Test
   public void testSetDocumentLocatorDoesNotThrowException() {
     Locator locator = mock(Locator.class);
-    handler.setDocumentLocator(locator);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.setDocumentLocator(locator));
   }
 
   @Test
   public void testSetDocumentLocatorWithNullDoesNotThrowException() {
-    handler.setDocumentLocator(null);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.setDocumentLocator(null));
   }
 
   @Test
   public void testStartDocumentDoesNotThrowException() throws SAXException {
-    handler.startDocument();
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.startDocument());
   }
 
   @Test
   public void testEndDocumentDoesNotThrowException() throws SAXException {
-    handler.endDocument();
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endDocument());
   }
 
   @Test
   public void testStartPrefixMappingDoesNotThrowException() throws SAXException {
-    handler.startPrefixMapping("prefix", "http://example.com/ns");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.startPrefixMapping("prefix", "http://example.com/ns"));
   }
 
   @Test
   public void testStartPrefixMappingWithNullPrefixDoesNotThrowException() throws SAXException {
-    handler.startPrefixMapping(null, "http://example.com/ns");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.startPrefixMapping(null, "http://example.com/ns"));
   }
 
   @Test
   public void testStartPrefixMappingWithNullUriDoesNotThrowException() throws SAXException {
-    handler.startPrefixMapping("prefix", null);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.startPrefixMapping("prefix", null));
   }
 
   @Test
   public void testStartPrefixMappingWithEmptyStringsDoesNotThrowException() throws SAXException {
-    handler.startPrefixMapping("", "");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.startPrefixMapping("", ""));
   }
 
   @Test
   public void testEndPrefixMappingDoesNotThrowException() throws SAXException {
-    handler.endPrefixMapping("prefix");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endPrefixMapping("prefix"));
   }
 
   @Test
   public void testEndPrefixMappingWithNullDoesNotThrowException() throws SAXException {
-    handler.endPrefixMapping(null);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endPrefixMapping(null));
   }
 
   @Test
   public void testEndPrefixMappingWithEmptyStringDoesNotThrowException() throws SAXException {
-    handler.endPrefixMapping("");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endPrefixMapping(""));
   }
 
   @Test
   public void testIgnorableWhitespaceDoesNotThrowException() throws SAXException {
     char[] ch = "   \t\n".toCharArray();
-    handler.ignorableWhitespace(ch, 0, ch.length);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.ignorableWhitespace(ch, 0, ch.length));
   }
 
   @Test
   public void testIgnorableWhitespaceWithEmptyArrayDoesNotThrowException() throws SAXException {
     char[] ch = new char[0];
-    handler.ignorableWhitespace(ch, 0, 0);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.ignorableWhitespace(ch, 0, 0));
   }
 
   @Test
   public void testIgnorableWhitespaceWithPartialArrayDoesNotThrowException() throws SAXException {
     char[] ch = "   test   ".toCharArray();
-    handler.ignorableWhitespace(ch, 3, 4);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.ignorableWhitespace(ch, 3, 4));
   }
 
   @Test
   public void testProcessingInstructionDoesNotThrowException() throws SAXException {
-    handler.processingInstruction("xml-stylesheet", "href=\"style.xsl\" type=\"text/xsl\"");
-    // Verify no exception is thrown
+    assertDoesNotThrow(
+        () ->
+            handler.processingInstruction(
+                "xml-stylesheet", "href=\"style.xsl\" type=\"text/xsl\""));
   }
 
   @Test
   public void testProcessingInstructionWithNullTargetDoesNotThrowException() throws SAXException {
-    handler.processingInstruction(null, "data");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.processingInstruction(null, "data"));
   }
 
   @Test
   public void testProcessingInstructionWithNullDataDoesNotThrowException() throws SAXException {
-    handler.processingInstruction("target", null);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.processingInstruction("target", null));
   }
 
   @Test
   public void testProcessingInstructionWithEmptyStringsDoesNotThrowException() throws SAXException {
-    handler.processingInstruction("", "");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.processingInstruction("", ""));
   }
 
   @Test
   public void testSkippedEntityDoesNotThrowException() throws SAXException {
-    handler.skippedEntity("nbsp");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.skippedEntity("nbsp"));
   }
 
   @Test
   public void testSkippedEntityWithNullDoesNotThrowException() throws SAXException {
-    handler.skippedEntity(null);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.skippedEntity(null));
   }
 
   @Test
   public void testSkippedEntityWithEmptyStringDoesNotThrowException() throws SAXException {
-    handler.skippedEntity("");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.skippedEntity(""));
   }
 
   @Test
@@ -193,16 +176,15 @@ public class AbstractSaxEventHandlerTest {
     // This test verifies that the abstract class requires startElement to be implemented
     // The test implementation provides an empty implementation
     Attributes attributes = mock(Attributes.class);
-    handler.startElement("http://example.com/ns", "localName", "qName", attributes);
-    // Verify no exception is thrown
+    assertDoesNotThrow(
+        () -> handler.startElement("http://example.com/ns", "localName", "qName", attributes));
   }
 
   @Test
   public void testEndElementMustBeImplementedBySubclass() throws SAXException {
     // This test verifies that the abstract class requires endElement to be implemented
     // The test implementation provides an empty implementation
-    handler.endElement("http://example.com/ns", "localName", "qName");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endElement("http://example.com/ns", "localName", "qName"));
   }
 
   @Test
@@ -210,40 +192,43 @@ public class AbstractSaxEventHandlerTest {
     // This test verifies that the abstract class requires characters to be implemented
     // The test implementation provides an empty implementation
     char[] ch = "test".toCharArray();
-    handler.characters(ch, 0, ch.length);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.characters(ch, 0, ch.length));
   }
 
   @Test
   public void testMultipleCallsToDefaultMethodsDoNotThrowException() throws SAXException {
     // Test multiple sequential calls to default implementations
-    handler.setDocumentLocator(mock(Locator.class));
-    handler.startDocument();
-    handler.startPrefixMapping("ns1", "http://example.com/ns1");
-    handler.startPrefixMapping("ns2", "http://example.com/ns2");
-    handler.ignorableWhitespace("   ".toCharArray(), 0, 3);
-    handler.processingInstruction("pi1", "data1");
-    handler.processingInstruction("pi2", "data2");
-    handler.skippedEntity("entity1");
-    handler.skippedEntity("entity2");
-    handler.endPrefixMapping("ns1");
-    handler.endPrefixMapping("ns2");
-    handler.endDocument();
-    // Verify no exception is thrown
+    assertDoesNotThrow(
+        () -> {
+          handler.setDocumentLocator(mock(Locator.class));
+          handler.startDocument();
+          handler.startPrefixMapping("ns1", "http://example.com/ns1");
+          handler.startPrefixMapping("ns2", "http://example.com/ns2");
+          handler.ignorableWhitespace("   ".toCharArray(), 0, 3);
+          handler.processingInstruction("pi1", "data1");
+          handler.processingInstruction("pi2", "data2");
+          handler.skippedEntity("entity1");
+          handler.skippedEntity("entity2");
+          handler.endPrefixMapping("ns1");
+          handler.endPrefixMapping("ns2");
+          handler.endDocument();
+        });
   }
 
   @Test
   public void testCompleteDocumentParsingSequence() throws SAXException {
     // Test a typical SAX parsing sequence
-    handler.setDocumentLocator(mock(Locator.class));
-    handler.startDocument();
-    handler.startPrefixMapping("ns", "http://example.com/ns");
-    handler.startElement("http://example.com/ns", "root", "ns:root", mock(Attributes.class));
-    handler.characters("text".toCharArray(), 0, 4);
-    handler.endElement("http://example.com/ns", "root", "ns:root");
-    handler.endPrefixMapping("ns");
-    handler.endDocument();
-    // Verify no exception is thrown
+    assertDoesNotThrow(
+        () -> {
+          handler.setDocumentLocator(mock(Locator.class));
+          handler.startDocument();
+          handler.startPrefixMapping("ns", "http://example.com/ns");
+          handler.startElement("http://example.com/ns", "root", "ns:root", mock(Attributes.class));
+          handler.characters("text".toCharArray(), 0, 4);
+          handler.endElement("http://example.com/ns", "root", "ns:root");
+          handler.endPrefixMapping("ns");
+          handler.endDocument();
+        });
   }
 
   @Test

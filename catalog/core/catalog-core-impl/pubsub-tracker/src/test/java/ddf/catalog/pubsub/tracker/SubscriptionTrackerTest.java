@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -62,12 +63,14 @@ class SubscriptionTrackerTest {
 
   @Test
   void testStartUp() {
-    tracker.startUp();
+    assertDoesNotThrow(() -> tracker.startUp());
+    assertThat(tracker.services.isEmpty(), is(true));
   }
 
   @Test
   void testCleanUp() {
-    tracker.cleanUp();
+    assertDoesNotThrow(() -> tracker.cleanUp());
+    assertThat(tracker.services.isEmpty(), is(true));
   }
 
   @Test

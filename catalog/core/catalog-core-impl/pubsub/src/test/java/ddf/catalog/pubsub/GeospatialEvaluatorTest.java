@@ -13,65 +13,49 @@
  */
 package ddf.catalog.pubsub;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import ddf.catalog.pubsub.criteria.geospatial.GeospatialEvaluator;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Polygon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GeospatialEvaluatorTest {
   private static final Logger LOGGER = LoggerFactory.getLogger(GeospatialEvaluatorTest.class);
 
-  @BeforeAll
-  public static void setUpBeforeClass() throws Exception {}
-
-  @AfterAll
-  public static void tearDownAfterClass() throws Exception {}
-
-  @BeforeEach
-  public void setUp() throws Exception {}
-
-  @AfterEach
-  public void tearDown() throws Exception {}
-
   @Test
-  public void testBuildGeometry() {
-    // String gmlText =
-    // "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" gml:id=\"BGE-1\"
-    // srsName=\"http://metadata.dod.mil/mdr/ns/GSIP/crs/WGS84E_2D\">\n"
-    // +
-    // "<gml:exterior>\n" +
-    // "<gml:LinearRing>\n" +
-    // "<gml:pos>34.0 44.0</gml:pos>\n" +
-    // "<gml:pos>33.0 44.0</gml:pos>\n" +
-    // "<gml:pos>33.0 45.0</gml:pos>\n" +
-    // "<gml:pos>34.0 45.0</gml:pos>\n" +
-    // "<gml:pos>34.0 44.0</gml:pos>\n" +
-    // "</gml:LinearRing>\n" +
-    // "</gml:exterior>\n" +
-    // "</gml:Polygon>";
-    //
-    // try
-    // {
-    // Geometry geometry = GeospatialEvaluator.buildGeometry( gmlText );
-    // assertNotNull( geometry );
-    // }
-    // catch ( IOException e )
-    // {
-    // LOGGER.error( e.getMessage(), e );
-    // fail( "Test failed with IOException" );
-    // }
-    // catch ( SAXException e )
-    // {
-    // LOGGER.error( e.getMessage(), e );
-    // fail( "Test failed with SAXException" );
-    // }
-    // catch ( ParserConfigurationException e )
-    // {
-    // LOGGER.error( e.getMessage(), e );
-    // fail( "Test failed with ParserConfigurationException" );
-    // }
+  public void testBuildGeometry() throws Exception {
+    // The metadata schema declares <gml:pos> points in LAT,LON order. buildGeometry must parse
+    // the GML and swap the coordinates so the resulting WKT geometry uses LON,LAT order.
+    String gmlText =
+        "<gml:Polygon xmlns:gml=\"http://www.opengis.net/gml\" gml:id=\"BGE-1\">\n"
+            + "    <gml:exterior>\n"
+            + "        <gml:LinearRing>\n"
+            + "            <gml:pos>34.0 44.0</gml:pos>\n"
+            + "            <gml:pos>33.0 44.0</gml:pos>\n"
+            + "            <gml:pos>33.0 45.0</gml:pos>\n"
+            + "            <gml:pos>34.0 45.0</gml:pos>\n"
+            + "            <gml:pos>34.0 44.0</gml:pos>\n"
+            + "        </gml:LinearRing>\n"
+            + "    </gml:exterior>\n"
+            + "</gml:Polygon>";
+
+    Geometry geometry = GeospatialEvaluator.buildGeometry(gmlText);
+    LOGGER.debug("geometry.toText() = {}", geometry.toText());
+
+    assertThat(geometry, is(notNullValue()));
+    assertThat(geometry, is(instanceOf(Polygon.class)));
+
+    // The first GML pos (LAT=34.0, LON=44.0) must be swapped to a LON,LAT coordinate (x=44.0,
+    // y=34.0) in the returned geometry.
+    Coordinate firstCoord = geometry.getCoordinates()[0];
+    assertThat(firstCoord.x, is(44.0));
+    assertThat(firstCoord.y, is(34.0));
   }
 }

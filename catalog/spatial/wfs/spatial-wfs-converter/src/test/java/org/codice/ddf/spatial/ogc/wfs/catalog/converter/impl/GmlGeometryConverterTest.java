@@ -16,7 +16,10 @@ package org.codice.ddf.spatial.ogc.wfs.catalog.converter.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -67,23 +70,22 @@ public class GmlGeometryConverterTest {
     HierarchicalStreamWriter writer = mock(HierarchicalStreamWriter.class);
     MarshallingContext context = mock(MarshallingContext.class);
 
-    // Verify no exception is thrown during marshalling
     converter.marshal(point, writer, context);
+
+    // Marshalling a geometry serializes it as GML, which copies at least the root
+    // node into the writer. If marshalling regressed to producing no output, this fails.
+    verify(writer, atLeastOnce()).startNode(anyString());
   }
 
   @Test
   public void testUnmarshalHandlesInvalidGML() {
-    // This test simply verifies the method can be called without crashing
-    // Complex GML parsing requires full XML setup which is better tested in integration tests
+    // A bare mocked reader supplies no node name and a null attribute-name iterator,
+    // so reconstructing the XML node during unmarshalling fails with an NPE. This pins
+    // the current contract for malformed/empty reader input. Complex GML parsing
+    // requires full XML setup which is better tested in integration tests.
     HierarchicalStreamReader reader = mock(HierarchicalStreamReader.class);
     UnmarshallingContext context = mock(UnmarshallingContext.class);
 
-    // Test that unmarshal doesn't crash with mocked input
-    try {
-      Object result = converter.unmarshal(reader, context);
-      // Result may be null or a string, either is acceptable for invalid input
-    } catch (Exception e) {
-      // Exception is also acceptable for invalid GML
-    }
+    assertThrows(NullPointerException.class, () -> converter.unmarshal(reader, context));
   }
 }

@@ -136,6 +136,6 @@ public class DavEntryTest {
   @Test
   public void testRemoteNotExists() throws IOException {
     doThrow(new IOException()).when(mockSardine).list(entry.getLocation());
-    entry.remoteExists(mockSardine);
+    assertThat(entry.remoteExists(mockSardine), is(false));
   }
 }

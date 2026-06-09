@@ -21,7 +21,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -149,12 +151,21 @@ public class SolrMetacardClientImplTest {
     when(client.deleteById(anyList())).thenReturn(new UpdateResponse());
     List<String> terms = Arrays.asList("1234");
     clientImpl.deleteByIds(Metacard.ID, terms, false);
+
+    // Deleting by the ID field must issue a single deleteById with the supplied ids and
+    // must not fall back to a deleteByQuery.
+    verify(client).deleteById(eq(Collections.singletonList("1234")));
+    verify(client, never()).deleteByQuery(anyString());
   }
 
   @Test
   public void testDeleteEmpty() throws SolrServerException, IOException {
     when(client.deleteById(anyList())).thenReturn(new UpdateResponse());
     clientImpl.deleteByIds(Metacard.ID, null, false);
+
+    // A null id collection must short-circuit: no delete is sent to Solr at all.
+    verify(client, never()).deleteById(anyList());
+    verify(client, never()).deleteByQuery(anyString());
   }
 
   @Test
@@ -162,6 +173,11 @@ public class SolrMetacardClientImplTest {
     when(client.deleteByQuery(anyString())).thenReturn(new UpdateResponse());
     List<String> terms = Arrays.asList("title");
     clientImpl.deleteByIds(Metacard.TITLE, terms, false);
+
+    // Deleting by a non-ID field below the boolean-clause limit must issue exactly one
+    // deleteByQuery and never a deleteById.
+    verify(client, times(1)).deleteByQuery(anyString());
+    verify(client, never()).deleteById(anyList());
   }
 
   @Test
@@ -172,6 +188,11 @@ public class SolrMetacardClientImplTest {
       terms.add("title");
     }
     clientImpl.deleteByIds(Metacard.TITLE, terms, false);
+
+    // A set larger than MAX_BOOLEAN_CLAUSES must be paged: one deleteByQuery for the first
+    // full page plus one for the remainder (MAX_BOOLEAN_CLAUSES + 1 -> 2 calls).
+    verify(client, times(2)).deleteByQuery(anyString());
+    verify(client, never()).deleteById(anyList());
   }
 
   @Test

@@ -18,6 +18,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -61,6 +63,8 @@ public class KeyValuePermissionTest {
     when(permission.getValues()).thenReturn(values);
 
     permission.addValue("newValue");
+
+    verify(permission).addValue("newValue");
   }
 
   @Test
@@ -99,6 +103,11 @@ public class KeyValuePermissionTest {
     permission.addValue("value1");
     permission.addValue("value2");
     permission.addValue("value3");
+
+    verify(permission).addValue("value1");
+    verify(permission).addValue("value2");
+    verify(permission).addValue("value3");
+    verify(permission, times(3)).addValue(org.mockito.ArgumentMatchers.anyString());
   }
 
   @Test

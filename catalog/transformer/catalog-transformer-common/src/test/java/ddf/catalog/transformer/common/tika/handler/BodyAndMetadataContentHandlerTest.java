@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import ddf.catalog.transformer.common.tika.TikaMetadataExtractor;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,27 +56,36 @@ class BodyAndMetadataContentHandlerTest {
   }
 
   @Test
-  void testStartDocumentDoesNotThrow() throws SAXException {
-    handler.startDocument();
+  void testStartDocumentDoesNotThrow() {
+    assertDoesNotThrow(() -> handler.startDocument());
   }
 
   @Test
-  void testEndDocumentDoesNotThrow() throws SAXException {
-    handler.startDocument();
-    handler.endDocument();
+  void testEndDocumentDoesNotThrow() {
+    assertDoesNotThrow(
+        () -> {
+          handler.startDocument();
+          handler.endDocument();
+        });
   }
 
   @Test
-  void testStartElementDoesNotThrow() throws SAXException {
-    handler.startDocument();
-    handler.startElement("", "div", "div", new AttributesImpl());
+  void testStartElementDoesNotThrow() {
+    assertDoesNotThrow(
+        () -> {
+          handler.startDocument();
+          handler.startElement("", "div", "div", new AttributesImpl());
+        });
   }
 
   @Test
-  void testEndElementDoesNotThrow() throws SAXException {
-    handler.startDocument();
-    handler.startElement("", "div", "div", new AttributesImpl());
-    handler.endElement("", "div", "div");
+  void testEndElementDoesNotThrow() {
+    assertDoesNotThrow(
+        () -> {
+          handler.startDocument();
+          handler.startElement("", "div", "div", new AttributesImpl());
+          handler.endElement("", "div", "div");
+        });
   }
 
   @Test
@@ -100,21 +110,27 @@ class BodyAndMetadataContentHandlerTest {
   }
 
   @Test
-  void testStartPrefixMappingDoesNotThrow() throws SAXException {
-    handler.startPrefixMapping("prefix", "http://example.com");
+  void testStartPrefixMappingDoesNotThrow() {
+    assertDoesNotThrow(() -> handler.startPrefixMapping("prefix", "http://example.com"));
   }
 
   @Test
-  void testEndPrefixMappingDoesNotThrow() throws SAXException {
-    handler.startPrefixMapping("prefix", "http://example.com");
-    handler.endPrefixMapping("prefix");
+  void testEndPrefixMappingDoesNotThrow() {
+    assertDoesNotThrow(
+        () -> {
+          handler.startPrefixMapping("prefix", "http://example.com");
+          handler.endPrefixMapping("prefix");
+        });
   }
 
   @Test
-  void testIgnorableWhitespaceDoesNotThrow() throws SAXException {
-    handler.startDocument();
-    char[] whitespace = "   ".toCharArray();
-    handler.ignorableWhitespace(whitespace, 0, whitespace.length);
+  void testIgnorableWhitespaceDoesNotThrow() {
+    assertDoesNotThrow(
+        () -> {
+          handler.startDocument();
+          char[] whitespace = "   ".toCharArray();
+          handler.ignorableWhitespace(whitespace, 0, whitespace.length);
+        });
   }
 
   @Test

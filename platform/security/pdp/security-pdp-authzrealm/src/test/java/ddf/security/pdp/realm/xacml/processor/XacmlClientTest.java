@@ -268,10 +268,16 @@ public class XacmlClientTest {
 
     // Perform Test on new directory
     // Expect directory to be created
+    File creationDir = new File(TEST_CREATION_DIR);
+    // Ensure a clean starting state so the assertion proves the constructor created the directory
+    FileUtils.deleteQuietly(creationDir);
     new XacmlClient(TEST_CREATION_DIR, new XmlParser(), mock(SecurityLogger.class));
 
+    // Verify the policies directory was created by the constructor
+    assertTrue(creationDir.isDirectory(), "XacmlClient should create the policies directory");
+
     // Delete the directory that was just created
-    FileUtils.forceDelete(new File(TEST_CREATION_DIR));
+    FileUtils.forceDelete(creationDir);
   }
 
   @Test

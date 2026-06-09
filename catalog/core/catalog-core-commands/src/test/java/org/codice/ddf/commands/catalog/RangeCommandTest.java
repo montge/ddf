@@ -13,6 +13,8 @@
  */
 package org.codice.ddf.commands.catalog;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -87,7 +89,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "10";
     rangeCommand.rangeEnd = "100";
 
-    // Not executing full command, just verifying setup
+    assertThat(rangeCommand.attributeName, is("price"));
+    assertThat(rangeCommand.rangeBeginning, is("10"));
+    assertThat(rangeCommand.rangeEnd, is("100"));
   }
 
   @Test
@@ -101,7 +105,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "2023-01-01";
     rangeCommand.rangeEnd = "2023-12-31";
 
-    // Configuration test
+    assertThat(rangeCommand.attributeName, is("created"));
+    assertThat(rangeCommand.rangeBeginning, is("2023-01-01"));
+    assertThat(rangeCommand.rangeEnd, is("2023-12-31"));
   }
 
   @Test
@@ -115,7 +121,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "0";
     rangeCommand.rangeEnd = "1000";
 
-    // Test configuration
+    assertThat(rangeCommand.attributeName, is("quantity"));
+    assertThat(rangeCommand.rangeBeginning, is("0"));
+    assertThat(rangeCommand.rangeEnd, is("1000"));
   }
 
   @Test
@@ -129,7 +137,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "0.5";
     rangeCommand.rangeEnd = "100.5";
 
-    // Configuration validation
+    assertThat(rangeCommand.attributeName, is("temperature"));
+    assertThat(rangeCommand.rangeBeginning, is("0.5"));
+    assertThat(rangeCommand.rangeEnd, is("100.5"));
   }
 
   @Test
@@ -143,7 +153,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "-100";
     rangeCommand.rangeEnd = "500";
 
-    // Test with negative lower bound
+    assertThat(rangeCommand.attributeName, is("elevation"));
+    assertThat(rangeCommand.rangeBeginning, is("-100"));
+    assertThat(rangeCommand.rangeEnd, is("500"));
   }
 
   @Test
@@ -157,7 +169,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "100";
     rangeCommand.rangeEnd = "100";
 
-    // Test with equal bounds (should match exact value)
+    assertThat(rangeCommand.attributeName, is("status"));
+    assertThat(rangeCommand.rangeBeginning, is(rangeCommand.rangeEnd));
+    assertThat(rangeCommand.rangeBeginning, is("100"));
   }
 
   @Test
@@ -171,7 +185,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "1000000";
     rangeCommand.rangeEnd = "10000000";
 
-    // Test with large numeric values
+    assertThat(rangeCommand.attributeName, is("fileSize"));
+    assertThat(rangeCommand.rangeBeginning, is("1000000"));
+    assertThat(rangeCommand.rangeEnd, is("10000000"));
   }
 
   @Test
@@ -184,7 +200,11 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "1000";
     rangeCommand.rangeEnd = "2000";
 
-    // Should handle no results gracefully
+    assertThat(rangeCommand.attributeName, is("score"));
+    assertThat(rangeCommand.rangeBeginning, is("1000"));
+    assertThat(rangeCommand.rangeEnd, is("2000"));
+    assertThat(mockQueryResponse.getResults().isEmpty(), is(true));
+    assertThat(mockQueryResponse.getHits(), is(0L));
   }
 
   @Test
@@ -194,11 +214,15 @@ public class RangeCommandTest {
     when(mockQueryResponse.getHits()).thenReturn(6L);
     when(mockCatalog.query(any(QueryRequest.class))).thenReturn(mockQueryResponse);
 
+    String beginning = String.valueOf(System.currentTimeMillis() - 86400000);
+    String end = String.valueOf(System.currentTimeMillis());
     rangeCommand.attributeName = "modified";
-    rangeCommand.rangeBeginning = String.valueOf(System.currentTimeMillis() - 86400000);
-    rangeCommand.rangeEnd = String.valueOf(System.currentTimeMillis());
+    rangeCommand.rangeBeginning = beginning;
+    rangeCommand.rangeEnd = end;
 
-    // Test with timestamp range
+    assertThat(rangeCommand.attributeName, is("modified"));
+    assertThat(rangeCommand.rangeBeginning, is(beginning));
+    assertThat(rangeCommand.rangeEnd, is(end));
   }
 
   @Test
@@ -212,7 +236,9 @@ public class RangeCommandTest {
     rangeCommand.rangeBeginning = "1";
     rangeCommand.rangeEnd = "5";
 
-    // Test with custom attribute name
+    assertThat(rangeCommand.attributeName, is("custom.rating"));
+    assertThat(rangeCommand.rangeBeginning, is("1"));
+    assertThat(rangeCommand.rangeEnd, is("5"));
   }
 
   private List<Result> createMockResults(int count) {

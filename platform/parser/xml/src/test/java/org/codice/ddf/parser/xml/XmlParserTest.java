@@ -30,6 +30,7 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.helpers.DefaultValidationEventHandler;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.namespace.QName;
@@ -358,27 +359,37 @@ public class XmlParserTest {
 
   @Test
   public void testTypeAdapter() throws Exception {
-    // TODO RAP 30 Jun 15: Actually need to *test* the type adapter
-    //        configurator.setAdapter(new XmlAdapter() {
-    //            @Override
-    //            public Object unmarshal(Object v) throws Exception {
-    //                return null;
-    //            }
-    //
-    //            @Override
-    //            public Object marshal(Object v) throws Exception {
-    //                return null;
-    //            }
-    //        });
-    //        parser.marshal(configurator, mother, os);
-    //        String outputXml = os.toString();
-    //
-    //        assertXpathEvaluatesTo("Padme", "/mother/@firstname", outputXml);
-    //
-    //        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-    //        MotherElement unmarshal = parser.unmarshal(configurator, MotherElement.class, is);
-    //
-    //        assertEquals(mother.getAge(), unmarshal.getAge());
+    XmlAdapter<String, String> adapter =
+        new XmlAdapter<String, String>() {
+          @Override
+          public String unmarshal(String v) {
+            return v;
+          }
+
+          @Override
+          public String marshal(String v) {
+            return v;
+          }
+        };
+
+    // The configurator must retain the adapter it was given (fluent setAdapter/getAdapter
+    // contract) so that XmlParser can hand it to the JAXB (un)marshaller.
+    assertEquals(configurator, configurator.setAdapter(adapter));
+    assertEquals(adapter, configurator.getAdapter());
+
+    // Marshalling must still succeed when an adapter is configured, exercising the
+    // configurator.getAdapter() -> marshaller.setAdapter(...) path in XmlParser.
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    parser.marshal(configurator, mother, os);
+    String outputXml = os.toString();
+
+    assertXpathEvaluatesTo("Padme", "/mother/@firstname", outputXml);
+
+    // And the configured adapter must also be applied on the unmarshal path without error.
+    ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+    MotherElement unmarshal = parser.unmarshal(configurator, MotherElement.class, is);
+
+    assertEquals(mother.getAge(), unmarshal.getAge());
   }
 
   @Test

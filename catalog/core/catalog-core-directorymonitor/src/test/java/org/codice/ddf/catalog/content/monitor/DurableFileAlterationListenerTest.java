@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -252,35 +253,47 @@ public class DurableFileAlterationListenerTest {
   public void testOnStart() {
     FileAlterationObserver observer = mock(FileAlterationObserver.class);
     listener.onStart(observer);
-    // Should be a no-op
+    // Should be a no-op: the observer is never touched and no file is watched
+    verifyNoInteractions(observer);
+    verifyNoInteractions(filesWatcher);
+    verify(consumer, never()).submitExchange(any(Exchange.class));
   }
 
   @Test
   public void testOnDirectoryCreate() {
     File directory = temporaryFolder.getRoot();
     listener.onDirectoryCreate(directory);
-    // Should be a no-op
+    // Should be a no-op: nothing is watched and no exchange is submitted
+    verifyNoInteractions(filesWatcher);
+    verify(consumer, never()).submitExchange(any(Exchange.class));
   }
 
   @Test
   public void testOnDirectoryChange() {
     File directory = temporaryFolder.getRoot();
     listener.onDirectoryChange(directory);
-    // Should be a no-op
+    // Should be a no-op: nothing is watched and no exchange is submitted
+    verifyNoInteractions(filesWatcher);
+    verify(consumer, never()).submitExchange(any(Exchange.class));
   }
 
   @Test
   public void testOnDirectoryDelete() {
     File directory = temporaryFolder.getRoot();
     listener.onDirectoryDelete(directory);
-    // Should be a no-op
+    // Should be a no-op: nothing is watched and no exchange is submitted
+    verifyNoInteractions(filesWatcher);
+    verify(consumer, never()).submitExchange(any(Exchange.class));
   }
 
   @Test
   public void testOnStop() {
     FileAlterationObserver observer = mock(FileAlterationObserver.class);
     listener.onStop(observer);
-    // Should be a no-op
+    // Should be a no-op: the observer is never touched and no file is watched
+    verifyNoInteractions(observer);
+    verifyNoInteractions(filesWatcher);
+    verify(consumer, never()).submitExchange(any(Exchange.class));
   }
 
   @Test

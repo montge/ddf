@@ -26,6 +26,7 @@ import static org.codice.ddf.itests.common.config.ConfigureTestCommons.configure
 import static org.codice.ddf.itests.common.csw.CswQueryBuilder.PROPERTY_IS_LIKE;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import ddf.catalog.data.types.Validation;
 import io.restassured.response.ValidatableResponse;
@@ -207,9 +208,12 @@ public class TestCatalogValidation extends AbstractIntegrationTest {
       String errorId = ingestXmlFromResourceAndWait(ERROR_METACARD);
 
       // verify the clean and warning metacard can be queried
-      query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
+      String cleanResult = query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
       query(warningId, TRANSFORMER_XML, HttpStatus.SC_OK);
       query(errorId, TRANSFORMER_XML, HttpStatus.SC_OK);
+
+      // the returned metacard XML must be the one that was requested
+      assertThat(cleanResult, containsString(cleanId));
 
       // Test updating
       String warningData = getFileContent(WARNING_METACARD);
@@ -284,8 +288,11 @@ public class TestCatalogValidation extends AbstractIntegrationTest {
 
     try {
       query(warningId, TRANSFORMER_XML, HttpStatus.SC_NOT_FOUND);
-      query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
+      String cleanResult = query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
       query(errorId, TRANSFORMER_XML, HttpStatus.SC_OK);
+
+      // the non-filtered clean metacard must be the one returned
+      assertThat(cleanResult, containsString(cleanId));
     } finally {
       // Reset plugin
       configureMetacardValidityFilterPlugin(filterPluginProps, getAdminConfig());
@@ -304,9 +311,12 @@ public class TestCatalogValidation extends AbstractIntegrationTest {
             Collections.singletonList("invalid-state=data-manager"), true, false, getAdminConfig());
 
     try {
-      query(warningId, TRANSFORMER_XML, HttpStatus.SC_OK);
+      String warningResult = query(warningId, TRANSFORMER_XML, HttpStatus.SC_OK);
       query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
       query(errorId, TRANSFORMER_XML, HttpStatus.SC_NOT_FOUND);
+
+      // the non-filtered warning metacard must be the one returned
+      assertThat(warningResult, containsString(warningId));
     } finally {
       // Reset plugin
       configureMetacardValidityFilterPlugin(filterPluginProps, getAdminConfig());
@@ -326,8 +336,11 @@ public class TestCatalogValidation extends AbstractIntegrationTest {
 
     try {
       query(warningId, TRANSFORMER_XML, HttpStatus.SC_NOT_FOUND);
-      query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
+      String cleanResult = query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
       query(errorId, TRANSFORMER_XML, HttpStatus.SC_NOT_FOUND);
+
+      // only the clean metacard survives filtering and must be the one returned
+      assertThat(cleanResult, containsString(cleanId));
     } finally {
       // Reset plugin
       configureMetacardValidityFilterPlugin(filterPluginProps, getAdminConfig());
@@ -350,8 +363,11 @@ public class TestCatalogValidation extends AbstractIntegrationTest {
 
     try {
       query(warningId, TRANSFORMER_XML, HttpStatus.SC_OK);
-      query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
+      String cleanResult = query(cleanId, TRANSFORMER_XML, HttpStatus.SC_OK);
       query(errorId, TRANSFORMER_XML, HttpStatus.SC_OK);
+
+      // with no filtering, querying the clean metacard returns its content
+      assertThat(cleanResult, containsString(cleanId));
     } finally {
       // Reset plugin
       configureMetacardValidityFilterPlugin(filterPluginProps, getAdminConfig());

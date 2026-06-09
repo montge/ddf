@@ -16,6 +16,7 @@ package ddf.security.samlp.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -237,7 +238,10 @@ public class SamlValidatorTest {
   public void testValidateWithValidTimestamp() throws Exception {
     setupValidLogoutRequest();
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertDoesNotThrow(
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test
@@ -331,7 +335,10 @@ public class SamlValidatorTest {
     setupValidLogoutRequest();
     when(logoutRequest.getDestination()).thenReturn(TEST_DESTINATION);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertDoesNotThrow(
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test
@@ -364,7 +371,10 @@ public class SamlValidatorTest {
     when(logoutResponse.getInResponseTo()).thenReturn(TEST_REQUEST_ID);
 
     builder.setRequestId(TEST_REQUEST_ID);
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutResponse);
+    assertDoesNotThrow(
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutResponse));
   }
 
   @Test
@@ -455,7 +465,10 @@ public class SamlValidatorTest {
     setupValidLogoutRequest();
     when(logoutRequest.getDestination()).thenReturn(TEST_DESTINATION + "?param=value");
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertDoesNotThrow(
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test
@@ -463,7 +476,10 @@ public class SamlValidatorTest {
     setupValidLogoutResponse();
     when(logoutResponse.getDestination()).thenReturn(null);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutResponse);
+    assertDoesNotThrow(
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutResponse));
   }
 
   @Test
@@ -471,7 +487,10 @@ public class SamlValidatorTest {
     setupValidLogoutRequest();
     when(logoutRequest.getDestination()).thenReturn(null);
 
-    builder.buildAndValidate(TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest);
+    assertDoesNotThrow(
+        () ->
+            builder.buildAndValidate(
+                TEST_DESTINATION, SamlProtocol.Binding.HTTP_POST, logoutRequest));
   }
 
   @Test

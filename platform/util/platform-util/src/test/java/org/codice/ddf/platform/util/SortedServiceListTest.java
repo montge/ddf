@@ -15,6 +15,7 @@ package org.codice.ddf.platform.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -217,10 +218,10 @@ public class SortedServiceListTest {
 
   @Test
   public void testGetContextWhenBundleIsNull() {
-    // This test verifies the getContext method behavior
-    // Note: FrameworkUtil.getBundle may return null in test environment
+    // Outside an OSGi container FrameworkUtil.getBundle(...) returns null, so getContext()
+    // must return null rather than throwing a NullPointerException.
     BundleContext context = sortedServiceList.getContext();
-    // Context may be null in test environment, which is acceptable
+    assertThat(context, nullValue());
   }
 
   @Test

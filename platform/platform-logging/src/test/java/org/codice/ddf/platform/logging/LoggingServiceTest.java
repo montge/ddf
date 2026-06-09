@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -123,7 +125,13 @@ public class LoggingServiceTest {
   @Test
   public void testDestroy() throws Exception {
     LoggingService loggingServiceBean = getLoggingService();
+
     loggingServiceBean.destroy();
+
+    // Verify the MBean registered during init() is unregistered on destroy()
+    verify(mockMBeanServer)
+        .unregisterMBean(
+            new ObjectName(LoggingService.class.getName() + ":service=logging-service"));
   }
 
   private PaxLevel getMockPaxLevel(String level) {

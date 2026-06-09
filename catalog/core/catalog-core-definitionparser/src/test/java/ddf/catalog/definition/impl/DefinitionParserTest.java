@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.AttributeDescriptor;
@@ -115,7 +116,9 @@ class DefinitionParserTest {
   void testInstallEmptyFile() throws Exception {
     File emptyFile = createTempFile("empty.json", "");
     definitionParser.install(emptyFile);
-    // Should not throw, just return early
+    // An empty file must short-circuit ("nothing to install") and touch no registries.
+    verifyNoInteractions(
+        attributeRegistry, attributeValidatorRegistry, defaultAttributeValueRegistry);
   }
 
   @Test

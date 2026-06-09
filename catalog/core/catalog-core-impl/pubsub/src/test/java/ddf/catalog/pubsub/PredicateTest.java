@@ -13,7 +13,9 @@
  */
 package ddf.catalog.pubsub;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -765,11 +767,21 @@ public class PredicateTest {
     Predicate pred = (Predicate) query.getFilter().accept(visitor, null);
     LOGGER.debug("Resulting Predicate: {}", pred);
 
+    // A POINT_RADIUS spatial filter must map to a GeospatialPredicate whose geo-criteria is
+    // the queried point.
+    assertThat(pred, is(instanceOf(GeospatialPredicate.class)));
+    GeospatialPredicate geoPred = (GeospatialPredicate) pred;
+    assertThat(geoPred.getGeoCriteria().getCoordinate().x, is(44.5));
+    assertThat(geoPred.getGeoCriteria().getCoordinate().y, is(34.5));
+
     Filter filter = query.getFilter();
     FilterTransformer transform = new FilterTransformer();
     transform.setIndentation(2);
     String filterXml = transform.transform(filter);
     LOGGER.debug(filterXml);
+
+    // The point/radius filter must round-trip to a non-empty DWithin XML representation.
+    assertThat(filterXml, containsString("DWithin"));
   }
 
   @Test

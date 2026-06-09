@@ -292,7 +292,11 @@ public class PkiToolsTest {
   @Test
   public void testKeyConversion() {
     when(mockKey.getEncoded()).thenReturn(new byte[] {0});
-    PkiTools.keyToDer(mockKey);
+    byte[] der = PkiTools.keyToDer(mockKey);
+    assertThat(
+        "keyToDer() should round-trip the encoded key bytes through PEM and back",
+        der,
+        equalTo(new byte[] {0}));
   }
 
   @Test

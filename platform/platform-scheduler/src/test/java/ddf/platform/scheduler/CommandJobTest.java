@@ -15,6 +15,7 @@ package ddf.platform.scheduler;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.notNull;
@@ -51,8 +52,8 @@ public class CommandJobTest {
 
     String command = null;
 
-    // when
-    commandJob.execute(createMockJobExecutionContext(command));
+    // when / then: a null command must be handled gracefully without throwing
+    assertDoesNotThrow(() -> commandJob.execute(createMockJobExecutionContext(command)));
   }
 
   /** Tests that there is no exception when command is empty */
@@ -63,8 +64,8 @@ public class CommandJobTest {
 
     String command = "";
 
-    // when
-    commandJob.execute(createMockJobExecutionContext(command));
+    // when / then: an empty command must be handled gracefully without throwing
+    assertDoesNotThrow(() -> commandJob.execute(createMockJobExecutionContext(command)));
   }
 
   /** Tests the simplest command will be executed */
@@ -107,8 +108,8 @@ public class CommandJobTest {
     // given
     CommandJob commandJob = new CommandJob(new Security());
 
-    // when
-    commandJob.execute(null);
+    // when / then: a null JobExecutionContext must be handled gracefully without throwing
+    assertDoesNotThrow(() -> commandJob.execute(null));
   }
 
   /**
@@ -123,8 +124,8 @@ public class CommandJobTest {
     JobExecutionContext jobExecutionContext = mock(JobExecutionContext.class);
     when(jobExecutionContext.getMergedJobDataMap()).thenReturn(null);
 
-    // when
-    commandJob.execute(jobExecutionContext);
+    // when / then: a null merged job data map must be handled gracefully without throwing
+    assertDoesNotThrow(() -> commandJob.execute(jobExecutionContext));
   }
 
   /** Tests that there is no exception when unable to get the {@link SessionFactory} */
@@ -146,8 +147,8 @@ public class CommandJobTest {
 
     String command = VALID_COMMAND;
 
-    // when
-    commandJob.execute(createMockJobExecutionContext(command));
+    // when / then: a null SessionFactory must be handled gracefully without throwing
+    assertDoesNotThrow(() -> commandJob.execute(createMockJobExecutionContext(command)));
   }
 
   /**
@@ -168,8 +169,8 @@ public class CommandJobTest {
 
     String command = VALID_COMMAND;
 
-    // when
-    commandJob.execute(createMockJobExecutionContext(command));
+    // when / then: a null system subject must be handled gracefully without throwing
+    assertDoesNotThrow(() -> commandJob.execute(createMockJobExecutionContext(command)));
   }
 
   /**
@@ -190,8 +191,8 @@ public class CommandJobTest {
 
     String command = VALID_COMMAND;
 
-    // when
-    commandJob.execute(createMockJobExecutionContext(command));
+    // when / then: a RuntimeException from getSystemSubject must be caught, not propagated
+    assertDoesNotThrow(() -> commandJob.execute(createMockJobExecutionContext(command)));
   }
 
   /** Tests that there is no exception when executing with the {@link Subject} fails. */
@@ -211,8 +212,8 @@ public class CommandJobTest {
 
     String command = VALID_COMMAND;
 
-    // when
-    commandJob.execute(createMockJobExecutionContext(command));
+    // when / then: an ExecutionException from subject.execute must be caught, not propagated
+    assertDoesNotThrow(() -> commandJob.execute(createMockJobExecutionContext(command)));
   }
 
   private JobExecutionContext createMockJobExecutionContext(String command) {

@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,7 +64,8 @@ public class SubscriptionFilterVisitorTest {
 
   @Test
   public void testNotNullValidation() {
-    SubscriptionFilterVisitor.notNull("test", "testParam");
+    // A non-null value must pass validation without throwing.
+    assertDoesNotThrow(() -> SubscriptionFilterVisitor.notNull("test", "testParam"));
   }
 
   @Test

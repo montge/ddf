@@ -15,6 +15,7 @@ package ddf.catalog.data.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -201,14 +202,14 @@ public class AttributeRegistryImplEnhancedTest {
 
   @Test
   public void testRegisterNullMetacardType() {
-    // Should not throw exception
-    registry.registerMetacardType(null);
+    // A null metacard type is a guarded no-op and must not throw.
+    assertDoesNotThrow(() -> registry.registerMetacardType(null));
   }
 
   @Test
   public void testDeregisterNullMetacardType() {
-    // Should not throw exception
-    registry.deregisterMetacardType(null);
+    // A null metacard type is a guarded no-op and must not throw.
+    assertDoesNotThrow(() -> registry.deregisterMetacardType(null));
   }
 
   @Test

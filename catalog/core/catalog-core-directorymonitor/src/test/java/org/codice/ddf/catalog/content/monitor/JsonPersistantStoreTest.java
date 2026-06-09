@@ -174,11 +174,12 @@ public class JsonPersistantStoreTest {
 
     store.store("key", entry);
 
-    // Try to load as wrong type
+    // Try to load an object that was stored as a complex AsyncFileEntry as a plain String.
+    // The deserialization mismatch is swallowed (JsonSyntaxException) and load returns null
+    // rather than throwing.
     String loaded = store.load("key", String.class);
 
-    // Should not throw exception, but may return null or incorrect data
-    // depending on JSON structure
+    assertThat(loaded, nullValue());
   }
 
   @Test

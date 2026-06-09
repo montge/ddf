@@ -219,11 +219,17 @@ public class PluginTest {
   }
 
   @Test
-  @Disabled
   public void testParentAddress() {
-    // given
+    // given a null address clears the resolved parent address
     plugin.setParentAddress(null);
 
+    // then
+    assertThat(plugin.getParentAddress(), is((String) null));
+
+    // when a concrete address is set it is stored and resolves to itself
     plugin.setParentAddress(ENDPOINT_ADDRESS);
+
+    // then
+    assertThat(plugin.getParentAddress(), is(ENDPOINT_ADDRESS));
   }
 }

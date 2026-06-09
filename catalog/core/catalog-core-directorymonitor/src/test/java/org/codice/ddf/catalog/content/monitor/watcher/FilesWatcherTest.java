@@ -15,6 +15,7 @@ package org.codice.ddf.catalog.content.monitor.watcher;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
@@ -137,8 +138,8 @@ public class FilesWatcherTest {
   @Test
   public void testDestroyWithNoWatchers() {
     FilesWatcher emptyWatcher = new FilesWatcher(TEST_POLL_TIME);
-    // Should not throw exception
-    emptyWatcher.destroy();
+    // Destroying a watcher that is tracking no files must complete without throwing
+    assertDoesNotThrow(emptyWatcher::destroy);
   }
 
   @Test
@@ -147,9 +148,9 @@ public class FilesWatcherTest {
     FileWatcher fileWatcher = new FileWatcher(testFile, file -> {});
 
     watcher.watch(fileWatcher);
-    watcher.destroy();
 
-    // Watcher should be destroyed successfully
+    // Destroying a watcher that still has an active file watch must complete without throwing
+    assertDoesNotThrow(watcher::destroy);
   }
 
   @Test

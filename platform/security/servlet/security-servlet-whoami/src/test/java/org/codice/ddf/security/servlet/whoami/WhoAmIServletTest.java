@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -164,8 +165,8 @@ public class WhoAmIServletTest {
     setupValidSubject();
     when(response.getWriter()).thenThrow(new IOException("Test exception"));
 
-    // Should not throw - logs the exception instead
-    servlet.doGet(request, response);
+    // doGet must catch and log the IOException internally rather than propagate it.
+    assertDoesNotThrow(() -> servlet.doGet(request, response));
   }
 
   @Test

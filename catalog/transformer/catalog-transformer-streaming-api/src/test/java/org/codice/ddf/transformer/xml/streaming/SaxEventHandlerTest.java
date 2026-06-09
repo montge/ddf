@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Attribute;
@@ -86,71 +87,61 @@ public class SaxEventHandlerTest {
   @Test
   public void testSetDocumentLocator() throws Exception {
     Locator locator = mock(Locator.class);
-    handler.setDocumentLocator(locator);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.setDocumentLocator(locator));
   }
 
   @Test
   public void testStartDocument() throws Exception {
-    handler.startDocument();
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.startDocument());
   }
 
   @Test
   public void testEndDocument() throws Exception {
-    handler.endDocument();
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endDocument());
   }
 
   @Test
   public void testStartPrefixMapping() throws Exception {
-    handler.startPrefixMapping("prefix", "http://example.com/ns");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.startPrefixMapping("prefix", "http://example.com/ns"));
   }
 
   @Test
   public void testEndPrefixMapping() throws Exception {
-    handler.endPrefixMapping("prefix");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endPrefixMapping("prefix"));
   }
 
   @Test
   public void testStartElement() throws Exception {
     Attributes attributes = mock(Attributes.class);
-    handler.startElement("http://example.com/ns", "localName", "qName", attributes);
-    // Verify no exception is thrown
+    assertDoesNotThrow(
+        () -> handler.startElement("http://example.com/ns", "localName", "qName", attributes));
   }
 
   @Test
   public void testEndElement() throws Exception {
-    handler.endElement("http://example.com/ns", "localName", "qName");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.endElement("http://example.com/ns", "localName", "qName"));
   }
 
   @Test
   public void testCharacters() throws Exception {
     char[] ch = "test".toCharArray();
-    handler.characters(ch, 0, ch.length);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.characters(ch, 0, ch.length));
   }
 
   @Test
   public void testIgnorableWhitespace() throws Exception {
     char[] ch = "   ".toCharArray();
-    handler.ignorableWhitespace(ch, 0, ch.length);
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.ignorableWhitespace(ch, 0, ch.length));
   }
 
   @Test
   public void testProcessingInstruction() throws Exception {
-    handler.processingInstruction("target", "data");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.processingInstruction("target", "data"));
   }
 
   @Test
   public void testSkippedEntity() throws Exception {
-    handler.skippedEntity("entity");
-    // Verify no exception is thrown
+    assertDoesNotThrow(() -> handler.skippedEntity("entity"));
   }
 
   @Test

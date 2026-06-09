@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.csrf;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -485,20 +486,30 @@ public class CsrfFilterComprehensiveTest {
   // ==================== Initialization and Lifecycle Tests ====================
 
   @Test
-  public void testInitWithCsrfDisabled() {
-    // Test initialization when CSRF is disabled
+  public void testInitWithCsrfDisabled() throws Exception {
+    // Test that when CSRF is disabled, the filter performs no protection and passes a request
+    // straight through the chain - even one that would otherwise be rejected (no
+    // Origin/Referer/CSRF
+    // headers on a protected context).
     System.setProperty("csrf.enabled", "false");
     CsrfFilter disabledFilter = new CsrfFilter(securityLogger);
     disabledFilter.init();
+
+    when(request.getRequestURI()).thenReturn(JOLOKIA_CONTEXT);
+    when(request.getMethod()).thenReturn("POST");
+
+    disabledFilter.doFilter(request, response, filterChain);
+
+    verify(filterChain).doFilter(request, response);
+    verify(response, never()).setStatus(HttpServletResponse.SC_FORBIDDEN);
+
     disabledFilter.destroy();
-    // Should complete without errors
   }
 
   @Test
   public void testDestroyMethod() {
-    // Test destroy method
-    csrfFilter.destroy();
-    // Should complete without errors
+    // Test that destroying an initialized filter completes cleanly without throwing.
+    assertDoesNotThrow(() -> csrfFilter.destroy());
   }
 
   // ==================== Concurrent Request Tests ====================

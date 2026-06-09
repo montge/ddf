@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.google.common.collect.ImmutableMap;
@@ -188,13 +189,13 @@ public class UnsupportedAttributeQueryValidatorTest {
   @Test
   public void testBindNullSourceAttributeRestrictionDoesNotErrorOut() {
     validator = new UnsupportedAttributeQueryValidator(attributeExtractor, messageFormatSupplier);
-    validator.bind(null);
+    assertDoesNotThrow(() -> validator.bind(null));
   }
 
   @Test
   public void testUnbindNullSourceAttributeRestrictionDoesNotErrorOut() {
     validator = new UnsupportedAttributeQueryValidator(attributeExtractor, messageFormatSupplier);
-    validator.unbind(null);
+    assertDoesNotThrow(() -> validator.unbind(null));
   }
 
   @Test

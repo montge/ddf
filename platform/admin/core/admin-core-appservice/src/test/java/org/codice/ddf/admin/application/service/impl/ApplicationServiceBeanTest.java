@@ -496,7 +496,13 @@ public class ApplicationServiceBeanTest {
     when(testConfigAdminExt.listServices(Mockito.any(String.class), Mockito.any(String.class)))
         .thenReturn(services);
 
-    serviceBean.getServices(TEST_APP_NAME);
+    // testApp.getBundles() is not stubbed and returns null, so getBundleInfosForApplication
+    // returns null and getServices short-circuits to an empty list rather than the configured
+    // (non-empty) service list.
+    assertThat(
+        "Should return an empty list when the application has no bundle infos.",
+        serviceBean.getServices(TEST_APP_NAME),
+        is(Collections.emptyList()));
   }
 
   /**

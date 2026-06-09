@@ -32,6 +32,7 @@ import ddf.catalog.operation.Query;
 import ddf.catalog.operation.QueryRequest;
 import ddf.catalog.operation.QueryResponse;
 import ddf.catalog.operation.ResourceRequest;
+import ddf.catalog.operation.ResourceResponse;
 import ddf.catalog.operation.impl.CreateRequestImpl;
 import ddf.catalog.operation.impl.DeleteResponseImpl;
 import ddf.catalog.operation.impl.QueryRequestImpl;
@@ -225,14 +226,18 @@ public class FilterPluginTest {
 
   @Test
   public void testPluginFilterResourceGood() throws StopProcessingException {
-    plugin.processPostResource(resourceResponse, getExactRolesMetacard());
+    ResourceResponse response =
+        plugin.processPostResource(resourceResponse, getExactRolesMetacard());
+    assertThat(response, is(resourceResponse));
   }
 
   @Test
   public void testPluginFilterResourceNoStrategiesGood() throws StopProcessingException {
     plugin = new FilterPlugin(new Security());
     plugin.setPermissions(new PermissionsImpl());
-    plugin.processPostResource(resourceResponse, getExactRolesMetacard());
+    ResourceResponse response =
+        plugin.processPostResource(resourceResponse, getExactRolesMetacard());
+    assertThat(response, is(resourceResponse));
   }
 
   @Test
@@ -256,7 +261,8 @@ public class FilterPluginTest {
 
   @Test
   public void testPluginFilterDeleteGood() throws StopProcessingException {
-    plugin.processPostDelete(deleteResponse);
+    DeleteResponse response = plugin.processPostDelete(deleteResponse);
+    assertThat(response.getDeletedMetacards().size(), is(1));
   }
 
   @Test
@@ -318,7 +324,7 @@ public class FilterPluginTest {
 
   @Test
   public void testPreCreate() throws Exception {
-    plugin.processPreCreate(createRequest);
+    assertThat(plugin.processPreCreate(createRequest), is(createRequest));
   }
 
   @Test
@@ -326,16 +332,19 @@ public class FilterPluginTest {
     Map<String, Metacard> metacardMap = new HashMap<>();
     Metacard metacard = getExactRolesMetacard();
     metacardMap.put(metacard.getId(), metacard);
-    plugin.processPreUpdate(updateRequest, metacardMap);
+    assertThat(plugin.processPreUpdate(updateRequest, metacardMap), is(updateRequest));
   }
 
   @Test
   public void testUnusedMethods() throws StopProcessingException {
-    plugin.processPreQuery(mock(QueryRequest.class));
+    QueryRequest queryRequest = mock(QueryRequest.class);
+    assertThat(plugin.processPreQuery(queryRequest), is(queryRequest));
 
-    plugin.processPreDelete(mock(DeleteRequest.class));
+    DeleteRequest deleteRequest = mock(DeleteRequest.class);
+    assertThat(plugin.processPreDelete(deleteRequest), is(deleteRequest));
 
-    plugin.processPreResource(mock(ResourceRequest.class));
+    ResourceRequest resourceRequest = mock(ResourceRequest.class);
+    assertThat(plugin.processPreResource(resourceRequest), is(resourceRequest));
   }
 
   private void verifyFilterResponse(QueryResponse response) {

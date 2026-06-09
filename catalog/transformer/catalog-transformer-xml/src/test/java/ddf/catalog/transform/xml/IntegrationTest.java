@@ -13,6 +13,10 @@
  */
 package ddf.catalog.transform.xml;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import ddf.catalog.data.Attribute;
@@ -56,6 +60,11 @@ public class IntegrationTest {
     InputStream input = getClass().getResourceAsStream("/extensibleMetacard.xml");
     Metacard metacard = inputTransformer.transform(input);
 
+    // The input XML should parse into a metacard preserving its identifying attributes.
+    assertThat(metacard, notNullValue());
+    assertThat(metacard.getId(), is("1234567890987654321"));
+    assertThat(metacard.getTitle(), is("Title!"));
+
     LOGGER.info("Attributes: ");
     for (AttributeDescriptor descriptor : metacard.getMetacardType().getAttributeDescriptors()) {
       Attribute attribute = metacard.getAttribute(descriptor.getName());
@@ -69,7 +78,11 @@ public class IntegrationTest {
     BinaryContent output = outputTransformer.transform(metacard, mockArguments);
     String outputString = new String(output.getByteArray());
 
-    // TODO test equivalence with XMLUnit.
+    // The round-tripped output XML should retain the metacard's identity and title.
+    assertThat(outputString, notNullValue());
+    assertThat(outputString, containsString("1234567890987654321"));
+    assertThat(outputString, containsString("Title!"));
+
     LOGGER.info(outputString);
   }
 }

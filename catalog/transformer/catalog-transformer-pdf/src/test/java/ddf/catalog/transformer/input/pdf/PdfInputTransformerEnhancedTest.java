@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -349,7 +350,8 @@ public class PdfInputTransformerEnhancedTest {
     ContentMetadataExtractor extractor = mock(ContentMetadataExtractor.class);
     ServiceReference serviceRef = mock(ServiceReference.class);
 
-    pdfInputTransformer.removeContentMetadataExtractor(serviceRef);
+    // Removing a reference that was never registered must be a safe no-op and not throw.
+    assertDoesNotThrow(() -> pdfInputTransformer.removeContentMetadataExtractor(serviceRef));
   }
 
   @Test

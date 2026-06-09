@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -215,8 +216,8 @@ public class FileSystemDataAccessObjectTest {
     String nonExistentPath = testDir.getPath() + "/non-existent-dir";
     FilenameFilter filter = fileSystemDataAccessObject.getFilenameFilter(TEST_SUFFIX);
 
-    // Should not throw exception
-    fileSystemDataAccessObject.clear(nonExistentPath, filter);
+    // clearing a non-existent directory must be a silent no-op, not an exception
+    assertDoesNotThrow(() -> fileSystemDataAccessObject.clear(nonExistentPath, filter));
   }
 
   @Test

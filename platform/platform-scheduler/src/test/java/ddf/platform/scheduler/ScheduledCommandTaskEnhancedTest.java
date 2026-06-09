@@ -16,11 +16,14 @@ package ddf.platform.scheduler;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -95,7 +98,8 @@ public class ScheduledCommandTaskEnhancedTest {
   public void testSetCommandWithNull() {
     scheduledTask.setCommand(null);
 
-    // Should not throw exception
+    // A null command is stored as-is and does not throw
+    assertThat(scheduledTask.getCommand(), is(nullValue()));
   }
 
   @Test
@@ -224,9 +228,9 @@ public class ScheduledCommandTaskEnhancedTest {
     when(mockScheduler.scheduleJob(any(JobDetail.class), any(Trigger.class)))
         .thenThrow(new SchedulerException("Test exception"));
 
-    scheduledTask.newTask();
-
-    // Should handle exception gracefully without propagating
+    // A SchedulerException from scheduleJob is handled gracefully, not propagated
+    assertDoesNotThrow(() -> scheduledTask.newTask());
+    verify(mockScheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
   }
 
   @Test
@@ -255,25 +259,27 @@ public class ScheduledCommandTaskEnhancedTest {
     when(mockScheduler.deleteJob(any(JobKey.class)))
         .thenThrow(new SchedulerException("Test exception"));
 
-    scheduledTask.deleteTask(0);
-
-    // Should handle exception gracefully
+    // A SchedulerException from deleteJob is handled gracefully, not propagated
+    assertDoesNotThrow(() -> scheduledTask.deleteTask(0));
+    verify(mockScheduler).deleteJob(any(JobKey.class));
   }
 
   @Test
-  public void testUpdateTaskWithEmptyProperties() {
+  public void testUpdateTaskWithEmptyProperties() throws SchedulerException {
     Map<String, Object> emptyProps = new HashMap<>();
 
     scheduledTask.updateTask(emptyProps);
 
-    // Should handle empty properties without error
+    // Empty properties cause an early return with no rescheduling
+    verify(mockScheduler, never()).rescheduleJob(any(TriggerKey.class), any(Trigger.class));
   }
 
   @Test
-  public void testUpdateTaskWithNullProperties() {
+  public void testUpdateTaskWithNullProperties() throws SchedulerException {
     scheduledTask.updateTask(null);
 
-    // Should handle null properties without error
+    // Null properties cause an early return with no rescheduling
+    verify(mockScheduler, never()).rescheduleJob(any(TriggerKey.class), any(Trigger.class));
   }
 
   @Test
@@ -361,9 +367,9 @@ public class ScheduledCommandTaskEnhancedTest {
         .when(mockScheduler)
         .addJob(any(JobDetail.class), eq(true));
 
-    scheduledTask.updateTask(properties);
-
-    // Should handle exception gracefully
+    // A SchedulerException from addJob is handled gracefully, not propagated
+    assertDoesNotThrow(() -> scheduledTask.updateTask(properties));
+    verify(mockScheduler).addJob(any(JobDetail.class), eq(true));
   }
 
   @Test

@@ -16,6 +16,7 @@ package org.codice.ddf.spatial.ogc.csw.catalog.endpoint.transformer.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,11 @@ public class CswActionTransformerProviderTest {
 
   @Test
   public void testBindOnNullDoesNotThrowError() {
-    cswActionTransformerProvider.bind(null);
+    assertDoesNotThrow(() -> cswActionTransformerProvider.bind(null));
+
+    Optional<CswActionTransformer> optional =
+        cswActionTransformerProvider.getTransformer(TEST_TYPENAME);
+    assertOptionalIsEmpty(optional);
   }
 
   @Test
@@ -149,13 +154,21 @@ public class CswActionTransformerProviderTest {
 
   @Test
   public void testUnbindOnNullDoesNotThrowError() {
-    cswActionTransformerProvider.unbind(null);
+    assertDoesNotThrow(() -> cswActionTransformerProvider.unbind(null));
+
+    Optional<CswActionTransformer> optional =
+        cswActionTransformerProvider.getTransformer(TEST_TYPENAME);
+    assertOptionalIsEmpty(optional);
   }
 
   @Test
   public void testUnbindOnUnboundTransformerDoesNotThrowError() {
     CswActionTransformer unboundTransformer = getMockCswActionTransformer();
-    cswActionTransformerProvider.unbind(unboundTransformer);
+    assertDoesNotThrow(() -> cswActionTransformerProvider.unbind(unboundTransformer));
+
+    Optional<CswActionTransformer> optional =
+        cswActionTransformerProvider.getTransformer(TEST_TYPENAME);
+    assertOptionalIsEmpty(optional);
   }
 
   private CswActionTransformer getMockCswActionTransformer() {

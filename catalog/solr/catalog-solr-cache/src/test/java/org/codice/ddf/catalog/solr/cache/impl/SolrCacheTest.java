@@ -16,6 +16,7 @@ package org.codice.ddf.catalog.solr.cache.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -201,7 +202,22 @@ public class SolrCacheTest {
 
   @Test
   public void createAbsorbsException() throws Exception {
-    solrCache.put(Collections.emptyList());
+    mockIdentityCachePutPlugin();
+
+    List<Metacard> metacards = new ArrayList<>();
+    Metacard metacard = mock(Metacard.class);
+    when(metacard.getSourceId()).thenReturn(TEST_ID);
+    when(metacard.getId()).thenReturn(TEST_ID);
+    metacards.add(metacard);
+
+    doThrow(new SolrServerException("expected"))
+        .when(mockCacheSolrMetacardClient)
+        .add(any(), eq(false));
+
+    // The exception thrown by the metacard client must be absorbed, not propagated.
+    assertDoesNotThrow(() -> solrCache.put(metacards));
+
+    verify(mockCacheSolrMetacardClient).add(any(), eq(false));
   }
 
   @Test

@@ -141,31 +141,48 @@ public class SmtpClientImplTest {
 
   @Test
   public void testSetPortNumberWithValidValues() {
+    smtpClient.setHostName(TEST_HOST);
     smtpClient.setPortNumber(25);
     smtpClient.setPortNumber(465);
     smtpClient.setPortNumber(587);
     smtpClient.setPortNumber(2525);
+
+    // The last accepted valid port must be the one used by the session.
+    Session session = smtpClient.createSession();
+    assertThat(session.getProperties().getProperty("mail.smtp.port"), is("2525"));
   }
 
   @Test
   public void testSetUserName() {
+    smtpClient.setHostName(TEST_HOST);
+    smtpClient.setPortNumber(TEST_PORT);
     smtpClient.setUserName(TEST_USERNAME);
 
-    // Should not throw exception
+    // A non-blank username must be stored and enable authentication on the session.
+    Session session = smtpClient.createSession();
+    assertThat(session.getProperties().getProperty("mail.smtp.auth"), is("true"));
   }
 
   @Test
   public void testSetUserNameWithNull() {
+    smtpClient.setHostName(TEST_HOST);
+    smtpClient.setPortNumber(TEST_PORT);
     smtpClient.setUserName(null);
 
-    // Should not throw exception
+    // A null username must leave authentication disabled on the session.
+    Session session = smtpClient.createSession();
+    assertThat(session.getProperties().getProperty("mail.smtp.auth"), is("false"));
   }
 
   @Test
   public void testSetUserNameWithEmptyString() {
+    smtpClient.setHostName(TEST_HOST);
+    smtpClient.setPortNumber(TEST_PORT);
     smtpClient.setUserName("");
 
-    // Should not throw exception
+    // A blank username must leave authentication disabled on the session.
+    Session session = smtpClient.createSession();
+    assertThat(session.getProperties().getProperty("mail.smtp.auth"), is("false"));
   }
 
   @Test
@@ -185,11 +202,23 @@ public class SmtpClientImplTest {
   }
 
   @Test
-  public void testSetSecurityLogger() {
+  public void testSetSecurityLogger() throws MessagingException {
     SecurityLogger logger = mock(SecurityLogger.class);
     smtpClient.setSecurityLogger(logger);
 
-    // Should not throw exception
+    smtpClient.setHostName(TEST_HOST);
+    smtpClient.setPortNumber(TEST_PORT);
+    Session session = smtpClient.createSession();
+    Message message = new MimeMessage(session);
+    message.setFrom(new InternetAddress("from@example.com"));
+    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("to@example.com"));
+    message.setSubject("Test Subject");
+    message.setText("Test Body");
+
+    smtpClient.send(message);
+
+    // The newly set logger (not the one from setUp) must receive the audit call.
+    verify(logger).audit(anyString(), (Object) any(), (Object) any());
   }
 
   @Test
