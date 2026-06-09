@@ -76,3 +76,15 @@
 - pac4j 5.7.7 → 6.x (CVE-2026-40458 + jakartaee adapter) → separate change
 - **L3 feature-resolution IT validation** (Spring wrapper runtime + dep-bump Import-Package floors) → dedicated follow-up change
 - CSV formula-injection hardening + jakarta.xml.bind 4.0.4 → follow-up
+
+## Phase 7: SonarQube remediation + upstream re-sync + alert closure (2026-05-30 → 2026-06-09)
+- [x] 7.1 **SonarQube pass 1 (bugs+vulns)** — 67 findings fixed across 45 java + 1 pom (commit b22856a098): XXE (S2755 ×4), insecure temp dirs (S5443 ×7), session fixation (S2254, WebSSOFilter), ThreadLocal leaks (S5164 ×15), resource leaks (S2095 ×6), SecureRandom (S2119 ×2), ReDoS (S5998 ×2) + test-quality. Reactor-green 809 modules; 3 residual unit failures proven pre-existing via clean-baseline stash comparison.
+- [x] 7.2 **SonarQube pass 2 (37 security hotspots)** — 17 exploitable fixed (commit 7a4edff077): zip-bomb caps (ImportCommand, KmzInputTransformer, ZipDecompression), ReDoS linearization (MetacardCreator DURATION_SECONDS 59s→4ms, Wfs/CswFilterDelegate coord patterns, PkiTools), JSESSIONID HttpOnly. 20 safe-by-context documented (all 13 weak-hash = non-security dedup/filenames). All 6 regex rewrites proven byte-identical via standalone old-vs-new harness. Review caught + removed an agent-added MAX_WKT_LENGTH=8192 cap that would have rejected legitimate >8KB polygons.
+- [x] 7.3 **SonarQube pass 3 (S2699)** — 359 meaningful assertions added across 115 test files / 78 modules (commit c8ff0f867f); 3 FPs + 5 unfixable stubs documented. Zero src/main changes.
+- [x] 7.4 **pac4j 5.7.7 → 5.7.9** (commit f31141657b) — patches critical CVE-2026-29000 (pac4j-jwt) within the 5.x line; 6.x major still tracked separately.
+- [x] 7.5 **Upstream re-sync** (merge ec8dc37107) — absorbed codice/ddf Karaf 4.4.11 chain (pax.logging 2.3.3, pax.url 2.7.1, pax.web 8.0.35, asm 9.9.1, jansi 2.4.3, commons-io 2.22.0, commons-logging 1.3.6, httpclient 4.5.14, jackson 2.21.2), jackson bundleReplacements resolver convergence, OpenDJ embedded-ldap removal. Kept ours: CXF 4.1.1, OpenSAML 4.3.2, logback 1.5.25, jakarta.* line, pac4j 5.7.9, pdfbox 3.0.6, poi 5.5.1. Their pac4j 6.5.3 / CXF 3.6.11 superseded. Build-verified (796 modules).
+- [x] 7.6 **CodeQL dismissals via API (2026-06-09):** #19 XXE FP, #50 XSLT FP (hardened helpers), #41 TOFU by-design — with documented justifications. #14 WKT ReDoS now actually FIXED (pass-1/2 possessive rewrite), closes on re-analysis.
+- [ ] 7.7 Sensitive-log #136-139 (insecure-defaults validators embed passwords in alert messages) — fix in flight
+- [ ] 7.8 CodeQL quality alerts #51 (tainted-arithmetic), #52 (wider-type comparison), #676 (implicit cast) — triage+fix in flight
+- [ ] 7.9 Dependabot residue audit (unique packages vs branch versions) — in flight; most of the ~2900 alerts close on PR #210 merge (computed against main)
+- [ ] 7.10 Merge PR #210 → main, sync develop, verify alert counts drop
