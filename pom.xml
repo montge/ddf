@@ -318,9 +318,10 @@
         <ows-v_1_0_0-schema.version>1.1.0</ows-v_1_0_0-schema.version>
         <ogc-filter-v_1_1_0-schema.thirdparty.version>1.1.0_5</ogc-filter-v_1_1_0-schema.thirdparty.version>
         <openjson.version>1.0.13</openjson.version>
-        <!-- pac4j held at 5.7.7: upstream 6.4.2 (CVE-2026-40458 fix) requires the
-             pac4j javaee->jakartaee major upgrade, tracked as a separate change. -->
-        <pac4j.version>5.7.7</pac4j.version>
+        <!-- pac4j held on the 5.x line: upstream 6.x (CVE-2026-40458 fix) requires the
+             pac4j javaee->jakartaee major upgrade, tracked as a separate change.
+             5.7.9 patches CVE-2026-29000 (pac4j-jwt, critical) within the 5.x line. -->
+        <pac4j.version>5.7.9</pac4j.version>
         <pdfbox.version>3.0.6</pdfbox.version>
         <poi.version>5.5.1</poi.version>
         <xlsx.transformer.poi.version>5.2.2</xlsx.transformer.poi.version>
