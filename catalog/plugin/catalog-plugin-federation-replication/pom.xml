@@ -22,6 +22,50 @@
     <artifactId>plugin-federation-replication</artifactId>
     <name>DDF :: Catalog :: Plugin :: Federation :: Replication</name>
     <packaging>bundle</packaging>
+    <dependencyManagement>
+        <dependencies>
+            <!-- Security overrides, MODULE-SCOPED on purpose: the test-scope
+                 cxf-rt-transports-http-jetty 4.1.1 pulls Jetty 12.0.16
+                 (CVE-2026-2332, CVE-2026-1605); 12.0.33 is a drop-in patch.
+                 Must not be raised to the root pom — the platform runs the
+                 separate Jetty 9.4 line under pax-web 8. -->
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-server</artifactId>
+                <version>12.0.33</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-http</artifactId>
+                <version>12.0.33</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>12.0.33</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-io</artifactId>
+                <version>12.0.33</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-security</artifactId>
+                <version>12.0.33</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-session</artifactId>
+                <version>12.0.33</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty.ee10</groupId>
+                <artifactId>jetty-ee10-servlet</artifactId>
+                <version>12.0.33</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>jakarta.ws.rs</groupId>

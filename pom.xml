@@ -288,7 +288,7 @@
         <mime4j.version>0.8.13</mime4j.version>
         <mpegts-streamer.version>0.1.0_2</mpegts-streamer.version>
         <net.minidev.asm.version>1.0.2</net.minidev.asm.version>
-        <netty.version>4.1.133.Final</netty.version>
+        <netty.version>4.1.135.Final</netty.version>
         <objenesis.version>3.4</objenesis.version>
         <ogc-tools-gml-jts.version>1.2.0</ogc-tools-gml-jts.version>
         <opensaml.version>4.3.2</opensaml.version>
@@ -313,14 +313,14 @@
         <org.slf4j.version>2.0.17</org.slf4j.version>
         <osgi.compendium.version>7.0.0</osgi.compendium.version>
         <osgi.enterprise.version>7.0.0</osgi.enterprise.version>
-        <owasp-html-sanitizer.version>20240325.1</owasp-html-sanitizer.version>
+        <owasp-html-sanitizer.version>20260101.1</owasp-html-sanitizer.version>
         <ows-v_1_0_0-schema.version>1.1.0</ows-v_1_0_0-schema.version>
         <ogc-filter-v_1_1_0-schema.thirdparty.version>1.1.0_5</ogc-filter-v_1_1_0-schema.thirdparty.version>
         <openjson.version>1.0.13</openjson.version>
-        <!-- pac4j held on the 5.x line: upstream 6.x (CVE-2026-40458 fix) requires the
-             pac4j javaee->jakartaee major upgrade, tracked as a separate change.
-             5.7.9 patches CVE-2026-29000 (pac4j-jwt, critical) within the 5.x line. -->
-        <pac4j.version>5.7.9</pac4j.version>
+        <!-- pac4j held on the 5.x line: the 6.x major requires the javaee->jakartaee
+             upgrade, tracked as a separate change. 5.7.10 patches CVE-2026-29000
+             (pac4j-jwt, critical) and CVE-2026-40458 (pac4j-core, high) within 5.x. -->
+        <pac4j.version>5.7.10</pac4j.version>
         <pdfbox.version>3.0.6</pdfbox.version>
         <poi.version>5.5.1</poi.version>
         <xlsx.transformer.poi.version>5.2.2</xlsx.transformer.poi.version>
@@ -616,6 +616,15 @@
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>2.4.21</version>
+            </dependency>
+
+            <!-- Security fix: rome 1.9.0 (catalog-opensearch-source) resolves jdom2 2.0.6
+                 (CVE-2021-33813 XXE); 2.0.6.1 is the official patched release. The runtime
+                 bundle already embeds the patched servicemix jdom 2.0.6.1_1. -->
+            <dependency>
+                <groupId>org.jdom</groupId>
+                <artifactId>jdom2</artifactId>
+                <version>2.0.6.1</version>
             </dependency>
 
             <!-- Compatibility fix: Force Apache Axiom 1.2.14 for Abdera 1.1.3 compatibility
