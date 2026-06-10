@@ -14,12 +14,13 @@
 package org.codice.ddf.platform.util;
 
 import java.security.SecureRandom;
-import org.bouncycastle.crypto.digests.SHA256Digest;
-import org.bouncycastle.crypto.prng.BasicEntropySourceProvider;
-import org.bouncycastle.crypto.prng.EntropySourceProvider;
-import org.bouncycastle.crypto.prng.drbg.DualECSP800DRBG;
 
 public class RandomNumberGenerator {
+
+  // Deliberately NOT Dual_EC_DRBG: the previous implementation expanded entropy through
+  // BouncyCastle's DualECSP800DRBG, an algorithm withdrawn from NIST SP 800-90A (2014) over
+  // suspected backdoor constants. The platform CSPRNG is the appropriate seed source.
+  private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
   private RandomNumberGenerator() {}
 
@@ -28,14 +29,8 @@ public class RandomNumberGenerator {
   }
 
   public static byte[] createSeed() {
-    SecureRandom secureRandom = new SecureRandom();
-    EntropySourceProvider esp = new BasicEntropySourceProvider(secureRandom, true);
-    byte[] nonce = new byte[256];
-    secureRandom.nextBytes(nonce);
-
-    DualECSP800DRBG bcRbg = new DualECSP800DRBG(new SHA256Digest(), 256, esp.get(256), null, nonce);
     byte[] seed = new byte[256];
-    bcRbg.generate(seed, null, true);
+    SECURE_RANDOM.nextBytes(seed);
     return seed;
   }
 }

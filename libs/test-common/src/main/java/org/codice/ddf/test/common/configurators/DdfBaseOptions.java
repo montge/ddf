@@ -312,6 +312,10 @@ public abstract class DdfBaseOptions implements ApplicationOptions {
    * @return a newly created, owner-only readable/writable temporary file
    * @throws IOException if the temporary file cannot be created
    */
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
   private static File createSecureTempFile() throws IOException {
     if (SystemUtils.IS_OS_UNIX) {
       Set<PosixFilePermission> ownerOnly = PosixFilePermissions.fromString("rw-------");
@@ -319,10 +323,6 @@ public abstract class DdfBaseOptions implements ApplicationOptions {
           PosixFilePermissions.asFileAttribute(ownerOnly);
       return Files.createTempFile("StartupFile", ".temp", attr).toFile();
     }
-    File tempFile = Files.createTempFile("StartupFile", ".temp").toFile();
-    tempFile.setReadable(true, true);
-    tempFile.setWritable(true, true);
-    tempFile.setExecutable(false, false);
-    return tempFile;
+    return Files.createTempFile("StartupFile", ".temp").toFile();
   }
 }

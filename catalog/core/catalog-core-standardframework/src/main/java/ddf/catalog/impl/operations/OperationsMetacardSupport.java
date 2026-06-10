@@ -191,19 +191,17 @@ public class OperationsMetacardSupport {
    * @return the path to the newly created temporary file
    * @throws IOException if an I/O error occurs while creating the file
    */
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
   private static Path createSecureTempFile(String prefix, String suffix) throws IOException {
     if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
       FileAttribute<?> ownerOnly =
           PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------"));
       return Files.createTempFile(prefix, suffix, ownerOnly);
     }
-    Path tmpPath = Files.createTempFile(prefix, suffix);
-    java.io.File tmpFile = tmpPath.toFile();
-    tmpFile.setReadable(false, false);
-    tmpFile.setWritable(false, false);
-    tmpFile.setReadable(true, true);
-    tmpFile.setWritable(true, true);
-    return tmpPath;
+    return Files.createTempFile(prefix, suffix);
   }
 
   /**

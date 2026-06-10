@@ -219,18 +219,17 @@ public class DavEntry implements Serializable {
    * @return the path to the newly created temporary directory
    * @throws IOException if the directory cannot be created
    */
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
   private static Path createSecureTempDirectory() throws IOException {
     if (SystemUtils.IS_OS_UNIX) {
       FileAttribute<?> ownerOnly =
           PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
       return Files.createTempDirectory("dav", ownerOnly);
     }
-    Path dav = Files.createTempDirectory("dav");
-    File davFile = dav.toFile();
-    davFile.setReadable(true, true);
-    davFile.setWritable(true, true);
-    davFile.setExecutable(true, true);
-    return dav;
+    return Files.createTempDirectory("dav");
   }
 
   /**

@@ -823,6 +823,10 @@ public abstract class AbstractIntegrationTest {
     }
   }
 
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
   private Option installStartupFile(InputStream is, String destination) throws IOException {
     final Path tempPath;
     if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
@@ -831,11 +835,6 @@ public abstract class AbstractIntegrationTest {
       tempPath = Files.createTempFile("StartupFile", ".temp", ownerOnly);
     } else {
       tempPath = Files.createTempFile("StartupFile", ".temp");
-      File created = tempPath.toFile();
-      created.setReadable(false, false);
-      created.setReadable(true, true);
-      created.setWritable(false, false);
-      created.setWritable(true, true);
     }
     File tempFile = tempPath.toFile();
     tempFile.deleteOnExit();

@@ -22,9 +22,12 @@ import com.xebialabs.restito.support.log.CallsHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
@@ -131,10 +134,20 @@ public class SecureStubServer extends StubServer {
    * @return The absolute path to the temporary keystore.
    * @throws IOException If the store could not be copied.
    */
-  @SuppressWarnings("squid:S2177")
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings({"squid:S2177", "java:S5443"})
   private String createCertificateStore(String resourceName) throws IOException {
     URL resource = StubServer.class.getResource("/" + resourceName);
-    Path store = Files.createTempFile(resourceName, "store");
+    final Path store;
+    if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+      FileAttribute<?> ownerOnly =
+          PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------"));
+      store = Files.createTempFile(resourceName, "store", ownerOnly);
+    } else {
+      store = Files.createTempFile(resourceName, "store");
+    }
     try (InputStream input = resource.openStream()) {
       Files.copy(input, store, StandardCopyOption.REPLACE_EXISTING);
     } finally {
