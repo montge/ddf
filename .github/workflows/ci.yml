@@ -217,8 +217,8 @@ jobs:
             sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=$SONAR_TOKEN \
-            -Dsonar.organization=codice \
-            -Dsonar.projectKey=ddf \
+            -Dsonar.organization=montge \
+            -Dsonar.projectKey=montge_ddf \
             -Dsonar.exclusions='**/test/**/*,**/itests/**/*,**/*Test*,**/sdk/**/*,**/*.js,**/node_modules/**/*,**/jaxb/**/*,**/wsdl/**/*,**/nces/sws/**/*,**/*.adoc,**/*.txt,**/*.xml' \
             -pl '!distribution/docs' \
             -P '!itests'
