@@ -128,6 +128,11 @@ public class FileSystemStorageProvider implements StorageProvider {
         }
         Path contentIdDir =
             getTempContentItemDir(createRequest.getId(), new URI(contentItem.getUri()));
+        if (contentIdDir == null) {
+          throw new StorageException(
+              "Refusing to create temporary content storage outside the content store for request: "
+                  + createRequest.getId());
+        }
 
         Path contentDirectory = Files.createDirectories(contentIdDir);
 
@@ -343,7 +348,7 @@ public class FileSystemStorageProvider implements StorageProvider {
       for (String contentUri : updateMap.get(request.getId())) {
         Path contentIdDir = getTempContentItemDir(request.getId(), new URI(contentUri));
         Path target = getContentItemDir(new URI(contentUri));
-        if (target == null) {
+        if (contentIdDir == null || target == null) {
           LOGGER.debug(
               "Unable to get content item directory. Unable to commit all changes for request: {} with content uri {}",
               LogSanitizer.sanitize(request.getId()),
@@ -391,9 +396,21 @@ public class FileSystemStorageProvider implements StorageProvider {
   @Override
   public void rollback(StorageRequest request) throws StorageException {
     String id = request.getId();
-    Path requestIdDir = Paths.get(baseContentTmpDirectory.toAbsolutePath().toString(), id);
     deletionMap.remove(id);
     updateMap.remove(id);
+    // The request id is not allow-list-validated (ContentItemValidator gates the content items, not
+    // the request id), and it reaches here verbatim from callers such as the import command, where
+    // it originates in an archive entry name. Contain it within the temp store so a "../" id cannot
+    // turn this rollback into an arbitrary-directory deletion.
+    Path requestIdDir =
+        resolveWithinBase(
+            baseContentTmpDirectory,
+            Paths.get(baseContentTmpDirectory.toAbsolutePath().toString(), id));
+    if (requestIdDir == null) {
+      throw new StorageException(
+          "Refusing to roll back temporary content storage outside the content store for request: "
+              + id);
+    }
     try {
       FileUtils.deleteDirectory(requestIdDir.toFile());
     } catch (IOException e) {
@@ -553,9 +570,18 @@ public class FileSystemStorageProvider implements StorageProvider {
     pathParts.addAll(
         getContentFilePathParts(contentUri.getSchemeSpecificPart(), contentUri.getFragment()));
 
-    return Paths.get(
-        baseContentTmpDirectory.toAbsolutePath().toString(),
-        pathParts.toArray(new String[pathParts.size()]));
+    try {
+      Path candidate =
+          Paths.get(
+              baseContentTmpDirectory.toAbsolutePath().toString(),
+              pathParts.toArray(new String[pathParts.size()]));
+      // requestId is not allow-list-validated; contain it like getContentItemDir does for the
+      // persistent store so a "../" segment cannot escape the temp content directory.
+      return resolveWithinBase(baseContentTmpDirectory, candidate);
+    } catch (InvalidPathException e) {
+      LOGGER.debug("Invalid temp content path for request: {}", LogSanitizer.sanitize(requestId));
+      return null;
+    }
   }
 
   private Path getContentItemDir(URI contentUri) {
