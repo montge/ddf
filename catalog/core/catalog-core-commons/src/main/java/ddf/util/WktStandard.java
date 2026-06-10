@@ -35,7 +35,7 @@ public class WktStandard {
 
   private static final Pattern WKT_MULTIPOINT_PATTERN =
       Pattern.compile(
-          "MULTIPOINT\\s*\\(((\\s*\\(\\s*\\-?\\d+(\\.\\d*)?\\s+\\-?\\d+(\\.\\d*)?\\s*\\)\\s*,?\\s*)+)\\)",
+          "MULTIPOINT\\s*\\(((\\s*\\(\\s*\\-?\\d+(\\.\\d*)?\\s+\\-?\\d+(\\.\\d*)?\\s*\\)\\s*,?\\s*)++)\\)",
           Pattern.CASE_INSENSITIVE);
 
   /** Hiding class constructor since this is a utility class */

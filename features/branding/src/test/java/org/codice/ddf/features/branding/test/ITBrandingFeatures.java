@@ -23,6 +23,8 @@ import static org.codice.ddf.test.common.options.TestResourcesOptions.getTestRes
 import static org.codice.ddf.test.common.options.TestResourcesOptions.includeTestResources;
 import static org.codice.ddf.test.common.options.VmOptions.defaultTimeout;
 import static org.codice.ddf.test.common.options.VmOptions.defaultVmOptions;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.util.List;
@@ -74,7 +76,12 @@ public class ITBrandingFeatures {
 
   @Test
   public void installAndUninstallFeature() throws Exception {
-    syncInstaller.installFeatures(featureName);
-    syncInstaller.uninstallFeatures(featureName);
+    assertNotNull("Parameterized feature name must be provided", featureName);
+    try {
+      syncInstaller.installFeatures(featureName);
+      syncInstaller.uninstallFeatures(featureName);
+    } catch (Exception e) {
+      fail("Feature '" + featureName + "' failed to install and uninstall cleanly: " + e);
+    }
   }
 }

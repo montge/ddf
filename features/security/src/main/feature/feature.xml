@@ -213,7 +213,6 @@
         <bundle>mvn:com.google.code.gson/gson/${gson.version}</bundle>
         <bundle>mvn:dev.failsafe/failsafe/${dev.failsafe.version}</bundle>
         <bundle>mvn:joda-time/joda-time/${joda-time.version}</bundle>
-        <bundle>mvn:org.codice.thirdparty/commons-httpclient/3.1.0_1</bundle>
     </feature>
 
     <feature name="security-core-services" version="${project.version}"
@@ -341,26 +340,11 @@
         <bundle>mvn:ddf.security.claims/security-claims-ldap/${project.version}</bundle>
     </feature>
 
-    <feature name="embedded-ldap" version="${project.version}"
-            description="Embedded LDAP for integration testing.">
-        <configfile
-                finalname="${ddf.etc}/Claims_Handler_Manager-ddf.security.sts.claimsHandler.ClaimsHandlerManager.config"
-                override="false">
-            mvn:ddf.security.claims/security-claims-ldap/${project.version}/config/default-ldap-claimshandler
-        </configfile>
-        <configfile
-                finalname="${ddf.etc}/Ldap_Login_Config-ddf.ldap.ldaplogin.LdapLoginConfig.config"
-                override="false">
-            mvn:ddf.security.jaas/security-jaas-ldap/${project.version}/config/default-ldaplogin
-        </configfile>
-    </feature>
-
     <feature name="security-all" version="${project.version}"
              description="All DDF security features">
         <feature>security-core-services</feature>
         <feature>oidc-auth</feature>
         <feature>saml-auth</feature>
         <feature>ldap-auth</feature>
-        <feature>embedded-ldap</feature>
     </feature>
 </features>

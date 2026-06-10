@@ -114,14 +114,8 @@ public class KeystoreValidatorTest {
     String[] expectedAlertMessages =
         new String[] {
           String.format(
-              KeystoreValidator.DEFAULT_KEY_PASSWORD_USED_MSG,
-              DEFAULT_ALIAS,
-              keystorePath,
-              DEFAULT_KEY_PASSWORD),
-          String.format(
-              KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
-              keystorePath,
-              DEFAULT_KEYSTORE_PASSWORD),
+              KeystoreValidator.DEFAULT_KEY_PASSWORD_USED_MSG, DEFAULT_ALIAS, keystorePath),
+          String.format(KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG, keystorePath),
           String.format(
               KeystoreValidator.INVALID_BLACKLIST_KEYSTORE_PASSWORD_MSG,
               keystorePath,
@@ -153,15 +147,8 @@ public class KeystoreValidatorTest {
     List<String> actualMessages = getActualAlertMessages(alerts);
     String[] expectedAlertMessages =
         new String[] {
-          String.format(
-              KeystoreValidator.DEFAULT_KEY_PASSWORD_USED_MSG,
-              DEFAULT_ALIAS,
-              path,
-              DEFAULT_KEY_PASSWORD),
-          String.format(
-              KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
-              path,
-              DEFAULT_KEYSTORE_PASSWORD),
+          String.format(KeystoreValidator.DEFAULT_KEY_PASSWORD_USED_MSG, DEFAULT_ALIAS, path),
+          String.format(KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG, path),
           String.format(
               KeystoreValidator.BLACKLIST_KEYSTORE_DOES_NOT_EXIST_MSG, path, FAKE_BLACK_LIST_PATH)
         };
@@ -254,14 +241,8 @@ public class KeystoreValidatorTest {
               keystorePath,
               DEFAULT_ROOT_CA),
           String.format(
-              KeystoreValidator.DEFAULT_KEY_PASSWORD_USED_MSG,
-              DEFAULT_ALIAS,
-              keystorePath,
-              DEFAULT_KEY_PASSWORD),
-          String.format(
-              KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
-              keystorePath,
-              DEFAULT_KEYSTORE_PASSWORD)
+              KeystoreValidator.DEFAULT_KEY_PASSWORD_USED_MSG, DEFAULT_ALIAS, keystorePath),
+          String.format(KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG, keystorePath)
         };
     assertThat(alerts.size(), is(5));
     assertThat(actualAlertMessages, hasItems(expectedAlertMessages));
@@ -289,8 +270,7 @@ public class KeystoreValidatorTest {
         new String[] {
           String.format(
               KeystoreValidator.CERT_IS_BLACKLISTED_MSG, DEFAULT_ROOT_CA, path, DEFAULT_ROOT_CA),
-          String.format(
-              KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG, path, DEFAULT_KEYSTORE_PASSWORD)
+          String.format(KeystoreValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG, path)
         };
     assertThat(alerts.size(), is(2));
     assertThat(actualAlertMessages, hasItems(expectedAlertMessages));

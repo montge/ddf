@@ -91,6 +91,8 @@ public class CatalogFeatureQueryable implements FeatureQueryable {
       return builder.buildFeature(countryCode);
     } catch (ParseException e) {
       LOGGER.debug("Failed to parse feature", e);
+    } finally {
+      WKT_READER_THREAD_LOCAL.remove();
     }
     return null;
   }

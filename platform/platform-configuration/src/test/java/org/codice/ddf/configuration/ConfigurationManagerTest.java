@@ -112,7 +112,8 @@ public class ConfigurationManagerTest {
 
   @Test
   public void testGetConfigurationValue() {
-    ddfConfigMgr.getConfigurationValue("1234", key);
+    // configurationAdmin is null in this test, so the lookup returns an empty string.
+    assertEquals("", ddfConfigMgr.getConfigurationValue("1234", key));
   }
 
   @Test

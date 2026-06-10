@@ -27,6 +27,24 @@
     <name>DDF Git Setup</name>
     <description>DDF Git Setup Scripts and Configuration</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- Security overrides for support-githooks transitives (dev-tooling only,
+                 not part of the distribution): slf4j-ext <=1.7.25 is vulnerable to
+                 CVE-2018-8088 (deserialization); jsch <=0.1.53 to CVE-2016-5725. -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-ext</artifactId>
+                <version>1.7.36</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>ddf.support</groupId>

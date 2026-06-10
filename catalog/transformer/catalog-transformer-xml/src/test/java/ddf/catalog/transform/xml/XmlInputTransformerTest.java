@@ -101,6 +101,12 @@ public class XmlInputTransformerTest {
       LOGGER.info(
           "\t" + descriptor.getName() + ": " + ((attribute == null) ? null : attribute.getValue()));
     }
+
+    // The registered extensible metacard type should be honored for the matching XML type.
+    assertThat(metacard.getMetacardType().getName(), is("extensible.metacard"));
+    assertThat(metacard.getId(), is("1234567890987654321"));
+    assertThat(metacard.getSourceId(), is("foobar"));
+    assertThat(metacard.getAttribute(Metacard.TITLE).getValue(), is("Title!"));
   }
 
   @Test

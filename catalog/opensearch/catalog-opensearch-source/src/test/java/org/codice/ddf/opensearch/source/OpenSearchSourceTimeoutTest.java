@@ -254,10 +254,13 @@ public class OpenSearchSourceTimeoutTest {
   @Test
   public void testPollIntervalConfiguration() {
     source.setPollInterval(10);
-    // The scheduler will try to check availability asynchronously
-    // We can't easily verify WebClient calls because they happen in a background thread
+    assertThat(source.pollInterval, is(10));
 
     source.setPollInterval(5);
-    // Just verify the configuration was applied
+    assertThat(source.pollInterval, is(5));
+
+    // setPollInterval clamps with Math.max(1, interval): values below 1 become 1
+    source.setPollInterval(0);
+    assertThat(source.pollInterval, is(1));
   }
 }

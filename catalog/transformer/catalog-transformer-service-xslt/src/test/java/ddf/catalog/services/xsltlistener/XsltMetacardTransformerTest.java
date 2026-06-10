@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.BinaryContent;
@@ -68,6 +69,10 @@ public class XsltMetacardTransformerTest {
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
           + "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n"
           + "  <xsl:output method=\"html\" encoding=\"UTF-8\" indent=\"yes\"/>\n"
+          // XSLT 1.0 requires top-level params to be declared before they can be referenced;
+          // the transformer supplies these via Transformer.setParameter(...).
+          + "  <xsl:param name=\"id\"/>\n"
+          + "  <xsl:param name=\"title\"/>\n"
           + "  <xsl:template match=\"/\">\n"
           + "    <html>\n"
           + "      <body>\n"
@@ -94,6 +99,11 @@ public class XsltMetacardTransformerTest {
   @BeforeEach
   public void setUp() throws Exception {
     when(mockBundle.getBundleContext()).thenReturn(mockBundleContext);
+    // AbstractXsltTransformer.init() derives the output MIME type from the bundle's
+    // DDF-Mime-Type header (not from the XSLT <xsl:output> method), so provide it here.
+    java.util.Hashtable<String, String> headers = new java.util.Hashtable<>();
+    headers.put("DDF-Mime-Type", "text/html");
+    when(mockBundle.getHeaders()).thenReturn(headers);
   }
 
   @Test
@@ -146,9 +156,9 @@ public class XsltMetacardTransformerTest {
     MetacardImpl metacard = createBasicMetacard();
     metacard.setMetadata("");
 
-    BinaryContent result = transformer.transform(metacard, null);
-
-    assertThat(result, notNullValue());
+    // Empty metadata is not a well-formed XML document, so the secure parser fails with a
+    // "premature end of file" error which the transformer surfaces as a transform exception.
+    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
   }
 
   @Test
@@ -231,10 +241,10 @@ public class XsltMetacardTransformerTest {
 
     when(mockBundle.getResource(anyString())).thenReturn(createUrlFromString(invalidXslt));
 
-    transformer = new XsltMetacardTransformer(mockBundle, "invalid.xsl");
-    MetacardImpl metacard = createBasicMetacard();
-
-    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
+    // Invalid XSLT is rejected when the Templates are compiled in the constructor (init),
+    // which wraps the TransformerConfigurationException in an IllegalStateException.
+    assertThrows(
+        IllegalStateException.class, () -> new XsltMetacardTransformer(mockBundle, "invalid.xsl"));
   }
 
   @Test
@@ -261,7 +271,10 @@ public class XsltMetacardTransformerTest {
     BinaryContent result = transformer.transform(metacard, null);
 
     assertThat(result, notNullValue());
-    assertThat(result.getSize() > 0, is(true));
+    // XsltTransformedContent does not report a size (getSize() defaults to UNKNOWN_SIZE),
+    // so verify the transform produced non-empty output by reading the content directly.
+    String output = inputStreamToString(result.getInputStream());
+    assertThat(output.contains("Data item number 9999"), is(true));
   }
 
   @Test
@@ -366,8 +379,16 @@ public class XsltMetacardTransformerTest {
 
     metacard.setMetadata(xxePayload);
 
-    // This should throw an exception due to secure XML parser blocking DTD
-    assertThrows(CatalogTransformerException.class, () -> transformer.transform(metacard, null));
+    // The secure XML parser disables external general/parameter entities and external DTD
+    // loading, so the SYSTEM entity is never resolved. The transform completes without reading
+    // the targeted file; the security property is that the file contents are NOT disclosed in
+    // the output (the &xxe; reference is not expanded to /etc/passwd contents).
+    BinaryContent result = transformer.transform(metacard, null);
+
+    assertThat(result, notNullValue());
+    String output = inputStreamToString(result.getInputStream());
+    assertThat(output.contains("root:"), is(false));
+    assertThat(output.contains("/bin/bash"), is(false));
   }
 
   /** SECURITY TEST: Test handling of namespace declarations */
@@ -398,8 +419,10 @@ public class XsltMetacardTransformerTest {
     XsltMetacardTransformer xformer = new XsltMetacardTransformer(mockBundle, "test.xsl");
     xformer.context = mockBundleContext;
 
-    // Mock service references to return empty
-    when(mockBundleContext.getServiceReferences(anyString(), any())).thenReturn(null);
+    // Mock service references to return empty. This stub is only exercised by tests that
+    // actually call transform(); mark it lenient so the few that don't (e.g. the
+    // getter/setter test) do not trip Mockito's strict-stub checking.
+    lenient().when(mockBundleContext.getServiceReferences(anyString(), any())).thenReturn(null);
 
     return xformer;
   }

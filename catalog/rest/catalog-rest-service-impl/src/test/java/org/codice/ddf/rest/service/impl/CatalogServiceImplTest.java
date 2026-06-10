@@ -1011,11 +1011,11 @@ public class CatalogServiceImplTest {
           null,
           new ByteArrayInputStream("".getBytes()));
     } catch (InternalServerErrorException e) {
-      if (klass.getName().equals(SourceUnavailableException.class.getName())) {
+      if (SourceUnavailableException.class.isAssignableFrom(klass)) {
         assertThat(e.getResponse().getStatus(), equalTo(INTERNAL_SERVER_ERROR));
       }
     } catch (CatalogServiceException e) {
-      if (klass.getName().equals(IngestException.class.getName())) {
+      if (IngestException.class.isAssignableFrom(klass)) {
         assertEquals(e.getMessage(), "Error while storing entry in catalog: ");
       } else {
         fail();

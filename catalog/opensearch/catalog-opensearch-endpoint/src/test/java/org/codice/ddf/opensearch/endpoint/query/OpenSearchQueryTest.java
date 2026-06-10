@@ -1028,9 +1028,13 @@ public class OpenSearchQueryTest {
     String radius = "5000";
     query.addPointRadiusSpatialFilter(lon, lat, radius);
 
-    // Filter filter = query.getFilter();
+    Filter filter = query.getFilter();
 
-    // String filterXml = getFilterAsXml( filter );
+    // The contextual, temporal, and type filters are AND'ed together with the single spatial
+    // filter, so the top-level filter must be an AndImpl with one child per added filter.
+    assertThat(filter, instanceOf(AndImpl.class));
+    List<Filter> childFilters = ((AndImpl) filter).getChildren();
+    assertEquals(4, childFilters.size());
   }
 
   @Test
@@ -1069,7 +1073,9 @@ public class OpenSearchQueryTest {
     LOGGER.debug(transform.transform(filter));
     boolean result = filter.evaluate(input);
     LOGGER.debug("result = {}", result);
-    // filters.add( filter );
+    // The between filter checks whether "now" (new Date()) falls within the 2011 start/end range.
+    // Since the current date is well after 2011, evaluation must be false.
+    assertFalse(result);
   }
 
   // private Document getDocument( String xml ) throws Exception

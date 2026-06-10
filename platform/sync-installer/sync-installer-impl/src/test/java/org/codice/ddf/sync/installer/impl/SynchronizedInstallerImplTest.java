@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -143,11 +144,10 @@ public class SynchronizedInstallerImplTest {
   // wait method tests
 
   @Test
-  public void testWaitReturnsImmediatelyWhenConditionMet() throws Exception {
+  public void testWaitReturnsImmediatelyWhenConditionMet() {
     Callable<Boolean> alwaysTrue = () -> true;
 
-    installer.wait(alwaysTrue, 1000, 100, "Should not fail");
-    // No exception means success
+    assertDoesNotThrow(() -> installer.wait(alwaysTrue, 1000, 100, "Should not fail"));
   }
 
   @Test
@@ -283,8 +283,8 @@ public class SynchronizedInstallerImplTest {
     when(bundleInfo.getState()).thenReturn(BundleState.Active);
     when(bundleInfo.isFragment()).thenReturn(false);
 
-    // Should complete without exception
-    installer.waitForBundles(100, TEST_BUNDLE);
+    assertDoesNotThrow(() -> installer.waitForBundles(100, TEST_BUNDLE));
+    verify(bundleService).getInfo(bundle);
   }
 
   @Test
@@ -295,8 +295,8 @@ public class SynchronizedInstallerImplTest {
     when(bundleInfo.getState()).thenReturn(BundleState.Resolved);
     when(bundleInfo.isFragment()).thenReturn(true);
 
-    // Should complete without exception
-    installer.waitForBundles(100, TEST_BUNDLE);
+    assertDoesNotThrow(() -> installer.waitForBundles(100, TEST_BUNDLE));
+    verify(bundleInfo).isFragment();
   }
 
   @Test

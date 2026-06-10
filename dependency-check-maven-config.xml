@@ -337,4 +337,16 @@
         <cve>CVE-2016-6814</cve>
     </suppress>
 
+    <suppress>
+        <notes><![CDATA[
+        org.eclipse.jgit (3.2.0) is used ONLY by the precompiled build-time support-githooks
+        tooling (git pre-commit/pre-push hooks). It is NOT shipped in the DDF distribution and is
+        not reachable at runtime. Force-upgrading to 5.13.4+ breaks the hooks (NoSuchMethodError:
+        Repository.release() was removed in jgit 4.0). The real version fix belongs upstream in
+        codice/ddf-support. Suppressing as not-runtime-reachable (includes the critical
+        GHSA-6vvc-c2m3-cjf3).
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.eclipse\.jgit/org\.eclipse\.jgit@.*$</packageUrl>
+    </suppress>
+
 </suppressions>

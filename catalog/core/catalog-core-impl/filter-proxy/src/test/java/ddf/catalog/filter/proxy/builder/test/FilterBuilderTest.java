@@ -13,6 +13,7 @@
  */
 package ddf.catalog.filter.proxy.builder.test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +34,10 @@ import org.geotools.api.filter.Not;
 import org.geotools.api.filter.Or;
 import org.geotools.api.filter.PropertyIsBetween;
 import org.geotools.api.filter.PropertyIsEqualTo;
+import org.geotools.api.filter.PropertyIsGreaterThan;
+import org.geotools.api.filter.PropertyIsGreaterThanOrEqualTo;
+import org.geotools.api.filter.PropertyIsLessThan;
+import org.geotools.api.filter.PropertyIsLessThanOrEqualTo;
 import org.geotools.api.filter.PropertyIsLike;
 import org.geotools.api.filter.PropertyIsNotEqualTo;
 import org.geotools.api.filter.PropertyIsNull;
@@ -40,6 +45,7 @@ import org.geotools.api.filter.expression.ExpressionVisitor;
 import org.geotools.api.filter.expression.Literal;
 import org.geotools.api.filter.expression.PropertyName;
 import org.geotools.api.filter.spatial.Beyond;
+import org.geotools.api.filter.spatial.Contains;
 import org.geotools.api.filter.spatial.DWithin;
 import org.geotools.api.filter.spatial.Intersects;
 import org.geotools.api.filter.spatial.Within;
@@ -50,6 +56,7 @@ import org.geotools.api.temporal.Instant;
 import org.geotools.filter.visitor.DefaultExpressionVisitor;
 import org.geotools.filter.visitor.DefaultFilterVisitor;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
@@ -153,22 +160,82 @@ public class FilterBuilderTest {
 
   @Test
   public void propertyIsGreaterThan() {
-    // TODO
+    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
+    FilterBuilder builder = new GeotoolsFilterBuilder();
+
+    Filter filter = builder.attribute(FOO_ATTRIBUTE).greaterThan().number(5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).is().greaterThan().number((short) 5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).greaterThan().number(5L);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).greaterThan().number(5.0f);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).greaterThan().number(5.0d);
+    filter.accept(visitor, null);
+
+    InOrder inOrder = inOrder(visitor);
+    inOrder.verify(visitor, times(5)).visit(isA(PropertyIsGreaterThan.class), any());
   }
 
   @Test
   public void propertyIsGreaterThanOrEqualTo() {
-    // TODO
+    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
+    FilterBuilder builder = new GeotoolsFilterBuilder();
+
+    Filter filter = builder.attribute(FOO_ATTRIBUTE).greaterThanOrEqualTo().number(5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).is().greaterThanOrEqualTo().number((short) 5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).greaterThanOrEqualTo().number(5L);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).greaterThanOrEqualTo().number(5.0f);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).greaterThanOrEqualTo().number(5.0d);
+    filter.accept(visitor, null);
+
+    InOrder inOrder = inOrder(visitor);
+    inOrder.verify(visitor, times(5)).visit(isA(PropertyIsGreaterThanOrEqualTo.class), any());
   }
 
   @Test
   public void propertyIsLessThan() {
-    // TODO
+    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
+    FilterBuilder builder = new GeotoolsFilterBuilder();
+
+    Filter filter = builder.attribute(FOO_ATTRIBUTE).lessThan().number(5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).is().lessThan().number((short) 5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).lessThan().number(5L);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).lessThan().number(5.0f);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).lessThan().number(5.0d);
+    filter.accept(visitor, null);
+
+    InOrder inOrder = inOrder(visitor);
+    inOrder.verify(visitor, times(5)).visit(isA(PropertyIsLessThan.class), any());
   }
 
   @Test
   public void propertyIsLessThanOrEqualTo() {
-    // TODO
+    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
+    FilterBuilder builder = new GeotoolsFilterBuilder();
+
+    Filter filter = builder.attribute(FOO_ATTRIBUTE).lessThanOrEqualTo().number(5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).is().lessThanOrEqualTo().number((short) 5);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).lessThanOrEqualTo().number(5L);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).lessThanOrEqualTo().number(5.0f);
+    filter.accept(visitor, null);
+    filter = builder.attribute(FOO_ATTRIBUTE).lessThanOrEqualTo().number(5.0d);
+    filter.accept(visitor, null);
+
+    InOrder inOrder = inOrder(visitor);
+    inOrder.verify(visitor, times(5)).visit(isA(PropertyIsLessThanOrEqualTo.class), any());
   }
 
   @Test
@@ -406,7 +473,7 @@ public class FilterBuilderTest {
 
     // The validation was removed or relaxed - null is now accepted without exception
     // This test verifies that null text is handled without exception
-    builder.xpath("//foo").is().like().text(null);
+    assertDoesNotThrow(() -> builder.xpath("//foo").is().like().text(null));
   }
 
   @Test
@@ -469,12 +536,29 @@ public class FilterBuilderTest {
 
   @Test
   public void nearest() {
-    // TODO
+    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
+    FilterBuilder builder = new GeotoolsFilterBuilder();
+
+    Filter filter = builder.attribute(Metacard.GEOGRAPHY).nearestTo().wkt(POINT_WKT);
+    filter.accept(visitor, null);
+
+    // nearestTo() is implemented as a Beyond spatial operator in GeotoolsExpressionBuilder
+    InOrder inOrder = inOrder(visitor);
+    inOrder.verify(visitor, times(1)).visit(isA(Beyond.class), any());
   }
 
   @Test
   public void contains() {
-    // TODO
+    FilterVisitor visitor = spy(new DefaultFilterVisitor() {});
+    FilterBuilder builder = new GeotoolsFilterBuilder();
+
+    Filter filter = builder.attribute(Metacard.GEOGRAPHY).containing().wkt(MULTIPOLYGON_WKT);
+    filter.accept(visitor, null);
+    filter = builder.attribute(Metacard.GEOGRAPHY).is().containing().wkt(POINT_WKT);
+    filter.accept(visitor, null);
+
+    InOrder inOrder = inOrder(visitor);
+    inOrder.verify(visitor, times(2)).visit(isA(Contains.class), any());
   }
 
   @Test
@@ -543,6 +627,7 @@ public class FilterBuilderTest {
 
     Filter filter = builder.attribute(Metacard.GEOGRAPHY).within().wkt(POINT_WKT);
 
+    Coordinate[] capturedCoordinate = new Coordinate[1];
     filter.accept(
         new DefaultFilterVisitor() {
           @Override
@@ -550,10 +635,13 @@ public class FilterBuilderTest {
             Literal literalWrapper = (Literal) filter.getExpression2();
 
             Geometry geometry = (Geometry) literalWrapper.evaluate(null);
-            geometry.getCentroid().getCoordinate();
+            capturedCoordinate[0] = geometry.getCentroid().getCoordinate();
             return super.visit(filter, data);
           }
         },
         null);
+
+    // POINT_WKT is "POINT (10 20)"; verify the geometry parsed from the WKT round-trips correctly.
+    assertEquals(new Coordinate(10, 20), capturedCoordinate[0]);
   }
 }

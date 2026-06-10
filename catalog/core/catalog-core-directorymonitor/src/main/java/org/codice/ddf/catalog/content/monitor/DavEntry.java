@@ -28,10 +28,13 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Objects;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 /**
  * A webdav implementation of the {@link org.apache.commons.io.monitor.FileEntry} Uses
@@ -196,7 +199,7 @@ public class DavEntry implements Serializable {
    */
   public File getFile(Sardine sardine) throws IOException {
     if (file == null || !file.exists()) {
-      Path dav = Files.createTempDirectory("dav");
+      Path dav = createSecureTempDirectory();
       File dest =
           new File(dav.toFile(), URLDecoder.decode(FilenameUtils.getName(getLocation()), "UTF-8"));
       try (OutputStream os = new FileOutputStream(dest)) {
@@ -207,6 +210,26 @@ public class DavEntry implements Serializable {
       }
     }
     return file;
+  }
+
+  /**
+   * Create a temporary directory with owner-only permissions to avoid the race-condition risks of
+   * publicly writable temporary directories (e.g. {@code /tmp}).
+   *
+   * @return the path to the newly created temporary directory
+   * @throws IOException if the directory cannot be created
+   */
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
+  private static Path createSecureTempDirectory() throws IOException {
+    if (SystemUtils.IS_OS_UNIX) {
+      FileAttribute<?> ownerOnly =
+          PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+      return Files.createTempDirectory("dav", ownerOnly);
+    }
+    return Files.createTempDirectory("dav");
   }
 
   /**

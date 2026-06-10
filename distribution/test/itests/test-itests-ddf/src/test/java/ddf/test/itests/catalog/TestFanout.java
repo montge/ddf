@@ -21,6 +21,8 @@ import static org.codice.ddf.itests.common.csw.CswTestCommons.getCswSourceProper
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import ddf.catalog.source.FederatedSource;
 import ddf.catalog.source.Source;
@@ -158,14 +160,21 @@ public class TestFanout extends AbstractIntegrationTest {
     String id =
         CatalogTestCommons.ingest(
             "Some data to ingest", MediaType.TEXT_PLAIN, HttpStatus.SC_CREATED);
+    // a successful ingest must return the new metacard id
+    assertThat(id, notNullValue());
     CatalogTestCommons.delete(id);
   }
 
   @Test
   public void testCswIngestFailsWithFanoutEnabledAndBlacklistSet() throws Exception {
     getCatalogBundle().setFanoutTagBlacklist(TAG_BLACKLIST);
-    CatalogTestCommons.ingest(
-        "Some data to ingest. This should fail.", MediaType.TEXT_PLAIN, HttpStatus.SC_BAD_REQUEST);
+    String id =
+        CatalogTestCommons.ingest(
+            "Some data to ingest. This should fail.",
+            MediaType.TEXT_PLAIN,
+            HttpStatus.SC_BAD_REQUEST);
+    // a rejected ingest must not create a metacard (no id header returned)
+    assertThat(id, nullValue());
   }
 
   @Test
@@ -175,6 +184,8 @@ public class TestFanout extends AbstractIntegrationTest {
     String id =
         CatalogTestCommons.ingest(
             "Some data to ingest", MediaType.TEXT_PLAIN, HttpStatus.SC_CREATED);
+    // a successful ingest must return the new metacard id
+    assertThat(id, notNullValue());
     CatalogTestCommons.update(id, "Some data to update", MediaType.TEXT_PLAIN, HttpStatus.SC_OK);
     CatalogTestCommons.delete(id);
   }
@@ -186,6 +197,8 @@ public class TestFanout extends AbstractIntegrationTest {
     String id =
         CatalogTestCommons.ingest(
             "Some data to ingest", MediaType.TEXT_PLAIN, HttpStatus.SC_CREATED);
+    // a successful ingest must return the new metacard id
+    assertThat(id, notNullValue());
 
     // Set blacklist so update will fail
     getCatalogBundle().setFanoutTagBlacklist(TAG_BLACKLIST);
@@ -207,6 +220,8 @@ public class TestFanout extends AbstractIntegrationTest {
     String id =
         CatalogTestCommons.ingest(
             "Some data to ingest", MediaType.TEXT_PLAIN, HttpStatus.SC_CREATED);
+    // a successful ingest must return the new metacard id
+    assertThat(id, notNullValue());
 
     // Set blacklist so update will fail
     getCatalogBundle().setFanoutTagBlacklist(TAG_BLACKLIST);

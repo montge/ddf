@@ -96,13 +96,12 @@ public class BoundingBoxReaderTest {
               return "";
             });
 
-    // moveDown goes from BoundingBox(0) -> LowerCorner(1) -> UpperCorner(2)
+    // moveDown goes from BoundingBox(0) -> LowerCorner(1); the second moveDown is reached at
+    // position 2 (set by the preceding moveUp), so no transition is needed there.
     doAnswer(
             inv -> {
               if (position.get() == 0) {
                 position.set(1); // First moveDown goes to LowerCorner
-              } else if (position.get() == 0) {
-                position.set(2); // Second moveDown would go to UpperCorner
               }
               return null;
             })

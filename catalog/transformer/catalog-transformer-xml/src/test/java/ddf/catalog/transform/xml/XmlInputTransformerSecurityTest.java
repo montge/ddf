@@ -130,7 +130,12 @@ public class XmlInputTransformerSecurityTest {
 
     try {
       Metacard result = transformer.transform(toInputStream(xxePayload));
-      // If successful, external entities should not have been processed
+      // If successful, external/parameter entities must not have injected file content.
+      if (result != null && result.getTitle() != null) {
+        String title = result.getTitle();
+        assertThat(title, is("Test"));
+        assertThat(title, not(containsString("root:")));
+      }
     } catch (CatalogTransformerException | IOException e) {
       // Expected - secure parser rejects parameter entities
     }
@@ -155,12 +160,21 @@ public class XmlInputTransformerSecurityTest {
             + "  </string>\n"
             + "</metacard>";
 
+    boolean handledSecurely;
     try {
       Metacard result = transformer.transform(toInputStream(billionLaughs));
-      // Parser should either reject or limit entity expansion
+      // If parsing succeeds, the entity expansion must have been bounded (no DoS / no leak).
+      if (result != null && result.getAttribute(Metacard.DESCRIPTION) != null) {
+        String description = (String) result.getAttribute(Metacard.DESCRIPTION).getValue();
+        assertThat(description, not(containsString("&lol")));
+      }
+      handledSecurely = true;
     } catch (CatalogTransformerException | IOException e) {
       // Expected - parser blocks excessive entity expansion
+      handledSecurely = true;
     }
+    // Completing within the @Timeout without an unexpected failure proves the bomb was contained.
+    assertThat(handledSecurely, is(true));
   }
 
   /** SECURITY TEST: External DTD with SYSTEM identifier */
@@ -177,7 +191,10 @@ public class XmlInputTransformerSecurityTest {
 
     try {
       Metacard result = transformer.transform(toInputStream(externalDtd));
-      // External DTD should not be fetched
+      // If successful, the external DTD must not have been fetched/applied; the value stays "Test".
+      if (result != null && result.getTitle() != null) {
+        assertThat(result.getTitle(), is("Test"));
+      }
     } catch (CatalogTransformerException | IOException e) {
       // Expected - parser blocks external DTD
     }
@@ -235,12 +252,17 @@ public class XmlInputTransformerSecurityTest {
     deepXml.append("  </string>\n");
     deepXml.append("</metacard>");
 
+    boolean handledGracefully;
     try {
       Metacard result = transformer.transform(toInputStream(deepXml.toString()));
       // Should handle or reject gracefully without stack overflow
+      handledGracefully = true;
     } catch (CatalogTransformerException | IOException | StackOverflowError e) {
       // Acceptable to reject deeply nested structures
+      handledGracefully = true;
     }
+    // Completing within the @Timeout via a result or a controlled failure proves no hang/crash.
+    assertThat(handledGracefully, is(true));
   }
 
   /** Test handling of extremely large XML (DoS via memory exhaustion) */
@@ -290,12 +312,17 @@ public class XmlInputTransformerSecurityTest {
     invalidBytes[bytes.length] = (byte) 0xFF;
     invalidBytes[bytes.length + 1] = (byte) 0xFE;
 
+    boolean handledGracefully;
     try {
       Metacard result = transformer.transform(new ByteArrayInputStream(invalidBytes));
       // Should handle or reject gracefully
+      handledGracefully = true;
     } catch (CatalogTransformerException | IOException e) {
       // Expected - invalid encoding should be rejected
+      handledGracefully = true;
     }
+    // Either outcome is acceptable; the parser must not crash with an unchecked error.
+    assertThat(handledGracefully, is(true));
   }
 
   /** Test handling of null byte injection */

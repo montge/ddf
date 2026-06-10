@@ -15,6 +15,7 @@ package org.codice.ddf.condpermadmin;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
@@ -138,12 +139,42 @@ public class PermissionActivatorTest {
 
   @Test
   public void testStartAll() throws Exception {
-    createPermissionActivator("/deny.policy", "/grant.policy", "/none.policy");
+    final PermissionActivator permissionActivator =
+        createPermissionActivator("/deny.policy", "/grant.policy", "/none.policy");
+
+    final List<ConditionalPermissionInfo> conditionalPermissionInfos =
+        permissionActivator
+            .getConditionalPermissionAdmin(null)
+            .newConditionalPermissionUpdate()
+            .getConditionalPermissionInfos();
+
+    // the three policies declare mismatching priorities (deny, grant, none) so the merged
+    // result defaults to deny: the table must be populated and end with the all-permission deny
+    assertThat(conditionalPermissionInfos.isEmpty(), is(false));
+    final ConditionalPermissionInfo lastInfo =
+        conditionalPermissionInfos.get(conditionalPermissionInfos.size() - 1);
+    assertThat(lastInfo.getPermissionInfos()[0].getType(), is(AllPermission.class.getName()));
+    assertThat(lastInfo.getAccessDecision(), is("deny"));
   }
 
   @Test
   public void policyEntryWithNoPermissionsIsValid() throws Exception {
-    createPermissionActivator("/emptyEntry.policy");
+    // a policy entry with no permissions must parse without error and simply be skipped, leaving
+    // only the all-permission allow sentinel that a grant-priority policy always appends
+    final PermissionActivator permissionActivator =
+        assertDoesNotThrow(() -> createPermissionActivator("/emptyEntry.policy"));
+
+    final List<ConditionalPermissionInfo> conditionalPermissionInfos =
+        permissionActivator
+            .getConditionalPermissionAdmin(null)
+            .newConditionalPermissionUpdate()
+            .getConditionalPermissionInfos();
+
+    assertThat(conditionalPermissionInfos.size(), is(1));
+    assertThat(
+        conditionalPermissionInfos.get(0).getPermissionInfos()[0].getType(),
+        is(AllPermission.class.getName()));
+    assertThat(conditionalPermissionInfos.get(0).getAccessDecision(), is("allow"));
   }
 
   @Test

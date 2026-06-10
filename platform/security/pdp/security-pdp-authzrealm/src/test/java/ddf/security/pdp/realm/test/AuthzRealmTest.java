@@ -14,7 +14,11 @@
 package ddf.security.pdp.realm.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.security.audit.SecurityLogger;
@@ -275,28 +279,28 @@ public class AuthzRealmTest {
 
   @Test
   public void testAddRemoveSetPolicyExtension() {
-    PolicyExtension policyExtension =
-        new PolicyExtension() {
-          @Override
-          public KeyValueCollectionPermission isPermittedMatchAll(
-              CollectionPermission subjectAllCollection,
-              KeyValueCollectionPermission matchAllCollection,
-              KeyValueCollectionPermission allPermissionsCollection) {
-            throw new NullPointerException();
-          }
+    // A mock extension that echoes back the match collection it is given so the realm can
+    // continue evaluating normally while we observe whether the extension is invoked.
+    PolicyExtension policyExtension = mock(PolicyExtension.class);
+    when(policyExtension.isPermittedMatchAll(any(), any(), any()))
+        .thenAnswer(invocation -> invocation.getArgument(1));
+    when(policyExtension.isPermittedMatchOne(any(), any(), any()))
+        .thenAnswer(invocation -> invocation.getArgument(1));
 
-          @Override
-          public KeyValueCollectionPermission isPermittedMatchOne(
-              CollectionPermission subjectAllCollection,
-              KeyValueCollectionPermission matchOneCollection,
-              KeyValueCollectionPermission allPermissionsCollection) {
-            throw new NullPointerException();
-          }
-        };
+    permissionList.clear();
+    permissionList.add(new KeyValueCollectionPermissionImpl("action", security));
+
+    // After adding then removing, the extension must no longer participate in evaluation.
     testRealm.addPolicyExtension(policyExtension);
-
     testRealm.removePolicyExtension(policyExtension);
+    testRealm.isPermitted(mockSubjectPrincipal, permissionList);
+    verify(policyExtension, never()).isPermittedMatchAll(any(), any(), any());
+    verify(policyExtension, never()).isPermittedMatchOne(any(), any(), any());
 
+    // After (re)setting the extension list, the extension must participate again.
     testRealm.setPolicyExtensions(Arrays.asList(policyExtension));
+    testRealm.isPermitted(mockSubjectPrincipal, permissionList);
+    verify(policyExtension, atLeastOnce()).isPermittedMatchAll(any(), any(), any());
+    verify(policyExtension, atLeastOnce()).isPermittedMatchOne(any(), any(), any());
   }
 }

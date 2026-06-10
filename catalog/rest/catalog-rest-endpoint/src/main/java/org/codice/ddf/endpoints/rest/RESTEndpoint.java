@@ -418,7 +418,9 @@ public class RESTEndpoint implements RESTService {
       @PathParam("id") String id, @Context HttpServletRequest httpRequest) {
     try {
       catalogService.deleteDocument(id);
-      return Response.ok(id).build();
+      // Do not reflect the raw id back in the response body (avoids reflected XSS when the
+      // content-type is negotiated to text/html); mirror updateDocument's empty 200.
+      return Response.ok().build();
 
     } catch (CatalogServiceException e) {
       return createBadRequestResponse(e.getMessage());
@@ -447,15 +449,32 @@ public class RESTEndpoint implements RESTService {
 
   private Response createBadRequestResponse(String entityMessage) {
     return Response.status(Status.BAD_REQUEST)
-        .entity(String.format(PRE_FORMAT, entityMessage))
+        .entity(String.format(PRE_FORMAT, escapeHtml(entityMessage)))
         .type(MediaType.TEXT_HTML)
         .build();
   }
 
   private Response createErrorResponse(String entityMessage) {
     return Response.status(Status.INTERNAL_SERVER_ERROR)
-        .entity(String.format(PRE_FORMAT, entityMessage))
+        .entity(String.format(PRE_FORMAT, escapeHtml(entityMessage)))
         .type(MediaType.TEXT_HTML)
         .build();
+  }
+
+  /**
+   * Escapes HTML metacharacters so an error message (which may echo attacker-supplied input) cannot
+   * break out of the {@code <pre>} block and inject script (reflected XSS). The ampersand must be
+   * replaced first.
+   */
+  private static String escapeHtml(String value) {
+    if (value == null) {
+      return "";
+    }
+    return value
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "&quot;")
+        .replace("'", "&#39;");
   }
 }

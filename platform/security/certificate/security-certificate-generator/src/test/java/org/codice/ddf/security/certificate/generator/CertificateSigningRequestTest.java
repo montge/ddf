@@ -106,8 +106,11 @@ public class CertificateSigningRequestTest {
 
   @Test
   public void testAddSubjectAlternativeNamesWithNullList() {
+    // commons-lang3 3.x: Validate.notNull delegates to Objects.requireNonNull and throws NPE for a
+    // null array (older versions threw IllegalArgumentException). A null element is still rejected
+    // via Validate.noNullElements with IllegalArgumentException (see test below).
     assertThrows(
-        IllegalArgumentException.class,
+        NullPointerException.class,
         () -> {
           csr.addSubjectAlternativeNames((String[]) null);
         });

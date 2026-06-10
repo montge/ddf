@@ -24,6 +24,7 @@ import static org.codice.ddf.test.common.options.TestResourcesOptions.includeTes
 import static org.codice.ddf.test.common.options.VmOptions.defaultTimeout;
 import static org.codice.ddf.test.common.options.VmOptions.defaultVmOptions;
 import static org.codice.ddf.test.common.options.VmOptions.javaModuleVmOptions;
+import static org.junit.Assert.assertNull;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.util.List;
@@ -75,8 +76,19 @@ public class ITUtilitiesFeatures {
   }
 
   @Test
-  public void installAndUninstallFeature() throws Exception {
-    syncInstaller.installFeatures(featureName);
-    syncInstaller.uninstallFeatures(featureName);
+  public void installAndUninstallFeature() {
+    Exception thrown = null;
+    try {
+      syncInstaller.installFeatures(featureName);
+      syncInstaller.uninstallFeatures(featureName);
+    } catch (Exception e) {
+      thrown = e;
+    }
+    assertNull(
+        "Installing and uninstalling feature '"
+            + featureName
+            + "' should complete without throwing, but failed with: "
+            + thrown,
+        thrown);
   }
 }

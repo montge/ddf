@@ -83,6 +83,10 @@ public class Jpeg2000ThumbnailConverterTest {
     QueryResponseImpl queryResponse = new QueryResponseImpl(null, resultList, 1);
 
     jpeg2000ThumbnailConverter.process(queryResponse);
+
+    // An empty (zero-length) thumbnail is too short to match any JP2/codestream signature, so the
+    // converter leaves it unchanged.
+    assertTrue(Arrays.equals(new byte[0], metacard.getThumbnail()));
   }
 
   @Test
@@ -145,10 +149,13 @@ public class Jpeg2000ThumbnailConverterTest {
     Metacard metacard2 = new MetacardImpl();
     resultList.add(new ResultImpl(metacard2));
 
-    // Third metacard with regular JPEG thumbnail
+    // Third metacard with regular JPEG thumbnail. The header must be at least 4 bytes long so the
+    // converter's readInt() does not hit EOF; these bytes do not match a JP2 signature or a
+    // codestream marker, so the converter leaves the thumbnail unchanged.
     Metacard metacard3 = new MetacardImpl();
     ByteArrayOutputStream output = new ByteArrayOutputStream();
-    byte[] regularBytes = new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF}; // JPEG header
+    byte[] regularBytes =
+        new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, (byte) 0xE0}; // JPEG/JFIF header
     metacard3.setAttribute(new AttributeImpl(Metacard.THUMBNAIL, regularBytes));
     resultList.add(new ResultImpl(metacard3));
 
@@ -182,8 +189,11 @@ public class Jpeg2000ThumbnailConverterTest {
     resultList.add(new ResultImpl(metacard));
     QueryResponseImpl queryResponse = new QueryResponseImpl(null, resultList, 1);
 
-    // Should process without exception even if signature is present but no valid image data
-    jpeg2000ThumbnailConverter.process(queryResponse);
+    // The bytes form a valid JP2 signature, so the converter attempts to decode them as a JP2
+    // image. Because there is no Contiguous Codestream Box, the JPEG2000 reader fails with an
+    // IIOException which the plugin wraps in a PluginExecutionException.
+    assertThrows(
+        PluginExecutionException.class, () -> jpeg2000ThumbnailConverter.process(queryResponse));
   }
 
   @Test
@@ -200,8 +210,12 @@ public class Jpeg2000ThumbnailConverterTest {
     resultList.add(new ResultImpl(metacard));
     QueryResponseImpl queryResponse = new QueryResponseImpl(null, resultList, 1);
 
-    // Should process without exception
-    jpeg2000ThumbnailConverter.process(queryResponse);
+    // The plugin always reads the 12-byte JP2 signature (three ints) before falling back to the
+    // 2-byte codestream marker check. A thumbnail that only contains the 2-byte marker is too
+    // short for readInt(), so the underlying stream throws EOFException which the plugin wraps in
+    // a PluginExecutionException.
+    assertThrows(
+        PluginExecutionException.class, () -> jpeg2000ThumbnailConverter.process(queryResponse));
   }
 
   @Test

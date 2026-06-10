@@ -277,9 +277,13 @@ public class SortedFederationStrategy implements FederationStrategy {
     return query;
   }
 
-  /** Base 1 offset, hence page size is one less. */
+  /**
+   * Base 1 offset, hence page size is one less. Computed in long arithmetic and clamped to {@link
+   * Integer#MAX_VALUE} so a remotely-supplied page size cannot overflow int and produce a negative
+   * page size.
+   */
   private int computeModifiedPageSize(int offset, int pageSize) {
-    return offset + pageSize - 1;
+    return (int) Math.min((long) offset + pageSize - 1, Integer.MAX_VALUE);
   }
 
   int getMaxStartIndex() {

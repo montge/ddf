@@ -16,8 +16,12 @@ package org.codice.ddf.spatial.ogc.csw.catalog.transformer;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.transform.QueryFilterTransformer;
@@ -83,12 +87,19 @@ public class CswQueryFilterTransformerProviderTest extends CswQueryFilterTransfo
 
   @Test
   public void testNullServiceReferenceOnBind() {
-    bind(null);
+    assertDoesNotThrow(() -> bind(null));
+
+    // binding a null reference must be a no-op: nothing should be registered
+    assertThat(getTransformer(QName.valueOf(NAMESPACE)).isPresent(), equalTo(false));
+    assertThat(getTransformer(TYPE_NAME).isPresent(), equalTo(false));
   }
 
   @Test
   public void testNullServiceReferenceOnUnbind() {
-    unbind(null);
+    assertDoesNotThrow(() -> unbind(null));
+
+    // unbinding a null reference must return early and never touch the bundle context
+    verify(bundleContext, never()).ungetService(any());
   }
 
   @Test

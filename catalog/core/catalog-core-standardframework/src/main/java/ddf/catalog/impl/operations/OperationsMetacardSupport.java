@@ -30,9 +30,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +115,7 @@ public class OperationsMetacardSupport {
 
           String sanitizedFilename = InputValidation.sanitizeFilename(fileName);
           tmpPath =
-              Files.createTempFile(
+              createSecureTempFile(
                   FilenameUtils.getBaseName(sanitizedFilename),
                   FilenameUtils.getExtension(sanitizedFilename));
           Files.copy(inputStream, tmpPath, StandardCopyOption.REPLACE_EXISTING);
@@ -177,6 +180,28 @@ public class OperationsMetacardSupport {
         throw new IngestException("Could not create metacard.", e);
       }
     }
+  }
+
+  /**
+   * Creates a temporary file in the default temporary-file directory restricted to owner-only
+   * permissions on POSIX file systems to avoid race conditions in publicly writable directories.
+   *
+   * @param prefix the prefix string used in generating the file's name
+   * @param suffix the suffix string used in generating the file's name
+   * @return the path to the newly created temporary file
+   * @throws IOException if an I/O error occurs while creating the file
+   */
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
+  private static Path createSecureTempFile(String prefix, String suffix) throws IOException {
+    if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+      FileAttribute<?> ownerOnly =
+          PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------"));
+      return Files.createTempFile(prefix, suffix, ownerOnly);
+    }
+    return Files.createTempFile(prefix, suffix);
   }
 
   /**

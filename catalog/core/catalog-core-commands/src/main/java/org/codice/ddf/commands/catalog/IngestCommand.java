@@ -309,17 +309,19 @@ public class IngestCommand extends CatalogCommands {
             rejectedExecutionHandler);
 
     final CatalogFacade catalog = getCatalog();
-    submitToCatalog(batchScheduler, executorService, metacardQueue, catalog, start);
-
-    // await on catalog processing threads to complete emptying queue
-    phaser.awaitAdvance(phaser.arrive());
-
     try {
-      queueExecutor.shutdown();
-      executorService.shutdown();
-      batchScheduler.shutdown();
-    } catch (SecurityException e) {
-      LOGGER.info("Executor service shutdown was not permitted", e);
+      submitToCatalog(batchScheduler, executorService, metacardQueue, catalog, start);
+
+      // await on catalog processing threads to complete emptying queue
+      phaser.awaitAdvance(phaser.arrive());
+    } finally {
+      try {
+        queueExecutor.shutdown();
+        executorService.shutdown();
+        batchScheduler.shutdown();
+      } catch (SecurityException e) {
+        LOGGER.info("Executor service shutdown was not permitted", e);
+      }
     }
 
     printProgressAndFlush(start, fileCount.get(), (long) ingestCount.get() + ignoreCount.get());

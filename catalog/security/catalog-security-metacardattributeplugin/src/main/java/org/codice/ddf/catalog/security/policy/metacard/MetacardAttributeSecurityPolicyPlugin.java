@@ -57,10 +57,12 @@ public class MetacardAttributeSecurityPolicyPlugin implements PolicyPlugin {
   }
 
   public synchronized void setIntersectMetacardAttributes(List<String> metacardAttributes) {
+    this.intersectMetacardAttributes = new ArrayList<>(metacardAttributes);
     mcIntersectAttrs = splitMetacardAttributes(metacardAttributes);
   }
 
   public synchronized void setUnionMetacardAttributes(List<String> metacardAttributes) {
+    this.unionMetacardAttributes = new ArrayList<>(metacardAttributes);
     mcUnionAttrs = splitMetacardAttributes(metacardAttributes);
   }
 

@@ -16,6 +16,7 @@ package org.codice.ddf.admin.configuration.plugin;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 
 import java.util.Dictionary;
@@ -47,8 +48,8 @@ class ConfigPidConfigurationPluginTest {
 
   @Test
   void testModifyConfigurationWithNullProperties() {
-    // Should not throw NPE
-    plugin.modifyConfiguration(serviceReference, null);
+    // The plugin must tolerate a null Dictionary without throwing an NPE.
+    assertDoesNotThrow(() -> plugin.modifyConfiguration(serviceReference, null));
   }
 
   @Test

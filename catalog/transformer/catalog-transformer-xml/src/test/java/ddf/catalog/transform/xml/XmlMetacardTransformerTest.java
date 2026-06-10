@@ -127,9 +127,14 @@ public class XmlMetacardTransformerTest {
     };
     mc.setThumbnail(bytes);
 
-    transform(mc);
+    String outputXml = transform(mc);
 
-    // TODO add assertions. Use XMLunit?
+    assertXpathEvaluatesTo("1234567890987654321", "/m:metacard/@gml:id", outputXml);
+    assertXpathEvaluatesTo("FooBarSource", "/m:metacard/m:source", outputXml);
+    assertXpathEvaluatesTo("Title!", "/m:metacard/m:string[@name='title']/m:value", outputXml);
+    assertXpathExists("/m:metacard/m:geometry[@name='location']/m:value", outputXml);
+    assertXpathExists("/m:metacard/m:base64Binary[@name='thumbnail']/m:value", outputXml);
+    assertXpathExists("/m:metacard/m:dateTime[@name='expiration']/m:value", outputXml);
   }
 
   @Test

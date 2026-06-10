@@ -43,6 +43,18 @@ import org.mockito.Mockito;
 @EnableRuleMigrationSupport
 public class SchematronValidationServiceTest {
 
+  static {
+    // SchematronValidationService has a static field initialized from the "ddf.home" system
+    // property (Paths.get(System.getProperty("ddf.home"), "schematron")). In the running Karaf
+    // container ddf.home is always set, but it is not set during the unit-test phase. On JDK 21
+    // Paths.get(null, ...) throws NPE, which manifests as ExceptionInInitializerError /
+    // NoClassDefFoundError when the class is first loaded. Set a valid value before the class is
+    // initialized so its static initializer succeeds.
+    if (System.getProperty("ddf.home") == null) {
+      System.setProperty("ddf.home", System.getProperty("java.io.tmpdir"));
+    }
+  }
+
   private static File fileWithSpaces;
 
   @Rule public TemporaryFolder testFolder = new TemporaryFolder();

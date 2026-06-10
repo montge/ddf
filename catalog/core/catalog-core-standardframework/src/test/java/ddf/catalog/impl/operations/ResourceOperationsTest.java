@@ -15,6 +15,7 @@ package ddf.catalog.impl.operations;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -200,7 +201,12 @@ public class ResourceOperationsTest {
 
     frameworkProperties.setReliableResourceDownloadManager(reliableResourceDownloadManagerMock);
 
-    resourceOperations.getResource(resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
+    ResourceResponse resourceResponse =
+        resourceOperations.getResource(
+            resourceRequestMock, isEnterprise, resourceName, fanoutEnabled);
+
+    assertThat(resourceResponse, notNullValue());
+    assertThat(resourceResponse.getResource(), equalTo(resourceMock));
   }
 
   @Test

@@ -135,9 +135,11 @@ public class WfsFilterDelegate extends SimpleFilterDelegate<FilterType> {
 
   private static final String TEMPORAL_OPERATOR = "Temporal Operator";
 
-  // Regex to match coords in WKT
+  // Regex to match coords in WKT. Possessive quantifiers and an unambiguous decimal grammar
+  // (sign, optional leading dot, digits, optional fractional part) prevent catastrophic
+  // backtracking on attacker-supplied WKT (java:S5852).
   private static final Pattern COORD_PATTERN =
-      Pattern.compile("-?\\.?\\d+(\\.?\\d+)?\\s-?\\.?\\d+(\\.?\\d+)?");
+      Pattern.compile("-?\\.?\\d++(?:\\.\\d++)?\\s-?\\.?\\d++(?:\\.\\d++)?");
 
   private FeatureMetacardType featureMetacardType;
 
@@ -1851,7 +1853,9 @@ public class WfsFilterDelegate extends SimpleFilterDelegate<FilterType> {
   }
 
   private String normalizeWhitespaceInWkt(String wkt) {
-    String normalizedWkt = wkt.replaceAll("(\\s+)?([(|)|,])(\\s+)?", "$2");
+    // Possessive whitespace quantifiers and non-capturing surround groups prevent backtracking
+    // on attacker-supplied WKT (java:S5852). The bracketed delimiter is the only capturing group.
+    String normalizedWkt = wkt.replaceAll("\\s*+([(|)|,])\\s*+", "$1");
     normalizedWkt = normalizedWkt.replaceAll("\\s+", " ");
     return normalizedWkt;
   }

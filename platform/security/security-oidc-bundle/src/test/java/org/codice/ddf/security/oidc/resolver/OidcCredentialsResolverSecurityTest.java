@@ -15,6 +15,8 @@ package org.codice.ddf.security.oidc.resolver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -178,32 +180,29 @@ public class OidcCredentialsResolverSecurityTest {
 
   @Test
   public void testResolveIdTokenWithRefreshToken() throws Exception {
-    // Test resolution using refresh token
+    // Test resolution using refresh token. The mock token endpoint returns an opaque
+    // (non-JWT) access token, which fails access-token signature validation, so the
+    // resolver must surface a TechnicalException rather than accept an unvalidated token.
     RefreshToken refreshToken = new RefreshToken("valid-refresh-token");
     OidcCredentials credentials = new OidcCredentials();
     credentials.setRefreshToken(refreshToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // May succeed or fail depending on token endpoint response
-    } catch (TechnicalException e) {
-      // Expected if token endpoint not available
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
+    // No ID token may be established from an unvalidated grant response.
+    assertThat(credentials.getIdToken(), nullValue());
   }
 
   @Test
   public void testResolveIdTokenWithAuthorizationCode() throws Exception {
-    // Test resolution using authorization code
+    // Test resolution using authorization code. The mock token endpoint returns an opaque
+    // access token that fails signature validation, so resolution must fail rather than
+    // accept an unvalidated token.
     AuthorizationCode authCode = new AuthorizationCode("valid-auth-code");
     OidcCredentials credentials = new OidcCredentials();
     credentials.setCode(authCode);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // May succeed or fail depending on token endpoint response
-    } catch (TechnicalException e) {
-      // Expected if token endpoint not available
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
+    assertThat(credentials.getIdToken(), nullValue());
   }
 
   // ==================== Token Validation Security Tests ====================
@@ -274,82 +273,67 @@ public class OidcCredentialsResolverSecurityTest {
 
   @Test
   public void testUnsignedIdTokenHandling() throws Exception {
-    // Test handling of unsigned (Plain) JWT
+    // Test handling of unsigned (Plain) JWT. An opaque access token accompanies it, and the
+    // resolver validates the access token first; an unsigned/opaque token must be rejected
+    // with a TechnicalException rather than silently accepted.
     PlainJWT unsignedToken = new PlainJWT(createValidClaimsSet());
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setAccessToken(validAccessToken);
     credentials.setIdToken(unsignedToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Behavior depends on configuration - may accept or reject
-    } catch (TechnicalException e) {
-      // Expected if unsigned tokens not allowed
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   // ==================== Malformed Token Tests ====================
 
   @Test
   public void testNullIdTokenResolution() throws Exception {
-    // Test resolution when ID token is null
+    // Test resolution when ID token is null. With only an opaque access token present, the
+    // resolver attempts access-token validation, which fails, so a TechnicalException is
+    // raised and no ID token is fabricated.
     OidcCredentials credentials = new OidcCredentials();
     credentials.setAccessToken(validAccessToken);
     credentials.setIdToken(null);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should attempt to resolve from access token or other grants
-    } catch (TechnicalException e) {
-      // May fail if resolution not possible
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
+    assertThat(credentials.getIdToken(), nullValue());
   }
 
   @Test
   public void testEmptyCredentials() throws Exception {
-    // Test with completely empty credentials
+    // Test with completely empty credentials. With no access token, ID token, refresh token,
+    // or authorization code there is nothing to validate or exchange, so resolution must
+    // complete gracefully (no exception) and leave the ID token unset.
     OidcCredentials credentials = new OidcCredentials();
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should handle gracefully
-    } catch (TechnicalException e) {
-      // Expected - cannot resolve without any tokens
-    }
+    assertDoesNotThrow(() -> resolver.resolveIdToken(credentials, webContext));
+    assertThat(credentials.getIdToken(), nullValue());
   }
 
   @Test
   public void testMalformedAccessToken() throws Exception {
-    // Test with malformed access token
+    // Test with malformed access token. A non-JWT/opaque access token cannot pass signature
+    // validation, so the resolver must reject it with a TechnicalException.
     BearerAccessToken malformedToken = new BearerAccessToken("not-a-valid-token\n\r\t");
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setAccessToken(malformedToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // May fail during token validation
-    } catch (TechnicalException e) {
-      // Expected for malformed token
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   // ==================== Authorization Code Grant Tests ====================
 
   @Test
   public void testAuthorizationCodeGrantWithValidCode() throws Exception {
-    // Test authorization code grant flow
+    // Test authorization code grant flow. The grant exchange returns an opaque access token
+    // that fails validation, so the resolver surfaces a TechnicalException.
     AuthorizationCode authCode = new AuthorizationCode("test-auth-code");
     OidcCredentials credentials = new OidcCredentials();
     credentials.setCode(authCode);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Requires valid token endpoint - may fail in test
-    } catch (TechnicalException e) {
-      // Expected without live endpoint
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
@@ -361,12 +345,9 @@ public class OidcCredentialsResolverSecurityTest {
     OidcCredentials credentials = new OidcCredentials();
     credentials.setCode(authCode);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should handle invalid callback gracefully
-    } catch (TechnicalException e) {
-      // May throw if validation fails
-    }
+    // The grant is exchanged with the supplied callback; the returned opaque access token
+    // fails validation, so the resolver surfaces a TechnicalException.
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
@@ -378,93 +359,74 @@ public class OidcCredentialsResolverSecurityTest {
     OidcCredentials credentials = new OidcCredentials();
     credentials.setCode(authCode);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-    } catch (Exception e) {
-      // Expected with null callback
-    }
+    // A null callback URL causes the authorization-code grant construction to fail; the
+    // resolver only guards URISyntaxException, so the underlying NullPointerException
+    // propagates. Capturing it documents the current (un-swallowed) behavior.
+    assertThrows(
+        NullPointerException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   // ==================== Refresh Token Grant Tests ====================
 
   @Test
   public void testRefreshTokenGrantSuccess() throws Exception {
-    // Test successful refresh token grant
+    // Test refresh token grant. The mock token endpoint returns an opaque access token that
+    // fails validation, so the resolver surfaces a TechnicalException.
     RefreshToken refreshToken = new RefreshToken("valid-refresh");
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setRefreshToken(refreshToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Requires valid token endpoint
-    } catch (TechnicalException e) {
-      // Expected without live endpoint
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
   public void testExpiredRefreshTokenRejected() throws Exception {
-    // Test with expired refresh token
+    // Test with expired refresh token. The opaque token returned by the grant fails
+    // validation, so the resolver rejects it with a TechnicalException.
     RefreshToken expiredRefresh = new RefreshToken("expired-refresh-token");
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setRefreshToken(expiredRefresh);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should fail at token endpoint
-    } catch (TechnicalException e) {
-      // Expected for expired token
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
   public void testRevokedRefreshTokenHandling() throws Exception {
-    // Test handling of revoked refresh token
+    // Test handling of revoked refresh token. The opaque token returned by the grant fails
+    // validation, so the resolver rejects it with a TechnicalException.
     RefreshToken revokedToken = new RefreshToken("revoked-token");
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setRefreshToken(revokedToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should fail with error from token endpoint
-    } catch (TechnicalException e) {
-      // Expected for revoked token
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   // ==================== UserInfo Endpoint Tests ====================
 
   @Test
   public void testUserInfoRetrievalWithAccessToken() throws Exception {
-    // Test retrieving ID token from UserInfo endpoint
+    // Test retrieving ID token from UserInfo endpoint. The opaque access token fails the
+    // signature validation that precedes the UserInfo call, so the resolver surfaces a
+    // TechnicalException.
     OidcCredentials credentials = new OidcCredentials();
     credentials.setAccessToken(validAccessToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // May succeed if UserInfo endpoint responds
-    } catch (TechnicalException e) {
-      // Expected without live UserInfo endpoint
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
   public void testUserInfoWithInvalidAccessToken() throws Exception {
-    // Test UserInfo call with invalid access token
+    // Test UserInfo call with invalid access token. The opaque token fails signature
+    // validation, so the resolver rejects it with a TechnicalException.
     BearerAccessToken invalidToken = new BearerAccessToken("invalid-token");
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setAccessToken(invalidToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should fail at UserInfo endpoint
-    } catch (TechnicalException e) {
-      // Expected for invalid token
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
@@ -477,11 +439,9 @@ public class OidcCredentialsResolverSecurityTest {
     OidcCredentials credentials = new OidcCredentials();
     credentials.setAccessToken(validAccessToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-    } catch (TechnicalException e) {
-      // Expected when endpoint unavailable
-    }
+    // The opaque access token fails signature validation before any UserInfo call is made,
+    // so the resolver surfaces a TechnicalException.
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   // ==================== Token Injection Attack Tests ====================
@@ -505,34 +465,29 @@ public class OidcCredentialsResolverSecurityTest {
 
   @Test
   public void testAccessTokenWithSpecialCharacters() throws Exception {
-    // Test access token with injection characters
+    // Test access token with injection characters. A token carrying script/control
+    // characters is not a valid signed JWT, so signature validation must reject it with a
+    // TechnicalException rather than processing the injected content.
     BearerAccessToken specialToken =
         new BearerAccessToken("token\n\r<script>alert('xss')</script>");
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setAccessToken(specialToken);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-    } catch (TechnicalException e) {
-      // Expected for malformed token
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
   public void testAuthCodeWithSqlInjection() throws Exception {
-    // Test authorization code with SQL injection pattern
+    // Test authorization code with SQL injection pattern. The code is treated as an opaque
+    // grant parameter (no SQL is executed); the grant exchange returns an opaque access
+    // token that fails validation, so the resolver surfaces a TechnicalException.
     AuthorizationCode sqlInjectionCode = new AuthorizationCode("'; DROP TABLE tokens; --");
 
     OidcCredentials credentials = new OidcCredentials();
     credentials.setCode(sqlInjectionCode);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should be safely handled (no SQL operations)
-    } catch (TechnicalException e) {
-      // May fail during token exchange
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   // ==================== Network Timeout Tests ====================
@@ -560,7 +515,9 @@ public class OidcCredentialsResolverSecurityTest {
 
   @Test
   public void testMultipleGrantsFirstSucceeds() throws Exception {
-    // Test when first grant (refresh token) succeeds
+    // Test with both a refresh token and an authorization code present. The first grant's
+    // exchange returns an opaque access token that fails validation, so the resolver
+    // surfaces a TechnicalException.
     RefreshToken refreshToken = new RefreshToken("valid-refresh");
     AuthorizationCode authCode = new AuthorizationCode("valid-code");
 
@@ -568,17 +525,14 @@ public class OidcCredentialsResolverSecurityTest {
     credentials.setRefreshToken(refreshToken);
     credentials.setCode(authCode);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should stop after first successful grant
-    } catch (TechnicalException e) {
-      // Expected without live endpoints
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
   }
 
   @Test
   public void testMultipleGrantsAllFail() throws Exception {
-    // Test when all grants fail
+    // Test with both a refresh token and an authorization code present. The grant exchange
+    // returns an opaque access token that fails validation, so the resolver surfaces a
+    // TechnicalException and never establishes an ID token.
     RefreshToken invalidRefresh = new RefreshToken("invalid");
     AuthorizationCode invalidCode = new AuthorizationCode("invalid");
 
@@ -586,12 +540,8 @@ public class OidcCredentialsResolverSecurityTest {
     credentials.setRefreshToken(invalidRefresh);
     credentials.setCode(invalidCode);
 
-    try {
-      resolver.resolveIdToken(credentials, webContext);
-      // Should attempt all grants and potentially use access token
-    } catch (TechnicalException e) {
-      // Expected when all grants fail
-    }
+    assertThrows(TechnicalException.class, () -> resolver.resolveIdToken(credentials, webContext));
+    assertThat(credentials.getIdToken(), nullValue());
   }
 
   // ==================== Helper Methods ====================

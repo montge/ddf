@@ -79,17 +79,17 @@ public class RequiredAttributesRegistryTest {
     assertFalse(requiredAttributesRegistry.getRequiredAttributes(METACARD_TYPE_2).isEmpty());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void testIsRequiredNullType() {
     requiredAttributesRegistry.isRequired(null, "test");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void testIsRequiredNullAttribute() {
     requiredAttributesRegistry.isRequired("test", null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = NullPointerException.class)
   public void testGetRequiredNullType() {
     requiredAttributesRegistry.getRequiredAttributes(null);
   }

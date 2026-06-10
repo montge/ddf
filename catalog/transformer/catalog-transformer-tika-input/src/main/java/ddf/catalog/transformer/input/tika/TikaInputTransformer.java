@@ -374,7 +374,7 @@ public class TikaInputTransformer implements InputTransformer {
       if (extractor != null) {
         metadataText = getMetadataXml(extractor.getMetadataXml());
         Attribute validationAttribute = null;
-        if (metadataText.equals(TikaMetadataExtractor.METADATA_LIMIT_REACHED_MSG)) {
+        if (TikaMetadataExtractor.METADATA_LIMIT_REACHED_MSG.equals(metadataText)) {
           validationAttribute =
               new AttributeImpl(
                   Validation.VALIDATION_WARNINGS, Collections.singletonList(metadataText));

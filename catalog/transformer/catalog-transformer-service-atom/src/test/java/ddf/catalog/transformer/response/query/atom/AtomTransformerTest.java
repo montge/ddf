@@ -832,8 +832,49 @@ public class AtomTransformerTest {
   }
 
   @Test
-  public void testDistanceInMeters() {
-    // TODO research if there is a way to display this information
+  public void testDistanceInMeters()
+      throws CatalogTransformerException, IOException, XpathException, SAXException {
+    // TODO research if there is a way to display this information.
+    // For now this test documents that the AtomTransformer does NOT render a result's
+    // distanceInMeters anywhere in the produced feed (only the relevance score is emitted).
+
+    // given
+    AtomTransformer transformer = new AtomTransformer();
+    MetacardTransformer metacardTransformer = getXmlMetacardTransformerStub();
+    transformer.setMetacardTransformer(metacardTransformer);
+
+    setDefaultSystemConfiguration();
+
+    SourceResponse response = mock(SourceResponse.class);
+    when(response.getHits()).thenReturn(new Long(1));
+    when(response.getRequest()).thenReturn(getStubRequest());
+
+    ResultImpl result1 = new ResultImpl();
+    MetacardStub metacard = new MetacardStub("");
+    metacard.setId(SAMPLE_ID);
+    metacard.setSourceId(SAMPLE_SOURCE_ID);
+    metacard.setCreatedDate(SAMPLE_DATE_TIME.toDate());
+    metacard.setModifiedDate(SAMPLE_DATE_TIME.toDate());
+    result1.setMetacard(metacard);
+
+    Double distanceInMeters = 1234.56;
+    result1.setDistanceInMeters(distanceInMeters);
+    when(response.getResults()).thenReturn(Arrays.asList((Result) result1));
+
+    // when
+    BinaryContent binaryContent = transformer.transform(response, null);
+
+    // then
+    byte[] bytes = binaryContent.getByteArray();
+    String output = new String(bytes);
+
+    assertFeedCompliant(output);
+    assertEntryCompliant(output);
+    validateAgainstAtomSchema(bytes);
+
+    // The distance value must not leak into the feed (no element carries it).
+    assertThat(output.contains(Double.toString(distanceInMeters)), is(false));
+    assertXpathNotExists("/atom:feed/atom:entry/relevance:score", output);
   }
 
   /**

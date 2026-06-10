@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.authorization;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -220,15 +221,18 @@ public class AuthorizationFilterPermissionsTest {
 
   @Test
   public void testDestroyFilter() {
-    filter.destroy();
-    // Verify destroy completes without exception
+    // Verify destroy completes without throwing
+    assertDoesNotThrow(() -> filter.destroy());
   }
 
   @Test
   public void testInitFilter() {
-    AuthorizationFilter newFilter = new AuthorizationFilter(contextPolicyManager);
-    newFilter.init();
-    // Verify init completes without exception
+    // Verify construction and init complete without throwing
+    assertDoesNotThrow(
+        () -> {
+          AuthorizationFilter newFilter = new AuthorizationFilter(contextPolicyManager);
+          newFilter.init();
+        });
   }
 
   @Test

@@ -42,7 +42,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -269,17 +268,20 @@ public class LandingPage extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
     doGet(req, resp);
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
     resp.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML);
     if (ACCEPTED_PATHS.contains(req.getRequestURI())) {
-      resp.getWriter().write(compileTemplateWithProperties());
+      try {
+        resp.getWriter().write(compileTemplateWithProperties());
+      } catch (IOException e) {
+        LOGGER.info("Unable to write Landing Page response.", e);
+        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      }
     }
   }
 

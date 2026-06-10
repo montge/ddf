@@ -396,9 +396,6 @@ public class SimpleSign {
             XMLObjectProviderRegistrySupport.getBuilderFactory()
                 .getBuilder(Signature.DEFAULT_ELEMENT_NAME)
                 .buildObject(Signature.DEFAULT_ELEMENT_NAME);
-    if (signature == null) {
-      throw new SignatureException("Unable to build signature.");
-    }
 
     signature.setCanonicalizationAlgorithm(canonAlgo);
     signature.setSignatureAlgorithm(sigAlgo);

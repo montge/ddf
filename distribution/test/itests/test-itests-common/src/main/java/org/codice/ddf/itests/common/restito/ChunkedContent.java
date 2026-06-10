@@ -216,6 +216,9 @@ public class ChunkedContent {
             return response;
           }
         } catch (IOException | InterruptedException e) {
+          if (e instanceof InterruptedException) {
+            Thread.currentThread().interrupt();
+          }
           LOGGER.error("Error", e);
           break;
         }

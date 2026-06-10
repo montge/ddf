@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -71,12 +72,12 @@ public class MessageFormatSupplierTest {
   }
 
   @Test
-  public void testGetDefaultMessageWhenResourceBundleLocatorIsNull() {
+  public void testGetThrowsWhenResourceBundleLocatorIsNull() {
     MessageFormatSupplier supplier = new MessageFormatSupplier(null);
 
-    String message = supplier.get();
-
-    assertThat(message, is(notNullValue()));
+    // The supplier only recovers from IOException; a null locator surfaces as a
+    // NullPointerException (a null locator is never wired in practice via OSGi blueprint).
+    assertThrows(NullPointerException.class, supplier::get);
   }
 
   @Test

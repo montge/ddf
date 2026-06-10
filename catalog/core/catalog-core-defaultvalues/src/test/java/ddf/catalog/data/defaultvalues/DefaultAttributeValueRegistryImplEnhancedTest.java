@@ -18,6 +18,7 @@ import static ddf.catalog.data.Metacard.TAGS;
 import static ddf.catalog.data.Metacard.TITLE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -472,20 +473,35 @@ public class DefaultAttributeValueRegistryImplEnhancedTest {
 
   @Test
   public void testRemoveNonExistentGlobalDefault() {
-    // Should not throw exception
-    registry.removeDefaultValue("nonexistent");
+    registry.setDefaultValue(TITLE, DEFAULT_VALUE_1);
+
+    // Removing an unknown global default must be a no-op and must not throw.
+    assertDoesNotThrow(() -> registry.removeDefaultValue("nonexistent"));
+
+    // The unrelated, existing default must remain untouched by the no-op removal.
+    assertThat(registry.getDefaultValue(METACARD_TYPE_1, TITLE).get(), is(DEFAULT_VALUE_1));
   }
 
   @Test
   public void testRemoveNonExistentMetacardDefault() {
-    // Should not throw exception
-    registry.removeDefaultValue(METACARD_TYPE_1, "nonexistent");
+    registry.setDefaultValue(METACARD_TYPE_1, TITLE, DEFAULT_VALUE_1);
+
+    // Removing an unknown metacard-specific default must be a no-op and must not throw.
+    assertDoesNotThrow(() -> registry.removeDefaultValue(METACARD_TYPE_1, "nonexistent"));
+
+    // The unrelated, existing default for that metacard type must remain untouched.
+    assertThat(registry.getDefaultValue(METACARD_TYPE_1, TITLE).get(), is(DEFAULT_VALUE_1));
   }
 
   @Test
   public void testRemoveAllFromNonExistentMetacardType() {
-    // Should not throw exception
-    registry.removeDefaultValues("nonexistent");
+    registry.setDefaultValue(METACARD_TYPE_1, TITLE, DEFAULT_VALUE_1);
+
+    // Removing all defaults for an unknown metacard type must be a no-op and must not throw.
+    assertDoesNotThrow(() -> registry.removeDefaultValues("nonexistent"));
+
+    // Defaults for the existing metacard type must remain untouched by the no-op removal.
+    assertThat(registry.getDefaultValue(METACARD_TYPE_1, TITLE).get(), is(DEFAULT_VALUE_1));
   }
 
   @Test

@@ -13,8 +13,13 @@
  */
 package org.codice.ddf.pax.web.jetty;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 
+import java.lang.reflect.Field;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.junit.jupiter.api.AfterEach;
@@ -57,11 +62,9 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = spy(new AccessRequestLog());
 
-    requestLog.log(mockRequest, mockResponse);
-
-    // Verify super.log was called (this will fail since we can't easily mock the parent)
-    // In a real scenario, you might check log output or use a test appender
-    // For now, just verify the method doesn't throw an exception
+    // When access logging is enabled, log() delegates to the (unstarted) parent
+    // RequestLogImpl, which is a no-op over zero appenders and must not throw.
+    assertDoesNotThrow(() -> requestLog.log(mockRequest, mockResponse));
   }
 
   @Test
@@ -70,10 +73,8 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = spy(new AccessRequestLog());
 
-    requestLog.log(mockRequest, mockResponse);
-
-    // When disabled, super.log should not be called
-    // In a real scenario, you might verify no log output is produced
+    // When disabled, log() short-circuits before touching the parent and must not throw.
+    assertDoesNotThrow(() -> requestLog.log(mockRequest, mockResponse));
   }
 
   @Test
@@ -82,10 +83,9 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = spy(new AccessRequestLog());
 
-    requestLog.log(mockRequest, mockResponse);
-
-    // When property is not set, it defaults to false (from Boolean.valueOf(null))
-    // So logging should be disabled
+    // When the property is not set, Boolean.valueOf(null) is false, so logging is disabled.
+    assertFalse(isAccessLogEnabled(requestLog));
+    assertDoesNotThrow(() -> requestLog.log(mockRequest, mockResponse));
   }
 
   @Test
@@ -94,8 +94,9 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Should not throw exception
-    requestLog.log(mockRequest, mockResponse);
+    // Property "true" enables logging; the call must still complete without throwing.
+    assertTrue(isAccessLogEnabled(requestLog));
+    assertDoesNotThrow(() -> requestLog.log(mockRequest, mockResponse));
   }
 
   @Test
@@ -104,8 +105,9 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Should not throw exception
-    requestLog.log(mockRequest, mockResponse);
+    // Property "false" disables logging; the call must complete without throwing.
+    assertFalse(isAccessLogEnabled(requestLog));
+    assertDoesNotThrow(() -> requestLog.log(mockRequest, mockResponse));
   }
 
   @Test
@@ -114,9 +116,9 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Boolean.valueOf("invalid") returns false
-    // Should not throw exception
-    requestLog.log(mockRequest, mockResponse);
+    // Boolean.valueOf("invalid") returns false, so logging is disabled.
+    assertFalse(isAccessLogEnabled(requestLog));
+    assertDoesNotThrow(() -> requestLog.log(mockRequest, mockResponse));
   }
 
   @Test
@@ -125,8 +127,8 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Constructor should read the property
-    // Verify it doesn't throw an exception
+    // The constructor must read the system property into the enabled flag.
+    assertTrue(isAccessLogEnabled(requestLog));
   }
 
   @Test
@@ -135,10 +137,13 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Multiple log calls should all work
-    requestLog.log(mockRequest, mockResponse);
-    requestLog.log(mockRequest, mockResponse);
-    requestLog.log(mockRequest, mockResponse);
+    // Repeated log calls while enabled must all complete without throwing.
+    assertDoesNotThrow(
+        () -> {
+          requestLog.log(mockRequest, mockResponse);
+          requestLog.log(mockRequest, mockResponse);
+          requestLog.log(mockRequest, mockResponse);
+        });
   }
 
   @Test
@@ -147,10 +152,14 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Multiple log calls should all be skipped
-    requestLog.log(mockRequest, mockResponse);
-    requestLog.log(mockRequest, mockResponse);
-    requestLog.log(mockRequest, mockResponse);
+    // Repeated log calls while disabled are all skipped and must not throw.
+    assertFalse(isAccessLogEnabled(requestLog));
+    assertDoesNotThrow(
+        () -> {
+          requestLog.log(mockRequest, mockResponse);
+          requestLog.log(mockRequest, mockResponse);
+          requestLog.log(mockRequest, mockResponse);
+        });
   }
 
   @Test
@@ -159,12 +168,9 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Should handle null request gracefully
-    try {
-      requestLog.log(null, mockResponse);
-    } catch (NullPointerException e) {
-      // Expected if parent implementation doesn't handle null
-    }
+    // With logging enabled, a null request is forwarded to the parent RequestLogImpl,
+    // which dereferences it while building the access event and throws NPE.
+    assertThrows(NullPointerException.class, () -> requestLog.log(null, mockResponse));
   }
 
   @Test
@@ -173,12 +179,10 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Should handle null response gracefully
-    try {
-      requestLog.log(mockRequest, null);
-    } catch (NullPointerException e) {
-      // Expected if parent implementation doesn't handle null
-    }
+    // With logging enabled, a null response is forwarded to the parent RequestLogImpl.
+    // The (unstarted) parent builds the access event without dereferencing the response and
+    // appends over zero appenders, so the call completes without throwing.
+    assertDoesNotThrow(() -> requestLog.log(mockRequest, null));
   }
 
   @Test
@@ -187,11 +191,18 @@ public class AccessRequestLogTest {
 
     AccessRequestLog requestLog = new AccessRequestLog();
 
-    // Should handle both null gracefully
+    // With logging enabled, null request/response are forwarded to the parent
+    // RequestLogImpl, which dereferences them while building the access event.
+    assertThrows(NullPointerException.class, () -> requestLog.log(null, null));
+  }
+
+  private static boolean isAccessLogEnabled(AccessRequestLog requestLog) {
     try {
-      requestLog.log(null, null);
-    } catch (NullPointerException e) {
-      // Expected if parent implementation doesn't handle null
+      final Field field = AccessRequestLog.class.getDeclaredField("isAccessLogEnabled");
+      field.setAccessible(true);
+      return field.getBoolean(requestLog);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new AssertionError("Unable to read isAccessLogEnabled field", e);
     }
   }
 }

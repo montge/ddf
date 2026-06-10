@@ -357,14 +357,17 @@ public class XMLUtils {
    */
   private void setSecureDocumentBuilderSettings(DocumentBuilderFactory domFactory) {
     try {
+      domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       domFactory.setFeature(APACHE_FEATURES_DISALLOW_DOCTYPE_DECL, true);
       domFactory.setFeature(XML_SAX_FEATURES_EXTERNAL_GENERAL_ENTITIES, false);
       domFactory.setFeature(XML_SAX_FEATURES_EXTERNAL_PARAMETER_ENTITIES, false);
       domFactory.setFeature(APACHE_FEATURES_LOAD_EXTERNAL_DTD, false);
       domFactory.setFeature(APACHE_FEATURES_LOAD_DTD_GRAMMAR, false);
+      domFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      domFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
       domFactory.setXIncludeAware(false);
       domFactory.setExpandEntityReferences(false);
-    } catch (ParserConfigurationException e) {
+    } catch (ParserConfigurationException | IllegalArgumentException e) {
       LOGGER.debug("Unable to set features on document builder.", e);
     }
   }
@@ -453,6 +456,7 @@ public class XMLUtils {
    */
   private void setSecureSAXParserSettings(SAXParserFactory saxFactory) {
     try {
+      saxFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       saxFactory.setFeature(XML_SAX_FEATURES_EXTERNAL_GENERAL_ENTITIES, false);
       saxFactory.setFeature(XML_SAX_FEATURES_EXTERNAL_PARAMETER_ENTITIES, false);
       saxFactory.setFeature(APACHE_FEATURES_LOAD_EXTERNAL_DTD, false);

@@ -174,7 +174,15 @@ public class MimeTypeMapperImpl implements MimeTypeMapper {
     // from being used when a CustomMimeTypeResolver may be more appropriate.
     List<MimeTypeResolver> sortedResolvers = sortResolvers(mimeTypeResolvers);
 
+    // If file has XML extension, then read root element namespace once so
+    // each MimeTypeResolver does not have to open the stream and read the namespace
+    String namespace = null;
+
     if (StringUtils.isEmpty(fileExtension)) {
+      // The input stream is consumed when copied into the temporary buffer, so the buffer is the
+      // only source from which the content can be re-read. Read everything needed (detected
+      // extension and, for XML, the root namespace) while the buffer is still open, closing each
+      // derived stream so no resource is leaked.
       try (TemporaryFileBackedOutputStream tfbos = new TemporaryFileBackedOutputStream()) {
         IOUtils.copy(is, tfbos);
         try (InputStream inputStream = tfbos.asByteSource().openStream()) {
@@ -182,19 +190,20 @@ public class MimeTypeMapperImpl implements MimeTypeMapper {
           MediaType mediaType = detector.detect(inputStream, new Metadata());
 
           fileExtension = getFileExtensionForMimeType(mediaType.toString()).replace(".", "");
-        } finally {
-          is = tfbos.asByteSource().openStream();
         }
 
+        if (fileExtension.equals(XML_FILE_EXTENSION)) {
+          try (InputStream namespaceStream = tfbos.asByteSource().openStream()) {
+            namespace =
+                XML_UTILS.getRootNamespace(
+                    IOUtils.toString(namespaceStream, StandardCharsets.UTF_8));
+          }
+          LOGGER.debug("namespace = {}", namespace);
+        }
       } catch (Exception e) {
         LOGGER.debug("Failed to guess mimeType for file without extension.");
       }
-    }
-
-    // If file has XML extension, then read root element namespace once so
-    // each MimeTypeResolver does not have to open the stream and read the namespace
-    String namespace = null;
-    if (fileExtension.equals(XML_FILE_EXTENSION)) {
+    } else if (fileExtension.equals(XML_FILE_EXTENSION)) {
       try {
         namespace = XML_UTILS.getRootNamespace(IOUtils.toString(is, StandardCharsets.UTF_8));
       } catch (IOException ioe) {

@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,19 @@ public class ZipDecompression implements InputCollectionTransformer {
   public static final String CONTENT = "content";
 
   public static final int BUFFER_SIZE = 4096;
+
+  /**
+   * Decompression-bomb guards. The zip ingested here is expected to be a (signed) DDF catalog
+   * export, so these caps are deliberately generous: they never trip on a legitimate export but
+   * abort extraction of a maliciously crafted archive (e.g. a highly-compressible "zip bomb" whose
+   * uncompressed size is orders of magnitude larger than the archive, or an archive with an
+   * explosive number of entries) before it can exhaust disk or memory.
+   */
+  private static final long MAX_ENTRY_UNCOMPRESSED_BYTES = 5L * 1024 * 1024 * 1024; // 5 GiB / entry
+
+  private static final long MAX_TOTAL_UNCOMPRESSED_BYTES = 10L * 1024 * 1024 * 1024; // 10 GiB total
+
+  private static final long MAX_ENTRY_COUNT = 100_000L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ZipCompression.class);
 
@@ -82,12 +96,27 @@ public class ZipDecompression implements InputCollectionTransformer {
       throws CatalogTransformerException {
     try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
       Map<String, Metacard> metacardMap = new HashMap<>();
+      long entryCount = 0;
+      long totalUncompressedBytes = 0;
       ZipEntry zipEntry = zipInputStream.getNextEntry();
 
       while (zipEntry != null) {
+        if (++entryCount > MAX_ENTRY_COUNT) {
+          throw new CatalogTransformerException(
+              "Refusing to expand archive: entry count exceeds the maximum of " + MAX_ENTRY_COUNT);
+        }
         String filename = zipEntry.getName();
 
         if (!filename.contains("META-INF")) {
+
+          // Zip Slip guard: the entry name is attacker-controlled; reject any name that would
+          // traverse outside the extraction root (absolute path or a leading "..") before it is
+          // concatenated onto the destination prefix. Legitimate relative names (e.g.
+          // "dir/file.txt") are unaffected.
+          Path normalizedEntry = Paths.get(filename).normalize();
+          if (normalizedEntry.isAbsolute() || normalizedEntry.startsWith("..")) {
+            throw new CatalogTransformerException("Zip entry has an unsafe path: " + filename);
+          }
 
           File zipEntryFile = new File(zipFileName + filename);
 
@@ -98,7 +127,12 @@ public class ZipDecompression implements InputCollectionTransformer {
           if (!zipEntryFile.isDirectory()) {
             try (FileOutputStream fileOutputStream = new FileOutputStream(zipEntryFile)) {
 
-              IOUtils.copy(zipInputStream, fileOutputStream);
+              // Bounded copy: never trust the declared/compressed sizes in the zip header. Count
+              // the bytes actually inflated and abort if this entry (or the archive as a whole)
+              // exceeds the decompression-bomb caps, guarding against archives that expand far
+              // beyond their on-disk size.
+              totalUncompressedBytes +=
+                  copyWithLimit(zipInputStream, fileOutputStream, filename, totalUncompressedBytes);
             }
             if (!zipEntryFile.getPath().contains(CONTENT)) {
               metacardMap.put(zipEntryFile.getName(), readMetacard(zipEntryFile));
@@ -112,6 +146,45 @@ public class ZipDecompression implements InputCollectionTransformer {
       throw new CatalogTransformerException(
           String.format("Unable to transform InputStream for %s.", zipFileName));
     }
+  }
+
+  /**
+   * Copies the current zip entry to {@code out} while enforcing the per-entry and cumulative
+   * uncompressed-size caps, so a decompression bomb cannot exhaust disk or memory.
+   *
+   * @param in the zip entry stream to read from
+   * @param out the destination stream
+   * @param filename the entry name (for error reporting only)
+   * @param priorTotalBytes uncompressed bytes already written for previous entries
+   * @return the number of uncompressed bytes written for this entry
+   * @throws IOException if reading/writing fails
+   * @throws CatalogTransformerException if a size cap is exceeded
+   */
+  private long copyWithLimit(
+      InputStream in, FileOutputStream out, String filename, long priorTotalBytes)
+      throws IOException, CatalogTransformerException {
+    byte[] buffer = new byte[BUFFER_SIZE];
+    long entryBytes = 0;
+    int read;
+    while ((read = in.read(buffer)) != -1) {
+      entryBytes += read;
+      if (entryBytes > MAX_ENTRY_UNCOMPRESSED_BYTES) {
+        throw new CatalogTransformerException(
+            "Refusing to expand archive: entry '"
+                + filename
+                + "' exceeds the maximum uncompressed size of "
+                + MAX_ENTRY_UNCOMPRESSED_BYTES
+                + " bytes");
+      }
+      if (priorTotalBytes + entryBytes > MAX_TOTAL_UNCOMPRESSED_BYTES) {
+        throw new CatalogTransformerException(
+            "Refusing to expand archive: total uncompressed size exceeds the maximum of "
+                + MAX_TOTAL_UNCOMPRESSED_BYTES
+                + " bytes");
+      }
+      out.write(buffer, 0, read);
+    }
+    return entryBytes;
   }
 
   private Metacard readMetacard(File file) {

@@ -81,8 +81,9 @@ public class ConfigurationContextTest {
   public void testGetConfigFile() {
     File configFile = context.getConfigFile();
 
-    // Config file may be null if not created by Felix directory watcher
-    // This is valid behavior
+    // The default context is constructed without a config file (not from the Felix
+    // directory watcher), so getConfigFile() must return null.
+    assertThat(configFile, is(nullValue()));
   }
 
   @Test

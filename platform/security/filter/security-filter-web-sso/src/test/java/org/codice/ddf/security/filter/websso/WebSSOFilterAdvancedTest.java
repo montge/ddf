@@ -17,6 +17,7 @@ import static ddf.security.SecurityConstants.AUTHENTICATION_TOKEN_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -554,16 +555,14 @@ public class WebSSOFilterAdvancedTest {
 
   @Test
   public void testInitMethod() {
-    // Test initialization
-    webSSOFilter.init();
-    // Should complete without errors
+    // Test initialization completes without throwing
+    assertDoesNotThrow(() -> webSSOFilter.init());
   }
 
   @Test
   public void testDestroyMethod() {
-    // Test destroy method
-    webSSOFilter.destroy();
-    // Should complete without errors
+    // Test destroy method completes without throwing
+    assertDoesNotThrow(() -> webSSOFilter.destroy());
   }
 
   @Test

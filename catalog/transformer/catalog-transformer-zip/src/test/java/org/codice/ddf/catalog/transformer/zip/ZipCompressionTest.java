@@ -49,10 +49,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 @ExtendWith(MockitoExtension.class)
+// The four shared ServiceReference stubs plus the bundleContext/transformer stubs in setUp() model
+// an OSGi transformer registry that the whole class draws on; individual tests legitimately
+// exercise
+// only a subset (e.g. early-return cases), so STRICT_STUBS would flag the unused ones. Use LENIENT.
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ZipCompressionTest {
 
   private ZipCompression zipCompression;

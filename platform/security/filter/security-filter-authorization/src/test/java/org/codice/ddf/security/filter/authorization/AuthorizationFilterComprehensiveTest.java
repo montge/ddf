@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.authorization;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -401,17 +402,18 @@ public class AuthorizationFilterComprehensiveTest {
 
   @Test
   public void testInitialization() {
-    // Test filter initialization
-    AuthorizationFilter newFilter = new AuthorizationFilter(contextPolicyManager);
-    newFilter.init();
-    // Should complete without errors
+    // Test filter construction and initialization complete without throwing
+    assertDoesNotThrow(
+        () -> {
+          AuthorizationFilter newFilter = new AuthorizationFilter(contextPolicyManager);
+          newFilter.init();
+        });
   }
 
   @Test
   public void testDestroy() {
-    // Test filter cleanup
-    authzFilter.destroy();
-    // Should complete without errors
+    // Test filter cleanup completes without throwing
+    assertDoesNotThrow(() -> authzFilter.destroy());
   }
 
   // ==================== Concurrent Request Tests ====================

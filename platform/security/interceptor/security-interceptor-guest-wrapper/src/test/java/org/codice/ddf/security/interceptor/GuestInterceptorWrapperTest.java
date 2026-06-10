@@ -14,10 +14,10 @@
 package org.codice.ddf.security.interceptor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -244,7 +244,11 @@ public class GuestInterceptorWrapperTest {
 
     assertThat(newWrapper.getBefore(), notNullValue());
     assertThat(newWrapper.getBefore().size(), is(2));
-    assertThat(newWrapper.getBefore(), contains(WSS4J_IN_INTERCEPTOR, POLICY_WSS4J_IN_INTERCEPTOR));
+    // getBefore() returns a CXF SortedArraySet, so iteration order is the natural ordering of the
+    // class names (P < W), not insertion order. Assert membership without depending on order.
+    assertThat(
+        newWrapper.getBefore(),
+        containsInAnyOrder(WSS4J_IN_INTERCEPTOR, POLICY_WSS4J_IN_INTERCEPTOR));
   }
 
   @Test
@@ -281,10 +285,11 @@ public class GuestInterceptorWrapperTest {
   public void testHandleMessageLogsDebugWhenContextIsNull() {
     GuestInterceptorWrapper nullContextWrapper = new TestableGuestInterceptorWrapper(null);
 
-    nullContextWrapper.handleMessage(soapMessage);
+    // The method must complete without exception (debug log not verifiable in unit test).
+    assertDoesNotThrow(() -> nullContextWrapper.handleMessage(soapMessage));
 
-    // Verify the method completes without exception (debug log not verifiable in unit test)
-    // No BundleContext interactions should occur
+    // With a null bundle context the null-context branch is taken, so no interceptor is dispatched.
+    verify(guestInterceptor, never()).handleMessage(any());
   }
 
   @Test

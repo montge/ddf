@@ -51,12 +51,15 @@ public class HtmlResponseTemplate {
    */
   public static String getPostPage(
       String targetUrl, SamlProtocol.Type type, String samlValue, String relayState) {
+    // All values are reflected into double-quoted HTML attributes (action/value); HTML-escape the
+    // attacker-influenceable ones (targetUrl, samlValue, relayState) to prevent reflected XSS via
+    // the unsigned-POST logout path. type is a fixed enum key.
     return String.format(
         submitTemplate,
-        elvis(targetUrl, ""),
+        escapeHtml(elvis(targetUrl, "")),
         elvis(type, SamlProtocol.Type.NULL).getKey(),
-        elvis(samlValue, ""),
-        elvis(relayState, ""));
+        escapeHtml(elvis(samlValue, "")),
+        escapeHtml(elvis(relayState, "")));
   }
 
   /**
@@ -67,7 +70,7 @@ public class HtmlResponseTemplate {
    * @return Formatted Redirect Page
    */
   public static String getRedirectPage(String targetUrl) {
-    return String.format(redirectTemplate, elvis(targetUrl, ""));
+    return String.format(redirectTemplate, escapeHtml(elvis(targetUrl, "")));
   }
 
   private static <T> T elvis(T object, T valueIfNull) {
@@ -76,5 +79,21 @@ public class HtmlResponseTemplate {
     } else {
       return valueIfNull;
     }
+  }
+
+  /**
+   * Escapes HTML metacharacters so a reflected value cannot break out of a double-quoted attribute
+   * and inject markup/script. The ampersand must be replaced first.
+   */
+  private static String escapeHtml(String value) {
+    if (value == null) {
+      return "";
+    }
+    return value
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "&quot;")
+        .replace("'", "&#39;");
   }
 }

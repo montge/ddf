@@ -196,6 +196,8 @@ public class BoundingBoxReader {
       }
     } catch (ParseException | GeoFormatException e) {
       throw new CswException(String.format("Unable to convert %s from %s to EPSG:4326", wkt, crs));
+    } finally {
+      WKT_WRITER_THREAD_LOCAL.remove();
     }
   }
 

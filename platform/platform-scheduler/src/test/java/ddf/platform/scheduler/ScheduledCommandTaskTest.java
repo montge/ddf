@@ -15,8 +15,13 @@ package ddf.platform.scheduler;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -81,41 +86,53 @@ public class ScheduledCommandTaskTest {
   }
 
   @Test
-  public void testCreateSimpleTrigger() {
+  public void testCreateSimpleTrigger() throws SchedulerException {
     scheduledCommandTask.setIntervalString("1");
     scheduledCommandTask.setIntervalType(ScheduledCommandTask.SECOND_INTERVAL);
     scheduledCommandTask.newTask();
+    // A valid second-interval schedules a job with the scheduler
+    verify(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
   }
 
   @Test
-  public void testCreateSimpleTriggerNonInteger() {
+  public void testCreateSimpleTriggerNonInteger() throws SchedulerException {
     scheduledCommandTask.setIntervalString("1s");
     scheduledCommandTask.setIntervalType(ScheduledCommandTask.SECOND_INTERVAL);
     scheduledCommandTask.newTask();
+    // A non-integer second-interval yields no trigger, so no job is scheduled
+    verify(scheduler, never()).scheduleJob(any(JobDetail.class), any(Trigger.class));
   }
 
   @Test
   public void testNewTaskScheduleException() throws Exception {
     when(scheduler.scheduleJob(any(JobDetail.class), any(Trigger.class)))
         .thenThrow(new SchedulerException());
-    scheduledCommandTask.newTask();
+    // A SchedulerException from scheduleJob must be caught, not propagated
+    assertDoesNotThrow(() -> scheduledCommandTask.newTask());
+    verify(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
   }
 
   @Test
   public void testDeleteTaskScheduleException() throws Exception {
-    when(scheduler.deleteJob(any(JobKey.class))).thenThrow(new SchedulerException());
-    scheduledCommandTask.deleteTask(2);
+    when(scheduler.deleteJob(nullable(JobKey.class))).thenThrow(new SchedulerException());
+    // A SchedulerException from deleteJob must be caught, not propagated
+    assertDoesNotThrow(() -> scheduledCommandTask.deleteTask(2));
+    verify(scheduler).deleteJob(nullable(JobKey.class));
   }
 
   @Test
-  public void testNewTaskSecondInterval() {
+  public void testNewTaskSecondInterval() throws SchedulerException {
     scheduledCommandTask.newTask();
+    // Default (cron) interval type schedules a job with the scheduler
+    verify(scheduler).scheduleJob(any(JobDetail.class), any(Trigger.class));
   }
 
   @Test
-  public void testBadIntervalType() {
+  public void testBadIntervalType() throws SchedulerException {
     scheduledCommandTask.setIntervalType("badType");
     scheduledCommandTask.newTask();
+    // An unknown interval type yields no trigger, so no job is scheduled
+    verify(scheduler, never()).scheduleJob(any(JobDetail.class), any(Trigger.class));
   }
 
   @Test
@@ -133,8 +150,10 @@ public class ScheduledCommandTaskTest {
   }
 
   @Test
-  public void testDeleteJob() {
+  public void testDeleteJob() throws SchedulerException {
     scheduledCommandTask.deleteTask(1);
+    // deleteTask delegates to the scheduler to remove the job (jobKey is null without newTask)
+    verify(scheduler, times(1)).deleteJob(nullable(JobKey.class));
   }
 
   @Test

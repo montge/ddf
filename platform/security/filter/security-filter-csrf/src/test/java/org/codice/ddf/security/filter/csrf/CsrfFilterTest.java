@@ -13,6 +13,7 @@
  */
 package org.codice.ddf.security.filter.csrf;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -503,8 +504,7 @@ public class CsrfFilterTest {
 
   @Test
   public void testDestroy() {
-    // Test filter cleanup
-    csrfFilter.destroy();
-    // Should complete without errors
+    // Test that filter cleanup completes cleanly without throwing.
+    assertDoesNotThrow(() -> csrfFilter.destroy());
   }
 }

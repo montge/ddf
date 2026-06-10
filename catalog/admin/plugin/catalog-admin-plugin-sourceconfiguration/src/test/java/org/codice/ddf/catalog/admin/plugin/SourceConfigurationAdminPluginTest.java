@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -77,8 +78,11 @@ class SourceConfigurationAdminPluginTest {
 
   @Test
   void testInitAndDestroy() {
-    plugin.init();
-    plugin.destroy();
+    assertDoesNotThrow(
+        () -> {
+          plugin.init();
+          plugin.destroy();
+        });
   }
 
   @Test

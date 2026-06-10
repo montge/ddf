@@ -16,9 +16,11 @@ package org.codice.ddf.cxf.client.interceptor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,7 +82,10 @@ class SubjectRetrievalInterceptorTest {
 
     interceptor.handleMessage(message);
 
-    // Method should return early without modifying the message
+    // Not a requestor -> method returns early: no trust decider installed and the interceptor
+    // chain is never touched.
+    verify(message, never()).put(eq(MessageTrustDecider.class), any(MessageTrustDecider.class));
+    verify(message, never()).getInterceptorChain();
   }
 
   @Test
@@ -90,7 +95,10 @@ class SubjectRetrievalInterceptorTest {
 
     interceptor.handleMessage(message);
 
-    // Method should return early without modifying the message
+    // Non-https scheme -> method returns early: no trust decider installed and the interceptor
+    // chain is never touched.
+    verify(message, never()).put(eq(MessageTrustDecider.class), any(MessageTrustDecider.class));
+    verify(message, never()).getInterceptorChain();
   }
 
   @Test
@@ -139,8 +147,8 @@ class SubjectRetrievalInterceptorTest {
 
   @Test
   void testClose() {
-    // close() is a no-op, just verify it doesn't throw
-    interceptor.close(wrappedMessageContext);
+    // close() is a documented no-op; assert it completes without throwing.
+    assertDoesNotThrow(() -> interceptor.close(wrappedMessageContext));
   }
 
   @Test

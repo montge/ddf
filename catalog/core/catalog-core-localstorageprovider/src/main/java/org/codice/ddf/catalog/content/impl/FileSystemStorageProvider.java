@@ -562,8 +562,10 @@ public class FileSystemStorageProvider implements StorageProvider {
     List<String> pathParts =
         getContentFilePathParts(contentUri.getSchemeSpecificPart(), contentUri.getFragment());
     try {
-      return Paths.get(
-          baseContentDirectory.toString(), pathParts.toArray(new String[pathParts.size()]));
+      Path candidate =
+          Paths.get(
+              baseContentDirectory.toString(), pathParts.toArray(new String[pathParts.size()]));
+      return resolveWithinBase(baseContentDirectory, candidate);
     } catch (InvalidPathException e) {
       LOGGER.debug(
           "Invalid path: [{}/{}]",
@@ -571,6 +573,24 @@ public class FileSystemStorageProvider implements StorageProvider {
           pathParts.stream().collect(Collectors.joining()));
       return null;
     }
+  }
+
+  /**
+   * Guards against path traversal: returns the normalized {@code candidate} only if it stays within
+   * {@code base}, otherwise {@code null}. The content id/qualifier come from a content URI that is
+   * NOT allow-list-validated on the read path (unlike create/update/delete, which run
+   * ContentItemValidator), so a "../" segment must not be able to escape the content store. Uses
+   * {@link Path#normalize()} rather than {@code toRealPath()} so not-yet-created commit/temp
+   * targets are not rejected.
+   */
+  private static Path resolveWithinBase(Path base, Path candidate) {
+    Path normalizedBase = base.toAbsolutePath().normalize();
+    Path normalizedCandidate = candidate.toAbsolutePath().normalize();
+    if (!normalizedCandidate.startsWith(normalizedBase)) {
+      LOGGER.debug("Rejected content path outside base directory: {}", candidate);
+      return null;
+    }
+    return normalizedCandidate;
   }
 
   // separating into 2 directories of 3 characters each allows us to
@@ -624,8 +644,12 @@ public class FileSystemStorageProvider implements StorageProvider {
 
     long itemSize = item.getSize();
     long copySize;
+    // Strip any path components from the (attacker-influenceable, e.g. zip-import) filename so it
+    // cannot escape contentDirectory (Zip Slip / path traversal).
     Path contentItemPath =
-        Paths.get(contentDirectory.toAbsolutePath().toString(), item.getFilename());
+        Paths.get(
+            contentDirectory.toAbsolutePath().toString(),
+            FilenameUtils.getName(item.getFilename()));
     ByteSource byteSource;
 
     if (storeReference != null) {

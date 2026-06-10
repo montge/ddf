@@ -185,43 +185,45 @@ public abstract class DuplicateCommands extends CqlCommands {
 
       printProgressAndFlush(
           start, Math.max(totalWanted, initialMetacards.size()), ingestedCount.get());
-      int index;
-      while (!done.get()) {
-        index = queryIndex.addAndGet(batchSize);
-        final int taskIndex = index;
-
-        executorService.submit(
-            () -> {
-              int querySize = (int) getQuerySizeFromIndex(totalWanted, taskIndex);
-              if (querySize < 1) {
-                // If we don't need any more metacards, we're finished
-                done.set(true);
-                return;
-              }
-              List<Metacard> metacards =
-                  ResultIterable.resultIterable(
-                          queryFacade::query, queryTemplate.apply(taskIndex), querySize)
-                      .stream()
-                      .map(Result::getMetacard)
-                      .collect(Collectors.toList());
-
-              if (metacards.size() < querySize) {
-                done.set(true);
-              }
-              if (!metacards.isEmpty()) {
-                ingestMetacards(ingestFacade, metacards);
-              }
-              printProgressAndFlush(
-                  start, Math.max(totalWanted, ingestedCount.get()), ingestedCount.get());
-            });
-      }
-
-      executorService.shutdown();
       try {
-        executorService.awaitTermination(1, TimeUnit.SECONDS);
-      } catch (InterruptedException e) {
-        executorService.shutdownNow();
-        throw e;
+        int index;
+        while (!done.get()) {
+          index = queryIndex.addAndGet(batchSize);
+          final int taskIndex = index;
+
+          executorService.submit(
+              () -> {
+                int querySize = (int) getQuerySizeFromIndex(totalWanted, taskIndex);
+                if (querySize < 1) {
+                  // If we don't need any more metacards, we're finished
+                  done.set(true);
+                  return;
+                }
+                List<Metacard> metacards =
+                    ResultIterable.resultIterable(
+                            queryFacade::query, queryTemplate.apply(taskIndex), querySize)
+                        .stream()
+                        .map(Result::getMetacard)
+                        .collect(Collectors.toList());
+
+                if (metacards.size() < querySize) {
+                  done.set(true);
+                }
+                if (!metacards.isEmpty()) {
+                  ingestMetacards(ingestFacade, metacards);
+                }
+                printProgressAndFlush(
+                    start, Math.max(totalWanted, ingestedCount.get()), ingestedCount.get());
+              });
+        }
+      } finally {
+        executorService.shutdown();
+        try {
+          executorService.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+          executorService.shutdownNow();
+          throw e;
+        }
       }
 
       printProgressAndFlush(start, Math.max(totalWanted, ingestedCount.get()), ingestedCount.get());

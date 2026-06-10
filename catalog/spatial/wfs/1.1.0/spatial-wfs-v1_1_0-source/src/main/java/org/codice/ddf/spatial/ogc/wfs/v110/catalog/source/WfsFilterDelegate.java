@@ -1314,7 +1314,11 @@ public class WfsFilterDelegate extends SimpleFilterDelegate<FilterType> {
   }
 
   private Geometry getGeometryFromWkt(String wkt) throws ParseException {
-    return WKT_READER_THREAD_LOCAL.get().read(wkt);
+    try {
+      return WKT_READER_THREAD_LOCAL.get().read(wkt);
+    } finally {
+      WKT_READER_THREAD_LOCAL.remove();
+    }
   }
 
   private String bufferGeometry(String wkt, double distance) {
@@ -1330,6 +1334,8 @@ public class WfsFilterDelegate extends SimpleFilterDelegate<FilterType> {
       LOGGER.debug("Buffered WKT: {}.", bufferedWkt);
     } catch (ParseException e) {
       throw new IllegalArgumentException(UNABLE_TO_PARSE_WKT_STRING, e);
+    } finally {
+      WKT_WRITER_THREAD_LOCAL.remove();
     }
 
     return bufferedWkt;

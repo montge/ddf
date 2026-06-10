@@ -19,6 +19,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.data.AttributeDescriptor;
+import ddf.catalog.data.AttributeType;
+import ddf.catalog.data.AttributeType.AttributeFormat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,6 +34,19 @@ public class AttributeDescriptorComparatorTest {
     comparator = new AttributeDescriptorComparator();
   }
 
+  /**
+   * Stubs the attribute type chain that the comparator inspects once two descriptors have equal
+   * names. All descriptors stubbed this way share the same format and binding, so the type-based
+   * tie-breaking yields 0.
+   */
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private static void stubIdenticalType(AttributeDescriptor descriptor) {
+    AttributeType type = mock(AttributeType.class);
+    when(type.getAttributeFormat()).thenReturn(AttributeFormat.STRING);
+    when(type.getBinding()).thenReturn((Class) String.class);
+    when(descriptor.getType()).thenReturn(type);
+  }
+
   @Test
   public void testCompareEqualNames() {
     AttributeDescriptor descriptor1 = mock(AttributeDescriptor.class);
@@ -39,6 +54,10 @@ public class AttributeDescriptorComparatorTest {
 
     when(descriptor1.getName()).thenReturn("testAttribute");
     when(descriptor2.getName()).thenReturn("testAttribute");
+    // When names are equal, the comparator falls through to compare the attribute type, so the
+    // type chain must be stubbed identically on both descriptors for the result to remain 0.
+    stubIdenticalType(descriptor1);
+    stubIdenticalType(descriptor2);
 
     int result = comparator.compare(descriptor1, descriptor2);
     assertThat(result, is(0));
@@ -77,8 +96,9 @@ public class AttributeDescriptorComparatorTest {
     when(descriptor2.getName()).thenReturn("attribute");
 
     int result = comparator.compare(descriptor1, descriptor2);
-    // Case-sensitive comparison: 'A' < 'a' in ASCII
-    assertThat(result < 0, is(true));
+    // The comparator uses a locale-sensitive Collator first, which sorts the uppercase
+    // "Attribute" after the lowercase "attribute", so the result is positive.
+    assertThat(result > 0, is(true));
   }
 
   @Test
@@ -137,6 +157,9 @@ public class AttributeDescriptorComparatorTest {
 
     when(descriptor1.getName()).thenReturn("");
     when(descriptor2.getName()).thenReturn("");
+    // Equal (empty) names cause the comparator to fall through to the attribute type comparison.
+    stubIdenticalType(descriptor1);
+    stubIdenticalType(descriptor2);
 
     int result = comparator.compare(descriptor1, descriptor2);
     assertThat(result, is(0));

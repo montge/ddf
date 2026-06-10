@@ -77,9 +77,12 @@ public class CswFilterFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CswFilterFactory.class);
 
-  // Regex to match coords in WKT
+  // Regex to match coords in WKT. Possessive quantifiers (\\d++) are used so the matcher cannot
+  // backtrack within a run of digits; this prevents catastrophic backtracking (ReDoS) on
+  // attacker-influenced WKT while matching exactly the same coordinate strings as the original
+  // "-?\\.?\\d+(\\.?\\d+)?\\s-?\\.?\\d+(\\.?\\d+)?" expression.
   private static final Pattern COORD_PATTERN =
-      Pattern.compile("-?\\.?\\d+(\\.?\\d+)?\\s-?\\.?\\d+(\\.?\\d+)?");
+      Pattern.compile("-?\\.?\\d++(\\.?\\d++)?\\s-?\\.?\\d++(\\.?\\d++)?");
 
   private static final JAXBContext JAXB_CONTEXT = initJaxbContext();
 
@@ -770,7 +773,10 @@ public class CswFilterFactory {
   }
 
   private String normalizeWhitespaceInWkt(String wkt) {
-    String normalizedWkt = wkt.replaceAll("(\\s+)?([(|)|,])(\\s+)?", "$2");
+    // Possessive whitespace quantifiers keep this linear-time (no catastrophic/quadratic
+    // backtracking, java:S5852) on attacker-influenced WKT; the bracketed delimiter is the only
+    // capturing group. Equivalent to the prior "(\\s+)?([(|)|,])(\\s+)?" -> "$2".
+    String normalizedWkt = wkt.replaceAll("\\s*+([(|)|,])\\s*+", "$1");
     normalizedWkt = normalizedWkt.replaceAll("\\s+", " ");
     return normalizedWkt;
   }

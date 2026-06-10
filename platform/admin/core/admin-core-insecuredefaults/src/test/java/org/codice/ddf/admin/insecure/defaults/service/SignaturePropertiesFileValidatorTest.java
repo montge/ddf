@@ -91,13 +91,11 @@ public class SignaturePropertiesFileValidatorTest {
           String.format(
               SignaturePropertiesFileValidator.DEFAULT_KEYSTORE_PASSWORD_USED_MSG,
               SignaturePropertiesFileValidator.KEYSTORE_PASSWORD_PROPERTY,
-              path,
-              DEFAULT_KEYSTORE_PASSWORD),
+              path),
           String.format(
               SignaturePropertiesFileValidator.DEFAULT_KEYSTORE_PRIVATE_PASSWORD_USED_MSG,
               SignaturePropertiesFileValidator.PRIVATE_KEY_PASSWORD_PROPERTY,
-              path,
-              DEFAULT_KEYSTORE_PRIVATE_PASSWORD)
+              path)
         };
     assertThat(actualAlertMessages, hasItems(expectedAlertMessages));
   }

@@ -16,7 +16,10 @@ package org.codice.ddf.cxf.paos;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -68,9 +71,11 @@ class BodyWriterTest {
     // MessageContentsList.getContentsList calls message.getContent(List.class) first
     when(message.getContent(List.class)).thenReturn(null);
 
-    bodyWriter.handleMessage(message);
-
-    // No exception should be thrown, method should return early
+    // Null contents list -> handleMessage returns early without throwing and never inspects the
+    // output stream / writer.
+    assertDoesNotThrow(() -> bodyWriter.handleMessage(message));
+    verify(message, never()).getContent(OutputStream.class);
+    verify(message, never()).getContent(XMLStreamWriter.class);
   }
 
   @Test
@@ -78,9 +83,11 @@ class BodyWriterTest {
     MessageContentsList contentsList = new MessageContentsList();
     when(message.getContent(List.class)).thenReturn(contentsList);
 
-    bodyWriter.handleMessage(message);
-
-    // No exception should be thrown, method should return early when list is empty
+    // Empty contents list -> handleMessage returns early without throwing and never inspects the
+    // output stream / writer.
+    assertDoesNotThrow(() -> bodyWriter.handleMessage(message));
+    verify(message, never()).getContent(OutputStream.class);
+    verify(message, never()).getContent(XMLStreamWriter.class);
   }
 
   @Test
@@ -91,9 +98,10 @@ class BodyWriterTest {
     when(message.getContent(OutputStream.class)).thenReturn(null);
     when(message.getContent(XMLStreamWriter.class)).thenReturn(null);
 
-    bodyWriter.handleMessage(message);
-
-    // No exception should be thrown, method should return early when no output stream or writer
+    // No output stream and no writer -> handleMessage returns early before resolving the body
+    // type, without throwing.
+    assertDoesNotThrow(() -> bodyWriter.handleMessage(message));
+    verify(message, never()).get(Type.class);
   }
 
   @Test
@@ -144,9 +152,10 @@ class BodyWriterTest {
 
   @Test
   void testWriteBodyWithNullObject() {
-    // writeBody with null object should return early without doing anything
-    bodyWriter.writeBody(null, message, String.class, String.class);
-    // No exception should be thrown
+    // writeBody with a null object returns early without throwing and never reads the protocol
+    // headers off the message.
+    assertDoesNotThrow(() -> bodyWriter.writeBody(null, message, String.class, String.class));
+    verify(message, never()).get(Message.PROTOCOL_HEADERS);
   }
 
   @Test

@@ -204,20 +204,17 @@ public class ProfileInstallCommandTest {
   }
 
   @Test
-  public void testInstallPostInstallModuleFailure() {
+  public void testInstallPostInstallModuleFailure() throws Exception {
+    Feature postInstallFeature = createMockFeature("admin-post-install-modules");
+    when(featuresService.getFeature("admin-post-install-modules")).thenReturn(postInstallFeature);
+    when(featuresService.isInstalled(postInstallFeature)).thenReturn(false);
+    doThrow(Exception.class)
+        .when(featuresService)
+        .installFeature("admin-post-install-modules", NO_AUTO_REFRESH);
+    profileInstallCommand.profileName = "devProfile";
     assertThrows(
         Exception.class,
-        () -> {
-          Feature postInstallFeature = createMockFeature("admin-post-install-modules");
-          when(featuresService.getFeature("admin-post-install-modules"))
-              .thenReturn(postInstallFeature);
-          when(featuresService.isInstalled(postInstallFeature)).thenReturn(false);
-          doThrow(Exception.class)
-              .when(featuresService)
-              .installFeature("admin-post-install-modules", NO_AUTO_REFRESH);
-          profileInstallCommand.profileName = "devProfile";
-          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
-        });
+        () -> profileInstallCommand.doExecute(applicationService, featuresService, bundleService));
   }
 
   @Test
@@ -249,20 +246,18 @@ public class ProfileInstallCommandTest {
   }
 
   @Test
-  public void testUninstallInstallerFailure() {
+  public void testUninstallInstallerFailure() throws Exception {
+    Feature installerFeature = createMockFeature("admin-modules-installer");
+    this.featuresService = mock(FeaturesService.class);
+    when(featuresService.getFeature(anyString())).thenReturn(installerFeature);
+    when(featuresService.isInstalled(installerFeature)).thenReturn(true);
+    doThrow(Exception.class)
+        .when(featuresService)
+        .uninstallFeature("admin-modules-installer", "0.0.0", NO_AUTO_REFRESH);
+    profileInstallCommand.profileName = "invalidStopBundles";
     assertThrows(
         Exception.class,
-        () -> {
-          Feature installerFeature = createMockFeature("admin-modules-installer");
-          this.featuresService = mock(FeaturesService.class);
-          when(featuresService.getFeature(anyString())).thenReturn(installerFeature);
-          when(featuresService.isInstalled(installerFeature)).thenReturn(true);
-          doThrow(Exception.class)
-              .when(featuresService)
-              .uninstallFeature("admin-modules-installer", "0.0.0", NO_AUTO_REFRESH);
-          profileInstallCommand.profileName = "invalidStopBundles";
-          profileInstallCommand.doExecute(applicationService, featuresService, bundleService);
-        });
+        () -> profileInstallCommand.doExecute(applicationService, featuresService, bundleService));
   }
 
   @Test

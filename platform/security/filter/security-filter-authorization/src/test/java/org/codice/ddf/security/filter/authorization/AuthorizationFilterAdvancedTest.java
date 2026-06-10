@@ -15,6 +15,7 @@ package org.codice.ddf.security.filter.authorization;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -465,16 +466,14 @@ public class AuthorizationFilterAdvancedTest {
 
   @Test
   public void testInitMethod() {
-    // Test initialization
-    authorizationFilter.init();
-    // Should complete without errors
+    // Test initialization completes without throwing
+    assertDoesNotThrow(() -> authorizationFilter.init());
   }
 
   @Test
   public void testDestroyMethod() {
-    // Test destroy method
-    authorizationFilter.destroy();
-    // Should complete without errors
+    // Test destroy method completes without throwing
+    assertDoesNotThrow(() -> authorizationFilter.destroy());
   }
 
   // ==================== Different Permission Types Tests ====================

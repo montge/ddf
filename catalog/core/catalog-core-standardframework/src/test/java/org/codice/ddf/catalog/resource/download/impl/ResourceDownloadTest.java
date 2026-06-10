@@ -138,6 +138,8 @@ public class ResourceDownloadTest {
 
     // Perform Test
     resourceDownloadMBean.copyToLocalSite(SOURCE_ID, METACARD_ID);
+
+    verify(mockCatalogFramework).getResource(any(ResourceRequest.class), eq(SOURCE_ID));
   }
 
   @Test

@@ -651,8 +651,8 @@ public class ExpirationDatePluginTest {
   }
 
   @Test
-  public void testSettersAreLogged() {
-    // Test that setters work correctly and can be called multiple times
+  public void testSettersAreLogged() throws PluginExecutionException, StopProcessingException {
+    // Setters can be called multiple times; the last value set must be the one applied.
     expirationDatePlugin.setOffsetFromCreatedDate(5);
     expirationDatePlugin.setOverwriteIfBlank(false);
     expirationDatePlugin.setOverwriteIfExists(true);
@@ -661,7 +661,15 @@ public class ExpirationDatePluginTest {
     expirationDatePlugin.setOverwriteIfBlank(true);
     expirationDatePlugin.setOverwriteIfExists(false);
 
-    // No assertions needed, just verify setters don't throw exceptions
+    when(mockCreateRequest.getMetacards()).thenReturn(createMockMetacardsWithNoExpirationDate(1));
+
+    expirationDatePlugin.process(mockCreateRequest);
+
+    // The blank expiration is overwritten using the most recently set offset (15 days).
+    Metacard metacard = mockCreateRequest.getMetacards().get(0);
+    assertThat(metacard.getExpirationDate(), notNullValue());
+    DateTime expirationDate = new DateTime(metacard.getExpirationDate());
+    assertThat(expirationDate.equals(CREATED_DATE.plusDays(15)), is(true));
   }
 
   @Test

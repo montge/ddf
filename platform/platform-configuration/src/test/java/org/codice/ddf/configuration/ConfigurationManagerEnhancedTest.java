@@ -19,9 +19,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -128,50 +131,71 @@ public class ConfigurationManagerEnhancedTest {
   @Test
   public void testSetProtocol() {
     configManager.setProtocol(TEST_PROTOCOL);
+    configManager.init();
 
-    // Protocol should be stored in configuration properties
+    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(mockWatcher).configurationUpdateCallback(captor.capture());
+    assertThat(captor.getValue().get(ConfigurationManager.PROTOCOL), is(TEST_PROTOCOL));
   }
 
   @Test
   public void testSetHost() {
     configManager.setHost(TEST_HOST);
+    configManager.init();
 
-    // Host should be stored in configuration properties
+    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(mockWatcher).configurationUpdateCallback(captor.capture());
+    assertThat(captor.getValue().get(ConfigurationManager.HOST), is(TEST_HOST));
   }
 
   @Test
   public void testSetPort() {
     configManager.setPort(TEST_PORT);
+    configManager.init();
 
-    // Port should be stored in configuration properties
+    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(mockWatcher).configurationUpdateCallback(captor.capture());
+    assertThat(captor.getValue().get(ConfigurationManager.PORT), is(TEST_PORT));
   }
 
   @Test
   public void testSetId() {
     configManager.setId(TEST_SITE_NAME);
+    configManager.init();
 
-    // Site name should be stored in configuration properties
+    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(mockWatcher).configurationUpdateCallback(captor.capture());
+    assertThat(captor.getValue().get(ConfigurationManager.SITE_NAME), is(TEST_SITE_NAME));
   }
 
   @Test
   public void testSetVersion() {
     configManager.setVersion(TEST_VERSION);
+    configManager.init();
 
-    // Version should be stored in configuration properties
+    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(mockWatcher).configurationUpdateCallback(captor.capture());
+    assertThat(captor.getValue().get(ConfigurationManager.VERSION), is(TEST_VERSION));
   }
 
   @Test
   public void testSetOrganization() {
     configManager.setOrganization(TEST_ORGANIZATION);
+    configManager.init();
 
-    // Organization should be stored in configuration properties
+    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(mockWatcher).configurationUpdateCallback(captor.capture());
+    assertThat(captor.getValue().get(ConfigurationManager.ORGANIZATION), is(TEST_ORGANIZATION));
   }
 
   @Test
   public void testSetContact() {
     configManager.setContact(TEST_CONTACT);
+    configManager.init();
 
-    // Contact should be stored in configuration properties
+    ArgumentCaptor<Map<String, String>> captor = ArgumentCaptor.forClass(Map.class);
+    verify(mockWatcher).configurationUpdateCallback(captor.capture());
+    assertThat(captor.getValue().get(ConfigurationManager.CONTACT), is(TEST_CONTACT));
   }
 
   @Test
@@ -283,9 +307,10 @@ public class ConfigurationManagerEnhancedTest {
 
   @Test
   public void testBindWithNullWatcher() {
-    configManager.bind(null, null);
+    assertDoesNotThrow(() -> configManager.bind(null, null));
 
-    // Should not throw exception
+    // A null watcher must not be notified
+    verify(mockWatcher, never()).configurationUpdateCallback(any());
   }
 
   @Test
@@ -491,28 +516,30 @@ public class ConfigurationManagerEnhancedTest {
   @Test
   public void testSettersWithNullValues() {
     // All setters should handle null gracefully without throwing
-    configManager.setProtocol(null);
-    configManager.setHost(null);
-    configManager.setPort(null);
-    configManager.setId(null);
-    configManager.setVersion(null);
-    configManager.setOrganization(null);
-    configManager.setContact(null);
-
-    // Should not throw exception
+    assertDoesNotThrow(
+        () -> {
+          configManager.setProtocol(null);
+          configManager.setHost(null);
+          configManager.setPort(null);
+          configManager.setId(null);
+          configManager.setVersion(null);
+          configManager.setOrganization(null);
+          configManager.setContact(null);
+        });
   }
 
   @Test
   public void testSettersWithEmptyStrings() {
-    configManager.setProtocol("");
-    configManager.setHost("");
-    configManager.setPort("");
-    configManager.setId("");
-    configManager.setVersion("");
-    configManager.setOrganization("");
-    configManager.setContact("");
-
-    // Should not throw exception
+    assertDoesNotThrow(
+        () -> {
+          configManager.setProtocol("");
+          configManager.setHost("");
+          configManager.setPort("");
+          configManager.setId("");
+          configManager.setVersion("");
+          configManager.setOrganization("");
+          configManager.setContact("");
+        });
   }
 
   @Test

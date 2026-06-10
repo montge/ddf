@@ -22,11 +22,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.codice.ddf.configuration.SystemBaseUrl;
 import org.codice.ddf.test.common.configurators.BundleOptionBuilder.BundleOption;
 import org.codice.ddf.test.common.configurators.FeatureOptionBuilder.FeatureOption;
@@ -291,12 +296,33 @@ public abstract class DdfBaseOptions implements ApplicationOptions {
 
   private Option installStartupFile(InputStream is, String destination) {
     try {
-      File tempFile = Files.createTempFile("StartupFile", ".temp").toFile();
+      File tempFile = createSecureTempFile();
       tempFile.deleteOnExit();
       FileUtils.copyInputStreamToFile(is, tempFile);
       return replaceConfigurationFile(destination, tempFile);
     } catch (IOException e) {
       throw new IllegalArgumentException(e);
     }
+  }
+
+  /**
+   * Creates a temporary file with owner-only permissions so that other local users cannot read or
+   * tamper with it (mitigates insecure temporary file race conditions, CWE-377/CWE-379).
+   *
+   * @return a newly created, owner-only readable/writable temporary file
+   * @throws IOException if the temporary file cannot be created
+   */
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
+  private static File createSecureTempFile() throws IOException {
+    if (SystemUtils.IS_OS_UNIX) {
+      Set<PosixFilePermission> ownerOnly = PosixFilePermissions.fromString("rw-------");
+      FileAttribute<Set<PosixFilePermission>> attr =
+          PosixFilePermissions.asFileAttribute(ownerOnly);
+      return Files.createTempFile("StartupFile", ".temp", attr).toFile();
+    }
+    return Files.createTempFile("StartupFile", ".temp").toFile();
   }
 }

@@ -60,8 +60,22 @@ public class XMLUtilsParameterizedTest {
 
   private static final XMLUtils XML_UTILS = XMLUtils.getInstance();
 
+  /**
+   * Type check that avoids comparing classes by their fully-qualified name. The referenced
+   * implementation classes live in non-exported JDK modules and therefore cannot be referenced
+   * directly with {@code instanceof}, so the class is resolved reflectively and {@link
+   * Class#isInstance(Object)} is used to perform a true type comparison.
+   */
+  private static boolean isInstanceOf(Object obj, String className) {
+    try {
+      return Class.forName(className).isInstance(obj);
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+
   @Nested
-  public static class TestDocumentBuilderFactoryXXE {
+  public class TestDocumentBuilderFactoryXXE {
 
     static Stream<String> valuesToTestWith() {
       return XMLUtils.DOCUMENT_BUILDER_FACTORY_IMPL_WHITELIST.stream();
@@ -94,9 +108,8 @@ public class XMLUtilsParameterizedTest {
         // This specific implementation throws a TransformerException when external entity injection
         // is attempted
         // If you aren't this implementation, assume that the exception was actually a bad thing
-        if (!dbf.getClass()
-            .getName()
-            .equals("com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl")) {
+        if (!isInstanceOf(
+            dbf, "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl")) {
           throw e;
         }
       }
@@ -114,7 +127,7 @@ public class XMLUtilsParameterizedTest {
   }
 
   @Nested
-  public static class TestXMLTransformerFactoryXXE {
+  public class TestXMLTransformerFactoryXXE {
 
     static Stream<String> valuesToTestWith() {
       return XMLUtils.TRANSFORMER_FACTORY_IMPL_WHITELIST.stream();
@@ -150,9 +163,8 @@ public class XMLUtilsParameterizedTest {
         // This specific implementation throws a TransformerException when external entity injection
         // is attempted
         // If you aren't this implementation, assume that the exception was actually a bad thing
-        if (!tf.getClass()
-            .getName()
-            .equals("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl")) {
+        if (!isInstanceOf(
+            tf, "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl")) {
           throw e;
         }
       }
@@ -166,7 +178,7 @@ public class XMLUtilsParameterizedTest {
   }
 
   @Nested
-  public static class TestSAXParserFactoryXXE {
+  public class TestSAXParserFactoryXXE {
 
     static Stream<String> valuesToTestWith() {
       return XMLUtils.SAX_PARSER_FACTORY_IMPL_WHITELIST.stream();
@@ -216,7 +228,7 @@ public class XMLUtilsParameterizedTest {
   }
 
   @Nested
-  public static class TestXMLReaderXXE {
+  public class TestXMLReaderXXE {
 
     static Stream<String> valuesToTestWith() {
       return XMLUtils.XML_READER_IMPL_WHITELIST.stream();

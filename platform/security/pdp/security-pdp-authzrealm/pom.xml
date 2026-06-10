@@ -174,7 +174,10 @@
                         <configuration>
                             <rules>
                                 <ArtifactSizeEnforcerRule implementation="org.codice.maven.artifactsize.ArtifactSizeEnforcerRule">
-                                    <maxArtifactSize>3.2_MB</maxArtifactSize>
+                                    <!-- 3.2 MB cap exceeded by ~10 KB after the security bumps of
+                                         embedded commons-io 2.22.0 / httpclient 4.5.14 (Karaf
+                                         4.4.11 alignment); current jar is ~3.37 MB. -->
+                                    <maxArtifactSize>3.5_MB</maxArtifactSize>
                                 </ArtifactSizeEnforcerRule>
                             </rules>
                         </configuration>

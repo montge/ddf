@@ -25,6 +25,10 @@
         <feature>common-system</feature>
         <feature>spring</feature>
         <feature>guava</feature>
+        <!-- platform-util uses org.apache.commons.text.StringSubstitutor; provide the bundle so
+             the feature self-resolves. Required since the commons-text bump to 1.15.0 raised
+             platform-util's Import-Package floor to [1.15.0,2.0.0). -->
+        <bundle>mvn:org.apache.commons/commons-text/${commons-text.version}</bundle>
         <bundle>mvn:ddf.platform.util/platform-util/${project.version}</bundle>
     </feature>
 

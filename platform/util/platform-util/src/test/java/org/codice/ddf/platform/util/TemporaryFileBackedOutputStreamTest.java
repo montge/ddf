@@ -15,6 +15,7 @@ package org.codice.ddf.platform.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.io.ByteSource;
@@ -110,7 +111,7 @@ public class TemporaryFileBackedOutputStreamTest {
   @Test
   public void testFlush() throws IOException {
     temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY);
-    temporaryFileBackedOutputStream.flush();
+    assertDoesNotThrow(() -> temporaryFileBackedOutputStream.flush());
   }
 
   /** Make sure that flush doesn't throw an exception after close is called */
@@ -118,6 +119,6 @@ public class TemporaryFileBackedOutputStreamTest {
   public void testFlushAfterClose() throws IOException {
     temporaryFileBackedOutputStream.write(TEST_BYTE_ARRAY);
     temporaryFileBackedOutputStream.close();
-    temporaryFileBackedOutputStream.flush();
+    assertDoesNotThrow(() -> temporaryFileBackedOutputStream.flush());
   }
 }

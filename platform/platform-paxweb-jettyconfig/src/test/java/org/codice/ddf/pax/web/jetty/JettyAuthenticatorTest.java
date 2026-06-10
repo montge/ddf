@@ -16,6 +16,7 @@ package org.codice.ddf.pax.web.jetty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -245,7 +246,11 @@ public class JettyAuthenticatorTest {
 
   @Test
   public void testRemoveNullSecurityFilter() {
+    // when
     jettyAuthenticator.removeSecurityFilter(null);
+
+    // then: the null-guard short-circuits, so no SecurityFilter is ever looked up or destroyed
+    verify(bundleContext, never()).getService(any(ServiceReference.class));
   }
 
   @Test

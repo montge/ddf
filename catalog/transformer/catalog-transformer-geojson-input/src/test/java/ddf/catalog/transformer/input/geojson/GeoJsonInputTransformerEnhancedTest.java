@@ -16,11 +16,14 @@ package ddf.catalog.transformer.input.geojson;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
+import ddf.catalog.data.AttributeRegistry;
 import ddf.catalog.data.Metacard;
+import ddf.catalog.data.impl.AttributeRegistryImpl;
 import ddf.catalog.transform.CatalogTransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -47,6 +50,12 @@ public class GeoJsonInputTransformerEnhancedTest {
   public void setUp() {
     transformer = new GeoJsonInputTransformer();
     transformer.setInputTransformers(mock(SortedServiceList.class));
+    // The transformer looks up unknown property keys in the AttributeRegistry. In the OSGi
+    // runtime this is injected via blueprint; provide a real (empty) registry so unknown
+    // properties (e.g. injection attempts, nested objects) are silently ignored instead of
+    // triggering a NullPointerException.
+    AttributeRegistry attributeRegistry = new AttributeRegistryImpl();
+    transformer.setAttributeRegistry(attributeRegistry);
   }
 
   @Test
@@ -165,8 +174,8 @@ public class GeoJsonInputTransformerEnhancedTest {
             + "  \"type\": \"Feature\","
             + "  \"geometry\": null,"
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"No Geometry Feature\"},"
-            + "    \"description\": {\"value\": \"A feature without geometry\"}"
+            + "    \"title\": \"No Geometry Feature\","
+            + "    \"description\": \"A feature without geometry\""
             + "  }"
             + "}";
 
@@ -180,10 +189,11 @@ public class GeoJsonInputTransformerEnhancedTest {
   public void testTransformWithPropertiesOnly() throws Exception {
     String geoJson =
         "{"
+            + "  \"type\": \"Feature\","
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"Properties Only\"},"
-            + "    \"description\": {\"value\": \"Test\"},"
-            + "    \"created\": {\"value\": \"2021-01-01T00:00:00Z\"}"
+            + "    \"title\": \"Properties Only\","
+            + "    \"description\": \"Test\","
+            + "    \"created\": \"2021-01-01T00:00:00Z\""
             + "  }"
             + "}";
 
@@ -199,11 +209,11 @@ public class GeoJsonInputTransformerEnhancedTest {
         "{"
             + "  \"type\": \"Feature\","
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"Full Properties\"},"
-            + "    \"description\": {\"value\": \"Complete test\"},"
-            + "    \"id\": {\"value\": \"test-id-456\"},"
-            + "    \"created\": {\"value\": \"2021-01-01T12:00:00Z\"},"
-            + "    \"modified\": {\"value\": \"2021-01-02T12:00:00Z\"}"
+            + "    \"title\": \"Full Properties\","
+            + "    \"description\": \"Complete test\","
+            + "    \"id\": \"test-id-456\","
+            + "    \"created\": \"2021-01-01T12:00:00Z\","
+            + "    \"modified\": \"2021-01-02T12:00:00Z\""
             + "  }"
             + "}";
 
@@ -236,9 +246,10 @@ public class GeoJsonInputTransformerEnhancedTest {
   public void testTransformWithSpecialCharactersInProperties() throws Exception {
     String geoJson =
         "{"
+            + "  \"type\": \"Feature\","
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"Test & Title <special> \\\"quoted\\\"\"},"
-            + "    \"description\": {\"value\": \"Line1\\nLine2\\tTabbed\"}"
+            + "    \"title\": \"Test & Title <special> \\\"quoted\\\"\","
+            + "    \"description\": \"Line1\\nLine2\\tTabbed\""
             + "  }"
             + "}";
 
@@ -253,9 +264,10 @@ public class GeoJsonInputTransformerEnhancedTest {
   public void testTransformWithUnicodeCharacters() throws Exception {
     String geoJson =
         "{"
+            + "  \"type\": \"Feature\","
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"测试标题 Тест العنوان\"},"
-            + "    \"description\": {\"value\": \"Unicode: ñ é ü ö 日本語\"}"
+            + "    \"title\": \"测试标题 Тест العنوان\","
+            + "    \"description\": \"Unicode: ñ é ü ö 日本語\""
             + "  }"
             + "}";
 
@@ -269,8 +281,9 @@ public class GeoJsonInputTransformerEnhancedTest {
   public void testTransformWithEmojiCharacters() throws Exception {
     String geoJson =
         "{"
+            + "  \"type\": \"Feature\","
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"Emoji Test 😀 🎉 🚀\"}"
+            + "    \"title\": \"Emoji Test 😀 🎉 🚀\""
             + "  }"
             + "}";
 
@@ -377,8 +390,9 @@ public class GeoJsonInputTransformerEnhancedTest {
   public void testPreventsPropertyInjection() throws Exception {
     String geoJson =
         "{"
+            + "  \"type\": \"Feature\","
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"Normal Title\"},"
+            + "    \"title\": \"Normal Title\","
             + "    \"malicious-script\": \"<script>alert('XSS')</script>\","
             + "    \"path-traversal\": \"../../etc/passwd\""
             + "  }"
@@ -405,12 +419,13 @@ public class GeoJsonInputTransformerEnhancedTest {
             + "  }"
             + "}";
 
-    try {
-      Metacard result = transformer.transform(toInputStream(geoJson));
-      // May succeed with null geometry or fail
-    } catch (CatalogTransformerException e) {
-      // Expected for invalid geometry type
-    }
+    // An unrecognized geometry type is handled gracefully: CompositeGeometry yields no geometry,
+    // so the transform succeeds but no location is set on the metacard (rather than crashing or
+    // fabricating a bogus location).
+    Metacard result = transformer.transform(toInputStream(geoJson));
+
+    assertThat(result, notNullValue());
+    assertThat(result.getLocation(), is(nullValue()));
   }
 
   @Test
@@ -472,12 +487,10 @@ public class GeoJsonInputTransformerEnhancedTest {
             + "  ]"
             + "}";
 
-    try {
-      // FeatureCollection might be transformed to first feature or rejected
-      Metacard result = transformer.transform(toInputStream(geoJson));
-    } catch (CatalogTransformerException e) {
-      // May not support FeatureCollection directly
-    }
+    // The transformer only supports a root "type" of "Feature"; a "FeatureCollection" is rejected
+    // with a CatalogTransformerException rather than being silently transformed.
+    assertThrows(
+        CatalogTransformerException.class, () -> transformer.transform(toInputStream(geoJson)));
   }
 
   @Test
@@ -501,7 +514,7 @@ public class GeoJsonInputTransformerEnhancedTest {
 
   @Test
   public void testTransformMinimalGeoJson() throws Exception {
-    String geoJson = "{\"properties\":{}}";
+    String geoJson = "{\"type\":\"Feature\",\"properties\":{}}";
 
     Metacard result = transformer.transform(toInputStream(geoJson));
 
@@ -552,8 +565,9 @@ public class GeoJsonInputTransformerEnhancedTest {
   public void testTransformWithNestedProperties() throws Exception {
     String geoJson =
         "{"
+            + "  \"type\": \"Feature\","
             + "  \"properties\": {"
-            + "    \"title\": {\"value\": \"Nested Test\"},"
+            + "    \"title\": \"Nested Test\","
             + "    \"nested\": {"
             + "      \"level1\": {"
             + "        \"level2\": \"deep value\""

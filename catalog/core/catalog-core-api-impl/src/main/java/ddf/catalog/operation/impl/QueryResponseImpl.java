@@ -304,7 +304,7 @@ public class QueryResponseImpl extends ResponseImpl<QueryRequest> implements Que
     List<Result> results = new ArrayList<Result>();
     if (hasMoreResults()) {
       Result result = null;
-      for (int i = 0; i < size && (result = handleTake()) != null; i++) {
+      for (long i = 0; i < size && (result = handleTake()) != null; i++) {
         results.add(result);
       }
     }

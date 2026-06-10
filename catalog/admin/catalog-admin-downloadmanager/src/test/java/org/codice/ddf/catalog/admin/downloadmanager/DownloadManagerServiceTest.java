@@ -22,11 +22,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ddf.catalog.event.retrievestatus.DownloadStatusInfo;
+import java.lang.management.ManagementFactory;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -147,10 +150,26 @@ public class DownloadManagerServiceTest {
   }
 
   @Test
-  public void testInitAndDestroy() {
-    // Test that init and destroy don't throw exceptions
+  public void testInitAndDestroy() throws Exception {
+    ObjectName objectName =
+        new ObjectName(DownloadStatusInfo.class.getName() + ":service=download-manager");
+    MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+    // Ensure a clean slate in case a prior test left the MBean registered.
+    if (mBeanServer.isRegistered(objectName)) {
+      mBeanServer.unregisterMBean(objectName);
+    }
+
     service.init();
+    assertThat(
+        "init() should register the download-manager MBean",
+        mBeanServer.isRegistered(objectName),
+        is(true));
+
     service.destroy();
+    assertThat(
+        "destroy() should unregister the download-manager MBean",
+        mBeanServer.isRegistered(objectName),
+        is(false));
   }
 
   private Map<String, String> createDownloadStatus(String downloadId, String status) {

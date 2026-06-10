@@ -33,15 +33,19 @@ public class ValidateExecutor {
 
     ForkJoinPool forkJoinPool = new ForkJoinPool();
     List<ValidateReport> results;
-    results =
-        forkJoinPool
-            .submit(
-                () ->
-                    metacards.stream()
-                        .parallel()
-                        .map(metacard -> generateReport(metacard, validators))
-                        .collect(Collectors.toList()))
-            .get();
+    try {
+      results =
+          forkJoinPool
+              .submit(
+                  () ->
+                      metacards.stream()
+                          .parallel()
+                          .map(metacard -> generateReport(metacard, validators))
+                          .collect(Collectors.toList()))
+              .get();
+    } finally {
+      forkJoinPool.shutdown();
+    }
     return results;
   }
 

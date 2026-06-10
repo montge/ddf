@@ -109,12 +109,14 @@ public class GazetteerQueryOfflineSolr implements GeoEntryQueryable {
     QueryResponse response = null;
     try {
       response = client.query(solrQuery, METHOD.POST);
+      return response.getResults().stream()
+          .map(this::transformMetacardToGeoEntry)
+          .collect(Collectors.toList());
     } catch (SolrServerException | IOException e) {
       throw new GeoEntryQueryException("Error while querying", e);
+    } finally {
+      removeThreadLocals();
     }
-    return response.getResults().stream()
-        .map(this::transformMetacardToGeoEntry)
-        .collect(Collectors.toList());
   }
 
   @Override
@@ -126,14 +128,15 @@ public class GazetteerQueryOfflineSolr implements GeoEntryQueryable {
     QueryResponse response = null;
     try {
       response = client.query(solrQuery, METHOD.POST);
+      return response.getResults().stream()
+          .map(this::transformMetacardToGeoEntry)
+          .findFirst()
+          .orElseThrow(() -> new GeoEntryQueryException("Could not find id"));
     } catch (SolrServerException | IOException e) {
       throw new GeoEntryQueryException("Error while querying by ID", e);
+    } finally {
+      removeThreadLocals();
     }
-
-    return response.getResults().stream()
-        .map(this::transformMetacardToGeoEntry)
-        .findFirst()
-        .orElseThrow(() -> new GeoEntryQueryException("Could not find id"));
   }
 
   @Override
@@ -183,34 +186,38 @@ public class GazetteerQueryOfflineSolr implements GeoEntryQueryable {
   @Override
   public List<NearbyLocation> getNearestCities(String location, int radiusInKm, int maxResults)
       throws ParseException, GeoEntryQueryException {
-    Geometry geometry;
     try {
-      geometry = WKT_READER_THREAD_LOCAL.get().read(location);
-    } catch (org.locationtech.jts.io.ParseException e) {
-      throw new GeoEntryQueryException("Could not parse location");
+      Geometry geometry;
+      try {
+        geometry = WKT_READER_THREAD_LOCAL.get().read(location);
+      } catch (org.locationtech.jts.io.ParseException e) {
+        throw new GeoEntryQueryException("Could not parse location");
+      }
+      final Geometry originalGeometry = geometry;
+      Geometry bufferedGeo = originalGeometry.buffer(convertKilometerToDegree(radiusInKm), 14);
+      String wkt = WKT_WRITER_THREAD_LOCAL.get().write(bufferedGeo);
+
+      String q =
+          String.format(
+              "%s_index:\"Intersects( %s ) AND %s\"",
+              LOCATION, ClientUtils.escapeQueryChars(wkt), CITY_SOLR_QUERY);
+
+      SolrQuery solrQuery = new SolrQuery(q);
+      solrQuery.setRows(Math.min(maxResults, MAX_RESULTS));
+
+      QueryResponse response;
+      try {
+        response = client.query(solrQuery, METHOD.POST);
+      } catch (SolrServerException | IOException e) {
+        throw new GeoEntryQueryException("Error executing query for nearest cities", e);
+      }
+
+      return response.getResults().stream()
+          .map(result -> convert(result, originalGeometry))
+          .collect(Collectors.toList());
+    } finally {
+      removeThreadLocals();
     }
-    final Geometry originalGeometry = geometry;
-    Geometry bufferedGeo = originalGeometry.buffer(convertKilometerToDegree(radiusInKm), 14);
-    String wkt = WKT_WRITER_THREAD_LOCAL.get().write(bufferedGeo);
-
-    String q =
-        String.format(
-            "%s_index:\"Intersects( %s ) AND %s\"",
-            LOCATION, ClientUtils.escapeQueryChars(wkt), CITY_SOLR_QUERY);
-
-    SolrQuery solrQuery = new SolrQuery(q);
-    solrQuery.setRows(Math.min(maxResults, MAX_RESULTS));
-
-    QueryResponse response;
-    try {
-      response = client.query(solrQuery, METHOD.POST);
-    } catch (SolrServerException | IOException e) {
-      throw new GeoEntryQueryException("Error executing query for nearest cities", e);
-    }
-
-    return response.getResults().stream()
-        .map(result -> convert(result, originalGeometry))
-        .collect(Collectors.toList());
   }
 
   private NearbyLocation convert(SolrDocument doc, Geometry originalLocation) {
@@ -301,36 +308,40 @@ public class GazetteerQueryOfflineSolr implements GeoEntryQueryable {
   @Override
   public Optional<String> getCountryCode(String wktLocation, int radius)
       throws GeoEntryQueryException, ParseException {
-    String wkt;
     try {
-      Point center =
-          WKT_READER_THREAD_LOCAL
-              .get()
-              .read(fixSelfIntersectingGeometry(wktLocation))
-              .getCentroid();
-      wkt = WKT_WRITER_THREAD_LOCAL.get().write(center.buffer(convertKilometerToDegree(radius)));
-    } catch (org.locationtech.jts.io.ParseException e) {
-      LOGGER.debug("Could not parse wkt: {}", wktLocation, e);
-      throw new GeoEntryQueryException("Could not parse wkt", e);
+      String wkt;
+      try {
+        Point center =
+            WKT_READER_THREAD_LOCAL
+                .get()
+                .read(fixSelfIntersectingGeometry(wktLocation))
+                .getCentroid();
+        wkt = WKT_WRITER_THREAD_LOCAL.get().write(center.buffer(convertKilometerToDegree(radius)));
+      } catch (org.locationtech.jts.io.ParseException e) {
+        LOGGER.debug("Could not parse wkt: {}", wktLocation, e);
+        throw new GeoEntryQueryException("Could not parse wkt", e);
+      }
+
+      SolrQuery solrQuery =
+          new SolrQuery(
+              String.format(
+                  "%s_index:\"Intersects( %s )\"", LOCATION, ClientUtils.escapeQueryChars(wkt)));
+      solrQuery.setRows(1);
+
+      QueryResponse response;
+      try {
+        response = client.query(solrQuery, METHOD.POST);
+      } catch (SolrServerException | IOException e) {
+        LOGGER.debug("Could not query for country code ({})", wktLocation, e);
+        throw new GeoEntryQueryException("Error encountered when querying", e);
+      }
+
+      return response.getResults().stream()
+          .findFirst()
+          .map(doc -> getField(doc, COUNTRY_CODE, String.class));
+    } finally {
+      removeThreadLocals();
     }
-
-    SolrQuery solrQuery =
-        new SolrQuery(
-            String.format(
-                "%s_index:\"Intersects( %s )\"", LOCATION, ClientUtils.escapeQueryChars(wkt)));
-    solrQuery.setRows(1);
-
-    QueryResponse response;
-    try {
-      response = client.query(solrQuery, METHOD.POST);
-    } catch (SolrServerException | IOException e) {
-      LOGGER.debug("Could not query for country code ({})", wktLocation, e);
-      throw new GeoEntryQueryException("Error encountered when querying", e);
-    }
-
-    return response.getResults().stream()
-        .findFirst()
-        .map(doc -> getField(doc, COUNTRY_CODE, String.class));
   }
 
   private String fixSelfIntersectingGeometry(String wkt) {
@@ -412,5 +423,14 @@ public class GazetteerQueryOfflineSolr implements GeoEntryQueryable {
 
   private double convertDegreeToKilometer(double distanceInDegrees) {
     return distanceInDegrees * KM_PER_DEGREE;
+  }
+
+  /**
+   * Clears the per-thread {@link WKTReader}/{@link WKTWriter} instances so the {@link ThreadLocal}
+   * values do not leak onto pooled/container-managed threads after a request completes.
+   */
+  private static void removeThreadLocals() {
+    WKT_WRITER_THREAD_LOCAL.remove();
+    WKT_READER_THREAD_LOCAL.remove();
   }
 }

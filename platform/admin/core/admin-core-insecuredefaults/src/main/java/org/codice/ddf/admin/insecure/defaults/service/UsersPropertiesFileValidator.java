@@ -27,13 +27,13 @@ public class UsersPropertiesFileValidator extends PropertiesFileValidator {
       "The default certificate user of [%s] was found in [%s].";
 
   static final String DEFAULT_CERT_USER_IS_USING_DEFAULT_PASSWORD_MSG =
-      "The default certificate user of [%s] was found in [%s] with default password of [%s].";
+      "The default certificate user of [%s] was found in [%s] with the default password.";
 
   static final String DEFAULT_ADMIN_USER_IS_USING_DEFAULT_PASSWORD_MSG =
-      "The default admin user of [%s] was found in [%s] with default password of [%s].";
+      "The default admin user of [%s] was found in [%s] with the default password.";
 
   static final String CANNOT_PARSE_PASSWORD_MSG =
-      "Unable to determine if [%s] is using insecure defaults. Cannot parse password from [%s].";
+      "Unable to determine if [%s] is using insecure defaults. Cannot parse password entry.";
 
   static final String USERS_PROPERTIES_FILE_EXISTS_MSG =
       "The users.properties file is present at [%s].";
@@ -109,8 +109,7 @@ public class UsersPropertiesFileValidator extends PropertiesFileValidator {
                 String.format(
                     DEFAULT_CERT_USER_IS_USING_DEFAULT_PASSWORD_MSG,
                     defaultCertificateUser,
-                    path,
-                    defaultCertificateUserPassword)));
+                    path)));
       }
     }
   }
@@ -127,10 +126,7 @@ public class UsersPropertiesFileValidator extends PropertiesFileValidator {
             new Alert(
                 Level.WARN,
                 String.format(
-                    DEFAULT_ADMIN_USER_IS_USING_DEFAULT_PASSWORD_MSG,
-                    defaultAdminUser,
-                    path,
-                    defaultAdminUserPassword)));
+                    DEFAULT_ADMIN_USER_IS_USING_DEFAULT_PASSWORD_MSG, defaultAdminUser, path)));
       }
     }
   }
@@ -143,7 +139,7 @@ public class UsersPropertiesFileValidator extends PropertiesFileValidator {
     if (parts != null && parts.length >= 1) {
       password = parts[0];
     } else {
-      alerts.add(new Alert(Level.WARN, String.format(CANNOT_PARSE_PASSWORD_MSG, path, value)));
+      alerts.add(new Alert(Level.WARN, String.format(CANNOT_PARSE_PASSWORD_MSG, path)));
     }
 
     return password;

@@ -99,14 +99,15 @@ public class OverlayActionProviderTest {
 
   @Test
   public void testNullOverlayPredicate() {
-    assertThrows(
-        IllegalArgumentException.class, () -> new OverlayActionProvider(null, TRANSFORMER_ID));
+    // commons-lang3 3.5+ Validate.notNull delegates to Objects.requireNonNull (throws NPE)
+    assertThrows(NullPointerException.class, () -> new OverlayActionProvider(null, TRANSFORMER_ID));
   }
 
   @Test
   public void testNullTransformerId() {
+    // commons-lang3 3.5+ Validate.notNull delegates to Objects.requireNonNull (throws NPE)
     assertThrows(
-        IllegalArgumentException.class, () -> new OverlayActionProvider(metacard -> true, null));
+        NullPointerException.class, () -> new OverlayActionProvider(metacard -> true, null));
   }
 
   @Test

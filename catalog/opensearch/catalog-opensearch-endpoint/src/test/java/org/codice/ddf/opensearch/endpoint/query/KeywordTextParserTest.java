@@ -16,6 +16,7 @@ package org.codice.ddf.opensearch.endpoint.query;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ddf.catalog.filter.FilterBuilder;
 import ddf.catalog.filter.proxy.builder.GeotoolsFilterBuilder;
@@ -26,6 +27,7 @@ import java.util.Map;
 import org.codice.ddf.opensearch.endpoint.ASTNode;
 import org.codice.ddf.opensearch.endpoint.KeywordFilterGenerator;
 import org.codice.ddf.opensearch.endpoint.KeywordTextParser;
+import org.geotools.api.filter.And;
 import org.geotools.api.filter.Filter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -202,9 +204,15 @@ public class KeywordTextParserTest {
       // ParsingResult<ASTNode> result = new
       // ReportingParseRunner(parser.inputPhrase()).run(input);
 
+      // The single input "A B  C D" is a valid implicit-AND phrase, so it must parse cleanly.
+      assertEquals(0, result.parseErrors.size(), "Failed on input [" + input + "].");
+
       KeywordFilterGenerator kfg = new KeywordFilterGenerator(filterBuilder);
       Filter filter = kfg.getFilterFromASTNode(result.resultValue);
 
+      // Four space-separated keywords combine into an AND filter, which GeoTools renders as
+      // an "And" filter referencing each keyword.
+      assertTrue(filter instanceof And, "Expected an AND filter for [" + input + "].");
       inputToOutput.put(input, filter.toString());
       // visualize(result);
     }

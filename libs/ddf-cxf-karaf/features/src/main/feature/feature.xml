@@ -96,7 +96,7 @@
         <bundle>wrap:mvn:wsdl4j/wsdl4j/1.6.3</bundle>
 
         <!-- Apache Neethi (WS-Policy) -->
-        <bundle>mvn:org.apache.neethi/neethi/3.2.0</bundle>
+        <bundle>mvn:org.apache.neethi/neethi/${wss4j.neethi.version}</bundle>
 
         <!-- CXF packages come from Camel's camel-cxf-all bundle.
              Do NOT install cxf-core-all here as it creates split-package conflict. -->
@@ -184,8 +184,10 @@
              Provides org.opensaml.core.config and other OpenSAML packages -->
         <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.opensaml/${opensaml.osgi.version}</bundle>
 
-        <!-- javax.mail needed by WSS4J 2.4.x (uses javax.mail, not jakarta.mail) -->
-        <bundle>mvn:com.sun.mail/javax.mail/1.6.2</bundle>
+        <!-- javax.mail needed by WSS4J 2.4.x (javax namespace, not jakarta.mail).
+             com.sun.mail:jakarta.mail 1.6.x is the maintained javax-namespace line
+             (com.sun.mail:javax.mail stopped at 1.6.2); 1.6.8 fixes the SMTP-injection CVE. -->
+        <bundle>mvn:com.sun.mail/jakarta.mail/1.6.8</bundle>
 
         <!-- WSS4J 2.4.x bundles -->
         <bundle>mvn:org.apache.wss4j/wss4j-ws-security-common/${wss4j.version}</bundle>

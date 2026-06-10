@@ -23,6 +23,7 @@ import static org.codice.ddf.test.common.options.TestResourcesOptions.getTestRes
 import static org.codice.ddf.test.common.options.TestResourcesOptions.includeTestResources;
 import static org.codice.ddf.test.common.options.VmOptions.defaultTimeout;
 import static org.codice.ddf.test.common.options.VmOptions.defaultVmOptions;
+import static org.junit.Assert.fail;
 import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.util.List;
@@ -73,8 +74,16 @@ public class ITAppsFeatures {
   }
 
   @Test
-  public void installAndUninstallFeature() throws Exception {
-    syncInstaller.installFeatures(featureName);
-    syncInstaller.uninstallFeatures(featureName);
+  public void installAndUninstallFeature() {
+    // Installing and uninstalling the feature must complete without error. The
+    // SynchronizedInstaller waits for the feature to reach the Started/Active state (install) and
+    // for all bundles to return to an Active state (uninstall), throwing if those states are not
+    // reached. A thrown exception means the feature failed to resolve, start, or cleanly uninstall.
+    try {
+      syncInstaller.installFeatures(featureName);
+      syncInstaller.uninstallFeatures(featureName);
+    } catch (Exception e) {
+      fail("Feature '" + featureName + "' failed to install and uninstall cleanly: " + e);
+    }
   }
 }

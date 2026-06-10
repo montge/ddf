@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -505,16 +506,16 @@ public class FileSystemTokenStorageSecurityTest {
   // ==================== File System Security Tests ====================
 
   @Test
-  public void testInvalidBaseDirectory() throws Exception {
-    // Test with invalid base directory path
+  public void testInvalidBaseDirectory() {
+    // A base directory containing NUL bytes is a path-injection attempt and must be rejected
+    // rather than silently used. commons-io's FilenameUtils.normalize (called first in
+    // setBaseDirectory) fails fast on embedded null bytes with an IllegalArgumentException.
     FileSystemTokenStorage newStorage = new FileSystemTokenStorage(crypter);
 
-    try {
-      newStorage.setBaseDirectory("\0invalid\0path");
-      // Should fall back to karaf.home
-    } catch (Exception e) {
-      // Expected for invalid path
-    }
+    IllegalArgumentException thrown =
+        assertThrows(
+            IllegalArgumentException.class, () -> newStorage.setBaseDirectory("\0invalid\0path"));
+    assertThat(thrown.getMessage(), is(notNullValue()));
   }
 
   @Test
@@ -566,13 +567,13 @@ public class FileSystemTokenStorageSecurityTest {
 
   @Test
   public void testNullUserId() {
-    // Test with null user ID (should cause NullPointerException)
-    try {
-      tokenStorage.create(
-          null, TEST_SOURCE_ID, TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, TEST_DISCOVERY_URL);
-    } catch (NullPointerException e) {
-      // Expected
-    }
+    // A null user ID cannot be hashed into a file name, so create() must reject it by throwing
+    // a NullPointerException rather than writing tokens to an unpredictable location.
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            tokenStorage.create(
+                null, TEST_SOURCE_ID, TEST_ACCESS_TOKEN, TEST_REFRESH_TOKEN, TEST_DISCOVERY_URL));
   }
 
   @Test

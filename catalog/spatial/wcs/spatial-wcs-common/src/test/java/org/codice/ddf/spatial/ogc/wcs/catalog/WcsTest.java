@@ -241,11 +241,17 @@ public class WcsTest {
     // Create a mock implementation to verify interface can be implemented
     Wcs mockWcs = mock(Wcs.class);
 
-    WCSCapabilitiesType mockCapabilities = mock(WCSCapabilitiesType.class);
+    // Use real JAXB instances rather than Mockito mocks. These schema-generated classes
+    // (wcs-v_1_0_0-schema 1.1.0) were compiled against the legacy javax.xml.bind API, whose
+    // ValidationEventLocator is not present on the JDK 21 / jakarta.xml.bind classpath. Mockito's
+    // bytebuddy mock maker fails because it must instrument the entire type hierarchy (which
+    // references the missing javax.xml.bind types). A plain no-arg construction does not, so this
+    // still exercises the interface stubbing without an unmockable type.
+    WCSCapabilitiesType mockCapabilities = new WCSCapabilitiesType();
     when(mockWcs.getCapabilities(any(GetCapabilitiesRequest.class))).thenReturn(mockCapabilities);
     when(mockWcs.getCapabilities(any(GetCapabilities.class))).thenReturn(mockCapabilities);
 
-    CoverageDescription mockDescription = mock(CoverageDescription.class);
+    CoverageDescription mockDescription = new CoverageDescription();
     when(mockWcs.describeCoverage(any(DescribeCoverageRequest.class))).thenReturn(mockDescription);
     when(mockWcs.describeCoverage(any(DescribeCoverage.class))).thenReturn(mockDescription);
 

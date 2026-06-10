@@ -194,7 +194,7 @@ public class Antimeridian {
     if (size <= 1) {
       return 0;
     } else {
-      int shiftX = 0;
+      double shiftX = 0;
       int shiftXPage = 0;
       int shiftXPageMin = 0;
       int shiftXPageMax = 0;

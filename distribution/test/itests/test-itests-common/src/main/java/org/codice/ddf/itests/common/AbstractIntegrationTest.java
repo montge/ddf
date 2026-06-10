@@ -44,7 +44,6 @@ import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.config.XmlConfig;
 import io.restassured.response.ValidatableResponse;
-import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import java.io.ByteArrayInputStream;
@@ -55,10 +54,13 @@ import java.lang.reflect.Proxy;
 import java.net.ServerSocket;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -271,11 +273,11 @@ public abstract class AbstractIntegrationTest {
 
     private final DynamicUrl url;
 
-    public DynamicUrl(String root, @NotNull DynamicPort port) {
+    public DynamicUrl(String root, DynamicPort port) {
       this(root, port, "");
     }
 
-    public DynamicUrl(String root, @NotNull DynamicPort port, String tail) {
+    public DynamicUrl(String root, DynamicPort port, String tail) {
       if (null == port) {
         throw new IllegalArgumentException("Port cannot be null");
       }
@@ -285,7 +287,7 @@ public abstract class AbstractIntegrationTest {
       this.tail = tail;
     }
 
-    public DynamicUrl(@NotNull DynamicUrl url, String tail) {
+    public DynamicUrl(DynamicUrl url, String tail) {
       if (null == url) {
         throw new IllegalArgumentException("Url cannot be null");
       }
@@ -410,6 +412,9 @@ public abstract class AbstractIntegrationTest {
       getServiceManager().startFeature(true, "search-ui-app");
       getServiceManager().waitForAllBundles();
     } catch (Exception e) {
+      if (e instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+      }
       throw new IllegalStateException("Failed to start up required features.", e);
     }
   }
@@ -818,8 +823,20 @@ public abstract class AbstractIntegrationTest {
     }
   }
 
+  // java:S5443 fallback: only reached on non-POSIX systems (i.e. Windows), where
+  // java.io.tmpdir (%TEMP%) is already per-user private and POSIX permission
+  // attributes are unsupported; the POSIX branch creates owner-only atomically.
+  @SuppressWarnings("java:S5443")
   private Option installStartupFile(InputStream is, String destination) throws IOException {
-    File tempFile = Files.createTempFile("StartupFile", ".temp").toFile();
+    final Path tempPath;
+    if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+      FileAttribute<?> ownerOnly =
+          PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rw-------"));
+      tempPath = Files.createTempFile("StartupFile", ".temp", ownerOnly);
+    } else {
+      tempPath = Files.createTempFile("StartupFile", ".temp");
+    }
+    File tempFile = tempPath.toFile();
     tempFile.deleteOnExit();
     FileUtils.copyInputStreamToFile(is, tempFile);
     return replaceConfigurationFile(destination, tempFile);

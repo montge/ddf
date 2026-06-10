@@ -16,6 +16,8 @@ package org.codice.ddf.security.handler.oidc;
 import static org.codice.ddf.security.handler.oidc.OidcHandlerConfigurationImpl.DEFAULT_CALLBACK_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -50,7 +52,10 @@ public class OidcHandlerConfigurationImplTest {
 
   @Test
   public void testUpdateNullProperties() {
-    handlerConfiguration.setProperties(null);
+    OidcHandlerConfigurationImpl configuration = new OidcHandlerConfigurationImpl();
+    assertDoesNotThrow(() -> configuration.setProperties(null));
+    // Null properties must be a no-op: no OidcConfiguration is built (early return).
+    assertThat(configuration.getOidcConfiguration(), is(nullValue()));
   }
 
   @Test

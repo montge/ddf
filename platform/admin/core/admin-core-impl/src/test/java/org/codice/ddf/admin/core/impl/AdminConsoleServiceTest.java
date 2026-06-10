@@ -1047,24 +1047,20 @@ public class AdminConsoleServiceTest {
    * @throws Exception
    */
   @Test
-  public void testDisableConfigurationsAlreadyDisabled() {
-    assertThrows(
-        Exception.class,
-        () -> {
-          org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
-              mock(org.osgi.service.cm.ConfigurationAdmin.class);
-          AdminConsoleService configAdmin =
-              new AdminConsoleService(testConfigAdmin, configurationAdminImpl);
+  public void testDisableConfigurationsAlreadyDisabled() throws Exception {
+    org.osgi.service.cm.ConfigurationAdmin testConfigAdmin =
+        mock(org.osgi.service.cm.ConfigurationAdmin.class);
+    AdminConsoleService configAdmin =
+        new AdminConsoleService(testConfigAdmin, configurationAdminImpl);
 
-          Configuration testConfig = mock(Configuration.class);
-          Configuration testFactoryConfig = mock(Configuration.class);
-          Dictionary<String, Object> testProperties = new Hashtable<>();
+    Configuration testConfig = mock(Configuration.class);
+    Configuration testFactoryConfig = mock(Configuration.class);
+    Dictionary<String, Object> testProperties = new Hashtable<>();
 
-          testProperties.put(
-              org.osgi.service.cm.ConfigurationAdmin.SERVICE_FACTORYPID, TEST_FACT_PID_DISABLED);
+    testProperties.put(
+        org.osgi.service.cm.ConfigurationAdmin.SERVICE_FACTORYPID, TEST_FACT_PID_DISABLED);
 
-          configAdmin.disableConfiguration(TEST_PID);
-        });
+    assertThrows(Exception.class, () -> configAdmin.disableConfiguration(TEST_PID));
   }
 
   /**

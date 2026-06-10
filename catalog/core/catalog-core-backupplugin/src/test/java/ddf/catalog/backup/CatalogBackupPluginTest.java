@@ -16,6 +16,7 @@ package ddf.catalog.backup;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -141,7 +142,11 @@ public class CatalogBackupPluginTest {
     DeleteResponse mockDeleteResponse = getDeleteResponse(Arrays.asList(METACARD_IDS));
 
     // Perform Test
-    getPlugin().process(mockDeleteResponse);
+    DeleteResponse postPluginDeleteResponse = getPlugin().process(mockDeleteResponse);
+
+    // Verify the plugin handles deleting never-backed-up metacards gracefully by
+    // returning the unchanged response rather than throwing.
+    assertThat(postPluginDeleteResponse, is(sameInstance(mockDeleteResponse)));
   }
 
   @Test
@@ -199,7 +204,11 @@ public class CatalogBackupPluginTest {
     UpdateResponse mockUpdateResponse = getUpdateResponse(Arrays.asList(METACARD_IDS));
 
     // Perform Test
-    getPlugin().process(mockUpdateResponse);
+    UpdateResponse postPluginUpdateResponse = getPlugin().process(mockUpdateResponse);
+
+    // Verify the plugin handles updating never-backed-up metacards gracefully by
+    // returning the unchanged response rather than throwing.
+    assertThat(postPluginUpdateResponse, is(sameInstance(mockUpdateResponse)));
   }
 
   @Test
