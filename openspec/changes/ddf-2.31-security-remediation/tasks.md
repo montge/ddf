@@ -1,6 +1,6 @@
 # DDF 2.31 Security Remediation Tasks
 
-**Status:** Phases 0-3 complete & build-verified (2026-05-29, 459/459 modules); Phase 4 (majors) pending
+**Status:** Phases 0-7 complete (2026-06-10); remaining: SONAR_TOKEN regeneration (user) → 5.4, Dependabot PR cleanup → 5.2, merge PR #210 → 7.10, post-merge alert verification → 5.1
 **Baseline:** 90 unique advisories / 41 packages (4,730 raw Dependabot alerts); CodeQL 3 critical + 24 high.
 **Approach:** Apply version fixes as direct root-`pom.xml` property bumps, then close the redundant Dependabot PRs. All values are current→target.
 
@@ -49,7 +49,7 @@
 
 ## Phase 5: Verification, re-scan & PR cleanup
 - [ ] 5.1 Re-trigger Dependabot/security scan; confirm P4 "already-fixed" alerts cleared (xmlsec, jetty-server, spring-context, groovy, ant, jdom2, logback-classic, commons-net, commons-beanutils, jsch)
-- [ ] 5.2 Close redundant Dependabot PRs superseded by direct bumps: #209, #205, #204, #202, #200, #190, #194, #207, #166, #167 (and stale #125 karaf, #130 usng4j — already in via merge)
+- [x] 5.2 Close redundant Dependabot PRs superseded by direct bumps — DONE in two waves. Wave 1 (2026-05-30): #209, #205, #204, #202, #200, #190, #194, #207, #166, #167, #125, #130. Wave 2 (2026-06-10, evidence-audited via 22-agent workflow): closed #232/#231 (netty 4.1.135 on branch), #203/#188 (pac4j 5.7.10 on branch), #126 (asm 9.9.1), #124 (httpclient 4.5.14), #192 (slack action's job deleted from ci.yml), #198 (dup of #206), #121 (dup of #153), #131 (gml 2.x would mix 1.x/2.x JAXB bindings; @dependabot ignore major), #127 (1.4.0 is a downgrade vs CODICE fork; @dependabot ignore dependency). KEPT OPEN for post-#210 merge: #206 activemq 5.19.6, #153 plantuml, #129 javassist, #128 restassured, #123 truth, #189/#187/#186/#122 GH-actions bumps, #184 shiro (deferred change, deliberately open). #208 netty 4.2 cross-line left open pending user decision.
 - [~] 5.3 CodeQL 3 critical + 24 high SAST — **triaged** via a 46-agent workflow (full report in `codeql-triage.md`): 4 exploitable, 13 needs-fix, 9 false-positive. Both criticals #19 (XXE) and #50 (XSLT-injection) are FALSE-POSITIVES (already-hardened helpers). **Fixes applied + build-verified (4 exploitable):**
   - [x] #18 XXE (critical) — `XmlSchemaMessageBodyReader` now parses with a hardened XXE-safe DocumentBuilderFactory before XPath
   - [x] #16/#17 ReDoS — `JsonpValidator` linear regex + 128-char cap (30/30 tests pass)
@@ -59,11 +59,11 @@
   - [x] #135 sensitive-log — `OAuthSecurityImpl` no longer TRACE-logs `webClient.getHeaders()` (Authorization/Basic secret)
   - [x] #12 REST XSS — `RESTEndpoint.deleteDocument` stops echoing raw id; error responses HTML-escape the message before `<pre>`
   - [x] #13 SAML logout XSS — `HtmlResponseTemplate` HTML-escapes targetUrl/samlValue/relayState (all double-quoted HTML attributes); 18/18 template tests pass
-  - [ ] #14 WKT ReDoS (`WktStandard`) — needs JTS-delegation rewrite; no in-repo production caller (exported API only). DEFERRED
-  - [ ] #41 insecure-trustmanager — by-design (admin cert-discovery TOFU); dismiss in CodeQL UI + add fingerprint confirmation. DEFERRED
+  - [x] #14 WKT ReDoS (`WktStandard`) — initially deferred, then actually FIXED by the SonarQube pass-1/2 possessive-quantifier rewrite (see 7.6). Alert stays "open" against main until post-merge re-analysis.
+  - [x] #41 insecure-trustmanager — by-design (admin cert-discovery TOFU); dismissed via API 2026-06-09 ("won't fix" + justification), state verified 2026-06-10.
 
   **CodeQL outcome: 9 of 13 actionable findings fixed + build-verified; both criticals' real exploitable one (#18) fixed, the 2 critical FPs documented for dismissal; #14/#41 deferred with rationale.**
-- [ ] 5.4 Fix SonarCloud analysis not populating measures (project `montge_ddf` shows empty) — needs working analysis run + coverage
+- [ ] 5.4 Fix SonarCloud analysis not populating measures (project `montge_ddf` shows empty) — ROOT CAUSE ISOLATED 2026-06-10: POM sonar coords are correct (`montge`/`montge_ddf`) and the project exists publicly on SonarCloud; the scanner's "Project not found" means the `SONAR_TOKEN` repo secret (last set 2025-12-13) is invalid. USER ACTION: regenerate at sonarcloud.io → My Account → Security, then `gh secret set SONAR_TOKEN -R montge/ddf`, then re-run the SonarCloud Analysis workflow
 - [x] 5.5 Pushed to PR #210 (feature → main). main+develop synced to origin; 12 redundant Dependabot PRs closed.
 
 ## Phase 6: CI hardening (surfaced by the PR; fixed bottom-up)
@@ -84,7 +84,7 @@
 - [x] 7.4 **pac4j 5.7.7 → 5.7.9** (commit f31141657b) — patches critical CVE-2026-29000 (pac4j-jwt) within the 5.x line; 6.x major still tracked separately.
 - [x] 7.5 **Upstream re-sync** (merge ec8dc37107) — absorbed codice/ddf Karaf 4.4.11 chain (pax.logging 2.3.3, pax.url 2.7.1, pax.web 8.0.35, asm 9.9.1, jansi 2.4.3, commons-io 2.22.0, commons-logging 1.3.6, httpclient 4.5.14, jackson 2.21.2), jackson bundleReplacements resolver convergence, OpenDJ embedded-ldap removal. Kept ours: CXF 4.1.1, OpenSAML 4.3.2, logback 1.5.25, jakarta.* line, pac4j 5.7.9, pdfbox 3.0.6, poi 5.5.1. Their pac4j 6.5.3 / CXF 3.6.11 superseded. Build-verified (796 modules).
 - [x] 7.6 **CodeQL dismissals via API (2026-06-09):** #19 XXE FP, #50 XSLT FP (hardened helpers), #41 TOFU by-design — with documented justifications. #14 WKT ReDoS now actually FIXED (pass-1/2 possessive rewrite), closes on re-analysis.
-- [ ] 7.7 Sensitive-log #136-139 (insecure-defaults validators embed passwords in alert messages) — fix in flight
-- [ ] 7.8 CodeQL quality alerts #51 (tainted-arithmetic), #52 (wider-type comparison), #676 (implicit cast) — triage+fix in flight
-- [ ] 7.9 Dependabot residue audit (unique packages vs branch versions) — in flight; most of the ~2900 alerts close on PR #210 merge (computed against main)
+- [x] 7.7 Sensitive-log #136-139 (insecure-defaults validators embed passwords in alert messages) — FIXED (commit 9fdfc73162): alerts report which property is insecure without echoing the password value
+- [x] 7.8 CodeQL quality alerts #51 (tainted-arithmetic), #52 (wider-type comparison), #676 (implicit cast) — FIXED (commit 9fdfc73162)
+- [x] 7.9 Dependabot residue audit — DONE 2026-06-09 (33 unique packages classified; final uniques landed in ee24772b49: netty 4.1.135, pac4j 5.7.10, owasp-sanitizer 20260101.1, jdom2 2.0.6.1 DM pin, jetty module overrides, gitsetup slf4j-ext/jsch). Permanent residue documented: jetty 9.4/10 EOL (→ PR #183), shiro 1.13 (deferred change), commons-lang 2.6 / commons-configuration 1.10 (no fixed line), not-yet-commons-ssl (no real fix exists), jgit via support-githooks (dev-only, fix belongs in codice/ddf-support). The ~2900 main-manifest alerts close on PR #210 merge.
 - [ ] 7.10 Merge PR #210 → main, sync develop, verify alert counts drop
