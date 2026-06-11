@@ -537,6 +537,30 @@ public class FileSystemStorageProviderTest {
   }
 
   @Test
+  public void testRollbackRejectsPathTraversalRequestId() throws Exception {
+    // A request id of ".." resolves baseContentTmpDirectory/.. to the persistent content store.
+    // rollback must refuse rather than recursively delete a directory outside the temp store
+    // (the request id is not allow-list-validated and reaches rollback verbatim, e.g. from an
+    // import-archive entry name).
+    Path contentStore =
+        Paths.get(
+            baseDir,
+            FileSystemStorageProvider.DEFAULT_CONTENT_REPOSITORY,
+            FileSystemStorageProvider.DEFAULT_CONTENT_STORE);
+    Path sentinel = contentStore.resolve("sentinel");
+    Files.createDirectories(sentinel);
+
+    ContentItem contentItem = mock(ContentItem.class);
+    CreateStorageRequest maliciousRequest =
+        new CreateStorageRequestImpl(Collections.singletonList(contentItem), "..", new HashMap<>());
+
+    assertThrows(StorageException.class, () -> provider.rollback(maliciousRequest));
+    assertTrue(
+        Files.exists(sentinel),
+        "rollback must not delete a directory outside the temp content store");
+  }
+
+  @Test
   public void testDeleteWithSimilarIds() throws Exception {
     CreateStorageResponse createResponse =
         assertContentItem(TEST_INPUT_CONTENTS, NITF_MIME_TYPE, TEST_INPUT_FILENAME);
