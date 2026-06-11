@@ -164,7 +164,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: maven-repo
           path: ~/.m2/repository
@@ -203,7 +203,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: maven-repo
           path: ~/.m2/repository
@@ -242,7 +242,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: maven-repo
           path: ~/.m2/repository
@@ -281,7 +281,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: maven-repo
           path: ~/.m2/repository
@@ -320,7 +320,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: maven-repo
           path: ~/.m2/repository
@@ -359,7 +359,7 @@ jobs:
           cache: 'maven'
 
       - name: Download Maven repository
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: maven-repo
           path: ~/.m2/repository
