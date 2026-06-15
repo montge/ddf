@@ -134,7 +134,7 @@
         <pax.exam.version>4.14.0</pax.exam.version>
         <pax.logging.version>2.3.3</pax.logging.version>
         <pax.url.version>2.7.1</pax.url.version>
-        <pax.web.version>8.0.35</pax.web.version>
+        <pax.web.version>11.1.2</pax.web.version>
         <!-- Pax CDI version pinned to avoid Karaf 4.4.x RELEASE version resolution issues -->
         <pax.cdi.version>1.1.4</pax.cdi.version>
         <restito.version>1.1.2</restito.version>
