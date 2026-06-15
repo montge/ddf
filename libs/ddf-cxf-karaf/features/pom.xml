@@ -153,7 +153,7 @@
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>4.2.30</version>
+            <version>4.2.39</version>
         </dependency>
         <!-- CXF 4.1.1 cxf-rt-security (must match camel-cxf-all's CXF package versions) -->
         <dependency>
