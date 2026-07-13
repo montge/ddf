@@ -384,7 +384,7 @@
         <micrometer.opentelemetry.version>1.62.0</micrometer.opentelemetry.version>
         <zstd-jni.version>1.5.5-2</zstd-jni.version>
         <tomcat-embed.version>9.0.118</tomcat-embed.version>
-        <mina.version>2.2.7</mina.version>
+        <mina.version>2.2.8</mina.version>
 
         <!-- Command line argument properties for the maven-surefire-plugin -->
         <surefire.argline.append />
