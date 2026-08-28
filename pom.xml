@@ -281,7 +281,7 @@
         <!-- logback-access 1.2.x is required for Jetty 9.x compatibility. -->
         <!-- logback-access 2.0.x only supports Jetty 11+ and uses new Maven coordinates. -->
         <logback-access.version>1.2.13</logback-access.version>
-        <mariadb.version>2.4.1</mariadb.version>
+        <mariadb.version>2.7.14</mariadb.version>
         <maven.failsafe.version>3.5.3</maven.failsafe.version>
         <maven.surefire.version>3.5.4</maven.surefire.version>
         <maven-jacoco-plugin.version>0.8.12</maven-jacoco-plugin.version>
